@@ -37,101 +37,255 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Couleurs personnalisées du thème */
+  --color-theme-red: var(--theme-red);
+  --color-theme-red-light: var(--theme-red-light);
+  --color-theme-red-dark: var(--theme-red-dark);
+  --color-theme-yellow: var(--theme-yellow);
+  --color-theme-yellow-light: var(--theme-yellow-light);
+  --color-theme-yellow-dark: var(--theme-yellow-dark);
+  --color-theme-green: var(--theme-green);
+  --color-theme-green-light: var(--theme-green-light);
+  --color-theme-green-dark: var(--theme-green-dark);
+  --color-theme-blue: var(--theme-blue);
+  --color-theme-blue-light: var(--theme-blue-light);
+  --color-theme-blue-dark: var(--theme-blue-dark);
+  --color-theme-white: var(--theme-white);
+  --color-theme-white-dark: var(--theme-white-dark);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Animation de bordure rouge, jaune, verte pour le bouton "Faire un don" */
+/* Animation de bordure multicolore pour le bouton "Faire un don" */
 @keyframes rainbow-border {
   0% {
-    border-color: #ef4444; /* rouge */
+    border-color: var(--theme-red);
   }
   33% {
-    border-color: #eab308; /* jaune */
+    border-color: var(--theme-yellow);
   }
   66% {
-    border-color: #22c55e; /* vert */
+    border-color: var(--theme-green);
   }
   100% {
-    border-color: #ef4444; /* rouge */
+    border-color: var(--theme-red);
+  }
+}
+
+/* Animation de dégradé de fond */
+@keyframes rainbow-gradient {
+  0% {
+    background: linear-gradient(45deg, var(--theme-red), var(--theme-yellow));
+  }
+  25% {
+    background: linear-gradient(45deg, var(--theme-yellow), var(--theme-green));
+  }
+  50% {
+    background: linear-gradient(45deg, var(--theme-green), var(--theme-blue));
+  }
+  75% {
+    background: linear-gradient(45deg, var(--theme-blue), var(--theme-red));
+  }
+  100% {
+    background: linear-gradient(45deg, var(--theme-red), var(--theme-yellow));
   }
 }
 
 .donate-button-animated {
-  animation: rainbow-border 2s infinite;
+  animation: rainbow-border 3s infinite;
   border-width: 2px;
   border-style: solid;
 }
 
+.gradient-bg-animated {
+  animation: rainbow-gradient 4s infinite;
+  background-size: 400% 400%;
+}
+
+/* Classes utilitaires pour les dégradés */
+.bg-gradient-red {
+  background: linear-gradient(
+    135deg,
+    var(--theme-red-light),
+    var(--theme-red),
+    var(--theme-red-dark)
+  );
+}
+
+.bg-gradient-yellow {
+  background: linear-gradient(
+    135deg,
+    var(--theme-yellow-light),
+    var(--theme-yellow),
+    var(--theme-yellow-dark)
+  );
+}
+
+.bg-gradient-green {
+  background: linear-gradient(
+    135deg,
+    var(--theme-green-light),
+    var(--theme-green),
+    var(--theme-green-dark)
+  );
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(
+    135deg,
+    var(--theme-blue-light),
+    var(--theme-blue),
+    var(--theme-blue-dark)
+  );
+}
+
+.bg-gradient-multicolor {
+  background: linear-gradient(
+    135deg,
+    var(--theme-red),
+    var(--theme-yellow),
+    var(--theme-green),
+    var(--theme-blue)
+  );
+}
+
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Couleurs de base en blanc */
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+
+  /* Thème coloré principal basé sur le rouge */
+  --primary: #dc2626; /* rouge */
+  --primary-foreground: #ffffff;
+
+  /* Thème secondaire basé sur le bleu */
+  --secondary: #2563eb; /* bleu */
+  --secondary-foreground: #ffffff;
+
+  /* Couleurs accent basées sur le vert */
+  --accent: #16a34a; /* vert */
+  --accent-foreground: #ffffff;
+
+  /* Couleurs neutres basées sur le blanc et gris */
+  --muted: #f8f9fa;
+  --muted-foreground: #6b7280;
+  --border: #e5e7eb;
+  --input: #f3f4f6;
+  --ring: #3b82f6;
+
+  /* Couleur destructive basée sur le rouge foncé */
+  --destructive: #b91c1c;
+
+  /* Couleurs des graphiques utilisant notre palette */
+  --chart-1: #dc2626; /* rouge */
+  --chart-2: #eab308; /* jaune */
+  --chart-3: #16a34a; /* vert */
+  --chart-4: #2563eb; /* bleu */
+  --chart-5: #ffffff; /* blanc */
+
+  /* Sidebar basée sur le blanc */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #dc2626; /* rouge */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8f9fa;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #3b82f6;
+
+  /* Couleurs du thème personnalisé */
+  --theme-red: #dc2626;
+  --theme-red-light: #fca5a5;
+  --theme-red-dark: #991b1b;
+
+  --theme-yellow: #eab308;
+  --theme-yellow-light: #fde047;
+  --theme-yellow-dark: #a16207;
+
+  --theme-green: #16a34a;
+  --theme-green-light: #86efac;
+  --theme-green-dark: #15803d;
+
+  --theme-blue: #2563eb;
+  --theme-blue-light: #93c5fd;
+  --theme-blue-dark: #1d4ed8;
+
+  --theme-white: #ffffff;
+  --theme-white-dark: #f8f9fa;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Mode sombre avec des couleurs plus douces */
+  --background: #0f1419;
+  --foreground: #ffffff;
+  --card: #1a1a1a;
+  --card-foreground: #ffffff;
+  --popover: #1a1a1a;
+  --popover-foreground: #ffffff;
+
+  /* Couleurs principales ajustées pour le mode sombre */
+  --primary: #f87171; /* rouge plus doux */
+  --primary-foreground: #1a1a1a;
+
+  --secondary: #60a5fa; /* bleu plus doux */
+  --secondary-foreground: #1a1a1a;
+
+  --accent: #4ade80; /* vert plus doux */
+  --accent-foreground: #1a1a1a;
+
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --border: #404040;
+  --input: #262626;
+  --ring: #60a5fa;
+
+  --destructive: #f87171;
+
+  /* Graphiques ajustés pour le mode sombre */
+  --chart-1: #f87171; /* rouge doux */
+  --chart-2: #fbbf24; /* jaune doux */
+  --chart-3: #4ade80; /* vert doux */
+  --chart-4: #60a5fa; /* bleu doux */
+  --chart-5: #e5e7eb; /* blanc cassé */
+
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #f87171;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #404040;
+  --sidebar-ring: #60a5fa;
+
+  /* Couleurs du thème pour le mode sombre */
+  --theme-red: #f87171;
+  --theme-red-light: #fca5a5;
+  --theme-red-dark: #dc2626;
+
+  --theme-yellow: #fbbf24;
+  --theme-yellow-light: #fde047;
+  --theme-yellow-dark: #d97706;
+
+  --theme-green: #4ade80;
+  --theme-green-light: #86efac;
+  --theme-green-dark: #16a34a;
+
+  --theme-blue: #60a5fa;
+  --theme-blue-light: #93c5fd;
+  --theme-blue-dark: #2563eb;
+
+  --theme-white: #f8f9fa;
+  --theme-white-dark: #e5e7eb;
 }
 
 @layer base {
@@ -141,4 +295,56 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Animation pour le logo en arrière-plan */
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes logo-pulse {
+  0%,
+  100% {
+    opacity: 0.03;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.08;
+    transform: scale(1.05);
+  }
+}
+
+/* Logo GAM en arrière-plan */
+.background-logo {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  z-index: -1;
+  pointer-events: none;
+  animation: logo-pulse 8s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+/* Effet de parallaxe pour le scroll */
+.background-logo-parallax {
+  will-change: transform;
+}
+
+/* Centrage absolu de l'image à l'intérieur */
+.background-logo img {
+  width: 60% !important;
+  height: auto !important;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
