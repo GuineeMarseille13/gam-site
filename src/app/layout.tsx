@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <BackgroundLogo />
         <Header />
-        <main className="pb-20 md:pb-0 p-5">{children}</main>
+        <main className="p-4">{children}</main>
         <FloatingActionButton />
       </body>
     </html>

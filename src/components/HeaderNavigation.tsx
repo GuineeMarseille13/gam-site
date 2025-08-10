@@ -45,7 +45,7 @@ export default function HeaderNavigation() {
     <>
       {/* Navigation Desktop - conditionnellement rendue */}
       {!isMobile && (
-        <nav className="bg-gray-50 dark:bg-gray-900 py-4 z-50">
+        <nav className="bg-gray-50 dark:bg-gray-900 py-4 bg-white/10 backdrop-blur-md">
           <div className="container mx-auto px-4">
             <ul className="flex flex-wrap justify-center gap-2 md:gap-4">
               {!isHome && (

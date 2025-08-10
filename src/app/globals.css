@@ -332,12 +332,29 @@
   z-index: -1;
   pointer-events: none;
   animation: logo-pulse 8s ease-in-out infinite;
-  transition: opacity 0.3s ease;
 }
 
 /* Effet de parallaxe pour le scroll */
 .background-logo-parallax {
   will-change: transform;
+}
+
+/* Effet de flou pour le background */
+.background-logo-blur {
+  filter: blur(2px);
+  transition: filter 0.3s ease-in-out;
+}
+
+/* Variation de l'effet de flou selon la taille d'écran */
+@media (max-width: 768px) {
+  .background-logo-blur {
+    filter: blur(1.5px);
+  }
+}
+
+/* Effet de flou plus prononcé au survol (optionnel) */
+.background-logo-blur:hover {
+  filter: blur(3px);
 }
 
 /* Centrage absolu de l'image à l'intérieur */
