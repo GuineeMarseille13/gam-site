@@ -27,7 +27,7 @@ export default function Carousel({
   autoPlay = true,
   interval = 5000,
   showDots = true,
-  showArrows = true,
+  showArrows = false,
   enableSwipe = true,
   loop = true,
   className = "",

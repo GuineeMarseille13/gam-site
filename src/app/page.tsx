@@ -32,7 +32,7 @@ export default function Home() {
           autoPlay={true}
           interval={5000} // 5 secondes pour une expérience fluide
           showDots={true}
-          showArrows={true}
+          showArrows={false}
           enableSwipe={true}
           loop={true}
           className="h-screen max-h-[85vh] shadow-2xl rounded-xl overflow-hidden"
