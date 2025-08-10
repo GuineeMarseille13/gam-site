@@ -135,15 +135,16 @@ export default function FloatingActionButton() {
         </AnimatePresence>
       </div>
 
-      {/* Main FAB Button */}
+      {/* Main FAB Button avec dégradé thématique */}
       <motion.button
         onClick={toggleMenu}
         className={cn(
           "fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg z-50",
-          "bg-gradient-to-r from-red-500 to-red-600 text-white",
+          "bg-gradient-to-br from-theme-red via-theme-red to-theme-red-dark text-white",
           "flex items-center justify-center md:hidden",
           "hover:shadow-xl transition-all duration-200",
-          "border-2 border-white"
+          "border-2 border-white/20 backdrop-blur-sm",
+          "before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-br before:from-theme-yellow/20 before:to-theme-green/20 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

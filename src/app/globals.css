@@ -97,8 +97,7 @@
 
 .donate-button-animated {
   animation: rainbow-border 3s infinite;
-  border-width: 2px;
-  border-style: solid;
+  border: inset 3px solid !important;
 }
 
 .gradient-bg-animated {
@@ -372,26 +371,6 @@
   overflow: hidden;
 }
 
-.donate-button-animated::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.donate-button-animated:hover::before {
-  left: 100%;
-}
-
 /* Animation de pulsation pour le FAB */
 @keyframes pulse-ring {
   0% {
@@ -439,4 +418,99 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Nouvelles classes pour des dégradés harmonieux */
+.bg-gradient-theme-soft {
+  background: linear-gradient(
+    135deg,
+    var(--theme-white) 0%,
+    var(--theme-white-dark) 25%,
+    rgba(var(--theme-red), 0.05) 50%,
+    rgba(var(--theme-yellow), 0.03) 75%,
+    rgba(var(--theme-green), 0.05) 100%
+  );
+}
+
+.bg-gradient-theme-overlay {
+  background: linear-gradient(
+    45deg,
+    rgba(var(--theme-red), 0.05) 0%,
+    transparent 25%,
+    rgba(var(--theme-yellow), 0.03) 50%,
+    transparent 75%,
+    rgba(var(--theme-green), 0.05) 100%
+  );
+}
+
+/* Animation de dégradé plus douce */
+@keyframes smooth-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-bg-smooth {
+  background: linear-gradient(
+    -45deg,
+    var(--theme-red),
+    var(--theme-yellow),
+    var(--theme-green),
+    var(--theme-blue)
+  );
+  background-size: 400% 400%;
+  animation: smooth-gradient 8s ease-in-out infinite;
+}
+
+/* Améliorations des dégradés existants pour plus de douceur */
+.bg-gradient-red {
+  background: linear-gradient(
+    135deg,
+    var(--theme-red-light) 0%,
+    var(--theme-red) 50%,
+    var(--theme-red-dark) 100%
+  );
+  background-size: 200% 200%;
+  transition: background-position 0.3s ease;
+}
+
+.bg-gradient-red:hover {
+  background-position: 100% 100%;
+}
+
+/* Effet de fondu pour tous les dégradés */
+.gradient-fade-in {
+  opacity: 0;
+  animation: gradient-fade-in 1s ease-out forwards;
+}
+
+@keyframes gradient-fade-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Transitions douces pour les overlays */
+.overlay-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-transition:hover {
+  background: linear-gradient(
+    45deg,
+    rgba(var(--theme-red), 0.1),
+    rgba(var(--theme-yellow), 0.05),
+    rgba(var(--theme-green), 0.1)
+  );
 }

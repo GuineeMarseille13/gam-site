@@ -189,22 +189,22 @@ export default function Carousel({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
 
-            {/* Dégradés modernes sur les 4 côtés */}
+            {/* Dégradés modernes et doux sur les 4 côtés */}
 
-            {/* Dégradé du haut - Effet vignette subtil */}
-            <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/30 via-black/10 to-transparent pointer-events-none" />
+            {/* Dégradé du haut - Effet vignette très subtil */}
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/20 via-black/5 to-transparent pointer-events-none" />
 
-            {/* Dégradé du bas - Principal pour le contenu */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
+            {/* Dégradé du bas - Principal pour le contenu avec transition douce */}
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/70 via-black/30 via-black/10 to-transparent pointer-events-none" />
 
-            {/* Dégradé gauche - Aide à la lisibilité des contrôles */}
-            <div className="absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-black/20 to-transparent pointer-events-none" />
+            {/* Dégradé gauche - Plus doux pour les contrôles */}
+            <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-black/15 via-black/5 to-transparent pointer-events-none" />
 
-            {/* Dégradé droite - Équilibre visuel */}
-            <div className="absolute top-0 bottom-0 right-0 w-20 bg-gradient-to-l from-black/20 to-transparent pointer-events-none" />
+            {/* Dégradé droite - Équilibre visuel avec transition */}
+            <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-black/15 via-black/5 to-transparent pointer-events-none" />
 
-            {/* Overlay central pour améliorer la lisibilité */}
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/10 pointer-events-none" />
+            {/* Overlay central subtil pour unifier l'image */}
+            <div className="absolute inset-0 bg-gradient-to-br from-theme-red/5 via-transparent via-theme-yellow/3 to-theme-green/5 pointer-events-none" />
 
             {/* Overlay avec contenu amélioré */}
             {(currentItem.title || currentItem.description) && (
@@ -262,7 +262,7 @@ export default function Carousel({
               onClick={() => goToSlide(index)}
               className={`transition-all duration-300 ${
                 index === currentIndex
-                  ? "w-12 h-4 bg-white rounded-full scale-110"
+                  ? "w-16 h-4 bg-white rounded-full scale-110"
                   : "w-4 h-4 bg-white/50 hover:bg-white/70 rounded-full hover:scale-110"
               }`}
               aria-label={`Aller à l'image ${index + 1}`}
@@ -271,11 +271,11 @@ export default function Carousel({
         </div>
       )}
 
-      {/* Progress Bar modernisée */}
+      {/* Progress Bar harmonisée avec le thème */}
       {isPlaying && !isPaused && totalItems > 1 && (
         <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
           <motion.div
-            className="h-full bg-gradient-to-r from-blue-400 to-purple-500"
+            className="h-full bg-gradient-to-r from-theme-red via-theme-yellow to-theme-green"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: interval / 1000, ease: "linear" }}
