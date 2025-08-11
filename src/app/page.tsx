@@ -3,20 +3,37 @@ import Carousel from "@/components/carousel";
 const carouselItems = [
   {
     id: 1,
-    image: "/images/gam-logo.png",
+    image:
+      "https://cdn.pixabay.com/photo/2023/01/28/19/01/bird-7751561_1280.jpg",
     title: "Association GAM",
     description:
       "Découvrez notre association et nos actions en faveur de la communauté",
   },
   {
     id: 2,
-    image: "/images/gam-logo.png",
+    image:
+      "https://cdn.pixabay.com/photo/2024/11/02/19/08/bird-9169969_1280.jpg",
     title: "Nos Événements",
     description: "Participez à nos événements culturels et caritatifs",
   },
   {
     id: 3,
-    image: "/images/gam-logo.png",
+    image:
+      "https://cdn.pixabay.com/photo/2022/12/06/14/56/cookie-cutters-7639169_1280.jpg",
+    title: "Adhésion",
+    description: "Rejoignez-nous pour contribuer à nos missions",
+  },
+  {
+    id: 4,
+    image:
+      "https://cdn.pixabay.com/photo/2025/07/05/02/55/together-9697018_1280.png",
+    title: "Adhésion",
+    description: "Rejoignez-nous pour contribuer à nos missions",
+  },
+  {
+    id: 5,
+    image:
+      "https://cdn.pixabay.com/photo/2025/07/20/13/12/little-red-riding-hood-9724469_1280.jpg",
     title: "Adhésion",
     description: "Rejoignez-nous pour contribuer à nos missions",
   },
@@ -42,6 +59,8 @@ export default function Home() {
           className="h-screen max-h-[85vh] shadow-2xl rounded-xl overflow-hidden"
         />
       </section>
+
+      <section className="w-full relative z-10"></section>
 
       {/* Contenu additionnel */}
       <section className="container mx-auto px-4 py-16 relative z-10">

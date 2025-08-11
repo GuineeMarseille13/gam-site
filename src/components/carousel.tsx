@@ -28,7 +28,7 @@ export default function Carousel({
   interval = 5000,
   showDots = true,
   showArrows = false,
-  enableSwipe = true,
+  enableSwipe = false,
   loop = true,
   className = "",
 }: CarouselProps) {
@@ -142,7 +142,7 @@ export default function Carousel({
 
   return (
     <div
-      className={`relative w-full h-96 md:h-[500px] overflow-hidden rounded-xl bg-gray-900 group ${className}`}
+      className={`relative w-full h-98 md:h-[500px] overflow-hidden rounded-xl bg-gray-900 group ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -181,7 +181,7 @@ export default function Carousel({
             <Image
               src={currentItem.image}
               alt={currentItem.title || `Slide ${currentIndex + 1}`}
-              className="w-full h-full object-cover select-none"
+              className="w-full h-full object-contain select-none"
               width={1200}
               height={600}
               priority={currentIndex === 0}
