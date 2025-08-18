@@ -1,6 +1,6 @@
-import { Marquee } from "./3d-testimonails";
-import { Card, CardContent } from "./ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Marquee } from "@/components/Marquee";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Unique reviews data
 const testimonials = [
