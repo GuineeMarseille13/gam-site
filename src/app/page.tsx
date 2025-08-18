@@ -1,6 +1,9 @@
 import Carousel from "@/components/carousel";
 import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
+import ReviewsSection from "@/components/ReviewsSection";
+
+// Unique reviews data
 
 const carouselItems = [
   {
@@ -58,6 +61,8 @@ export default function Home() {
       <PresentationSection />
 
       <PoleSection />
+
+      <ReviewsSection />
     </div>
   );
 }
