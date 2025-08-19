@@ -91,7 +91,7 @@ export default function HeaderNavigation() {
 
       {/* Indicateur de page mobile - conditionnellement rendu */}
       {isMobile && (
-        <div className="bg-gray-50 dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-gray-50/50 dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-center">
               <motion.div

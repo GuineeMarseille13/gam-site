@@ -1,3 +1,5 @@
+"use client";
+
 import Carousel from "@/components/carousel";
 import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
@@ -57,11 +59,8 @@ export default function Home() {
         loop={true}
         className="h-screen max-h-[85vh] shadow-2xl rounded-xl overflow-hidden"
       />
-
       <PresentationSection />
-
       <PoleSection />
-
       <ReviewsSection />
     </div>
   );

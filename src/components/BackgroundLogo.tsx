@@ -13,7 +13,7 @@ export default function BackgroundLogo() {
           width={1000}
           height={1000}
           className="block w-full h-auto"
-          priority={false}
+          priority={true}
           quality={75}
           style={{
             width: "100%",
