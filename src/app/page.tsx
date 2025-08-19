@@ -5,6 +5,7 @@ import GAMSlogan from "@/components/GAMSlogan";
 import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
 import ReviewsSection from "@/components/ReviewsSection";
+import StatisticsSection from "@/components/StatisticsSection";
 
 // Unique reviews data
 
@@ -63,6 +64,7 @@ export default function Home() {
       <PresentationSection />
       <PoleSection />
       <ReviewsSection />
+      <StatisticsSection />
       <GAMSlogan />
     </div>
   );
