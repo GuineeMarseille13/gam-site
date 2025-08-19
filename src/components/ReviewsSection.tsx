@@ -104,7 +104,7 @@ function TestimonialCard({
 const ReviewsSection = () => {
   return (
     <div
-      className="relative h-[600px] w-full overflow-hidden flex flex-col items-center justify-center gap-6 my-15"
+      className="relative max-h-[600px] w-full overflow-hidden flex flex-col items-center justify-center gap-6 my-10"
       style={{
         transform: "perspective(1000px)",
       }}

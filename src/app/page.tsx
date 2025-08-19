@@ -1,6 +1,7 @@
 "use client";
 
 import Carousel from "@/components/carousel";
+import GAMSlogan from "@/components/GAMSlogan";
 import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
 import ReviewsSection from "@/components/ReviewsSection";
@@ -62,6 +63,7 @@ export default function Home() {
       <PresentationSection />
       <PoleSection />
       <ReviewsSection />
+      <GAMSlogan />
     </div>
   );
 }
