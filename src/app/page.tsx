@@ -6,6 +6,7 @@ import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import StatisticsSection from "@/components/StatisticsSection";
+import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 
 // Unique reviews data
 
@@ -48,9 +49,47 @@ const carouselItems = [
   },
 ];
 
+// Éléments à faire apparaître aléatoirement
+const floatingElements = [
+  "🇫🇷",
+  "🇬🇳",
+  "❤️",
+  "🌟",
+  "✨",
+  "🎉",
+  "🌍",
+  "🤝",
+  "💫",
+  "🌺",
+  "🎊",
+  "🌈",
+  "💝",
+  "🎯",
+  "🏆",
+  "🌸",
+  "🔥",
+  "💪",
+  "🎭",
+  "🐘",
+  "🐓",
+];
+
 export default function Home() {
   return (
     <div className="font-sans min-h-screen relative overflow-hidden">
+      {/* Animation d'éléments flottants */}
+      <FloatingElementsAnimation
+        elements={floatingElements}
+        interval={30000}
+        maxElements={1}
+        elementSize="lg"
+        animationDuration={5000}
+        animationTypes={["bloom", "bounce", "spin", "fade"]}
+        colors={["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6"]}
+        enableGlow={true}
+        enableParticles={false}
+      />
+
       <Carousel
         items={carouselItems}
         autoPlay={true}
