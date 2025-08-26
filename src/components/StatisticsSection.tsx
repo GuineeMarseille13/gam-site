@@ -76,7 +76,7 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
     <Card
       className={cn(
         "relative overflow-hidden border-2 transition-all duration-700 transform",
-        "hover:scale-105 hover:shadow-xl rounded-full aspect-square",
+        "hover:scale-105 hover:shadow-xl h-24",
         colors.border,
         colors.shadow,
         shouldAnimate
@@ -100,18 +100,18 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
         )}
       />
 
-      {/* Particules flottantes - adaptées pour la forme circulaire */}
+      {/* Particules flottantes - adaptées pour la nouvelle disposition */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(4)].map((_, i) => (
+        {[...Array(3)].map((_, i) => (
           <div
             key={i}
             className={cn(
-              "absolute w-1.5 h-1.5 rounded-full opacity-40 animate-bounce",
+              "absolute w-1 h-1 rounded-full opacity-40 animate-bounce",
               colors.gradient
             )}
             style={{
-              left: `${30 + Math.cos((i * Math.PI) / 2) * 20}%`,
-              top: `${30 + Math.sin((i * Math.PI) / 2) * 20}%`,
+              left: `${20 + i * 25}%`,
+              top: `${30 + i * 15}%`,
               animationDelay: `${i * 0.3}s`,
               animationDuration: `${1.5 + i * 0.2}s`,
             }}
@@ -119,69 +119,42 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
         ))}
       </div>
 
-      <CardContent className="relative z-10 p-4 h-full flex flex-col items-center justify-center text-center">
-        {/* Icône */}
-        <div
-          className={cn(
-            "text-3xl md:text-4xl mb-2 transition-transform duration-500",
-            shouldAnimate && "animate-bounce"
-          )}
-        >
-          {statistic.icon}
+      <CardContent className="relative z-10 p-4 h-full flex items-center justify-between min-w-0">
+        {/* Section gauche : Icône et titre */}
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          {/* Icône */}
+          <div
+            className={cn(
+              "text-2xl md:text-3xl transition-transform duration-500 flex-shrink-0",
+              shouldAnimate && "animate-bounce"
+            )}
+          >
+            {statistic.icon}
+          </div>
+
+          {/* Titre */}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm md:text-base font-semibold text-slate-700 leading-tight truncate">
+              {statistic.label}
+            </p>
+          </div>
         </div>
 
-        {/* Nombre animé */}
-        <div
-          className={cn(
-            "text-2xl md:text-3xl font-bold mb-2 transition-all duration-300",
-            colors.text,
-            shouldAnimate && "animate-pulse"
-          )}
-          style={{
-            textShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-          }}
-        >
-          {count}
-        </div>
-
-        {/* Label - adapté pour la forme circulaire */}
-        <p className="text-xs md:text-sm font-semibold text-slate-600 leading-tight px-2 text-center">
-          {statistic.label}
-        </p>
-
-        {/* Barre de progression circulaire */}
-        <div className="mt-3 relative w-12 h-12">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-            {/* Cercle de fond */}
-            <path
-              className="stroke-slate-200"
-              strokeWidth="3"
-              fill="transparent"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            {/* Cercle de progression */}
-            <path
-              className={cn(
-                "transition-all duration-2000 ease-out",
-                colors.gradient
-              )}
-              strokeWidth="3"
-              fill="transparent"
-              strokeDasharray="100, 100"
-              strokeDashoffset={shouldAnimate ? "0" : "100"}
-              strokeLinecap="round"
-              style={{
-                transitionDelay: shouldAnimate ? `${delay + 500}ms` : undefined,
-                stroke: `var(--theme-${statistic.color})`,
-              }}
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
+        {/* Section droite : Nombre en grand */}
+        <div className="flex-shrink-0 ml-4">
+          <div
+            className={cn(
+              "text-3xl md:text-4xl lg:text-5xl font-bold transition-all duration-300 whitespace-nowrap",
+              colors.text,
+              shouldAnimate && "animate-pulse"
+            )}
+            style={{
+              textShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              fontFamily: "system-ui, -apple-system, sans-serif",
+            }}
+          >
+            {count}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -194,6 +167,18 @@ const StatisticsSection = () => {
 
   // Données des statistiques - vous pouvez les modifier selon vos besoins
   const statistics: Statistic[] = [
+    {
+      label: "Partenaires",
+      value: 25,
+      color: "blue",
+      icon: "👥",
+    },
+    {
+      label: "Projets",
+      value: 25,
+      color: "blue",
+      icon: "💡",
+    },
     {
       label: "Étudiants accompagnés",
       value: 245,
@@ -213,10 +198,16 @@ const StatisticsSection = () => {
       icon: "🏠",
     },
     {
-      label: "Partenaires",
+      label: "Évènements",
       value: 25,
-      color: "blue",
-      icon: "👥",
+      color: "red",
+      icon: "🎉",
+    },
+    {
+      label: "Nombre étudiants accompagnés",
+      value: 25,
+      color: "green",
+      icon: "�",
     },
   ];
 
@@ -253,7 +244,7 @@ const StatisticsSection = () => {
       {/* Background décoratif */}
       <div className="absolute inset-0 bg-gradient-theme-overlay opacity-30" />
 
-      <div className="container mx-auto relative z-10">
+      <div className="container mx-auto relative">
         {/* Titre de section */}
         <div className="text-center mb-12">
           <h2
@@ -279,15 +270,16 @@ const StatisticsSection = () => {
           </p>
         </div>
 
-        {/* Grille des statistiques - ajustée pour les cartes circulaires */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto">
+        {/* Cartes statistiques avec largeur dynamique */}
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto">
           {statistics.map((stat, index) => (
-            <StatisticCard
-              key={stat.label}
-              statistic={stat}
-              isVisible={isVisible}
-              delay={index * 200}
-            />
+            <div key={stat.label} className="min-w-0 flex-shrink-0">
+              <StatisticCard
+                statistic={stat}
+                isVisible={isVisible}
+                delay={index * 200}
+              />
+            </div>
           ))}
         </div>
       </div>
