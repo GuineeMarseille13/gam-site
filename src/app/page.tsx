@@ -6,6 +6,7 @@ import PresentationSection from "@/components/PresentationSection";
 import PoleSection from "@/components/PoleSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import StatisticsSection from "@/components/StatisticsSection";
+import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 
 // Unique reviews data
@@ -104,6 +105,7 @@ export default function Home() {
       <PoleSection />
       <ReviewsSection />
       <StatisticsSection />
+      <VolunteersSection />
       <GAMSlogan />
     </div>
   );
