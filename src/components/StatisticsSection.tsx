@@ -119,32 +119,12 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
         ))}
       </div>
 
-      <CardContent className="relative z-10 p-4 h-full flex items-center justify-between min-w-0">
-        {/* Section gauche : Icône et titre */}
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          {/* Icône */}
-          <div
-            className={cn(
-              "text-2xl md:text-3xl transition-transform duration-500 flex-shrink-0",
-              shouldAnimate && "animate-bounce"
-            )}
-          >
-            {statistic.icon}
-          </div>
-
-          {/* Titre */}
-          <div className="flex-1 min-w-0">
-            <p className="text-sm md:text-base font-semibold text-slate-700 leading-tight truncate">
-              {statistic.label}
-            </p>
-          </div>
-        </div>
-
+      <CardContent className="relative z-10 p-4 h-full flex items-center justify-center min-w-0">
         {/* Section droite : Nombre en grand */}
-        <div className="flex-shrink-0 ml-4">
+        <div className="flex-shrink-0 mr-4">
           <div
             className={cn(
-              "text-3xl md:text-4xl lg:text-5xl font-bold transition-all duration-300 whitespace-nowrap",
+              "text-3xl md:text-4xl lg:text-5xl font-bold transition-all duration-300 whitespace-nowrap flex items-center justify-center",
               colors.text,
               shouldAnimate && "animate-pulse"
             )}
@@ -154,6 +134,24 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
             }}
           >
             {count}
+          </div>
+        </div>
+        {/* Section gauche : Icône et titre */}
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          {/* Titre */}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm md:text-base font-semibold text-slate-700 leading-tight truncate">
+              {statistic.label}
+            </p>
+          </div>
+          {/* Icône */}
+          <div
+            className={cn(
+              "text-2xl md:text-3xl transition-transform duration-500 flex-shrink-0",
+              shouldAnimate && "animate-bounce"
+            )}
+          >
+            {statistic.icon}
           </div>
         </div>
       </CardContent>
