@@ -8,6 +8,7 @@ import ReviewsSection from "@/components/ReviewsSection";
 import StatisticsSection from "@/components/StatisticsSection";
 import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
+import PartnersCarousel from "@/components/PartnersCarousel";
 
 // Unique reviews data
 
@@ -75,6 +76,49 @@ const floatingElements = [
   "🐓",
 ];
 
+const partnersData = [
+  {
+    id: 1,
+    name: "Partenaire 1",
+    logo: "https://picsum.photos/300/200?random=1",
+    description: "Description du partenaire 1",
+    website: "https://www.partenaire1.com",
+    category: "Catégorie 1",
+  },
+  {
+    id: 2,
+    name: "Partenaire 2",
+    logo: "https://picsum.photos/300/200?random=2",
+    description: "Description du partenaire 2",
+    website: "https://www.partenaire2.com",
+    category: "Catégorie 2",
+  },
+  {
+    id: 3,
+    name: "Partenaire 3",
+    logo: "https://picsum.photos/300/200?random=3",
+    description: "Description du partenaire 3",
+    website: "https://www.partenaire3.com",
+    category: "Catégorie 3",
+  },
+  {
+    id: 4,
+    name: "Partenaire 4",
+    logo: "https://picsum.photos/300/200?random=4",
+    description: "Description du partenaire 4",
+    website: "https://www.partenaire4.com",
+    category: "Catégorie 4",
+  },
+  {
+    id: 5,
+    name: "Partenaire 5",
+    logo: "https://picsum.photos/300/200?random=5",
+    description: "Description du partenaire 5",
+    website: "https://www.partenaire5.com",
+    category: "Catégorie 5",
+  },
+];
+
 export default function Home() {
   return (
     <div className="font-sans min-h-screen relative overflow-hidden">
@@ -103,6 +147,21 @@ export default function Home() {
       />
       <PresentationSection />
       <PoleSection />
+
+      {/* Nouveau carousel des partenaires */}
+      <PartnersCarousel
+        partners={partnersData}
+        autoPlay={true}
+        interval={5000}
+        showDots={true}
+        showArrows={true}
+        enableSwipe={true}
+        loop={true}
+        slidesToShow={3}
+        title="Nos Partenaires de Confiance"
+        className="bg-white"
+      />
+
       <ReviewsSection />
       <StatisticsSection />
       <VolunteersSection />
