@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Partner {
   id: number;
@@ -45,6 +46,7 @@ export default function PartnersCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isMobile = useIsMobile();
 
   // Gestion sécurisée des partenaires
   const safePartners = partners?.length > 0 ? partners : [];
@@ -155,7 +157,7 @@ export default function PartnersCarousel({
   }
 
   // Calculer la largeur d'une card (en pourcentage)
-  const cardWidth = 40 / responsiveSlidesToShow;
+  const cardWidth = isMobile ? 100 : 40 / responsiveSlidesToShow;
 
   // Calculer le décalage pour le mouvement horizontal
   const translateX = -(currentIndex * cardWidth);
@@ -207,9 +209,11 @@ export default function PartnersCarousel({
               duration: 0.6,
             }}
             style={{
-              width: `${
-                (extendedPartners.length * 100) / responsiveSlidesToShow
-              }%`,
+              width: isMobile
+                ? "100%"
+                : `${
+                    (extendedPartners.length * 100) / responsiveSlidesToShow
+                  }%`,
             }}
           >
             {extendedPartners.map((partner, index) => (

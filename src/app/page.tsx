@@ -9,6 +9,7 @@ import StatisticsSection from "@/components/StatisticsSection";
 import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
+import ProductsCarousel from "@/components/ProductsCarousel";
 
 // Unique reviews data
 
@@ -119,6 +120,64 @@ const partnersData = [
   },
 ];
 
+const productsData = [
+  {
+    id: 1,
+    name: "Produit 1",
+    image: "https://picsum.photos/300/200?random=1",
+    price: 10,
+    originalPrice: 15,
+    description: "Description du produit 1",
+    category: "Catégorie 1",
+    inStock: true,
+    featured: true,
+  },
+  {
+    id: 2,
+    name: "Produit 2",
+    image: "https://picsum.photos/300/200?random=2",
+    price: 15,
+    originalPrice: 20,
+    description: "Description du produit 2",
+    category: "Catégorie 2",
+    inStock: false,
+    featured: false,
+  },
+  {
+    id: 3,
+    name: "Produit 3",
+    image: "https://picsum.photos/300/200?random=3",
+    price: 20,
+    originalPrice: 25,
+    description: "Description du produit 3",
+    category: "Catégorie 3",
+    inStock: true,
+    featured: false,
+  },
+  {
+    id: 4,
+    name: "Produit 4",
+    image: "https://picsum.photos/300/200?random=4",
+    price: 25,
+    originalPrice: 30,
+    description: "Description du produit 4",
+    category: "Catégorie 4",
+    inStock: true,
+    featured: true,
+  },
+  {
+    id: 5,
+    name: "Produit 5",
+    image: "https://picsum.photos/300/200?random=5",
+    price: 30,
+    originalPrice: 35,
+    description: "Description du produit 5",
+    category: "Catégorie 5",
+    inStock: false,
+    featured: false,
+  },
+];
+
 export default function Home() {
   return (
     <div className="font-sans min-h-screen relative overflow-hidden">
@@ -163,6 +222,18 @@ export default function Home() {
       />
 
       <ReviewsSection />
+      <ProductsCarousel
+        products={productsData}
+        autoPlay={true}
+        interval={5000}
+        showDots={true}
+        showArrows={true}
+        enableSwipe={true}
+        loop={true}
+        slidesToShow={3}
+        title="Nos Produits"
+        className="bg-white"
+      />
       <StatisticsSection />
       <VolunteersSection />
       <GAMSlogan />
