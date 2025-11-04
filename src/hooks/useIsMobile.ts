@@ -8,6 +8,7 @@ export function useIsMobile() {
   const breakpoint = 768;
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < breakpoint);
     };

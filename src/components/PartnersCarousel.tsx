@@ -45,6 +45,7 @@ export default function PartnersCarousel({
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
 
@@ -52,8 +53,10 @@ export default function PartnersCarousel({
   const safePartners = partners?.length > 0 ? partners : [];
   const totalPartners = safePartners.length;
 
-  // Responsive slidesToShow
+  // Responsive slidesToShow avec gestion de l'hydratation
   const getResponsiveSlidesToShow = () => {
+    if (!isClient) return slidesToShow; // Valeur par défaut pendant l'hydratation
+
     if (typeof window !== "undefined") {
       if (window.innerWidth < 640) return 1;
       if (window.innerWidth < 1024) return 2;
@@ -62,18 +65,24 @@ export default function PartnersCarousel({
     return slidesToShow;
   };
 
-  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(
-    getResponsiveSlidesToShow
-  );
+  const [responsiveSlidesToShow, setResponsiveSlidesToShow] =
+    useState(slidesToShow);
 
   useEffect(() => {
+    setIsClient(true);
+    setResponsiveSlidesToShow(getResponsiveSlidesToShow());
+  }, [slidesToShow]);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     const handleResize = () => {
       setResponsiveSlidesToShow(getResponsiveSlidesToShow());
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [slidesToShow]);
+  }, [slidesToShow, isClient]);
 
   // Calcul du nombre de slides disponibles (pour navigation par groupe)
   const maxSlides = Math.max(0, totalPartners - responsiveSlidesToShow + 1);
@@ -156,8 +165,8 @@ export default function PartnersCarousel({
     );
   }
 
-  // Calculer la largeur d'une card (en pourcentage)
-  const cardWidth = isMobile ? 100 : 40 / responsiveSlidesToShow;
+  // Calculer la largeur d'une card (en pourcentage) avec gestion de l'hydratation
+  const cardWidth = isClient && isMobile ? 100 : 40 / responsiveSlidesToShow;
 
   // Calculer le décalage pour le mouvement horizontal
   const translateX = -(currentIndex * cardWidth);
@@ -209,20 +218,24 @@ export default function PartnersCarousel({
               duration: 0.6,
             }}
             style={{
-              width: isMobile
-                ? "100%"
-                : `${
-                    (extendedPartners.length * 100) / responsiveSlidesToShow
-                  }%`,
+              width:
+                isClient && isMobile
+                  ? "100%"
+                  : `${
+                      (extendedPartners.length * 100) / responsiveSlidesToShow
+                    }%`,
             }}
           >
             {extendedPartners.map((partner, index) => (
               <motion.div
                 key={`${partner.id}-${index}`}
                 className="flex-shrink-0 px-3"
-                style={{ width: `${cardWidth}%` }}
+                style={{
+                  width: `${cardWidth}%`,
+                  opacity: isClient ? 1 : 0, // Masquer pendant l'hydratation
+                }}
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                animate={{ opacity: isClient ? 1 : 0, y: 0, scale: 1 }}
                 transition={{ delay: (index % responsiveSlidesToShow) * 0.1 }}
                 onMouseEnter={() => setHoveredCard(partner.id)}
                 onMouseLeave={() => setHoveredCard(null)}

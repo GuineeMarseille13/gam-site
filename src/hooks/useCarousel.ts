@@ -7,11 +7,11 @@ interface UseCarouselProps {
   loop?: boolean;
 }
 
-export function useCarousel({ 
-  itemCount, 
-  autoPlay = false, 
+export function useCarousel({
+  itemCount,
+  autoPlay = false,
   interval = 5000,
-  loop = true 
+  loop = true
 }: UseCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
@@ -47,7 +47,7 @@ export function useCarousel({
 
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    
+
     if (isPlaying && itemCount > 1) {
       timerRef.current = setInterval(next, interval);
     }

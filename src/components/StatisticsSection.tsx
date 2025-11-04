@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useCountUp } from "@/hooks/useCountUp";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Statistic {
   label: string;
@@ -162,6 +163,7 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
 const StatisticsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
 
   // Données des statistiques - vous pouvez les modifier selon vos besoins
   const statistics: Statistic[] = [
@@ -269,9 +271,17 @@ const StatisticsSection = () => {
         </div>
 
         {/* Cartes statistiques avec largeur dynamique */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto">
+        <div
+          className={cn(
+            "flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5 max-w-6xl mx-auto",
+            isMobile && "flex-col"
+          )}
+        >
           {statistics.map((stat, index) => (
-            <div key={stat.label} className="min-w-0 flex-shrink-0">
+            <div
+              key={stat.label}
+              className={cn("min-w-0 flex-shrink-0", isMobile ? "w-full" : "")}
+            >
               <StatisticCard
                 statistic={stat}
                 isVisible={isVisible}

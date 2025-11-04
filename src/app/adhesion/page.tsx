@@ -1,4 +1,5 @@
 const Adhesion = () => {
+
   return <h1>Adhesion</h1>;
 };
 
