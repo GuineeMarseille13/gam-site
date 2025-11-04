@@ -180,7 +180,7 @@ const productsData = [
 
 export default function Home() {
   return (
-    <div className="font-sans min-h-screen relative overflow-hidden">
+    <div className="font-sans min-h-screen relative overflow-hidden space-y-12 md:space-y-16">
       {/* Animation d'éléments flottants */}
       <FloatingElementsAnimation
         elements={floatingElements}
@@ -202,7 +202,7 @@ export default function Home() {
         showArrows={false}
         enableSwipe={true}
         loop={true}
-        className="h-screen max-h-[85vh] shadow-2xl rounded-xl overflow-hidden"
+        className="shadow-2xl rounded-xl overflow-hidden"
       />
       <PresentationSection />
       <PoleSection />
@@ -216,7 +216,6 @@ export default function Home() {
         showArrows={true}
         enableSwipe={true}
         loop={true}
-        slidesToShow={3}
         title="Nos Partenaires de Confiance"
         className="bg-white"
       />
@@ -230,7 +229,6 @@ export default function Home() {
         showArrows={true}
         enableSwipe={true}
         loop={true}
-        slidesToShow={3}
         title="Nos Produits"
         className="bg-white"
       />

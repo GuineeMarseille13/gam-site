@@ -28,7 +28,6 @@ interface ProductsCarouselProps {
   showArrows?: boolean;
   enableSwipe?: boolean;
   loop?: boolean;
-  slidesToShow?: number;
   className?: string;
   title?: string;
   onAddToCart?: (product: Product) => void;
@@ -43,7 +42,6 @@ export default function ProductsCarousel({
   showArrows = true,
   enableSwipe = true,
   loop = true,
-  slidesToShow = 3,
   className = "",
   title = "Nos Produits",
   onAddToCart,
@@ -58,46 +56,44 @@ export default function ProductsCarousel({
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Gestion sécurisée des produits
   const safeProducts = products?.length > 0 ? products : [];
   const totalProducts = safeProducts.length;
 
-  // Responsive slidesToShow amélioré
-  const getResponsiveSlidesToShow = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 480) return 1; // Très petits écrans
-      if (window.innerWidth < 640) return 1; // Mobile
-      if (window.innerWidth < 768) return 1; // Petite tablette
-      if (window.innerWidth < 1024) return 2; // Tablette
-      if (window.innerWidth < 1280) return 3; // Desktop petit
-      return slidesToShow; // Desktop large
-    }
-    return slidesToShow;
-  };
-
-  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(
-    getResponsiveSlidesToShow
-  );
-
+  // Responsive slidesToShow basé sur la largeur du conteneur (fluide)
+  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(3);
   useEffect(() => {
-    const handleResize = () => {
-      setResponsiveSlidesToShow(getResponsiveSlidesToShow());
+    const el = containerRef.current;
+    if (!el) return;
+    const compute = (width: number) => {
+      // Cartes ~280px min, max 8 sur très grands écrans
+      const computed = Math.max(1, Math.min(8, Math.floor(width / 280)));
+      setResponsiveSlidesToShow(computed);
     };
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) compute(entry.contentRect.width);
+    });
+    ro.observe(el);
+    compute(el.clientWidth);
+    return () => ro.disconnect();
+  }, []);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [slidesToShow]);
+  // Utiliser des valeurs SSR-stables avant mount
+  const effectiveSlidesToShow = isMounted ? responsiveSlidesToShow : 3;
 
   // Calculer la largeur d'une card (en pourcentage) - ajusté pour mobile
-  const cardWidth = isMobile ? 100 : 40 / responsiveSlidesToShow;
+  const cardWidth = isMounted && isMobile ? 100 : 40 / effectiveSlidesToShow;
 
   // Calculer le décalage pour le mouvement horizontal
   const translateX = -(currentIndex * cardWidth);
 
   // Créer un tableau étendu pour la boucle infinie
   const extendedProducts = loop
-    ? [...safeProducts, ...safeProducts.slice(0, responsiveSlidesToShow)]
+    ? [...safeProducts, ...safeProducts.slice(0, effectiveSlidesToShow)]
     : safeProducts;
 
   const nextSlide = useCallback(() => {
@@ -246,7 +242,7 @@ export default function ProductsCarousel({
       </div>
 
       {/* Carousel Container */}
-      <div className="relative max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+      <div ref={containerRef} className="relative max-w-[100rem] mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
         {/* Cards Container */}
         <div
           className={`relative overflow-hidden ${isMobile ? "" : ""}`}
@@ -268,11 +264,10 @@ export default function ProductsCarousel({
               duration: isMobile ? 0.4 : 0.6,
             }}
             style={{
-              width: isMobile
-                ? "100%"
-                : `${
-                    (extendedProducts.length * 100) / responsiveSlidesToShow
-                  }%`,
+              width:
+                isMounted && isMobile
+                  ? "100%"
+                  : `${(extendedProducts.length * 100) / effectiveSlidesToShow}%`,
             }}
           >
             {extendedProducts.map((product, index) => (

@@ -142,7 +142,7 @@ export default function Carousel({
 
   return (
     <div
-      className={`relative w-full h-98 md:h-[500px] overflow-hidden rounded-xl bg-gray-900 group ${className}`}
+      className={`relative w-full max-w-7xl mx-auto h-[60vh] md:h-[70vh] lg:h-[75vh] overflow-hidden rounded-xl bg-gray-900 group ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -181,7 +181,7 @@ export default function Carousel({
             <Image
               src={currentItem.image}
               alt={currentItem.title || `Slide ${currentIndex + 1}`}
-              className="w-full h-full object-contain select-none"
+              className="w-full h-full object-cover select-none"
               width={1200}
               height={600}
               priority={currentIndex === 0}

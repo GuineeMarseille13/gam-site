@@ -46,7 +46,7 @@ export default function HeaderNavigation() {
       {/* Navigation Desktop - conditionnellement rendue */}
       {!isMobile && (
         <nav className="bg-gray-50 dark:bg-gray-900 py-4 bg-white/10 backdrop-blur-md">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <ul className="flex flex-wrap justify-center gap-2 md:gap-4">
               {!isHome && (
                 <motion.li
@@ -92,7 +92,7 @@ export default function HeaderNavigation() {
       {/* Indicateur de page mobile - conditionnellement rendu */}
       {isMobile && (
         <div className="bg-gray-50/50 dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}

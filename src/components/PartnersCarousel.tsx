@@ -2,8 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
-import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import { PartnerCard } from "@/components/partner-card";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Partner {
@@ -23,7 +22,6 @@ interface PartnersCarouselProps {
   showArrows?: boolean;
   enableSwipe?: boolean;
   loop?: boolean;
-  slidesToShow?: number;
   className?: string;
   title?: string;
 }
@@ -36,7 +34,6 @@ export default function PartnersCarousel({
   showArrows = true,
   enableSwipe = true,
   loop = true,
-  slidesToShow = 3,
   className = "",
   title = "Nos Partenaires",
 }: PartnersCarouselProps) {
@@ -48,44 +45,37 @@ export default function PartnersCarousel({
   const [isClient, setIsClient] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Gestion sécurisée des partenaires
   const safePartners = partners?.length > 0 ? partners : [];
   const totalPartners = safePartners.length;
 
-  // Responsive slidesToShow avec gestion de l'hydratation
-  const getResponsiveSlidesToShow = () => {
-    if (!isClient) return slidesToShow; // Valeur par défaut pendant l'hydratation
-
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1;
-      if (window.innerWidth < 1024) return 2;
-      return slidesToShow;
-    }
-    return slidesToShow;
-  };
-
-  const [responsiveSlidesToShow, setResponsiveSlidesToShow] =
-    useState(slidesToShow);
-
+  // Responsive slidesToShow basé sur la largeur du conteneur (fluide)
+  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(3);
   useEffect(() => {
     setIsClient(true);
-    setResponsiveSlidesToShow(getResponsiveSlidesToShow());
-  }, [slidesToShow]);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    const handleResize = () => {
-      setResponsiveSlidesToShow(getResponsiveSlidesToShow());
+    const el = containerRef.current;
+    if (!el) return;
+    const compute = (width: number) => {
+      // Cartes ~280px min, max 8 sur très grands écrans
+      const computed = Math.max(1, Math.min(8, Math.floor(width / 280)));
+      setResponsiveSlidesToShow(computed);
     };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [slidesToShow, isClient]);
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) compute(entry.contentRect.width);
+    });
+    ro.observe(el);
+    // Initial compute
+    compute(el.clientWidth);
+    return () => ro.disconnect();
+  }, [isClient]);
 
   // Calcul du nombre de slides disponibles (pour navigation par groupe)
-  const maxSlides = Math.max(0, totalPartners - responsiveSlidesToShow + 1);
+  const effectiveSlidesToShow = isMounted ? responsiveSlidesToShow : 3;
+  const maxSlides = Math.max(0, totalPartners - effectiveSlidesToShow + 1);
 
   const nextSlide = useCallback(() => {
     if (totalPartners === 0) return;
@@ -166,14 +156,14 @@ export default function PartnersCarousel({
   }
 
   // Calculer la largeur d'une card (en pourcentage) avec gestion de l'hydratation
-  const cardWidth = isClient && isMobile ? 100 : 40 / responsiveSlidesToShow;
+  const cardWidth = isMounted && isMobile ? 100 : 40 / effectiveSlidesToShow;
 
   // Calculer le décalage pour le mouvement horizontal
   const translateX = -(currentIndex * cardWidth);
 
   // Créer un tableau étendu pour la boucle infinie
   const extendedPartners = loop
-    ? [...safePartners, ...safePartners.slice(0, responsiveSlidesToShow)]
+    ? [...safePartners, ...safePartners.slice(0, effectiveSlidesToShow)]
     : safePartners;
 
   return (
@@ -199,7 +189,7 @@ export default function PartnersCarousel({
       </div>
 
       {/* Carousel Container */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={containerRef} className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Cards Container */}
         <div
           className="relative overflow-hidden"
@@ -219,11 +209,9 @@ export default function PartnersCarousel({
             }}
             style={{
               width:
-                isClient && isMobile
+                isMounted && isMobile
                   ? "100%"
-                  : `${
-                      (extendedPartners.length * 100) / responsiveSlidesToShow
-                    }%`,
+                  : `${(extendedPartners.length * 100) / effectiveSlidesToShow}%`,
             }}
           >
             {extendedPartners.map((partner, index) => (
@@ -240,46 +228,13 @@ export default function PartnersCarousel({
                 onMouseEnter={() => setHoveredCard(partner.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
-                <Card className="h-80 my-5 group hover:shadow-xl transition-all duration-500 bg-white border-gray-200 hover:border-theme-red/30 overflow-hidden">
-                  <CardContent className="p-0 h-full flex flex-col">
-                    {/* Logo Container */}
-                    <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:from-theme-red/5 group-hover:to-theme-yellow/5 transition-all duration-500 flex items-center justify-center p-6">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={partner.logo}
-                          alt={`Logo ${partner.name}`}
-                          fill
-                          className="object-contain transition-transform duration-500 group-hover:scale-110"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      </div>
-
-                      {/* Overlay avec effet de hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                      {/* Category Badge */}
-                      {partner.category && (
-                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          {partner.category}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 p-6 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-theme-red transition-colors duration-300">
-                          {partner.name}
-                        </h3>
-                        {partner.description && (
-                          <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                            {partner.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PartnerCard
+                  id={partner.id}
+                  name={partner.name}
+                  logo={partner.logo}
+                  description={partner.description}
+                  website={partner.website}
+                />
               </motion.div>
             ))}
           </motion.div>
