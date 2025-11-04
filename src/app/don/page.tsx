@@ -1,5 +1,14 @@
-const Don = () => {
-  return <h1>Don</h1>;
+import DonView from "./_components/don-view";
+
+export const metadata = {
+  title: "Faire un don",
+  description: "Faites un don à notre association et soutenez nos actions pour la communauté.",
 };
 
-export default Don;
+export default async function DonPage() {
+  return (
+    <section className="py-6">
+      <DonView />
+    </section>
+  );
+}

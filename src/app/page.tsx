@@ -180,7 +180,7 @@ const productsData = [
 
 export default function Home() {
   return (
-    <div className="font-sans min-h-screen relative overflow-hidden space-y-12 md:space-y-16">
+    <div className="font-sans min-h-screen relative space-y-12 md:space-y-16">
       {/* Animation d'éléments flottants */}
       <FloatingElementsAnimation
         elements={floatingElements}
@@ -194,44 +194,50 @@ export default function Home() {
         enableParticles={false}
       />
 
-      <Carousel
-        items={carouselItems}
-        autoPlay={true}
-        interval={5000}
-        showDots={true}
-        showArrows={false}
-        enableSwipe={true}
-        loop={true}
-        className="shadow-2xl rounded-xl overflow-hidden"
-      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Carousel
+          items={carouselItems}
+          autoPlay={true}
+          interval={5000}
+          showDots={true}
+          showArrows={false}
+          enableSwipe={true}
+          loop={true}
+          className="shadow-2xl rounded-xl overflow-hidden"
+        />
+      </div>
       <PresentationSection />
       <PoleSection />
 
       {/* Nouveau carousel des partenaires */}
-      <PartnersCarousel
-        partners={partnersData}
-        autoPlay={true}
-        interval={5000}
-        showDots={true}
-        showArrows={true}
-        enableSwipe={true}
-        loop={true}
-        title="Nos Partenaires de Confiance"
-        className="bg-white"
-      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PartnersCarousel
+          partners={partnersData}
+          autoPlay={true}
+          interval={5000}
+          showDots={true}
+          showArrows={true}
+          enableSwipe={true}
+          loop={true}
+          title="Nos Partenaires de Confiance"
+          className="bg-white"
+        />
+      </div>
 
       <ReviewsSection />
-      <ProductsCarousel
-        products={productsData}
-        autoPlay={true}
-        interval={5000}
-        showDots={true}
-        showArrows={true}
-        enableSwipe={true}
-        loop={true}
-        title="Nos Produits"
-        className="bg-white"
-      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ProductsCarousel
+          products={productsData}
+          autoPlay={true}
+          interval={5000}
+          showDots={true}
+          showArrows={true}
+          enableSwipe={true}
+          loop={true}
+          title="Nos Produits"
+          className="bg-white"
+        />
+      </div>
       <StatisticsSection />
       <VolunteersSection />
       <GAMSlogan />

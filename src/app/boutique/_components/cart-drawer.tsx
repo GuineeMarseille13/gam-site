@@ -82,26 +82,28 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
             role="dialog"
             aria-label="Panier"
           >
-            <div className="sticky top-0 z-10 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b shadow-sm">
-              <div className="flex items-center justify-between p-4">
+            <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-gray-200/60 shadow-sm">
+              <div className="flex items-center justify-between p-5">
                 <div className="flex items-center gap-3 min-w-0">
                   {step !== "cart" ? (
-                    <button
+                    <motion.button
                       aria-label="Retour au panier"
-                      className="rounded-md p-2 hover:bg-gray-100 cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="rounded-xl p-2 hover:bg-gray-100 cursor-pointer transition-colors"
                       onClick={() => setStep("cart")}
                     >
                       <ArrowLeft className="w-5 h-5" />
-                    </button>
+                    </motion.button>
                   ) : (
                     <ShoppingCart className="w-5 h-5 text-gray-900" aria-hidden />
                   )}
                   <div className="min-w-0">
-                    <h3 className="text-lg font-semibold text-gray-900 truncate leading-6">
+                    <h3 className="text-lg font-bold text-gray-900 truncate leading-6">
                       {step === "cart" ? "Votre panier" : step === "checkout" ? "Validation" : "Merci !"}
                     </h3>
                     {step !== "done" && (
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-gray-600 mt-0.5">
                         {totalQty} article{totalQty > 1 ? "s" : ""} · {formattedTotal}
                       </p>
                     )}
@@ -114,21 +116,35 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                       <span>Paiement simulé</span>
                     </div>
                   )}
-                  <button
+                  <motion.button
                     aria-label="Fermer le panier"
                     onClick={onClose}
-                    className="rounded-md p-2 hover:bg-gray-100 cursor-pointer transition-transform active:scale-95"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="rounded-xl p-2 hover:bg-gray-100 cursor-pointer transition-colors"
                   >
                     <X className="w-5 h-5" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-              <div className="px-4 pb-3 flex items-center gap-2 text-xs">
-                <span className={`px-2.5 py-1 rounded-full ring-1 ${step === "cart" ? "bg-gray-900 text-white ring-gray-900/10" : "bg-gray-100 text-gray-700 ring-gray-200"}`}>Panier</span>
+              <div className="px-5 pb-4 flex items-center gap-2 text-xs">
+                <span className={`px-3 py-1.5 rounded-full font-semibold transition-all ${
+                  step === "cart" 
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-200/50" 
+                    : "bg-gray-100 text-gray-600"
+                }`}>Panier</span>
                 <span className="text-gray-300">→</span>
-                <span className={`px-2.5 py-1 rounded-full ring-1 ${step === "checkout" ? "bg-gray-900 text-white ring-gray-900/10" : "bg-gray-100 text-gray-700 ring-gray-200"}`}>Validation</span>
+                <span className={`px-3 py-1.5 rounded-full font-semibold transition-all ${
+                  step === "checkout" 
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-200/50" 
+                    : "bg-gray-100 text-gray-600"
+                }`}>Validation</span>
                 <span className="text-gray-300">→</span>
-                <span className={`px-2.5 py-1 rounded-full ring-1 ${step === "done" ? "bg-gray-900 text-white ring-gray-900/10" : "bg-gray-100 text-gray-700 ring-gray-200"}`}>Merci</span>
+                <span className={`px-3 py-1.5 rounded-full font-semibold transition-all ${
+                  step === "done" 
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-200/50" 
+                    : "bg-gray-100 text-gray-600"
+                }`}>Merci</span>
               </div>
             </div>
 
@@ -148,12 +164,12 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                         <h4 className="mt-4 text-base font-semibold text-gray-900">Votre panier est vide</h4>
                         <p className="mt-1 text-sm text-gray-600">Ajoutez des articles depuis la boutique pour commencer.</p>
                         <div className="mt-4">
-                          <button
-                            onClick={onClose}
-                            className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-gray-900 text-white text-sm font-medium hover:opacity-95 cursor-pointer"
-                          >
-                            Continuer mes achats
-                          </button>
+                        <button
+                          onClick={onClose}
+                          className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-white text-sm font-semibold hover:shadow-lg cursor-pointer transition-all"
+                        >
+                          Continuer mes achats
+                        </button>
                         </div>
                       </div>
                     </div>
@@ -219,15 +235,17 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     <span className="text-lg font-semibold text-gray-900">{formattedTotal}</span>
                   </div>
                   <div className="flex justify-center">
-                    <button
+                    <motion.button
                       onClick={() => setStep("checkout")}
                       disabled={items.length === 0}
                       title="Valider le panier"
-                      className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 text-white font-semibold shadow-lg hover:shadow-xl hover:from-red-600 hover:to-amber-500 active:scale-95 transition-all ring-1 ring-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto cursor-pointer"
+                      whileHover={items.length > 0 ? { scale: 1.02 } : {}}
+                      whileTap={items.length > 0 ? { scale: 0.98 } : {}}
+                      className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 text-white font-bold shadow-lg hover:shadow-xl hover:from-red-600 hover:to-amber-500 transition-all ring-1 ring-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto cursor-pointer"
                     >
                       <ShoppingCart className="w-4 h-4" />
                       <span>Valider le panier</span>
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
@@ -235,11 +253,11 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
 
             {step === "checkout" && (
               <form onSubmit={handleCheckoutSubmit} className="flex-1 flex flex-col">
-                <div className="flex-1 overflow-auto p-4 space-y-4">
+                <div className="flex-1 overflow-auto p-5 space-y-4">
                   <div>
-                    <label className="text-sm font-medium">Prénom</label>
+                    <label className="text-sm font-semibold text-gray-900">Prénom</label>
                     <input
-                      className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white"
                       value={form.firstName}
                       onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                       required
@@ -247,9 +265,9 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     {errors.firstName && <p className="text-xs text-red-600 mt-1">{errors.firstName}</p>}
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Nom</label>
+                    <label className="text-sm font-semibold text-gray-900">Nom</label>
                     <input
-                      className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white"
                       value={form.lastName}
                       onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                       required
@@ -257,18 +275,18 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     {errors.lastName && <p className="text-xs text-red-600 mt-1">{errors.lastName}</p>}
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Téléphone (optionnel)</label>
+                    <label className="text-sm font-semibold text-gray-900">Téléphone (optionnel)</label>
                     <input
-                      className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white"
                       value={form.phone ?? ""}
                       onChange={(e) => setForm({ ...form, phone: e.target.value || undefined })}
                       inputMode="tel"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Email (optionnel)</label>
+                    <label className="text-sm font-semibold text-gray-900">Email (optionnel)</label>
                     <input
-                      className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white"
                       value={form.email ?? ""}
                       onChange={(e) => setForm({ ...form, email: e.target.value || undefined })}
                       type="email"
@@ -276,16 +294,30 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     />
                     {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
                   </div>
-                  <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3 text-xs text-yellow-900">
+                  <div className="rounded-xl bg-yellow-50 border-2 border-yellow-200 p-4 text-xs text-yellow-900">
                     Paiement simulé: les informations sont collectées pour finaliser le panier, aucun enregistrement serveur.
                   </div>
                 </div>
-                <div className="border-t p-4 flex gap-2">
-                  <button type="button" onClick={() => setStep("cart")} className="flex-1 rounded-md border px-3 py-2 text-sm cursor-pointer">Retour</button>
-                  <button type="submit" title="Procéder au paiement" className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 bg-gradient-to-r from-theme-red to-theme-yellow text-white font-semibold shadow-sm hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-theme-yellow cursor-pointer">
+                <div className="border-t p-5 flex gap-3">
+                  <motion.button 
+                    type="button" 
+                    onClick={() => setStep("cart")}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm font-semibold hover:bg-gray-50 cursor-pointer transition-all"
+                  >
+                    Retour
+                  </motion.button>
+                  <motion.button 
+                    type="submit" 
+                    title="Procéder au paiement"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300"
+                  >
                     <CreditCard className="w-4 h-4" />
                     <span>Payer {formattedTotal}</span>
-                  </button>
+                  </motion.button>
                 </div>
               </form>
             )}

@@ -63,38 +63,33 @@ export function BoutiqueView() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero */}
-      <div className="relative text-center mb-10">
-        {/* subtle halo */}
-        <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-          <div className="h-24 w-72 md:w-96 rounded-full bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 blur-2xl opacity-60" />
-        </div>
+      <div className="text-center mb-10 sm:mb-12">
         <motion.h1
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent drop-shadow-sm"
+          className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3 sm:mb-4"
         >
           Boutique de l'association
         </motion.h1>
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="mt-3 text-gray-600 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="mt-2 sm:mt-3 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4"
         >
           Soutenez nos actions en vous faisant plaisir.
         </motion.p>
-        {/* divider */}
         <motion.div
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="mx-auto mt-4 h-1 w-24 rounded-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="mt-6 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full"
         />
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {catalog.map((p) => (
           <ProductCard key={p.id} product={p} onAdd={(prod) => add({ product: prod, quantity: 1 })} />)
         )}
