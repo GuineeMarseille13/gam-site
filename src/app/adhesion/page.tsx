@@ -1,6 +1,14 @@
-const Adhesion = () => {
+import AdhesionView from "./_components/adhesion-view";
 
-  return <h1>Adhesion</h1>;
+export const metadata = {
+  title: "Adhésion",
+  description: "Adhérez à notre association (10€ / personne) et soutenez nos actions.",
 };
 
-export default Adhesion;
+export default async function AdhesionPage() {
+  return (
+    <section className="py-6">
+      <AdhesionView />
+    </section>
+  );
+}
