@@ -303,7 +303,7 @@ export default function VolunteersSection() {
   return (
     <section
       ref={sectionRef}
-      className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden"
+      className="px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden"
     >
       {/* Fond avec pattern subtil amélioré */}
       <div className="absolute inset-0 opacity-[0.03]">
