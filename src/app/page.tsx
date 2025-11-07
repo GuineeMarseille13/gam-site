@@ -10,6 +10,7 @@ import StatisticsSection from "@/components/StatisticsSection";
 import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
+import EventsSection from "@/components/EventsSection";
 import { ProductCard } from "@/app/boutique/_components/product-card";
 import { getCatalog } from "@/app/boutique/_services/products";
 import { useCart } from "@/app/boutique/_hooks/use-cart";
@@ -488,6 +489,9 @@ export default function Home() {
           className="bg-white"
         />
       </div>
+
+      {/* Section Nos Événements */}
+      <EventsSection />
 
       <ReviewsSection />
 
