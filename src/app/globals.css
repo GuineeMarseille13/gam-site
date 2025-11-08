@@ -605,3 +605,13 @@
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
+
+/* Masquer la scrollbar tout en gardant le scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE et Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari et Opera */
+}
