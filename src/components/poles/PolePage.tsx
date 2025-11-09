@@ -410,6 +410,157 @@ export default function PolePage({ pole }: PolePageProps) {
           />
         )}
 
+        {/* Statistics Section - Section statistique moderne et élégante */}
+        {pole.statistics && pole.statistics.items.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{
+              duration: 0.8,
+              delay: 0.05,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="mb-20 md:mb-28"
+          >
+            <div className="text-center mb-12 md:mb-16">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent"
+              >
+                Statistiques
+              </motion.h2>
+              {pole.statistics.title && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="text-lg md:text-xl text-gray-600 mb-6 font-medium"
+                >
+                  {pole.statistics.title}
+                </motion.p>
+              )}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              {pole.statistics.items.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative p-5 md:p-6 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-gray-200/50 hover:border-transparent transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl"
+                  style={{
+                    boxShadow:
+                      "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.9), inset 0 1px 0 rgba(255,255,255,1)",
+                  }}
+                >
+                  {/* Effet de brillance au hover */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "200%" }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    style={{ width: "50%" }}
+                  />
+
+                  {/* Gradient animé en arrière-plan avec effet subtil */}
+                  <motion.div
+                    className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-8 rounded-2xl transition-opacity duration-700 pointer-events-none`}
+                  />
+
+                  {/* Bordure lumineuse au hover */}
+                  <motion.div
+                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 pointer-events-none`}
+                  />
+
+                  <div className="relative z-10">
+                    {/* Valeur avec animation et effet de glow */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 0.8,
+                        delay: index * 0.08 + 0.2,
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 15,
+                      }}
+                      className="relative mb-4"
+                    >
+                      <motion.div
+                        className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${pole.colorScheme.primary} bg-clip-text text-transparent leading-none`}
+                        style={{
+                          textShadow: "0 0 40px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        {stat.value}
+                      </motion.div>
+                      {/* Glow animé autour de la valeur */}
+                      <motion.div
+                        className={`absolute -inset-3 bg-gradient-to-r ${pole.colorScheme.primary} rounded-2xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-700`}
+                        animate={{
+                          opacity: [0, 0.1, 0],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    </motion.div>
+
+                    {/* Label avec meilleure typographie */}
+                    <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 leading-tight group-hover:text-gray-950 transition-colors">
+                      {stat.label}
+                    </h3>
+
+                    {/* Description optionnelle avec style amélioré */}
+                    {stat.description && (
+                      <div className="pt-2 border-t border-gray-200/50">
+                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-medium">
+                          {stat.description}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Ombre flottante au hover avec effet multicouche */}
+                  <motion.div
+                    className="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{
+                      boxShadow:
+                        "0 24px 72px rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.1)",
+                    }}
+                  />
+
+                  {/* Particules décoratives */}
+                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+                  <div className="absolute bottom-6 right-8 w-1.5 h-1.5 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 opacity-15 group-hover:opacity-30 transition-opacity duration-500" />
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
         {/* Features - Layout amélioré avec meilleure hiérarchie */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
@@ -436,7 +587,7 @@ export default function PolePage({ pole }: PolePageProps) {
               className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-center items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-center items-stretch">
             {pole.features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -448,7 +599,7 @@ export default function PolePage({ pole }: PolePageProps) {
                   delay: index * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group relative p-6 md:p-8 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200/60 hover:border-transparent transition-all duration-500 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-3 overflow-hidden"
+                className="group relative p-6 md:p-8 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200/60 hover:border-transparent transition-all duration-500 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-3 overflow-hidden h-full flex flex-col"
               >
                 {/* Effet de brillance au hover */}
                 <motion.div
@@ -471,8 +622,8 @@ export default function PolePage({ pole }: PolePageProps) {
                       "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
                   }}
                 />
-                <div className="relative z-10">
-                  <div className="flex items-start gap-5">
+                <div className="relative z-10 flex-1 flex flex-col">
+                  <div className="flex items-start gap-5 flex-1">
                     <motion.div
                       whileHover={{ scale: 1.15, rotate: 10 }}
                       transition={{
@@ -495,7 +646,7 @@ export default function PolePage({ pole }: PolePageProps) {
                       />
                       <span className="relative z-10">{index + 1}</span>
                     </motion.div>
-                    <p className="text-gray-700 font-medium leading-relaxed pt-1 text-base md:text-lg group-hover:text-gray-900 transition-colors">
+                    <p className="text-gray-700 font-medium leading-relaxed pt-1 text-base md:text-lg group-hover:text-gray-900 transition-colors flex-1">
                       {feature}
                     </p>
                   </div>
@@ -602,207 +753,6 @@ export default function PolePage({ pole }: PolePageProps) {
             ))}
           </div>
         </motion.section>
-
-        {/* Contact Info - Design amélioré et mieux intégré */}
-        {pole.contactInfo && (
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-20 md:mb-28"
-          >
-            <motion.div
-              whileHover={{ scale: 1.01 }}
-              transition={{ duration: 0.3 }}
-              className={`relative p-10 md:p-16 lg:p-20 rounded-3xl bg-gradient-to-br ${pole.colorScheme.primary} text-white overflow-hidden shadow-2xl`}
-              style={{
-                boxShadow: `0 25px 80px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2)`,
-              }}
-            >
-              {/* Effet de brillance animé continu */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                animate={{ x: ["-100%", "200%"] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 1,
-                  ease: "easeInOut",
-                }}
-                style={{ width: "50%" }}
-              />
-
-              {/* Particules flottantes animées */}
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 bg-white/30 rounded-full"
-                  animate={{
-                    y: [0, -30, 0],
-                    x: [0, Math.random() * 20 - 10, 0],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{
-                    duration: 3 + i,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.5,
-                  }}
-                  style={{
-                    left: `${20 + i * 15}%`,
-                    top: `${30 + i * 10}%`,
-                  }}
-                />
-              ))}
-
-              <div className="relative z-10">
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className="text-4xl md:text-5xl font-extrabold mb-10 md:mb-12"
-                >
-                  Contactez-nous
-                </motion.h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-                  {pole.contactInfo.email && (
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.1 }}
-                      className="flex items-start gap-5 p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
-                    >
-                      <div
-                        className={`p-3 rounded-xl bg-white/20 backdrop-blur-sm flex-shrink-0`}
-                      >
-                        <Mail className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="font-semibold mb-2 text-lg">Email</p>
-                        <a
-                          href={`mailto:${pole.contactInfo.email}`}
-                          className="text-white/90 hover:text-white underline transition-colors text-base md:text-lg"
-                        >
-                          {pole.contactInfo.email}
-                        </a>
-                      </div>
-                    </motion.div>
-                  )}
-                  {pole.contactInfo.phone && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.2 }}
-                      className="flex items-start gap-5 p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
-                    >
-                      <div
-                        className={`p-3 rounded-xl bg-white/20 backdrop-blur-sm flex-shrink-0`}
-                      >
-                        <Phone className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="font-semibold mb-2 text-lg">Téléphone</p>
-                        <a
-                          href={`tel:${pole.contactInfo.phone}`}
-                          className="text-white/90 hover:text-white underline transition-colors text-base md:text-lg"
-                        >
-                          {pole.contactInfo.phone}
-                        </a>
-                      </div>
-                    </motion.div>
-                  )}
-                  {pole.contactInfo.schedule && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="flex items-start gap-5 p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 md:col-span-2"
-                    >
-                      <div
-                        className={`p-3 rounded-xl bg-white/20 backdrop-blur-sm flex-shrink-0`}
-                      >
-                        <Clock className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="font-semibold mb-2 text-lg">Horaires</p>
-                        <p className="text-white/90 text-base md:text-lg">
-                          {pole.contactInfo.schedule}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </motion.section>
-        )}
-
-        {/* CTA Section - Design ultra-moderne avec effets avancés */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center pb-16 md:pb-20"
-        >
-          <Link href="/contacts" className="group relative inline-block">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className={`relative px-10 py-5 rounded-full font-semibold text-white bg-gradient-to-r ${pole.colorScheme.primary} text-lg md:text-xl overflow-hidden`}
-              style={{
-                boxShadow:
-                  "0 10px 40px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)",
-              }}
-            >
-              {/* Effet de brillance animé */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                animate={{ x: ["-100%", "200%"] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatDelay: 1,
-                  ease: "easeInOut",
-                }}
-                style={{ width: "50%" }}
-              />
-
-              {/* Glow animé */}
-              <motion.div
-                className={`absolute -inset-1 bg-gradient-to-r ${pole.colorScheme.primary} rounded-full blur-xl opacity-50`}
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-
-              <span className="relative z-10 flex items-center gap-3">
-                <span>Nous contacter</span>
-                <motion.div
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <ArrowLeft className="w-5 h-5 rotate-180" />
-                </motion.div>
-              </span>
-            </motion.button>
-          </Link>
-        </motion.div>
       </div>
     </div>
   );
