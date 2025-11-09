@@ -60,8 +60,8 @@ export default function PartnersCarousel({
     const el = containerRef.current;
     if (!el) return;
     const compute = (width: number) => {
-      // Cartes ~280px min, max 8 sur très grands écrans
-      const computed = Math.max(1, Math.min(8, Math.floor(width / 280)));
+      // Cartes ~300px min, max 8 sur très grands écrans
+      const computed = Math.max(1, Math.min(8, Math.floor(width / 300)));
       setResponsiveSlidesToShow(computed);
     };
     const ro = new ResizeObserver((entries) => {
@@ -146,9 +146,9 @@ export default function PartnersCarousel({
   // Protection si pas de partenaires
   if (totalPartners === 0) {
     return (
-      <div className={`relative w-full py-16 ${className}`}>
+      <div className={`relative w-full py-10 md:py-12 ${className}`}>
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-8">{title}</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-6">{title}</h2>
           <p className="text-muted-foreground">Aucun partenaire à afficher</p>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function PartnersCarousel({
   }
 
   // Calculer la largeur d'une card (en pourcentage) avec gestion de l'hydratation
-  const cardWidth = isMounted && isMobile ? 100 : 40 / effectiveSlidesToShow;
+  const cardWidth = isMounted && isMobile ? 100 : 30 / effectiveSlidesToShow;
 
   // Calculer le décalage pour le mouvement horizontal
   const translateX = -(currentIndex * cardWidth);
@@ -167,97 +167,138 @@ export default function PartnersCarousel({
     : safePartners;
 
   return (
-    <div
-      className={`relative w-full py-6 bg-white/50 backdrop-blur-lg border border-gray-200 ${className}`}
+    <section
+      className={`relative w-full py-10 sm:py-12 md:py-14 bg-gradient-to-b from-white via-gray-50/50 to-white overflow-x-hidden ${className}`}
     >
-      {/* Titre de la section */}
-      <div className="text-center mb-5">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-xl md:text-3xl font-bold bg-gradient-to-r from-theme-red via-theme-yellow to-theme-green bg-clip-text text-transparent mb-4"
-        >
-          {title}
-        </motion.h2>
+      {/* Effet de fond décoratif */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* En-tête de section amélioré */}
         <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-24 h-1 bg-gradient-to-r from-theme-red to-theme-green mx-auto rounded-full"
-        />
-      </div>
-
-      {/* Carousel Container */}
-      <div ref={containerRef} className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Cards Container */}
-        <div
-          className="relative overflow-hidden"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-6 sm:mb-8"
         >
-          <motion.div
-            className="flex"
-            animate={{
-              x: `${translateX}%`,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              duration: 0.6,
-            }}
-            style={{
-              width:
-                isMounted && isMobile
-                  ? "100%"
-                  : `${(extendedPartners.length * 100) / effectiveSlidesToShow}%`,
-            }}
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4"
           >
-            {extendedPartners.map((partner, index) => (
-              <motion.div
-                key={`${partner.id}-${index}`}
-                className="flex-shrink-0 px-3"
-                style={{
-                  width: `${cardWidth}%`,
-                  opacity: isClient ? 1 : 0, // Masquer pendant l'hydratation
-                }}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: isClient ? 1 : 0, y: 0, scale: 1 }}
-                transition={{ delay: (index % responsiveSlidesToShow) * 0.1 }}
-                onMouseEnter={() => setHoveredCard(partner.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <PartnerCard
-                  id={partner.id}
-                  name={partner.name}
-                  logo={partner.logo}
-                  description={partner.description}
-                  website={partner.website}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+            {title}
+          </motion.h2>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full mb-4"
+          />
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto px-4"
+          >
+            Nous collaborons avec des partenaires de confiance qui partagent nos valeurs
+            et notre engagement en faveur de la communauté guinéenne à Marseille.
+            Ensemble, nous œuvrons pour l&apos;intégration, le développement et
+            l&apos;épanouissement de tous.
+          </motion.p>
+        </motion.div>
 
-        {/* Dots Indicator */}
-        {showDots && totalPartners > 1 && (
-          <div className="flex justify-center mt-8 space-x-2">
-            {safePartners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentIndex % totalPartners
-                    ? "w-12 h-3 bg-gradient-to-r from-theme-red to-theme-yellow"
-                    : "w-3 h-3 bg-gray-300 hover:bg-gray-400 hover:cursor-pointer"
-                }`}
-                aria-label={`Aller au partenaire ${index + 1}`}
-              />
-            ))}
+        {/* Carousel Container */}
+        <div
+          ref={containerRef}
+          className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8"
+        >
+          {/* Cards Container avec espace pour le hover */}
+          <div
+            className="relative overflow-visible py-6 sm:py-8 md:py-10"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <motion.div
+              className="flex gap-5 sm:gap-6 md:gap-8 lg:gap-10"
+              animate={{
+                x: `${translateX}%`,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.6,
+              }}
+              style={{
+                width:
+                  isMounted && isMobile
+                    ? "100%"
+                    : `${
+                        (extendedPartners.length * 100) / effectiveSlidesToShow
+                      }%`,
+              }}
+            >
+              {extendedPartners.map((partner, index) => (
+                <motion.div
+                  key={`${partner.id}-${index}`}
+                  className="flex-shrink-0"
+                  style={{
+                    width: `${cardWidth}%`,
+                    opacity: isClient ? 1 : 0, // Masquer pendant l'hydratation
+                  }}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: isClient ? 1 : 0, y: 0, scale: 1 }}
+                  transition={{ delay: (index % responsiveSlidesToShow) * 0.1 }}
+                  onMouseEnter={() => setHoveredCard(partner.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  <PartnerCard
+                    id={partner.id}
+                    name={partner.name}
+                    logo={partner.logo}
+                    description={partner.description}
+                    website={partner.website}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        )}
+
+          {/* Dots Indicator amélioré */}
+          {/* {showDots && totalPartners > 1 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="flex justify-center items-center mt-10 sm:mt-12 gap-2 sm:gap-3"
+            >
+              {safePartners.map((_, index) => {
+                const isActive = index === currentIndex % totalPartners;
+                return (
+                  <motion.button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`relative transition-all duration-300 rounded-full ${
+                      isActive
+                        ? "w-12 h-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-lg shadow-blue-200/50"
+                        : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
+                    }`}
+                    aria-label={`Aller au partenaire ${index + 1}`}
+                  />
+                );
+              })}
+            </motion.div>
+          )} */}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

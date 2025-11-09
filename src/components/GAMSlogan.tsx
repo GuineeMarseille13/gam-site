@@ -2,13 +2,13 @@ import { GooeyText } from "./ui/gooey-text-morphing";
 
 const GAMSlogan = () => {
   return (
-    <div className="bg-gradient-to-br from-gray-50 via-gray-100/80 to-stone-100 backdrop-blur-sm text-gray-800 py-10 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-gray-50 via-gray-100/80 to-stone-100 backdrop-blur-sm text-gray-800 py-8 md:py-10 relative overflow-hidden">
       {/* Overlay subtil pour la profondeur */}
       <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-black/30"></div>
       {/* Effet de texture moderne */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,120,120,0.03)_0%,transparent_50%)]"></div>
       <div className="container mx-auto px-4 text-center relative z-10">
-        <div className="mb-10">
+        <div className="mb-6 md:mb-8">
           <GooeyText
             texts={["Ensemble", "Unis", "Solidaires", "Forts"]}
             morphTime={1}
@@ -17,7 +17,7 @@ const GAMSlogan = () => {
             textClassName="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-lg"
           />
         </div>
-        <p className="text-gray-600/90 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-8 w-full">
+        <p className="text-gray-600/90 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-6 md:mb-8 w-full">
           Rejoignez notre communauté et participez à la construction d&apos;un
           avenir meilleur
         </p>

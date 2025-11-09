@@ -239,14 +239,14 @@ const StatisticsSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="py-16 px-4 bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden"
+      className="py-10 md:py-12 px-4 bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden"
     >
       {/* Background décoratif */}
       <div className="absolute inset-0 bg-gradient-theme-overlay opacity-30" />
 
       <div className="container mx-auto relative">
         {/* Titre de section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <h2
             className={cn(
               "text-4xl md:text-5xl font-bold mb-4 transition-all duration-1000",

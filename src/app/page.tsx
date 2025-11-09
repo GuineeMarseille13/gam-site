@@ -461,7 +461,7 @@ export default function Home() {
   } = useInfiniteCarousel(catalog);
 
   return (
-    <div className="font-sans min-h-screen relative space-y-12 md:space-y-16">
+    <div className="font-sans min-h-screen relative space-y-8 md:space-y-10">
       {/* Animation d'éléments flottants */}
       <FloatingElementsAnimation
         elements={floatingElements}
@@ -497,15 +497,15 @@ export default function Home() {
 
       {/* Section Produits - carrousel + description */}
       <section className="w-full">
-        <div className="text-center sm:mb-10">
+        <div className="text-center sm:mb-6">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
             Nos Produits
           </h2>
           <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
           <p className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4">
-            Découvrez notre sélection d’articles pour soutenir l’association
-            tout en vous faisant plaisir. Chaque achat contribue directement à
-            nos actions locales et solidaires.
+            Découvrez notre sélection d&apos;articles pour soutenir
+            l&apos;association tout en vous faisant plaisir. Chaque achat
+            contribue directement à nos actions locales et solidaires.
           </p>
         </div>
 
@@ -524,7 +524,7 @@ export default function Home() {
           </button> */}
           <div
             ref={scrollRef}
-            className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {duplicatedCatalog.map((p, index) => (
               <div
@@ -548,7 +548,7 @@ export default function Home() {
         </div>
       </section>
       <StatisticsSection />
-      <div className="-my-12 md:-my-16">
+      <div className="-my-8 md:-my-10">
         <VolunteersSection />
       </div>
       <GAMSlogan />

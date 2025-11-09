@@ -26,7 +26,7 @@ const PoleSection = () => {
   ];
 
   return (
-    <section className="w-full py-5 sm:py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
+    <section className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* En-tête de section */}
         <motion.div
@@ -34,7 +34,7 @@ const PoleSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5 }}
-          className="text-center sm:mb-12 md:mb-16"
+          className="text-center sm:mb-8 md:mb-10"
         >
           <motion.h2
             initial={{ opacity: 0, y: 10 }}

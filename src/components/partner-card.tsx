@@ -31,7 +31,7 @@ export function PartnerCard({
   logo,
   description,
   website,
-  accentGradientClassName = "from-theme-red via-theme-yellow to-theme-green",
+  accentGradientClassName = "from-blue-500 via-indigo-500 to-purple-500",
 }: PartnerCardProps) {
   const hasWebsite = typeof website === "string" && website.length > 0;
 
@@ -39,27 +39,49 @@ export function PartnerCard({
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="group"
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="group relative"
     >
+      {/* Ombres flottantes en couches */}
+      <motion.div
+        className="absolute -inset-2 rounded-2xl opacity-100 pointer-events-none"
+        style={{
+          background: "transparent",
+          boxShadow: `
+            0 20px 25px -5px rgba(0, 0, 0, 0.08),
+            0 10px 10px -5px rgba(0, 0, 0, 0.06),
+            0 0 40px rgba(0, 0, 0, 0.05),
+            0 0 60px rgba(0, 0, 0, 0.04)
+          `,
+        }}
+      />
+
       <Card
-        className="relative h-80 overflow-hidden border-gray-200 bg-white shadow-sm transition-all duration-500 hover:shadow-lg"
+        className="relative h-[360px] sm:h-[380px] md:h-[400px] overflow-hidden border border-gray-200/60 bg-gradient-to-br from-white via-gray-50/80 to-white backdrop-blur-sm transition-all duration-500"
+        style={{
+          boxShadow: `
+            0 4px 6px -1px rgba(0, 0, 0, 0.05),
+            0 10px 15px -3px rgba(0, 0, 0, 0.08),
+            0 20px 25px -5px rgba(0, 0, 0, 0.06)
+          `,
+        }}
         aria-labelledby={`partner-${id}-title`}
       >
-        {/* Accent diagonal */}
-        <div className={`absolute -top-24 -right-24 h-64 w-64 rotate-45 bg-gradient-to-r ${accentGradientClassName} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
+        {/* Accent diagonal amélioré */}
+        <div
+          className={`absolute -top-24 -right-24 h-64 w-64 rotate-45 bg-gradient-to-r ${accentGradientClassName} opacity-5 group-hover:opacity-10 transition-opacity duration-500`}
+        />
+
+        {/* Effet de brillance au survol */}
+        <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
         <CardContent className="p-0 h-full flex flex-col">
-          {/* Zone logo */}
-          <div className="relative h-44 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-              <div className={`h-1 w-24 bg-gradient-to-r ${accentGradientClassName} rounded-full absolute left-1/2 -translate-x-1/2 bottom-0`} />
-            </div>
-
+          {/* Zone logo améliorée */}
+          <div className="relative h-48 sm:h-52 md:h-56 flex items-center justify-center bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80">
             <motion.div
               className="relative w-full h-full p-6"
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
             >
               <Image
@@ -76,8 +98,7 @@ export function PartnerCard({
           {/* Contenu */}
           <div className="flex-1 p-5 flex flex-col gap-3">
             <h3
-              id={`partner-${id}-title`
-              }
+              id={`partner-${id}-title`}
               className="text-lg font-semibold text-gray-900 tracking-tight"
             >
               {name}
@@ -88,21 +109,34 @@ export function PartnerCard({
               </p>
             )}
 
-            {/* CTA */}
+            {/* CTA amélioré */}
             <div className="mt-auto pt-2">
               {hasWebsite ? (
-                <a
+                <motion.a
                   href={website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group/btn inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-200/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-300/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   aria-label={`Visiter le site de ${name}`}
                 >
                   <span>Visiter le site</span>
-                  <span aria-hidden>↗</span>
-                </a>
+                  <motion.span
+                    aria-hidden
+                    className="inline-block"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    ↗
+                  </motion.span>
+                </motion.a>
               ) : (
-                <span className="inline-flex items-center rounded-md bg-gray-100 px-3 py-2 text-xs font-medium text-gray-500">
+                <span className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2.5 text-xs font-medium text-gray-500">
                   Site non disponible
                 </span>
               )}
@@ -121,5 +155,3 @@ export interface PartnerCardData {
   description?: string;
   website?: string;
 }
-
-

@@ -330,7 +330,7 @@ export default function VolunteersSection() {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-2 gap-20 items-center min-h-[85vh]">
+        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center min-h-[75vh]">
           {/* Partie gauche - Texte de remerciement amélioré */}
           <div
             className={cn(
@@ -370,7 +370,7 @@ export default function VolunteersSection() {
           <div
             ref={containerRef}
             className={cn(
-              "relative h-[700px] transition-all duration-1200 ease-out delay-500",
+              "relative h-[600px] md:h-[650px] transition-all duration-1200 ease-out delay-500",
               isVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-16"

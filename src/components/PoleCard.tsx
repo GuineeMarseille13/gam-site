@@ -51,7 +51,7 @@ export const PoleCard = ({
       >
         {/* Ombres multiples en couches pour effet de flottement */}
         <motion.div
-          className="absolute -inset-4 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
             background: "transparent",
             boxShadow: `

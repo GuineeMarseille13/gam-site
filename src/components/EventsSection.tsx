@@ -97,7 +97,7 @@ export default function EventsSection({
   return (
     <section
       ref={containerRef}
-      className={`relative w-full py-12 md:py-20 overflow-hidden ${className}`}
+      className={`relative w-full py-10 md:py-12 overflow-hidden ${className}`}
     >
       {/* Background avec gradient subtil */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-slate-50/50 to-white pointer-events-none" />
@@ -110,7 +110,7 @@ export default function EventsSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-8 md:mb-10"
         >
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -153,7 +153,7 @@ export default function EventsSection({
           )}
 
           {/* Liste des événements */}
-          <div className="space-y-8 md:space-y-12">
+          <div className="space-y-6 md:space-y-8">
             {recentEvents.map((event, index) => (
               <TimelineItem
                 key={event.id}
@@ -171,7 +171,7 @@ export default function EventsSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex justify-center mt-12 md:mt-16"
+          className="flex justify-center mt-8 md:mt-10"
         >
           <Link href={seeMoreLink} className="cursor-pointer">
             <motion.button
