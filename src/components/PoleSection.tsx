@@ -2,31 +2,11 @@
 
 import { motion } from "framer-motion";
 import { PoleCard } from "@/components/PoleCard";
+import { poles } from "@/data/poles";
 
 const PoleSection = () => {
-  const poles = [
-    {
-      image: "/images/e-pole.jpg",
-      title: "EVENEMENTIEL",
-      description:
-        "Organisation d'événements culturels, festifs et caritatifs pour rassembler la communauté.",
-    },
-    {
-      image: "/images/aa-pole.jpg",
-      title: "DEMARCHE ADMINISTRATIVE",
-      description:
-        "Accompagnement et assistance dans vos démarches administratives et vos formalités.",
-    },
-    {
-      image: "/images/mr-pole.jpg",
-      title: "MISE EN RELATION",
-      description:
-        "Facilitation des échanges et des connexions entre les membres de la communauté.",
-    },
-  ];
-
   return (
-    <section className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
+    <section id="poles" className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* En-tête de section */}
         <motion.div
@@ -68,10 +48,11 @@ const PoleSection = () => {
         <div className="flex flex-wrap gap-6 sm:gap-8 justify-center items-stretch">
           {poles.map((pole, index) => (
             <PoleCard
-              key={pole.title}
+              key={pole.slug}
               image={pole.image}
               title={pole.title}
-              description={pole.description}
+              description={pole.shortDescription}
+              slug={pole.slug}
               index={index}
             />
           ))}
