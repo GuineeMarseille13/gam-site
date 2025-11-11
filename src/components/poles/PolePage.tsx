@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Mail, Clock, Phone, MapPin } from "lucide-react";
+import { ArrowLeft, Mail, Clock, Phone, MapPin, ArrowRight } from "lucide-react";
 import { Pole } from "@/data/poles";
 import PermanenceCalendar from "./PermanenceCalendar";
 
@@ -142,18 +142,24 @@ export default function PolePage({ pole }: PolePageProps) {
         {/* Description détaillée - Section introductive avec design glassmorphism moderne */}
         <motion.section
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 1, 
+            delay: 0.6,
+            ease: [0.22, 1, 0.36, 1] 
+          }}
           className="relative -mt-10 md:-mt-18 mb-15 md:mb-20"
         >
           <div className="relative group">
             {/* Effet de glow animé et dynamique */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 1, 
+                delay: 0.7,
+                ease: "easeInOut" 
+              }}
               className={`absolute -inset-0 bg-gradient-to-r ${pole.colorScheme.primary} rounded-3xl opacity-10 blur-2xl group-hover:opacity-30 transition-opacity duration-700`}
               animate={{
                 opacity: [0.2, 0.25, 0.2],
@@ -163,9 +169,12 @@ export default function PolePage({ pole }: PolePageProps) {
             {/* Carte principale avec glassmorphism subtil */}
             <motion.div
               initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 1, 
+                delay: 0.8,
+                ease: [0.22, 1, 0.36, 1] 
+              }}
               className="relative bg-white/95 backdrop-blur-xl rounded-2xl p-8 md:p-12 lg:p-16 border border-gray-100/50 overflow-hidden"
             >
               {/* Pattern moderne avec animation subtile */}
@@ -203,13 +212,13 @@ export default function PolePage({ pole }: PolePageProps) {
                 {/* Badge "À propos" amélioré */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{
-                    duration: 0.6,
-                    delay: 0.2,
+                    duration: 0.8,
+                    delay: 1,
                     type: "spring",
                     stiffness: 200,
+                    damping: 15,
                   }}
                   className="inline-block mb-8"
                 >
@@ -254,20 +263,67 @@ export default function PolePage({ pole }: PolePageProps) {
                 {/* Texte descriptif avec meilleure typographie */}
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.8,
-                    delay: 0.3,
+                    duration: 1,
+                    delay: 1.2,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed font-light tracking-wide"
+                  className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed font-light tracking-wide mb-8"
                   style={{
                     textShadow: "0 1px 2px rgba(255, 255, 255, 0.8)",
                   }}
                 >
                   {pole.description}
                 </motion.p>
+
+                {/* CTA - Bouton pour contacter */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 1.4,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <Link
+                    href="/contacts"
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg transition-all duration-300 overflow-hidden"
+                  >
+                    {/* Fond avec gradient animé */}
+                    <motion.div
+                      className={`absolute inset-0 bg-gradient-to-r ${pole.colorScheme.primary} rounded-full`}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    
+                    {/* Effet de brillance au hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "200%" }}
+                      transition={{ duration: 0.6 }}
+                      style={{ width: "50%" }}
+                    />
+                    
+                    {/* Texte et icône */}
+                    <span className="relative z-10 text-white flex items-center gap-3">
+                      <span>Nous contacter</span>
+                      <motion.div
+                        whileHover={{ x: 4 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.div>
+                    </span>
+                    
+                    {/* Ombre portée */}
+                    <motion.div
+                      className="absolute -inset-1 bg-gradient-to-r from-gray-400 to-gray-600 rounded-full opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300 -z-10"
+                    />
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
           </div>
