@@ -4,6 +4,7 @@ import "./globals.css";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import FloatingActionButton from "@/components/FloatingActionButton";
 import Header from "@/components/Header";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <QueryProvider>
         <BackgroundLogo />
         <Header />
         <main className="p-4 pt-2 relative z-10">{children}</main>
         <FloatingActionButton />
+        </QueryProvider>
       </body>
     </html>
   );

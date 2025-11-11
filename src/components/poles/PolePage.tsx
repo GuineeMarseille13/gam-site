@@ -453,7 +453,7 @@ export default function PolePage({ pole }: PolePageProps) {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {pole.statistics.items.map((stat, index) => (
                 <motion.div
                   key={index}
@@ -466,7 +466,7 @@ export default function PolePage({ pole }: PolePageProps) {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative p-5 md:p-6 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-gray-200/50 hover:border-transparent transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl"
+                  className="group relative p-7 md:p-9 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-gray-200/50 hover:border-transparent transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl"
                   style={{
                     boxShadow:
                       "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.9), inset 0 1px 0 rgba(255,255,255,1)",
@@ -483,12 +483,12 @@ export default function PolePage({ pole }: PolePageProps) {
 
                   {/* Gradient animé en arrière-plan avec effet subtil */}
                   <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-8 rounded-2xl transition-opacity duration-700 pointer-events-none`}
+                    className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-8 rounded-3xl transition-opacity duration-700 pointer-events-none`}
                   />
 
                   {/* Bordure lumineuse au hover */}
                   <motion.div
-                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 pointer-events-none`}
+                    className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 pointer-events-none`}
                   />
 
                   <div className="relative z-10">
@@ -504,10 +504,10 @@ export default function PolePage({ pole }: PolePageProps) {
                         stiffness: 150,
                         damping: 15,
                       }}
-                      className="relative mb-4"
+                      className="relative mb-5"
                     >
                       <motion.div
-                        className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${pole.colorScheme.primary} bg-clip-text text-transparent leading-none`}
+                        className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${pole.colorScheme.primary} bg-clip-text text-transparent leading-none`}
                         style={{
                           textShadow: "0 0 40px rgba(0,0,0,0.1)",
                         }}
@@ -516,7 +516,7 @@ export default function PolePage({ pole }: PolePageProps) {
                       </motion.div>
                       {/* Glow animé autour de la valeur */}
                       <motion.div
-                        className={`absolute -inset-3 bg-gradient-to-r ${pole.colorScheme.primary} rounded-2xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-700`}
+                        className={`absolute -inset-4 bg-gradient-to-r ${pole.colorScheme.primary} rounded-2xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-700`}
                         animate={{
                           opacity: [0, 0.1, 0],
                         }}
@@ -529,14 +529,14 @@ export default function PolePage({ pole }: PolePageProps) {
                     </motion.div>
 
                     {/* Label avec meilleure typographie */}
-                    <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 leading-tight group-hover:text-gray-950 transition-colors">
+                    <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 leading-tight group-hover:text-gray-950 transition-colors">
                       {stat.label}
                     </h3>
 
                     {/* Description optionnelle avec style amélioré */}
                     {stat.description && (
-                      <div className="pt-2 border-t border-gray-200/50">
-                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-medium">
+                      <div className="pt-3 border-t border-gray-200/50">
+                        <p className="text-sm md:text-base text-gray-600 leading-relaxed font-medium">
                           {stat.description}
                         </p>
                       </div>

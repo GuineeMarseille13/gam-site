@@ -17,7 +17,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { label: "Contacts", href: "/contacts", icon: "📞" },
-  { label: "Notre association", href: "/association", icon: "🏛️" },
+  { label: "Notre association", href: "/notre-association", icon: "🏛️" },
   { label: "Adhésion", href: "/adhesion", icon: "👥" },
   { label: "Boutique", href: "/boutique", icon: "🛒" },
   { label: "Faire un don", href: "/don", icon: "💝" },
