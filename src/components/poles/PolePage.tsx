@@ -45,7 +45,7 @@ export default function PolePage({ pole }: PolePageProps) {
         <div className="relative z-10 h-full flex flex-col">
           {/* Navigation en haut - Design moderne avec glassmorphism */}
           <div className="flex-1 flex items-start">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-8 md:pt-12">
+            <div className="w-full pt-8 md:pt-12 pl-4 sm:pl-6 lg:pl-8">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -73,7 +73,7 @@ export default function PolePage({ pole }: PolePageProps) {
 
           {/* Contenu principal du hero - Centré verticalement */}
           <div className="flex-1 flex items-center">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-16 md:pb-24">
+            <div className="w-full pb-16 md:pb-24 pl-4 sm:pl-6 lg:pl-8">
               <div className="max-w-4xl">
                 {/* Titre - Design ultra-moderne avec effet de gradient animé */}
                 <motion.h1
