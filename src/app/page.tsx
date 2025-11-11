@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useCallback, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Carousel from "@/components/carousel";
 import GAMSlogan from "@/components/GAMSlogan";
 import PresentationSection from "@/components/PresentationSection";
@@ -14,6 +15,7 @@ import EventsSection from "@/components/EventsSection";
 import { ProductCard } from "@/app/boutique/_components/product-card";
 import { getCatalog } from "@/app/boutique/_services/products";
 import { useCart } from "@/app/boutique/_hooks/use-cart";
+import type { Product } from "@/app/boutique/_schemas/product.schema";
 
 // ============================================================================
 // CONSTANTES DE CONFIGURATION
@@ -450,6 +452,15 @@ export default function Home() {
   // Récupération du catalogue de produits
   const catalog = useMemo(() => getCatalog(), []);
   const { add } = useCart();
+  const router = useRouter();
+
+  // Fonction pour gérer le clic sur "Commander"
+  const handleOrder = useCallback((product: Product) => {
+    // Ajouter le produit au panier
+    add({ product, quantity: 1 });
+    // Naviguer vers la boutique avec le paramètre produit
+    router.push(`/boutique?product=${product.id}&openCart=true`);
+  }, [add, router]);
 
   // Utilisation du hook personnalisé pour gérer le carrousel circulaire
   const {
@@ -533,7 +544,7 @@ export default function Home() {
               >
                 <ProductCard
                   product={p}
-                  onAdd={(prod) => add({ product: prod, quantity: 1 })}
+                  onAdd={handleOrder}
                 />
               </div>
             ))}

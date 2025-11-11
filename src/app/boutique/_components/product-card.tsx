@@ -76,7 +76,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
                 }`}
               >
                 {product.inStock && <ShoppingBag className="w-4 h-4" />}
-                <span>{product.inStock ? "Ajouter" : "Épuisé"}</span>
+                <span>{product.inStock ? "Commander" : "Épuisé"}</span>
               </motion.button>
             </div>
           </div>

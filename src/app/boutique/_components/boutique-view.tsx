@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { getCatalog } from "../_services/products";
 import { ShoppingCart } from "lucide-react";
@@ -14,6 +15,32 @@ export function BoutiqueView() {
   const { items, totalPrice, totalQuantity, add, update, remove, clear } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const DRAWER_STATE_KEY = "boutique.drawer.open.v1";
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Handle openCart query parameter - only once on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const openCartParam = searchParams.get("openCart");
+    const productId = searchParams.get("product");
+    
+    // Si openCart=true est présent, ouvrir le panier
+    if (openCartParam === "true") {
+      setDrawerOpen(true);
+      // Nettoyer l'URL après avoir ouvert le panier
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.delete("openCart");
+      if (productId) {
+        newSearchParams.delete("product");
+      }
+      const newUrl = newSearchParams.toString() 
+        ? `${window.location.pathname}?${newSearchParams.toString()}`
+        : window.location.pathname;
+      router.replace(newUrl, { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Open drawer if URL hash is #panier (e.g., from mobile header button)
   useEffect(() => {
