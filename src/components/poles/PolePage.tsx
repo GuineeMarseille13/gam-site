@@ -1,9 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Mail, Clock, Phone, MapPin, ArrowRight } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import {
+  ArrowLeft,
+  Mail,
+  Clock,
+  Phone,
+  MapPin,
+  ArrowRight,
+} from "lucide-react";
 import { Pole } from "@/data/poles";
 import PermanenceCalendar from "./PermanenceCalendar";
 
@@ -139,100 +148,72 @@ export default function PolePage({ pole }: PolePageProps) {
 
       {/* Contenu principal - Espacement approprié sans superposition */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Description détaillée - Section introductive avec design glassmorphism moderne */}
+        {/* Description détaillée - Section introductive avec design moderne */}
         <motion.section
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 1, 
-            delay: 0.6,
-            ease: [0.22, 1, 0.36, 1] 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
           }}
-          className="relative -mt-10 md:-mt-18 mb-15 md:mb-20"
+          className="relative -mt-10 md:-mt-16 mb-12 md:mb-16"
         >
           <div className="relative group">
-            {/* Effet de glow animé et dynamique */}
+            {/* Carte principale avec design épuré */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ 
-                duration: 1, 
-                delay: 0.7,
-                ease: "easeInOut" 
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1],
               }}
-              className={`absolute -inset-0 bg-gradient-to-r ${pole.colorScheme.primary} rounded-3xl opacity-10 blur-2xl group-hover:opacity-30 transition-opacity duration-700`}
-              animate={{
-                opacity: [0.2, 0.25, 0.2],
+              className="relative bg-white rounded-2xl p-6 md:p-8 lg:p-10 border border-gray-200/60 hover:border-gray-300/80 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
+              style={{
+                boxShadow:
+                  "0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,1)",
               }}
-            />
-
-            {/* Carte principale avec glassmorphism subtil */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ 
-                duration: 1, 
-                delay: 0.8,
-                ease: [0.22, 1, 0.36, 1] 
-              }}
-              className="relative bg-white/95 backdrop-blur-xl rounded-2xl p-8 md:p-12 lg:p-16 border border-gray-100/50 overflow-hidden"
             >
-              {/* Pattern moderne avec animation subtile */}
-              <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-                <motion.div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-                    backgroundSize: "40px 40px",
-                  }}
-                  animate={{
-                    backgroundPosition: ["0% 0%", "100% 100%"],
-                  }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                    ease: "linear",
-                  }}
-                />
-              </div>
-
-              {/* Bordure lumineuse animée */}
+              {/* Effet de brillance au hover */}
               <motion.div
-                className={`absolute inset-0 rounded-3xl bg-gradient-to-r ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 pointer-events-none`}
-                style={{
-                  maskImage:
-                    "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
-                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "200%" }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                style={{ width: "50%" }}
+              />
+
+              {/* Gradient subtil au hover */}
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-[0.03] rounded-2xl transition-opacity duration-500 pointer-events-none`}
               />
 
               <div className="relative max-w-4xl mx-auto">
-                {/* Badge "À propos" amélioré */}
+                {/* Badge "À propos" optimisé */}
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
                   transition={{
-                    duration: 0.8,
-                    delay: 1,
+                    duration: 0.5,
                     type: "spring",
                     stiffness: 200,
                     damping: 15,
                   }}
-                  className="inline-block mb-8"
+                  className="inline-block mb-5 md:mb-6"
                 >
                   <motion.div
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`group/badge relative px-6 py-3 rounded-full text-sm font-bold text-white bg-gradient-to-r ${pole.colorScheme.primary} transition-all duration-300 cursor-default overflow-hidden`}
+                    className={`group/badge relative px-4 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r ${pole.colorScheme.primary} transition-all duration-300 cursor-default overflow-hidden`}
                     style={{
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                     }}
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       <motion.span
-                        className="w-2 h-2 rounded-full bg-white"
+                        className="w-1.5 h-1.5 rounded-full bg-white"
                         animate={{
                           scale: [1, 1.2, 1],
                           opacity: [1, 0.7, 1],
@@ -249,7 +230,7 @@ export default function PolePage({ pole }: PolePageProps) {
                     <motion.div
                       className={`absolute -inset-1 bg-gradient-to-r ${pole.colorScheme.primary} rounded-full blur-md`}
                       animate={{
-                        opacity: [0.3, 0.6, 0.3],
+                        opacity: [0.3, 0.5, 0.3],
                       }}
                       transition={{
                         duration: 2,
@@ -260,36 +241,35 @@ export default function PolePage({ pole }: PolePageProps) {
                   </motion.div>
                 </motion.div>
 
-                {/* Texte descriptif avec meilleure typographie */}
+                {/* Texte descriptif avec typographie optimisée */}
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{
-                    duration: 1,
-                    delay: 1.2,
+                    duration: 0.6,
+                    delay: 0.1,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed font-light tracking-wide mb-8"
-                  style={{
-                    textShadow: "0 1px 2px rgba(255, 255, 255, 0.8)",
-                  }}
+                  className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed mb-6 md:mb-8"
                 >
                   {pole.description}
                 </motion.p>
 
-                {/* CTA - Bouton pour contacter */}
+                {/* CTA - Bouton pour contacter amélioré */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{
-                    duration: 0.8,
-                    delay: 1.4,
+                    duration: 0.5,
+                    delay: 0.2,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
                   <Link
                     href="/contacts"
-                    className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg transition-all duration-300 overflow-hidden"
+                    className="group relative inline-flex items-center gap-3 px-7 py-3.5 rounded-full font-bold text-sm md:text-base text-white transition-all duration-300 overflow-hidden shadow-lg hover:shadow-xl"
                   >
                     {/* Fond avec gradient animé */}
                     <motion.div
@@ -297,31 +277,41 @@ export default function PolePage({ pole }: PolePageProps) {
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.3 }}
                     />
-                    
+
+                    {/* Glow animé autour du bouton */}
+                    <motion.div
+                      className={`absolute -inset-1 bg-gradient-to-r ${pole.colorScheme.primary} rounded-full blur-lg`}
+                      animate={{
+                        opacity: [0.3, 0.5, 0.3],
+                        scale: [1, 1.05, 1],
+                      }}
+                      transition={{
+                        duration: 2.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      style={{ zIndex: -1 }}
+                    />
+
                     {/* Effet de brillance au hover */}
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
                       initial={{ x: "-100%" }}
                       whileHover={{ x: "200%" }}
                       transition={{ duration: 0.6 }}
                       style={{ width: "50%" }}
                     />
-                    
+
                     {/* Texte et icône */}
-                    <span className="relative z-10 text-white flex items-center gap-3">
+                    <span className="relative z-10 flex items-center gap-3">
                       <span>Nous contacter</span>
                       <motion.div
-                        whileHover={{ x: 4 }}
+                        whileHover={{ x: 4, rotate: -5 }}
                         transition={{ type: "spring", stiffness: 400 }}
                       >
-                        <ArrowRight className="w-5 h-5" />
+                        <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                       </motion.div>
                     </span>
-                    
-                    {/* Ombre portée */}
-                    <motion.div
-                      className="absolute -inset-1 bg-gradient-to-r from-gray-400 to-gray-600 rounded-full opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300 -z-10"
-                    />
                   </Link>
                 </motion.div>
               </div>
@@ -509,108 +499,71 @@ export default function PolePage({ pole }: PolePageProps) {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
               {pole.statistics.items.map((stat, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.96 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: 0.6,
-                    delay: index * 0.08,
+                    duration: 0.5,
+                    delay: index * 0.06,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative p-7 md:p-9 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-gray-200/50 hover:border-transparent transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl"
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  className="group relative p-5 md:p-6 rounded-2xl bg-white border border-gray-200/60 hover:border-gray-300/80 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
                   style={{
                     boxShadow:
-                      "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.9), inset 0 1px 0 rgba(255,255,255,1)",
+                      "0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,1)",
                   }}
                 >
                   {/* Effet de brillance au hover */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
                     initial={{ x: "-100%" }}
                     whileHover={{ x: "200%" }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
                     style={{ width: "50%" }}
                   />
 
-                  {/* Gradient animé en arrière-plan avec effet subtil */}
+                  {/* Gradient subtil au hover */}
                   <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-8 rounded-3xl transition-opacity duration-700 pointer-events-none`}
-                  />
-
-                  {/* Bordure lumineuse au hover */}
-                  <motion.div
-                    className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 pointer-events-none`}
+                    className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-[0.03] rounded-2xl transition-opacity duration-500 pointer-events-none`}
                   />
 
                   <div className="relative z-10">
-                    {/* Valeur avec animation et effet de glow */}
+                    {/* Valeur avec style optimisé */}
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.5, y: 20 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{
-                        duration: 0.8,
-                        delay: index * 0.08 + 0.2,
-                        type: "spring",
-                        stiffness: 150,
-                        damping: 15,
+                        duration: 0.6,
+                        delay: index * 0.06 + 0.1,
+                        ease: [0.22, 1, 0.36, 1],
                       }}
-                      className="relative mb-5"
+                      className="mb-3 md:mb-4"
                     >
-                      <motion.div
-                        className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${pole.colorScheme.primary} bg-clip-text text-transparent leading-none`}
-                        style={{
-                          textShadow: "0 0 40px rgba(0,0,0,0.1)",
-                        }}
+                      <div
+                        className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${pole.colorScheme.primary} bg-clip-text text-transparent leading-none`}
                       >
                         {stat.value}
-                      </motion.div>
-                      {/* Glow animé autour de la valeur */}
-                      <motion.div
-                        className={`absolute -inset-4 bg-gradient-to-r ${pole.colorScheme.primary} rounded-2xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-700`}
-                        animate={{
-                          opacity: [0, 0.1, 0],
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      />
+                      </div>
                     </motion.div>
 
-                    {/* Label avec meilleure typographie */}
-                    <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 leading-tight group-hover:text-gray-950 transition-colors">
+                    {/* Label avec espacement optimisé */}
+                    <h3 className="text-sm md:text-base font-semibold text-gray-900 leading-tight mb-1.5 group-hover:text-gray-950 transition-colors">
                       {stat.label}
                     </h3>
 
-                    {/* Description optionnelle avec style amélioré */}
+                    {/* Description optionnelle avec style épuré */}
                     {stat.description && (
-                      <div className="pt-3 border-t border-gray-200/50">
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed font-medium">
-                          {stat.description}
-                        </p>
-                      </div>
+                      <p className="text-xs text-gray-500 leading-relaxed">
+                        {stat.description}
+                      </p>
                     )}
                   </div>
-
-                  {/* Ombre flottante au hover avec effet multicouche */}
-                  <motion.div
-                    className="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      boxShadow:
-                        "0 24px 72px rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.1)",
-                    }}
-                  />
-
-                  {/* Particules décoratives */}
-                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-                  <div className="absolute bottom-6 right-8 w-1.5 h-1.5 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 opacity-15 group-hover:opacity-30 transition-opacity duration-500" />
                 </motion.div>
               ))}
             </div>
@@ -643,51 +596,49 @@ export default function PolePage({ pole }: PolePageProps) {
               className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-center items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {pole.features.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{
                   duration: 0.5,
-                  delay: index * 0.08,
+                  delay: index * 0.06,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group relative p-6 md:p-8 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200/60 hover:border-transparent transition-all duration-500 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-3 overflow-hidden h-full flex flex-col"
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="group relative p-5 md:p-6 rounded-2xl bg-white border border-gray-200/60 hover:border-gray-300/80 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md h-full flex flex-col"
+                style={{
+                  boxShadow:
+                    "0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,1)",
+                }}
               >
                 {/* Effet de brillance au hover */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "200%" }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
                   style={{ width: "50%" }}
                 />
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500`}
+
+                {/* Gradient subtil au hover */}
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-[0.03] rounded-2xl transition-opacity duration-500 pointer-events-none`}
                 />
-                {/* Bordure lumineuse au hover */}
-                <div
-                  className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${pole.colorScheme.primary} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
-                  style={{
-                    maskImage:
-                      "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
-                    WebkitMaskImage:
-                      "linear-gradient(to right, transparent, black 20%, black 80%, transparent)",
-                  }}
-                />
+
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <div className="flex items-start gap-5 flex-1">
+                  <div className="flex items-start gap-4 flex-1">
                     <motion.div
-                      whileHover={{ scale: 1.15, rotate: 10 }}
+                      whileHover={{ scale: 1.1, rotate: 8 }}
                       transition={{
                         type: "spring",
                         stiffness: 300,
                         damping: 15,
                       }}
-                      className={`flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br ${pole.colorScheme.primary} flex items-center justify-center text-white text-xl font-bold shadow-xl relative overflow-hidden`}
+                      className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${pole.colorScheme.primary} flex items-center justify-center text-white text-lg font-bold shadow-lg relative overflow-hidden`}
                     >
                       {/* Effet de brillance sur le badge */}
                       <motion.div
@@ -700,9 +651,22 @@ export default function PolePage({ pole }: PolePageProps) {
                           ease: "easeInOut",
                         }}
                       />
+                      {/* Glow animé autour du badge */}
+                      <motion.div
+                        className={`absolute -inset-1 bg-gradient-to-r ${pole.colorScheme.primary} rounded-xl blur-lg`}
+                        animate={{
+                          opacity: [0.2, 0.4, 0.2],
+                          scale: [1, 1.1, 1],
+                        }}
+                        transition={{
+                          duration: 2.5,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
                       <span className="relative z-10">{index + 1}</span>
                     </motion.div>
-                    <p className="text-gray-700 font-medium leading-relaxed pt-1 text-base md:text-lg group-hover:text-gray-900 transition-colors flex-1">
+                    <p className="text-sm md:text-base text-gray-700 font-medium leading-relaxed pt-0.5 group-hover:text-gray-900 transition-colors flex-1">
                       {feature}
                     </p>
                   </div>
@@ -738,56 +702,56 @@ export default function PolePage({ pole }: PolePageProps) {
               className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             {pole.services.map((service, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
+                  duration: 0.5,
+                  delay: index * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-white/90 via-white/80 to-white/90 backdrop-blur-sm border border-gray-200/60 hover:border-transparent transition-all duration-500 hover:shadow-2xl hover:-translate-y-4 overflow-hidden"
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="group relative p-6 md:p-7 rounded-2xl bg-white border border-gray-200/60 hover:border-gray-300/80 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
                 style={{
                   boxShadow:
-                    "0 4px 20px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)",
+                    "0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,1)",
                 }}
               >
-                {/* Effet de brillance animé */}
+                {/* Effet de brillance au hover */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "200%" }}
-                  transition={{ duration: 1.2 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
                   style={{ width: "50%" }}
                 />
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-500`}
-                />
-                {/* Glow animé au hover */}
+
+                {/* Gradient subtil au hover */}
                 <motion.div
-                  className={`absolute -inset-1 bg-gradient-to-r ${pole.colorScheme.primary} rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500`}
+                  className={`absolute inset-0 bg-gradient-to-br ${pole.colorScheme.primary} opacity-0 group-hover:opacity-[0.03] rounded-2xl transition-opacity duration-500 pointer-events-none`}
                 />
+
                 <div className="relative z-10">
-                  <div className="flex items-start gap-5 mb-6">
+                  <div className="flex items-start gap-4 mb-4">
                     <motion.div
-                      whileHover={{ scale: 1.3, rotate: 15, y: -5 }}
+                      whileHover={{ scale: 1.15, rotate: 8 }}
                       transition={{
                         type: "spring",
                         stiffness: 300,
                         damping: 15,
                       }}
-                      className="text-5xl md:text-6xl flex-shrink-0 relative"
+                      className="text-4xl md:text-5xl flex-shrink-0 relative"
                     >
-                      {/* Effet de glow autour de l'icône */}
+                      {/* Effet de glow animé autour de l'icône */}
                       <motion.div
-                        className={`absolute inset-0 bg-gradient-to-r ${pole.colorScheme.primary} opacity-20 blur-2xl`}
+                        className={`absolute -inset-2 bg-gradient-to-r ${pole.colorScheme.primary} rounded-xl blur-xl`}
                         animate={{
-                          opacity: [0.1, 0.3, 0.1],
-                          scale: [1, 1.2, 1],
+                          opacity: [0.1, 0.25, 0.1],
+                          scale: [1, 1.15, 1],
                         }}
                         transition={{
                           duration: 3,
@@ -797,11 +761,11 @@ export default function PolePage({ pole }: PolePageProps) {
                       />
                       <span className="relative z-10">{service.icon}</span>
                     </motion.div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 pt-2 leading-tight group-hover:bg-gradient-to-r group-hover:from-gray-900 group-hover:to-gray-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight pt-1 group-hover:text-gray-950 transition-colors">
                       {service.title}
                     </h3>
                   </div>
-                  <p className="text-gray-600 leading-relaxed text-lg md:text-xl font-light group-hover:text-gray-700 transition-colors">
+                  <p className="text-sm md:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
                     {service.description}
                   </p>
                 </div>
@@ -809,7 +773,287 @@ export default function PolePage({ pole }: PolePageProps) {
             ))}
           </div>
         </motion.section>
+
+        {/* Galerie d'événements - Section pour mettre en valeur le travail du pôle */}
+        {pole.eventImages && pole.eventImages.length > 0 && (
+          <EventGallery
+            images={pole.eventImages}
+            colorScheme={pole.colorScheme}
+          />
+        )}
       </div>
     </div>
+  );
+}
+
+// Composant Galerie d'événements
+interface EventGalleryProps {
+  images: { url: string; title?: string; description?: string }[];
+  colorScheme: Pole["colorScheme"];
+}
+
+function EventGallery({ images, colorScheme }: EventGalleryProps) {
+  const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-20 md:mb-28"
+    >
+      <div className="text-center mb-12 md:mb-16">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent"
+        >
+          Nos Réalisations
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-lg md:text-xl text-gray-600 mb-6 font-medium max-w-3xl mx-auto"
+        >
+          Découvrez les moments forts de nos événements et l&apos;impact de
+          notre travail
+        </motion.p>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
+        />
+      </div>
+
+      {/* Galerie en grid moderne avec hauteurs variables */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {images.map((image, index) => (
+          <EventImageCard
+            key={index}
+            image={image}
+            index={index}
+            colorScheme={colorScheme}
+            onClick={() => setSelectedImage(index)}
+          />
+        ))}
+      </div>
+
+      {/* Modal pour l'image sélectionnée */}
+      <AnimatePresence mode="wait">
+        {selectedImage !== null && (
+          <ImageModal
+            key={selectedImage}
+            images={images}
+            currentIndex={selectedImage}
+            onClose={() => setSelectedImage(null)}
+            onNext={() =>
+              setSelectedImage((prev) =>
+                prev !== null && prev < images.length - 1 ? prev + 1 : 0
+              )
+            }
+            onPrev={() =>
+              setSelectedImage((prev) =>
+                prev !== null && prev > 0 ? prev - 1 : images.length - 1
+              )
+            }
+          />
+        )}
+      </AnimatePresence>
+    </motion.section>
+  );
+}
+
+// Carte d'image d'événement
+interface EventImageCardProps {
+  image: { url: string; title?: string; description?: string };
+  index: number;
+  colorScheme: Pole["colorScheme"];
+  onClick: () => void;
+}
+
+function EventImageCard({
+  image,
+  index,
+  colorScheme,
+  onClick,
+}: EventImageCardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
+      onClick={onClick}
+    >
+      {/* Image avec overlay au hover */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+        <ImageWithFallback
+          src={image.url}
+          alt={image.title || "Événement"}
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+
+        {/* Overlay gradient au hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Effet de brillance au hover */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+          initial={{ x: "-100%" }}
+          whileHover={{ x: "200%" }}
+          transition={{ duration: 0.8 }}
+          style={{ width: "50%" }}
+        />
+
+        {/* Badge avec gradient coloré */}
+        <div
+          className={`absolute top-4 right-4 px-3 py-1.5 rounded-full bg-gradient-to-r ${colorScheme.primary} text-white text-xs font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+        >
+          Voir
+        </div>
+      </div>
+
+      {/* Informations (si disponibles) */}
+      {(image.title || image.description) && (
+        <div className="p-4 sm:p-5">
+          {image.title && (
+            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-gray-950 transition-colors">
+              {image.title}
+            </h3>
+          )}
+          {image.description && (
+            <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+              {image.description}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Glow effect au hover */}
+      <motion.div
+        className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.primary} rounded-2xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 -z-10`}
+      />
+    </motion.div>
+  );
+}
+
+// Modal pour afficher l'image en grand
+interface ImageModalProps {
+  images: { url: string; title?: string; description?: string }[];
+  currentIndex: number;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+function ImageModal({
+  images,
+  currentIndex,
+  onClose,
+  onNext,
+  onPrev,
+}: ImageModalProps) {
+  const currentImage = images[currentIndex];
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNext();
+      if (e.key === "ArrowLeft") onPrev();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [onClose, onNext, onPrev]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative max-w-6xl max-h-[90vh] w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Bouton fermer */}
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors text-2xl font-bold z-10"
+        >
+          ✕
+        </button>
+
+        {/* Image */}
+        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gray-900">
+          <ImageWithFallback
+            src={currentImage.url}
+            alt={currentImage.title || "Événement"}
+            fill
+            className="object-contain"
+            sizes="90vw"
+            priority
+          />
+        </div>
+
+        {/* Informations */}
+        {(currentImage.title || currentImage.description) && (
+          <div className="mt-4 text-center">
+            {currentImage.title && (
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {currentImage.title}
+              </h3>
+            )}
+            {currentImage.description && (
+              <p className="text-gray-300">{currentImage.description}</p>
+            )}
+          </div>
+        )}
+
+        {/* Navigation */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={onPrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all flex items-center justify-center"
+            >
+              ←
+            </button>
+            <button
+              onClick={onNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all flex items-center justify-center"
+            >
+              →
+            </button>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm">
+              {currentIndex + 1} / {images.length}
+            </div>
+          </>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }

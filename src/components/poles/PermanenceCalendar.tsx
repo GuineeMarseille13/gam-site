@@ -2,7 +2,73 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Info } from "lucide-react";
+
+// Composant pour l'icône avec tooltip
+function NextPermanenceIcon() {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <div className="absolute -top-3 -right-3 z-[100]">
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.2 }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowTooltip(!showTooltip);
+        }}
+        className="relative w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 active:bg-red-800 transition-all duration-200 flex items-center justify-center shadow-2xl cursor-pointer group border-2 border-white"
+        style={{
+          boxShadow:
+            "0 6px 20px rgba(239, 68, 68, 0.6), 0 3px 8px rgba(239, 68, 68, 0.5), 0 0 0 2px rgba(255,255,255,0.8)",
+        }}
+      >
+        <Info className="w-5 h-5 text-white" strokeWidth={3} />
+
+        {/* Glow pulsant plus visible */}
+        <motion.div
+          className="absolute -inset-1 bg-red-500 rounded-full"
+          animate={{
+            opacity: [0.4, 0.7, 0.4],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{ zIndex: -1 }}
+        />
+
+        {/* Tooltip amélioré */}
+        <AnimatePresence>
+          {showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.9 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute bottom-full right-0 mb-3 px-4 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-2xl whitespace-nowrap z-[200] border border-gray-700"
+              style={{
+                boxShadow:
+                  "0 12px 32px rgba(0,0,0,0.5), 0 6px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1)",
+              }}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <span className="relative z-10">Prochaine permanence</span>
+              {/* Flèche pointant vers l'icône */}
+              <div className="absolute top-full right-4 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-gray-900" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </div>
+  );
+}
 
 interface PermanenceCalendarProps {
   dates: string[]; // Format: "YYYY-MM-DD"
@@ -17,6 +83,22 @@ export default function PermanenceCalendar({
   schedule,
   colorScheme,
 }: PermanenceCalendarProps) {
+  // Extraire les heures de la chaîne schedule (ex: "Permanences les samedis de 14h à 16h" -> "14h-16h")
+  const extractHours = (scheduleText: string): string => {
+    const hourMatch = scheduleText.match(
+      /(\d{1,2})h\s*(?:à|au|-)\s*(\d{1,2})h/
+    );
+    if (hourMatch) {
+      return `${hourMatch[1]}h-${hourMatch[2]}h`;
+    }
+    // Fallback si le format n'est pas reconnu
+    return scheduleText.includes("14h") && scheduleText.includes("16h")
+      ? "14h-16h"
+      : scheduleText;
+  };
+
+  const displaySchedule = extractHours(schedule);
+
   // Fonction pour formater une date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -52,29 +134,51 @@ export default function PermanenceCalendar({
   const totalMonths = monthsArray.length;
   const monthsPerView = 3; // Nombre de mois à afficher à la fois
 
-  // Calculer l'index initial pour afficher le trio du mois en cours
-  const getInitialIndex = () => {
+  // Trouver la prochaine permanence
+  const getNextPermanence = () => {
     const now = new Date();
-    const currentMonthKey = now.toLocaleDateString("fr-FR", {
+    now.setHours(0, 0, 0, 0); // Réinitialiser l'heure pour la comparaison
+
+    // Trouver la première date future
+    const futureDates = dates
+      .map((dateStr) => new Date(dateStr))
+      .filter((date) => {
+        date.setHours(0, 0, 0, 0);
+        return date >= now;
+      })
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    return futureDates.length > 0 ? futureDates[0] : null;
+  };
+
+  const nextPermanence = getNextPermanence();
+
+  // Calculer l'index initial pour afficher le mois de la prochaine permanence
+  const getInitialIndex = () => {
+    // Si pas de prochaine permanence, commencer au début
+    if (!nextPermanence) {
+      return 0;
+    }
+
+    const nextMonthKey = nextPermanence.toLocaleDateString("fr-FR", {
       year: "numeric",
       month: "long",
     });
 
-    // Trouver l'index du mois actuel
-    const currentMonthIndex = monthsArray.findIndex(
-      ([monthKey]) => monthKey === currentMonthKey
+    // Trouver l'index du mois de la prochaine permanence
+    const nextMonthIndex = monthsArray.findIndex(
+      ([monthKey]) => monthKey === nextMonthKey
     );
 
-    // Si le mois actuel n'est pas trouvé, commencer au début
-    if (currentMonthIndex === -1) {
+    // Si le mois n'est pas trouvé, commencer au début
+    if (nextMonthIndex === -1) {
       return 0;
     }
 
-    // Ajuster pour afficher le trio qui contient le mois actuel
-    // On veut afficher le mois actuel et les suivants si possible
+    // Ajuster pour afficher le trio qui contient le mois de la prochaine permanence
     const targetIndex = Math.max(
       0,
-      Math.min(currentMonthIndex, totalMonths - monthsPerView)
+      Math.min(nextMonthIndex, totalMonths - monthsPerView)
     );
 
     return targetIndex;
@@ -91,19 +195,12 @@ export default function PermanenceCalendar({
 
   const visibleMonths = getVisibleMonths();
 
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => Math.max(0, prev - monthsPerView));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) =>
-      Math.min(totalMonths - monthsPerView, prev + monthsPerView)
-    );
-  };
-
   const goToMonth = (index: number) => {
     // Ajuster pour afficher le mois sélectionné et les suivants
-    const targetIndex = Math.max(0, Math.min(index, totalMonths - monthsPerView));
+    const targetIndex = Math.max(
+      0,
+      Math.min(index, totalMonths - monthsPerView)
+    );
     setCurrentIndex(targetIndex);
   };
 
@@ -175,19 +272,40 @@ export default function PermanenceCalendar({
             const isActive =
               index >= currentIndex && index < currentIndex + monthsPerView;
             const monthDate = new Date(monthDates[0] || dates[0]);
+
+            // Vérifier si ce mois contient la prochaine permanence
+            const containsNextPermanence =
+              nextPermanence &&
+              monthDates.some((dateStr) => {
+                const date = new Date(dateStr);
+                date.setHours(0, 0, 0, 0);
+                return date.toDateString() === nextPermanence.toDateString();
+              });
+
             return (
               <motion.button
                 key={month}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => goToMonth(index)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all relative ${
                   isActive
                     ? `bg-gradient-to-br ${colorScheme.primary} text-white shadow-md`
+                    : containsNextPermanence
+                    ? "bg-emerald-50 border-2 border-emerald-300 text-emerald-700 hover:border-emerald-400 font-semibold"
                     : "bg-white border border-gray-200 text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {monthDate.toLocaleDateString("fr-FR", { month: "short" }).toUpperCase()}
+                {monthDate
+                  .toLocaleDateString("fr-FR", { month: "short" })
+                  .toUpperCase()}
+                {containsNextPermanence && !isActive && (
+                  <motion.span
+                    className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full"
+                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
               </motion.button>
             );
           })}
@@ -243,12 +361,18 @@ export default function PermanenceCalendar({
                 </h3>
 
                 {/* Grille optimisée des dates avec design moderne */}
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-3 gap-2.5 relative">
                   {monthDates.map((dateStr, index) => {
                     const { day, weekday, date } = formatDate(dateStr);
-                    const isPast = date < new Date();
-                    const isToday =
-                      date.toDateString() === new Date().toDateString();
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+                    date.setHours(0, 0, 0, 0);
+
+                    const isPast = date < now;
+                    const isToday = date.toDateString() === now.toDateString();
+                    const isNextPermanence =
+                      nextPermanence &&
+                      date.toDateString() === nextPermanence.toDateString();
 
                     return (
                       <motion.div
@@ -261,19 +385,27 @@ export default function PermanenceCalendar({
                           ease: [0.22, 1, 0.36, 1],
                         }}
                         whileHover={{ scale: 1.08, y: -3, rotate: 0.5 }}
-                        className={`group/date relative p-3 md:p-3.5 rounded-2xl border transition-all duration-300 overflow-hidden ${
+                        className={`group/date relative p-3 md:p-3.5 rounded-2xl border transition-all duration-300 ${
+                          isNextPermanence
+                            ? "overflow-visible"
+                            : "overflow-hidden"
+                        } ${
                           isPast
                             ? "bg-gradient-to-br from-gray-50/60 to-gray-100/40 border-gray-200/40 opacity-60"
                             : isToday
-                              ? `bg-gradient-to-br ${colorScheme.primary} border-transparent text-white shadow-2xl`
-                              : `bg-white/90 backdrop-blur-sm border-gray-200/50 hover:border-transparent hover:shadow-xl hover:bg-white`
+                            ? `bg-gradient-to-br ${colorScheme.primary} border-transparent text-white shadow-2xl`
+                            : isNextPermanence
+                            ? `bg-gradient-to-br ${colorScheme.primary} border-transparent text-white shadow-2xl ring-4 ring-emerald-200/50`
+                            : `bg-white/90 backdrop-blur-sm border-gray-200/50 hover:border-transparent hover:shadow-xl hover:bg-white`
                         }`}
                         style={{
                           boxShadow: isPast
                             ? "0 2px 8px rgba(0,0,0,0.04)"
                             : isToday
-                              ? "0 8px 24px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)"
-                              : "0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+                            ? "0 8px 24px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)"
+                            : isNextPermanence
+                            ? "0 12px 32px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15), 0 0 0 4px rgba(16, 185, 129, 0.2)"
+                            : "0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
                         }}
                       >
                         {/* Effet de brillance pour les dates futures */}
@@ -287,10 +419,8 @@ export default function PermanenceCalendar({
                           />
                         )}
                         {/* Effet de lumière subtil pour les dates futures */}
-                        {!isPast && !isToday && (
-                          <motion.div
-                            className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent opacity-0 group-hover/date:opacity-100 transition-opacity duration-500"
-                          />
+                        {!isPast && !isToday && !isNextPermanence && (
+                          <motion.div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent opacity-0 group-hover/date:opacity-100 transition-opacity duration-500" />
                         )}
 
                         {/* Badge "Aujourd'hui" avec animation */}
@@ -298,10 +428,15 @@ export default function PermanenceCalendar({
                           <motion.div
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 15,
+                            }}
                             className="absolute -top-2 -right-2 px-2.5 py-1 bg-white/95 backdrop-blur-sm text-[10px] font-bold rounded-full text-gray-900 shadow-xl z-10 border border-white/50"
                             style={{
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.8)",
+                              boxShadow:
+                                "0 4px 12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.8)",
                             }}
                           >
                             <motion.span
@@ -316,6 +451,9 @@ export default function PermanenceCalendar({
                             </motion.span>
                           </motion.div>
                         )}
+
+                        {/* Icône rouge avec tooltip pour la prochaine permanence */}
+                        {isNextPermanence && !isToday && <NextPermanenceIcon />}
 
                         {/* Glow animé pour aujourd'hui */}
                         {isToday && (
@@ -352,7 +490,9 @@ export default function PermanenceCalendar({
                         <div className="relative z-10">
                           <div
                             className={`text-[11px] font-bold mb-2 uppercase tracking-widest ${
-                              isToday ? "text-white/95" : "text-gray-500"
+                              isToday || isNextPermanence
+                                ? "text-white/95"
+                                : "text-gray-500"
                             }`}
                           >
                             {weekday.slice(0, 3)}
@@ -362,12 +502,15 @@ export default function PermanenceCalendar({
                           <motion.div
                             whileHover={{ scale: 1.15 }}
                             className={`text-2xl md:text-3xl font-black mb-2 leading-none ${
-                              isToday ? "text-white" : "text-gray-900"
+                              isToday || isNextPermanence
+                                ? "text-white"
+                                : "text-gray-900"
                             }`}
                             style={{
-                              textShadow: isToday
-                                ? "0 2px 12px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15)"
-                                : "0 1px 2px rgba(0,0,0,0.05)",
+                              textShadow:
+                                isToday || isNextPermanence
+                                  ? "0 2px 12px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15)"
+                                  : "0 1px 2px rgba(0,0,0,0.05)",
                             }}
                           >
                             {day}
@@ -377,11 +520,15 @@ export default function PermanenceCalendar({
                         {/* Horaires avec icône animée */}
                         <div
                           className={`flex items-center gap-1.5 text-[11px] font-semibold relative z-10 ${
-                            isToday ? "text-white/95" : ""
+                            isToday || isNextPermanence ? "text-white/95" : ""
                           }`}
                         >
                           <motion.div
-                            animate={isToday ? { rotate: [0, 360] } : {}}
+                            animate={
+                              isToday || isNextPermanence
+                                ? { rotate: [0, 360] }
+                                : {}
+                            }
                             transition={{
                               duration: 20,
                               repeat: Infinity,
@@ -391,7 +538,7 @@ export default function PermanenceCalendar({
                           >
                             <Clock
                               className={`w-3 h-3 ${
-                                isToday
+                                isToday || isNextPermanence
                                   ? "text-white"
                                   : "text-emerald-500"
                               }`}
@@ -400,17 +547,17 @@ export default function PermanenceCalendar({
                           </motion.div>
                           <span
                             className={`tracking-tight ${
-                              isToday
+                              isToday || isNextPermanence
                                 ? "text-white/95"
                                 : `bg-gradient-to-r ${colorScheme.primary} bg-clip-text text-transparent font-bold`
                             }`}
                           >
-                            14h-16h
+                            {displaySchedule}
                           </span>
                         </div>
 
                         {/* Effet hover avec gradient pour les dates futures */}
-                        {!isPast && !isToday && (
+                        {!isPast && !isToday && !isNextPermanence && (
                           <>
                             <motion.div
                               className={`absolute inset-0 bg-gradient-to-br ${colorScheme.primary} opacity-0 group-hover/date:opacity-8 rounded-2xl transition-opacity duration-500`}

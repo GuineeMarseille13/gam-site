@@ -78,14 +78,14 @@ export function ImageWithFallback({
         }
       };
 
-      // Timeout après 3 secondes
+      // Timeout après 1.5 secondes pour les images locales
       timeoutId = setTimeout(() => {
         if (isMounted) {
           setIsValidating(false);
           setHasError(true);
           setImgSrc(fallback || defaultFallback);
         }
-      }, 3000);
+      }, 1500);
 
       img.src = src;
     };
@@ -115,17 +115,17 @@ export function ImageWithFallback({
   if (isValidating && !hasError) {
     if (fill) {
       return (
-        <div className={cn("relative w-full h-full bg-gradient-to-br from-green-50 to-green-100 animate-pulse", className)}>
+        <div className={cn("absolute inset-0 w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse", className)}>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-500 rounded-full animate-spin" />
+            <div className="w-12 h-12 border-2 border-gray-300 border-t-gray-400 rounded-full animate-spin" />
           </div>
         </div>
       );
     }
     return (
-      <div className={cn("relative bg-gradient-to-br from-green-50 to-green-100 animate-pulse", className, aspectRatio && `aspect-${aspectRatio}`)} style={{ width, height }}>
+      <div className={cn("relative bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse", className, aspectRatio && `aspect-${aspectRatio}`)} style={{ width, height }}>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-green-200 border-t-green-500 rounded-full animate-spin" />
+          <div className="w-12 h-12 border-2 border-gray-300 border-t-gray-400 rounded-full animate-spin" />
         </div>
       </div>
     );
