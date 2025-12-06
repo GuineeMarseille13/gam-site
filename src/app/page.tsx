@@ -526,13 +526,6 @@ export default function Home() {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* <button
-            aria-label="Précédent"
-            onClick={() => scrollBy("left")}
-            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center hover:bg-gray-50"
-          >
-            ‹
-          </button> */}
           <div
             ref={scrollRef}
             className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -549,13 +542,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-          {/* <button
-            aria-label="Suivant"
-            onClick={() => scrollBy("right")}
-            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center hover:bg-gray-50"
-          >
-            ›
-          </button> */}
         </div>
       </section>
       <StatisticsSection />

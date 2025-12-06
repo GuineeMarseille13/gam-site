@@ -5,26 +5,38 @@ import { motion } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Product } from "../_schemas/product.schema";
+import { usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
   onAdd: (product: Product) => void;
+  isHighlighted?: boolean;
 }
 
-export function ProductCard({ product, onAdd }: ProductCardProps) {
+export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCardProps) {
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(price);
 
+  const pathname = usePathname();
+  const isBoutique = pathname === "/boutique";
+
   return (
     <motion.div 
+      id={`product-${product.id}`}
       initial={{ opacity: 0, y: 16 }} 
       animate={{ opacity: 1, y: 0 }} 
       transition={{ duration: 0.4 }}
     >
       {/* Gradient border wrapper for a premium look */}
       <motion.div
-        className="group rounded-2xl p-[2px] bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 hover:from-amber-300 hover:via-yellow-300 hover:to-lime-300 transition-all duration-300 shadow-lg shadow-amber-100/50"
+        className={`group rounded-2xl p-[2px] transition-all duration-300 shadow-lg ${
+          isHighlighted
+            ? "bg-gradient-to-br from-green-400 via-emerald-400 to-green-500 hover:from-green-500 hover:via-emerald-500 hover:to-green-600 shadow-green-300/50 ring-4 ring-green-300/50"
+            : "bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 hover:from-amber-300 hover:via-yellow-300 hover:to-lime-300 shadow-amber-100/50"
+        }`}
         whileHover={{ y: -4, transition: { duration: 0.2 } }}
+        animate={isHighlighted ? { scale: [1, 1.02, 1] } : {}}
+        transition={isHighlighted ? { duration: 0.5, repeat: 2 } : {}}
       >
       <Card className="h-full bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-300 rounded-2xl overflow-hidden ring-1 ring-slate-100/50">
         <CardContent className="p-0 flex flex-col h-full">
@@ -76,7 +88,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
                 }`}
               >
                 {product.inStock && <ShoppingBag className="w-4 h-4" />}
-                <span>{product.inStock ? "Commander" : "Épuisé"}</span>
+                <span>{product.inStock ? (isBoutique ? "Ajouter au panier" : "Commander") : "Épuisé"}</span>
               </motion.button>
             </div>
           </div>

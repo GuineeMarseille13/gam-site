@@ -17,6 +17,7 @@ export function BoutiqueView() {
   const DRAWER_STATE_KEY = "boutique.drawer.open.v1";
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null);
 
   // Handle openCart query parameter - only once on mount
   useEffect(() => {
@@ -24,6 +25,24 @@ export function BoutiqueView() {
     
     const openCartParam = searchParams.get("openCart");
     const productId = searchParams.get("product");
+    
+    // Si un productId est présent, le mettre en évidence
+    if (productId) {
+      setHighlightedProductId(productId);
+      
+      // Scroller vers le produit après un court délai pour laisser le temps au rendu
+      setTimeout(() => {
+        const element = document.getElementById(`product-${productId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+      
+      // Retirer la mise en évidence après 5 secondes
+      setTimeout(() => {
+        setHighlightedProductId(null);
+      }, 5000);
+    }
     
     // Si openCart=true est présent, ouvrir le panier
     if (openCartParam === "true") {
@@ -118,8 +137,13 @@ export function BoutiqueView() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {catalog.map((p) => (
-          <ProductCard key={p.id} product={p} onAdd={(prod) => add({ product: prod, quantity: 1 })} />)
-        )}
+          <ProductCard 
+            key={p.id} 
+            product={p} 
+            onAdd={(prod) => add({ product: prod, quantity: 1 })}
+            isHighlighted={highlightedProductId === p.id}
+          />
+        ))}
       </div>
 
       {/* Floating Cart Button (hidden on mobile, shown from sm+) */}
