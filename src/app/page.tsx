@@ -559,10 +559,10 @@ export default function Home() {
         </div>
       </section>
       <StatisticsSection />
-      <div className="-my-8 md:-my-10">
+      <div className="space-y-0">
         <VolunteersSection />
+        <GAMSlogan />
       </div>
-      <GAMSlogan />
     </div>
   );
 }

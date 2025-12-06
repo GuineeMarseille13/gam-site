@@ -3,9 +3,9 @@ import { getPoleBySlug, getAllPoleSlugs } from "@/data/poles";
 import PolePage from "@/components/poles/PolePage";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -15,8 +15,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function PoleDetailPage({ params }: PageProps) {
-  const pole = getPoleBySlug(params.slug);
+export default async function PoleDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const pole = getPoleBySlug(slug);
 
   if (!pole) {
     notFound();

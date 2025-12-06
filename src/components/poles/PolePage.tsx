@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +21,33 @@ interface PolePageProps {
 }
 
 export default function PolePage({ pole }: PolePageProps) {
+  const descriptionRef = useRef<HTMLElement | null>(null);
+  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
+
+  useEffect(() => {
+    if (!descriptionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsDescriptionVisible(true);
+        }
+      },
+      { threshold: 0, rootMargin: "-50% 0px" }
+    );
+
+    observer.observe(descriptionRef.current);
+
+    // Vérifier si déjà visible au chargement
+    const rect = descriptionRef.current.getBoundingClientRect();
+    const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+    if (isVisible) {
+      setIsDescriptionVisible(true);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white">
       {/* Hero Section - Design ultra-moderne avec effets avancés */}
@@ -150,21 +177,20 @@ export default function PolePage({ pole }: PolePageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Description détaillée - Section introductive avec design moderne */}
         <motion.section
+          ref={descriptionRef as any}
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          animate={isDescriptionVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{
             duration: 0.8,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="relative -mt-10 md:-mt-16 mb-12 md:mb-16"
+          className="relative md:-mt-16 mb-12 md:mb-16"
         >
           <div className="relative group">
             {/* Carte principale avec design épuré */}
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
+              animate={isDescriptionVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.98 }}
               transition={{
                 duration: 0.6,
                 ease: [0.22, 1, 0.36, 1],
@@ -193,8 +219,7 @@ export default function PolePage({ pole }: PolePageProps) {
                 {/* Badge "À propos" optimisé */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
+                  animate={isDescriptionVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                   transition={{
                     duration: 0.5,
                     type: "spring",
@@ -244,8 +269,7 @@ export default function PolePage({ pole }: PolePageProps) {
                 {/* Texte descriptif avec typographie optimisée */}
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={isDescriptionVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                   transition={{
                     duration: 0.6,
                     delay: 0.1,
@@ -259,8 +283,7 @@ export default function PolePage({ pole }: PolePageProps) {
                 {/* CTA - Bouton pour contacter amélioré */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={isDescriptionVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                   transition={{
                     duration: 0.5,
                     delay: 0.2,

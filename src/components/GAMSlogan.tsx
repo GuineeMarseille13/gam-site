@@ -11,7 +11,7 @@ const GAMSlogan = () => {
         <div className="mb-6 md:mb-8">
           <GooeyText
             texts={["Ensemble", "Unis", "Solidaires", "Forts"]}
-            morphTime={1}
+            morphTime={1.5}
             cooldownTime={1}
             className="h-[70px] flex items-center justify-center"
             textClassName="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-lg"

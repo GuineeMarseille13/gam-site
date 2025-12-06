@@ -303,7 +303,7 @@ export default function VolunteersSection() {
   return (
     <section
       ref={sectionRef}
-      className="px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden"
+      className="px-4 w-full sm:px-6 lg:px-8 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden"
     >
       {/* Fond avec pattern subtil amélioré */}
       <div className="absolute inset-0 opacity-[0.03]">
@@ -329,12 +329,12 @@ export default function VolunteersSection() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center min-h-[75vh]">
+      <div className="w-full relative z-10">
+        <div className="grid lg:grid-cols-2 gap-4 items-stretch min-h-[75vh]">
           {/* Partie gauche - Texte de remerciement amélioré */}
           <div
             className={cn(
-              "space-y-10 transition-all duration-1200 ease-out",
+              "space-y-10 transition-all duration-1200 ease-out h-full flex flex-col justify-center",
               isVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-16"
@@ -370,14 +370,14 @@ export default function VolunteersSection() {
           <div
             ref={containerRef}
             className={cn(
-              "relative h-[600px] md:h-[650px] transition-all duration-1200 ease-out delay-500",
+              "relative w-full h-full min-h-[600px] md:min-h-[650px] transition-all duration-1200 ease-out delay-500",
               isVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-16"
             )}
           >
             {/* Container pour les bulles flottantes avec mouvement fluide */}
-            <div className="absolute inset-0 overflow-hidden rounded-3xl">
+            <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
               {floatingVolunteers.map((volunteer, index) => (
                 <div
                   key={volunteer.id}
@@ -459,60 +459,6 @@ export default function VolunteersSection() {
           </div>
         </div>
       </div>
-
-      {/* Supprimez cette section complètement */}
-      {/* Particules flottantes améliorées */}
-      {/* <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${2 + Math.random() * 4}px`,
-              height: `${2 + Math.random() * 4}px`,
-              backgroundColor: [
-                "var(--theme-red)",
-                "var(--theme-yellow)",
-                "var(--theme-green)",
-                "var(--theme-blue)",
-              ][i % 4],
-              opacity: 0.3 + Math.random() * 0.4,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
-      </div> */}
     </section>
   );
-}
-
-// Composant séparé pour les particules pour éviter les problèmes d'hydratation
-function FloatingParticle({ index }: { index: number }) {
-  const [style, setStyle] = useState<React.CSSProperties>({});
-
-  useEffect(() => {
-    // Générer les styles côté client uniquement
-    const colors = [
-      "var(--theme-red)",
-      "var(--theme-yellow)",
-      "var(--theme-green)",
-      "var(--theme-blue)",
-    ];
-
-    setStyle({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      width: `${2 + Math.random() * 4}px`,
-      height: `${2 + Math.random() * 4}px`,
-      backgroundColor: colors[index % 4],
-      opacity: 0.3 + Math.random() * 0.4,
-      animationDelay: `${Math.random() * 5}s`,
-      animationDuration: `${3 + Math.random() * 4}s`,
-    });
-  }, [index]);
-
-  return <div className="absolute rounded-full animate-float" style={style} />;
 }
