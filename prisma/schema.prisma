@@ -1,0 +1,663 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum EventMediaType {
+  image
+  video
+}
+
+enum ReviewRating {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+}
+
+enum StatisticColor {
+  red
+  yellow
+  green
+  blue
+}
+
+enum ContactMethodType {
+  email
+  phone
+  address
+}
+
+enum SocialPlatform {
+  facebook
+  instagram
+  tiktok
+  linkedin
+  twitter
+  youtube
+  snapchat
+}
+
+enum ContactSubmissionStatus {
+  pending
+  read
+  replied
+  archived
+}
+
+enum AdhesionStatus {
+  pending
+  paid
+  confirmed
+  cancelled
+}
+
+enum DonationStatus {
+  pending
+  paid
+  confirmed
+  cancelled
+}
+
+enum OrderStatus {
+  pending
+  paid
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum CategoryType {
+  product
+  event
+  partner
+}
+
+enum MediaType {
+  image
+  video
+  document
+  pdf
+}
+
+enum SettingType {
+  string
+  number
+  boolean
+  json
+}
+
+enum UserRole {
+  admin
+  editor
+  viewer
+}
+
+// ============================================================================
+// MODELS PRINCIPAUX
+// ============================================================================
+
+model Pole {
+  id                String   @id @default(uuid())
+  slug              String   @unique
+  title             String
+  shortDescription  String   @db.Text
+  description       String   @db.Text
+  image             String
+  features          String[] @default([])
+  contactInfo       Json?    // { email?, phone?, schedule?, address? }
+  permanenceDates   String[] @default([]) // Format: "YYYY-MM-DD"
+  statistics        Json?    // { title?, items: [{ value, label, description? }] }
+  colorScheme       Json     // { primary, secondary, accent }
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  services          PoleService[]
+  eventImages       PoleEventImage[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@map("poles")
+}
+
+model PoleService {
+  id          String   @id @default(uuid())
+  poleId      String
+  title       String
+  description String   @db.Text
+  icon        String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pole        Pole     @relation(fields: [poleId], references: [id], onDelete: Cascade)
+
+  @@index([poleId])
+  @@index([order])
+  @@map("pole_services")
+}
+
+model PoleEventImage {
+  id          String   @id @default(uuid())
+  poleId      String
+  url         String
+  title       String?
+  description String?   @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pole        Pole     @relation(fields: [poleId], references: [id], onDelete: Cascade)
+
+  @@index([poleId])
+  @@index([order])
+  @@map("pole_event_images")
+}
+
+model Event {
+  id          String        @id @default(uuid())
+  title       String
+  description String        @db.Text
+  date        DateTime
+  location    String?
+  year        Int
+  category    String?
+  tags        String[]      @default([])
+  isPublished Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  media       EventMedia[]
+  categoryRef Category?      @relation(fields: [categoryId], references: [id])
+  categoryId String?
+
+  @@index([year])
+  @@index([date])
+  @@index([isPublished])
+  @@index([categoryId])
+  @@map("events")
+}
+
+model EventMedia {
+  id          String        @id @default(uuid())
+  eventId     String
+  type        EventMediaType
+  url         String
+  description String?       @db.Text
+  order       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([order])
+  @@map("event_media")
+}
+
+model Product {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?    @db.Text
+  image         String
+  images        String[]   @default([])
+  price         Decimal    @db.Decimal(10, 2)
+  originalPrice Decimal?   @db.Decimal(10, 2)
+  category      String?
+  inStock       Boolean   @default(true)
+  stockQuantity Int       @default(0)
+  featured      Boolean   @default(false)
+  discount      Int?      // Pourcentage (0-100)
+  sku           String?   @unique
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  categoryRef   Category?  @relation(fields: [categoryId], references: [id])
+  categoryId   String?
+  orderItems   OrderItem[]
+
+  @@index([categoryId])
+  @@index([inStock])
+  @@index([featured])
+  @@index([isActive])
+  @@index([sku])
+  @@map("products")
+}
+
+model Partner {
+  id          String   @id @default(uuid())
+  name        String
+  logo        String
+  description String?   @db.Text
+  website     String?
+  category    String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  categoryRef Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+
+  @@index([categoryId])
+  @@index([order])
+  @@index([isActive])
+  @@map("partners")
+}
+
+model Review {
+  id          String       @id @default(uuid())
+  name        String
+  role        String
+  body        String       @db.Text
+  img         String
+  country     String
+  rating      ReviewRating @default(FIVE)
+  isPublished Boolean      @default(false)
+  isFeatured  Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([isPublished])
+  @@index([isFeatured])
+  @@index([rating])
+  @@map("reviews")
+}
+
+model Statistic {
+  id        String          @id @default(uuid())
+  label     String
+  value     Int
+  color     StatisticColor
+  icon      String
+  suffix    String?
+  order     Int            @default(0)
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("statistics")
+}
+
+model Volunteer {
+  id        String   @id @default(uuid())
+  name      String
+  image     String
+  role      String?
+  initials  String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("volunteers")
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  image     String
+  order     Int      @default(0)
+  bio       String?  @db.Text
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("team_members")
+}
+
+model AssociationInfo {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?   @db.Text
+  logo          String?
+  president     Json?     // { name, role, image, message }
+  aboutUs       Json?     // { whoWeAre: { title, text, image }, whatWeOffer: { title, text, image } }
+  foundingDate  DateTime?
+  address       String?
+  contactEmail  String?
+  contactPhone  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("association_info")
+}
+
+model ActivityReport {
+  id          String   @id @default(uuid())
+  year        Int      @unique
+  title       String
+  pdfUrl      String
+  description String?   @db.Text
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([year])
+  @@index([isPublished])
+  @@map("activity_reports")
+}
+
+model ContactMethod {
+  id        String            @id @default(uuid())
+  type      ContactMethodType
+  label     String
+  value     String
+  href      String?
+  icon      String
+  color     String
+  order     Int               @default(0)
+  isActive  Boolean           @default(true)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("contact_methods")
+}
+
+model SocialNetwork {
+  id        String         @id @default(uuid())
+  platform  SocialPlatform @unique
+  label     String
+  href      String
+  color     String
+  icon      String
+  order     Int            @default(0)
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@index([platform])
+  @@map("social_networks")
+}
+
+model CarouselItem {
+  id          String   @id @default(uuid())
+  image       String
+  title       String
+  description String   @db.Text
+  link        String?
+  linkText    String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("carousel_items")
+}
+
+model ContactSubmission {
+  id        String                  @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  subject   String
+  message   String                  @db.Text
+  status    ContactSubmissionStatus @default(pending)
+  repliedAt DateTime?
+  repliedBy String?                // User ID
+  notes     String?                 @db.Text
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+
+  // Relations
+  repliedByUser User? @relation(fields: [repliedByUserId], references: [id])
+  repliedByUserId String?
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@map("contact_submissions")
+}
+
+model AdhesionSubmission {
+  id              String          @id @default(uuid())
+  members         Json            // Array of { firstName, lastName, phone, email }
+  message         String?         @db.Text
+  totalAmount     Decimal         @db.Decimal(10, 2)
+  status          AdhesionStatus  @default(pending)
+  paymentMethod   String?
+  paymentReference String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([paymentReference])
+  @@map("adhesion_submissions")
+}
+
+model Donation {
+  id              String         @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String?
+  phone           String?
+  amount          Decimal        @db.Decimal(10, 2)
+  message         String?        @db.Text
+  status          DonationStatus @default(pending)
+  paymentMethod   String?
+  paymentReference String?
+  isAnonymous     Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@index([paymentReference])
+  @@map("donations")
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  customer        Json        // { firstName, lastName, email, phone }
+  totalAmount     Decimal     @db.Decimal(10, 2)
+  status          OrderStatus @default(pending)
+  shippingAddress Json?       // { street, city, postalCode, country }
+  paymentMethod   String?
+  paymentReference String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  items           OrderItem[]
+
+  @@index([orderNumber])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model Category {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  description String?      @db.Text
+  image       String?
+  type        CategoryType
+  parentId    String?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  parent      Category?    @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[]   @relation("CategoryHierarchy")
+  products    Product[]
+  events      Event[]
+  partners    Partner[]
+
+  @@index([slug])
+  @@index([type])
+  @@index([parentId])
+  @@index([isActive])
+  @@map("categories")
+}
+
+model Media {
+  id          String    @id @default(uuid())
+  filename    String
+  originalName String
+  mimeType    String
+  url         String
+  size        Int
+  type        MediaType
+  alt         String?
+  description String?   @db.Text
+  uploadedBy  String?   // User ID
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  uploadedByUser User?  @relation(fields: [uploadedByUserId], references: [id])
+  uploadedByUserId String?
+
+  @@index([type])
+  @@index([uploadedByUserId])
+  @@index([createdAt])
+  @@map("media")
+}
+
+model Setting {
+  id          String      @id @default(uuid())
+  key         String      @unique
+  value       Json
+  type        SettingType
+  description String?     @db.Text
+  category    String?
+  updatedAt   DateTime    @updatedAt
+  updatedBy   String?     // User ID
+
+  // Relations
+  updatedByUser User?     @relation(fields: [updatedByUserId], references: [id])
+  updatedByUserId String?
+
+  @@index([key])
+  @@index([category])
+  @@map("settings")
+}
+
+// ============================================================================
+// MODELS SUPPORT
+// ============================================================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Hashé
+  firstName String
+  lastName  String
+  role      UserRole @default(viewer)
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  contactSubmissionsReplied ContactSubmission[]
+  mediaUploaded            Media[]
+  settingsUpdated           Setting[]
+  logs                     Log[]
+  notifications            Notification[]
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  type        String
+  title       String
+  message     String   @db.Text
+  recipientId String   // User ID
+  isRead      Boolean  @default(false)
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  recipient   User     @relation(fields: [recipientUserId], references: [id])
+  recipientUserId String
+
+  @@index([recipientUserId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model Log {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String?
+  entityId   String?
+  userId     String?  // User ID
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  // Relations
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@index([action])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("logs")
+}
