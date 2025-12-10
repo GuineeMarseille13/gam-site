@@ -3,8 +3,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
-// Données des témoignages pour l'association GAM
-const testimonials = [
+interface Review {
+  id: string;
+  name: string;
+  role: string;
+  body: string;
+  img: string;
+  country: string;
+  rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
+  isPublished: boolean;
+  isFeatured: boolean;
+}
+
+interface ReviewsSectionProps {
+  reviews?: Review[];
+}
+
+// Données par défaut des témoignages pour l'association GAM
+const defaultTestimonials = [
   {
     name: "Fatoumata Diallo",
     role: "Membre active",
@@ -79,6 +95,18 @@ const testimonials = [
   },
 ];
 
+// Fonction pour convertir le rating en nombre
+function ratingToNumber(rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE'): number {
+  const map = {
+    'ONE': 1,
+    'TWO': 2,
+    'THREE': 3,
+    'FOUR': 4,
+    'FIVE': 5,
+  };
+  return map[rating];
+}
+
 function TestimonialCard({
   img,
   name,
@@ -109,7 +137,7 @@ function TestimonialCard({
             <div className="flex gap-0.5 mt-1">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
-                  key={i}
+                  key={`star-${name}-${i}`}
                   className={`size-3 ${
                     i < rating
                       ? "fill-amber-400 text-amber-400"
@@ -128,7 +156,27 @@ function TestimonialCard({
   );
 }
 
-const ReviewsSection = () => {
+const ReviewsSection = ({ reviews }: ReviewsSectionProps) => {
+  // Transformer les reviews de l'API en format attendu par le composant
+  const testimonials = reviews && reviews.length > 0
+    ? reviews.map((review, idx) => ({
+        id: review.id || `review-${idx}`,
+        name: review.name,
+        role: review.role,
+        body: review.body,
+        img: review.img,
+        country: review.country,
+        rating: ratingToNumber(review.rating),
+      }))
+    : defaultTestimonials.map((review, idx) => ({
+        id: `default-review-${idx}`,
+        ...review,
+      }));
+
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-amber-50/30 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,7 +197,7 @@ const ReviewsSection = () => {
           {/* Marquee horizontal (vers la gauche) */}
           <Marquee pauseOnHover repeat={3} className="[--duration:25s] mb-4">
             {testimonials.map((review, index) => (
-              <TestimonialCard key={`${review.name}-${index}`} {...review} />
+              <TestimonialCard key={`review-left-${review.id || review.name}-${index}`} {...review} />
             ))}
           </Marquee>
 
@@ -161,7 +209,7 @@ const ReviewsSection = () => {
             className="[--duration:25s]"
           >
             {testimonials.map((review, index) => (
-              <TestimonialCard key={`${review.name}-reverse-${index}`} {...review} />
+              <TestimonialCard key={`review-right-${review.id || review.name}-${index}`} {...review} />
             ))}
           </Marquee>
 

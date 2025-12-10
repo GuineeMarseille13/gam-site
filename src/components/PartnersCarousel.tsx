@@ -278,11 +278,11 @@ export default function PartnersCarousel({
               transition={{ delay: 0.3, duration: 0.5 }}
               className="flex justify-center items-center mt-10 sm:mt-12 gap-2 sm:gap-3"
             >
-              {safePartners.map((_, index) => {
+              {safePartners.map((partner, index) => {
                 const isActive = index === currentIndex % totalPartners;
                 return (
                   <motion.button
-                    key={index}
+                    key={`partner-dot-${partner.id || index}`}
                     onClick={() => goToSlide(index)}
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, handleApiError } from '@/lib/api/response'
+import { successResponse } from '@/lib/api/response'
+import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
 const createReviewSchema = z.object({

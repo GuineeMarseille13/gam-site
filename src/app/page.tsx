@@ -13,9 +13,29 @@ import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import EventsSection from "@/components/EventsSection";
 import { ProductCard } from "@/app/boutique/_components/product-card";
-import { getCatalog } from "@/app/boutique/_services/products";
 import { useCart } from "@/app/boutique/_hooks/use-cart";
 import type { Product } from "@/app/boutique/_schemas/product.schema";
+import {
+  useCarouselItems,
+  usePartners,
+  useRecentEvents,
+  useReviews,
+  useStatistics,
+  useVolunteers,
+  useFeaturedProducts,
+} from "@/app/_hooks/use-home-data";
+import {
+  CarouselSkeleton,
+  PartnersCarouselSkeleton,
+  EventsSectionSkeleton,
+  ReviewsSectionSkeleton,
+  ProductsSectionSkeleton,
+  StatisticsSectionSkeleton,
+  VolunteersSectionSkeleton,
+  PresentationSectionSkeleton,
+  PoleSectionSkeleton,
+  GAMSloganSkeleton,
+} from "@/components/skeletons";
 
 // ============================================================================
 // CONSTANTES DE CONFIGURATION
@@ -68,48 +88,6 @@ const FLOATING_ELEMENTS_CONFIG = {
 // ============================================================================
 
 /**
- * Éléments du carrousel principal de la page d'accueil
- */
-const carouselItems = [
-  {
-    id: 1,
-    image:
-      "https://cdn.pixabay.com/photo/2023/01/28/19/01/bird-7751561_1280.jpg",
-    title: "Association GAM",
-    description:
-      "Découvrez notre association et nos actions en faveur de la communauté",
-  },
-  {
-    id: 2,
-    image:
-      "https://cdn.pixabay.com/photo/2024/11/02/19/08/bird-9169969_1280.jpg",
-    title: "Nos Événements",
-    description: "Participez à nos événements culturels et caritatifs",
-  },
-  {
-    id: 3,
-    image:
-      "https://cdn.pixabay.com/photo/2022/12/06/14/56/cookie-cutters-7639169_1280.jpg",
-    title: "Adhésion",
-    description: "Rejoignez-nous pour contribuer à nos missions",
-  },
-  {
-    id: 4,
-    image:
-      "https://cdn.pixabay.com/photo/2025/07/05/02/55/together-9697018_1280.png",
-    title: "Adhésion",
-    description: "Rejoignez-nous pour contribuer à nos missions",
-  },
-  {
-    id: 5,
-    image:
-      "https://cdn.pixabay.com/photo/2025/07/20/13/12/little-red-riding-hood-9724469_1280.jpg",
-    title: "Adhésion",
-    description: "Rejoignez-nous pour contribuer à nos missions",
-  },
-];
-
-/**
  * Éléments emoji à afficher dans l'animation flottante
  */
 const floatingElements = [
@@ -136,52 +114,6 @@ const floatingElements = [
   "🐓",
 ];
 
-/**
- * Données des partenaires pour le carrousel
- */
-const partnersData = [
-  {
-    id: 1,
-    name: "Partenaire 1",
-    logo: "https://picsum.photos/300/200?random=1",
-    description: "Description du partenaire 1",
-    website: "https://www.partenaire1.com",
-    category: "Catégorie 1",
-  },
-  {
-    id: 2,
-    name: "Partenaire 2",
-    logo: "https://picsum.photos/300/200?random=2",
-    description: "Description du partenaire 2",
-    website: "https://www.partenaire2.com",
-    category: "Catégorie 2",
-  },
-  {
-    id: 3,
-    name: "Partenaire 3",
-    logo: "https://picsum.photos/300/200?random=3",
-    description: "Description du partenaire 3",
-    website: "https://www.partenaire3.com",
-    category: "Catégorie 3",
-  },
-  {
-    id: 4,
-    name: "Partenaire 4",
-    logo: "https://picsum.photos/300/200?random=4",
-    description: "Description du partenaire 4",
-    website: "https://www.partenaire4.com",
-    category: "Catégorie 4",
-  },
-  {
-    id: 5,
-    name: "Partenaire 5",
-    logo: "https://picsum.photos/300/200?random=5",
-    description: "Description du partenaire 5",
-    website: "https://www.partenaire5.com",
-    category: "Catégorie 5",
-  },
-];
-
 // ============================================================================
 // HOOK PERSONNALISÉ : Gestion du carrousel circulaire infini
 // ============================================================================
@@ -192,7 +124,7 @@ const partnersData = [
  * @param catalog - Liste des produits à afficher
  * @returns Objet contenant les refs, états et fonctions nécessaires au carrousel
  */
-function useInfiniteCarousel(catalog: ReturnType<typeof getCatalog>) {
+function useInfiniteCarousel(catalog: Product[]) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
@@ -449,10 +381,80 @@ function useInfiniteCarousel(catalog: ReturnType<typeof getCatalog>) {
  * Affiche plusieurs sections : carrousel, présentation, produits, statistiques, etc.
  */
 export default function Home() {
-  // Récupération du catalogue de produits
-  const catalog = useMemo(() => getCatalog(), []);
+  // Récupération des données dynamiques
+  const { data: carouselItems = [], isLoading: isLoadingCarousel, isError: isErrorCarousel } = useCarouselItems();
+  const { data: partnersData = [], isLoading: isLoadingPartners } = usePartners();
+  const { data: recentEvents = [], isLoading: isLoadingEvents } = useRecentEvents();
+  const { data: reviews = [], isLoading: isLoadingReviews } = useReviews();
+  const { data: statistics = [], isLoading: isLoadingStatistics } = useStatistics();
+  const { data: volunteers = [], isLoading: isLoadingVolunteers } = useVolunteers();
+  const { data: featuredProducts = [], isLoading: isLoadingProducts } = useFeaturedProducts();
+
   const { add } = useCart();
   const router = useRouter();
+
+  // Données par défaut pour le carrousel si l'API ne retourne rien
+  const defaultCarouselItems = useMemo(() => [
+    {
+      id: 1,
+      image: "https://cdn.pixabay.com/photo/2023/01/28/19/01/bird-7751561_1280.jpg",
+      title: "Association GAM",
+      description: "Découvrez notre association et nos actions en faveur de la communauté",
+    },
+    {
+      id: 2,
+      image: "https://cdn.pixabay.com/photo/2024/11/02/19/08/bird-9169969_1280.jpg",
+      title: "Nos Événements",
+      description: "Participez à nos événements culturels et caritatifs",
+    },
+    {
+      id: 3,
+      image: "https://cdn.pixabay.com/photo/2022/12/06/14/56/cookie-cutters-7639169_1280.jpg",
+      title: "Adhésion",
+      description: "Rejoignez-nous pour contribuer à nos missions",
+    },
+  ], []);
+
+  // Transformer les données du carrousel pour correspondre au format attendu
+  const transformedCarouselItems = useMemo(() => {
+    // Utiliser les données de l'API si disponibles, sinon les données par défaut
+    const itemsToUse = carouselItems.length > 0 ? carouselItems : defaultCarouselItems;
+    const transformed = itemsToUse.map((item: any) => ({
+      id: typeof item.id === 'string' ? parseInt(item.id) || 0 : (item.id || 0),
+      image: item.image || '',
+      title: item.title || '',
+      description: item.description || '',
+    }));
+    return transformed;
+  }, [carouselItems, defaultCarouselItems]);
+
+  // Transformer les données des partenaires pour correspondre au format attendu
+  const transformedPartners = useMemo(() => {
+    return partnersData.map((partner) => ({
+      id: parseInt(partner.id) || 0,
+      name: partner.name,
+      logo: partner.logo,
+      description: partner.description,
+      website: partner.website,
+      category: partner.category,
+    }));
+  }, [partnersData]);
+
+  // Transformer les données des produits pour correspondre au format attendu
+  const transformedProducts = useMemo(() => {
+    return featuredProducts.map((product) => ({
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+      description: product.description,
+      category: product.category,
+      inStock: product.inStock,
+      featured: product.featured,
+      discount: product.discount,
+      originalPrice: product.originalPrice,
+    }));
+  }, [featuredProducts]);
 
   // Fonction pour gérer le clic sur "Commander"
   const handleOrder = useCallback((product: Product) => {
@@ -469,85 +471,159 @@ export default function Home() {
     scrollBy,
     handleMouseEnter,
     handleMouseLeave,
-  } = useInfiniteCarousel(catalog);
+  } = useInfiniteCarousel(transformedProducts);
+
+  // Déterminer si on est en mode chargement global
+  const isInitialLoading = isLoadingCarousel || isLoadingPartners || isLoadingEvents || 
+                           isLoadingReviews || isLoadingProducts || isLoadingStatistics || isLoadingVolunteers;
 
   return (
     <div className="font-sans min-h-screen relative space-y-8 md:space-y-10">
-      {/* Animation d'éléments flottants */}
+      {/* Animation d'éléments flottants - toujours affichée */}
       <FloatingElementsAnimation
         elements={floatingElements}
         {...FLOATING_ELEMENTS_CONFIG}
       />
 
-      {/* Carrousel principal */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Carousel
-          items={carouselItems}
-          {...CAROUSEL_CONFIG}
-          className="shadow-2xl rounded-xl overflow-hidden"
-        />
-      </div>
-      <PresentationSection />
-      <PoleSection />
-
-      {/* Carrousel des partenaires */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <PartnersCarousel
-          partners={partnersData}
-          {...CAROUSEL_CONFIG}
-          showArrows={true}
-          title="Nos Partenaires de Confiance"
-          className="bg-white"
-        />
-      </div>
-
-      {/* Section Nos Événements */}
-      <EventsSection />
-
-      <ReviewsSection />
-
-      {/* Section Produits - carrousel + description */}
-      <section className="w-full">
-        <div className="text-center sm:mb-6">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
-            Nos Produits
-          </h2>
-          <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
-          <p className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4">
-            Découvrez notre sélection d&apos;articles pour soutenir
-            l&apos;association tout en vous faisant plaisir. Chaque achat
-            contribue directement à nos actions locales et solidaires.
-          </p>
-        </div>
-
-        {/* Carrousel de produits (avec ProductCard) */}
-        <div
-          className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <div
-            ref={scrollRef}
-            className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {duplicatedCatalog.map((p, index) => (
-              <div
-                key={`${p.id}-${index}`}
-                className="snap-start shrink-0 w-[320px] sm:w-[360px]"
-              >
-                <ProductCard
-                  product={p}
-                  onAdd={handleOrder}
-                />
-              </div>
-            ))}
+      {/* Carrousel principal - Remplacé complètement par le skeleton */}
+      {isLoadingCarousel ? (
+        <CarouselSkeleton />
+      ) : (
+        transformedCarouselItems.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Carousel
+              items={transformedCarouselItems}
+              {...CAROUSEL_CONFIG}
+              className="shadow-2xl rounded-xl overflow-hidden"
+            />
           </div>
-        </div>
-      </section>
-      <StatisticsSection />
+        )
+      )}
+
+      {/* Section Présentation - Remplacée complètement par le skeleton pendant le chargement initial */}
+      {isInitialLoading ? (
+        <PresentationSectionSkeleton />
+      ) : (
+        <PresentationSection />
+      )}
+
+      {/* Section Pôles - Remplacée complètement par le skeleton pendant le chargement initial */}
+      {isInitialLoading ? (
+        <PoleSectionSkeleton />
+      ) : (
+        <PoleSection />
+      )}
+
+      {/* Carrousel des partenaires - Remplacé complètement par le skeleton */}
+      {isLoadingPartners ? (
+        <PartnersCarouselSkeleton />
+      ) : (
+        transformedPartners.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <PartnersCarousel
+              partners={transformedPartners}
+              {...CAROUSEL_CONFIG}
+              showArrows={true}
+              title="Nos Partenaires de Confiance"
+              className="bg-white"
+            />
+          </div>
+        )
+      )}
+
+      {/* Section Nos Événements - Remplacée complètement par le skeleton */}
+      {isLoadingEvents ? (
+        <EventsSectionSkeleton />
+      ) : (
+        <EventsSection
+          events={recentEvents.map((event, idx) => ({
+            id: parseInt(event.id) || idx + 1,
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            image: event.image,
+            video: event.video,
+            location: event.location,
+          }))}
+        />
+      )}
+
+      {/* Section Témoignages - Remplacée complètement par le skeleton */}
+      {isLoadingReviews ? (
+        <ReviewsSectionSkeleton />
+      ) : (
+        <ReviewsSection reviews={reviews} />
+      )}
+
+      {/* Section Produits - Remplacée complètement par le skeleton */}
+      {isLoadingProducts ? (
+        <ProductsSectionSkeleton />
+      ) : (
+        transformedProducts.length > 0 && (
+          <section className="w-full">
+            <div className="text-center sm:mb-6">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
+                Nos Produits
+              </h2>
+              <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
+              <p className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4">
+                Découvrez notre sélection d&apos;articles pour soutenir
+                l&apos;association tout en vous faisant plaisir. Chaque achat
+                contribue directement à nos actions locales et solidaires.
+              </p>
+            </div>
+
+            {/* Carrousel de produits (avec ProductCard) */}
+            <div
+              className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div
+                ref={scrollRef}
+                className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {duplicatedCatalog.map((p, index) => {
+                  const uniqueKey = `product-${p.id}-${index}`;
+                  return (
+                    <div
+                      key={uniqueKey}
+                      className="snap-start shrink-0 w-[320px] sm:w-[360px]"
+                    >
+                      <ProductCard
+                        product={p}
+                        onAdd={handleOrder}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )
+      )}
+
+      {/* Section Statistiques - Remplacée complètement par le skeleton */}
+      {isLoadingStatistics ? (
+        <StatisticsSectionSkeleton />
+      ) : (
+        <StatisticsSection statistics={statistics} />
+      )}
+
+      {/* Section Bénévoles et Slogan */}
       <div className="space-y-0">
-        <VolunteersSection />
-        <GAMSlogan />
+        {isLoadingVolunteers ? (
+          <VolunteersSectionSkeleton />
+        ) : (
+          <VolunteersSection volunteers={volunteers} />
+        )}
+        
+        {/* Slogan GAM - Remplacé complètement par le skeleton pendant le chargement initial */}
+        {isInitialLoading ? (
+          <GAMSloganSkeleton />
+        ) : (
+          <GAMSlogan />
+        )}
       </div>
     </div>
   );

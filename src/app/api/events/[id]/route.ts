@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, notFoundResponse, handleApiError } from '@/lib/api/response'
+import { successResponse, notFoundResponse } from '@/lib/api/response'
+import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
 const updateEventSchema = z.object({

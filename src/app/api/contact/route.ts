@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, handleApiError } from '@/lib/api/response'
+import { successResponse } from '@/lib/api/response'
+import { handleApiError } from '@/lib/api/errors'
 import { contactFormSchema } from '@/app/contacts/_schemas/contact.schema'
 
 // POST /api/contact - Créer une soumission de contact

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, handleApiError } from '@/lib/api/response'
+import { successResponse } from '@/lib/api/response'
+import { handleApiError } from '@/lib/api/errors'
 
 // GET /api/contact/submissions - Liste toutes les soumissions de contact
 export async function GET(request: NextRequest) {
