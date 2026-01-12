@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Minus, Users, CheckCircle2, Trash2 } from "lucide-react";
+import { Plus, Minus, Users, CheckCircle2, Trash2, Loader2, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_schemas/adhesion.schema";
+import StripePaymentForm from "./stripe-payment-form";
 
 export default function AdhesionView() {
   const [members, setMembers] = useState<Member[]>([
@@ -12,6 +13,12 @@ export default function AdhesionView() {
   ]);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [validatedMembers, setValidatedMembers] = useState<Member[]>([]);
+  const [validatedMessage, setValidatedMessage] = useState("");
   const total = useMemo(() => members.length * PRICE_PER_MEMBER_EUR, [members.length]);
 
   const frenchPhoneRegex = /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/;
@@ -49,8 +56,10 @@ export default function AdhesionView() {
     setMembers((prev) => prev.map((m, i) => (i === idx ? { ...m, [field]: value } : m)));
   };
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    
     const parsed = adhesionPayloadSchema.safeParse({ members, message });
     if (!parsed.success) {
       const errors = parsed.error.flatten();
@@ -59,16 +68,65 @@ export default function AdhesionView() {
         const firstMemberError = memberErrors[0];
         if (firstMemberError && typeof firstMemberError === "object") {
           const fieldErrors = Object.values(firstMemberError).flat();
-          alert(fieldErrors[0] || "Veuillez vérifier le formulaire.");
+          setError(fieldErrors[0] as string || "Veuillez vérifier le formulaire.");
         } else {
-          alert(firstMemberError || "Veuillez vérifier le formulaire.");
+          setError(firstMemberError || "Veuillez vérifier le formulaire.");
         }
       } else {
-        alert("Veuillez vérifier le formulaire.");
+        setError("Veuillez vérifier le formulaire.");
       }
       return;
     }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/payment_intents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ members, message }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la création du paiement");
+      }
+
+      const { clientSecret: secret } = await response.json();
+      if (secret) {
+        setClientSecret(secret);
+        setValidatedMembers(members);
+        setValidatedMessage(message);
+        setShowPaymentForm(true);
+      } else {
+        throw new Error("Secret de paiement non disponible");
+      }
+    } catch (err) {
+      console.error("Erreur lors du paiement:", err);
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handlePaymentSuccess = () => {
     setSubmitted(true);
+    setShowPaymentForm(false);
+  }
+
+  const handleBackToForm = () => {
+    setShowPaymentForm(false);
+    setClientSecret(null);
+    setError(null);
+  }
+
+  const handlePaymentCancel = () => {
+    setShowPaymentForm(false);
+    setClientSecret(null);
+    setError(null);
+    // Optionnel : rediriger vers la page cancel
+    // window.location.href = "/cancel";
   }
 
   if (submitted) {
@@ -96,8 +154,49 @@ export default function AdhesionView() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto"
         >
-          Nous vous recontacterons rapidement. Total réglé: <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(total)}</span>
+          Votre paiement a été effectué avec succès. Nous vous recontacterons rapidement. Total réglé: <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(total)}</span>
         </motion.p>
+      </div>
+    );
+  }
+
+  if (showPaymentForm && clientSecret) {
+    return (
+      <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-10">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 shadow-xl shadow-amber-100/50"
+        >
+          <div className="rounded-2xl sm:rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-4 sm:p-6 md:p-8 shadow-inner">
+            <motion.button
+              onClick={handleBackToForm}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors text-xs sm:text-sm"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="font-medium">Retour au formulaire</span>
+            </motion.button>
+
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Finaliser le paiement</h2>
+              <p className="text-sm sm:text-base text-gray-600">
+                Total à payer: <span className="font-semibold text-gray-900">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(total)}</span>
+              </p>
+            </div>
+
+            <StripePaymentForm
+              clientSecret={clientSecret}
+              members={validatedMembers}
+              message={validatedMessage}
+              total={total}
+              onSuccess={handlePaymentSuccess}
+              onCancel={handlePaymentCancel}
+            />
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -254,6 +353,16 @@ export default function AdhesionView() {
           />
         </motion.div>
 
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -8 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-red-700 text-sm sm:text-base"
+          >
+            {error}
+          </motion.div>
+        )}
+
         <motion.div 
           initial={{ opacity: 0, y: 8 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -262,11 +371,20 @@ export default function AdhesionView() {
         >
           <motion.button
             type="submit"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300"
+            disabled={isLoading}
+            whileHover={!isLoading ? { scale: 1.02 } : {}}
+            whileTap={!isLoading ? { scale: 0.98 } : {}}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Users className="w-5 h-5" /> {members.length > 1 ? "Valider les adhésions" : "Valider l'adhésion"}
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" /> Redirection vers le paiement...
+              </>
+            ) : (
+              <>
+                <Users className="w-5 h-5" /> {members.length > 1 ? "Valider les adhésions" : "Valider l'adhésion"}
+              </>
+            )}
           </motion.button>
         </motion.div>
       </form>

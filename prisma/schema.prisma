@@ -1,0 +1,600 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enum pour les pages de l'application
+enum Page {
+  HOME
+  CONTACTS
+  ASSOCIATION
+  MEMBERSHIP
+  SHOP
+  DONATION
+}
+
+// Enum pour les sections spécifiques
+enum Section {
+  // Page Home
+  CAROUSEL
+  PRESENTATION
+  POLE
+  PARTNER
+  EVENT
+  REVIEW
+  PRODUCT
+  ACHIEVEMENT
+  VOLUNTEER
+
+  
+  // Page Pôles
+  POLE_HERO
+  POLE_EVENTS
+  POLE_SERVICES
+  
+  // Page Association
+  PRESIDENT
+  ABOUT_US
+  ACTIVITY_REPORTS
+  TEAM
+  
+}
+
+enum Role {
+  PRESIDENT           // Président
+  VICE_PRESIDENT      // Vice-président
+  SECRETARY           // Secrétaire
+  ASSISTANT_SECRETARY // Secrétaire adjoint
+  TREASURER           // Trésorière
+  ASSISTANT_TREASURER // Trésorière adjoint
+  VOLUNTEER           // Bénévole
+  MEMBER              // Membre
+  AMBASSADOR          // Ambassadeur
+  OTHER               // Autre
+}
+
+
+model Image {
+  id          String   @id @default(cuid())
+  title       String?  // Titre de l'image
+  description String?  // Description optionnelle
+  url         String   // URL ou chemin de l'image
+  alt         String?  // Texte alternatif pour l'accessibilité
+  page        Page     // Page où l'image est utilisée
+  section     Section  // Section spécifique de la page
+  order       Int?     @default(0) // Ordre d'affichage dans la section
+  width       Int?     // Largeur en pixels
+  height      Int?     // Hauteur en pixels
+  size        Int?     // Taille du fichier en bytes
+  format      String?  // Format de l'image (jpg, png, webp, etc.)
+  isActive    Boolean  @default(true) // Si l'image est active/visible
+  metadata    Json?    // Métadonnées supplémentaires (ex: exif, tags, etc.)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations optionnelles
+  poleId      String?  // Si l'image est liée à un pôle spécifique
+  eventId     Int?     // Si l'image est liée à un événement spécifique
+  productId   String?  // Si l'image est liée à un produit spécifique
+
+  @@index([page, section])
+  @@index([isActive])
+  @@index([poleId])
+  @@index([eventId])
+  @@index([productId])
+  @@map("images")
+}
+
+model Video  {
+  id          String   @id @default(cuid())
+  url         String   // URL ou chemin de la vidéo
+  title       String?  // Titre de la vidéo
+  description String?  // Description optionnelle
+  thumbnail   String?  // URL de l'image de prévisualisation
+  page        Page     // Page où la vidéo est utilisée
+  section     Section  // Section spécifique de la page
+  order       Int?     @default(0) // Ordre d'affichage dans la section
+  duration    Int?     // Durée en secondes
+  size        Int?     // Taille du fichier en bytes
+  format      String?  // Format de la vidéo (mp4, webm, etc.)
+  isActive    Boolean  @default(true) // Si la vidéo est active/visible
+  autoplay    Boolean  @default(false) // Si la vidéo doit être en autoplay
+  loop        Boolean  @default(false) // Si la vidéo doit être en boucle
+  muted       Boolean  @default(true) // Si la vidéo doit être muette par défaut
+  metadata    Json?    // Métadonnées supplémentaires (ex: résolution, codec, etc.)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations optionnelles
+  poleId      String?  // Si la vidéo est liée à un pôle spécifique
+  eventId     Int?     // Si la vidéo est liée à un événement spécifique
+  productId   String?  // Si la vidéo est liée à un produit spécifique
+
+  @@index([page, section])
+  @@index([isActive])
+  @@index([poleId])
+  @@index([eventId])
+  @@index([productId])
+  @@map("videos")
+}
+
+model WelcomeSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reasons     Reason[] // Raisons de la section
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("welcome_sections")
+}
+
+model Reason {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la raison
+  icon        String?  // Icone de la raison
+  color       String?  // Couleur de la raison
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si la raison est actif
+  welcomeSectionId String?  // ID de la section d'accueil
+
+  // Relations
+  welcomeSection WelcomeSection? @relation(fields: [welcomeSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("reasons")
+}
+
+model PoleSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  poles       Pole[] // Pôles de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("pole_sections")
+}
+
+model Pole {
+  id          String   @id @default(cuid())
+  name        String   // Nom du pôle
+  description String?  // Description du pôle
+  imageId     String?  // ID de l'image principale du pôle
+  poleSectionId String?  // ID de la section de pôle
+  detailsPoleId String @unique
+
+  // Relations
+  poleSection PoleSection? @relation(fields: [poleSectionId], references: [id])
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("poles")
+}
+
+model DetailsPole {
+  id          String   @id @default(cuid())
+  title       String   // Titre du détail du pôle
+  description String?  // Description du détail du pôle
+  reason      String?  // Raison du détail du pôle
+  imageId     String?  // ID de l'image principale du détail du pôle
+  videoId     String?  // ID de la vidéo principale du détail du pôle
+  isActive    Boolean  @default(true) // Si le détail du pôle est actif
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+
+  @@map("details_poles")
+}
+
+model PartnerSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  partners    Partner[] // Partenaires de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("partner_sections")
+}
+
+model Partner {
+  id          String   @id @default(cuid())
+  name        String   // Nom du partenaire
+  description String?  // Description du partenaire
+  imageId     String?  // ID de l'image principale du partenaire
+  url         String?  // URL du partenaire
+  partnerSectionId String?  // ID de la section de partenaires
+
+  // Relations
+  partnerSection PartnerSection? @relation(fields: [partnerSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("partners")
+}
+
+model EventSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  events      Event[] // Événements de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("event_sections")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title        String   // Nom de l'événement
+  description String?  // Description de l'événement
+  imageId     String?  // ID de l'image principale de l'événement
+  videoId     String?  // ID de la vidéo principale de l'événement
+  startDate   DateTime // Date de début de l'événement
+  endDate     DateTime // Date de fin de l'événement
+  location    String?  // Lieu de l'événement
+
+  eventSectionId String?  // ID de la section d'événement
+
+  // Relations
+  eventSection EventSection? @relation(fields: [eventSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("events")
+}
+
+model ReviewSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reviews     Review[] // Avis de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("review_sections")
+}
+
+model Review {
+  id          String    @id @default(cuid())
+  firstName   String    // Prénom de la personne
+  lastName    String    // Nom de la personne
+  role        Role // Rôle de la personne
+  body        String    @db.Text // Contenu du témoignage/avis
+  avatarUrl   String?  // URL de l'image de profil
+  country     String?  // Pays (ex: "🇬🇳 Guinée" ou "Guinée")
+  rating      Int      @default(5) // Note sur 5 étoiles (1-5)
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si l'avis est visible
+  isVerified  Boolean  @default(false) // Si l'avis est vérifié/modéré
+  reviewSectionId String?  // ID de la section d'avis
+
+  // Relations
+  reviewSection ReviewSection? @relation(fields: [reviewSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime? // Date de publication (si différente de createdAt)
+
+  @@index([isActive])
+  @@index([rating])
+  @@index([order])
+  @@map("reviews")
+}
+
+model ProductSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  products    Product[] // Produits de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("product_sections")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  title       String   // Titre du produit
+  description String?  // Description du produit
+  imageId     String?  // ID de l'image principale du produit
+  price       Int      // Prix du produit
+  stock       Int      // Stock du produit
+  isActive    Boolean  @default(true) // Si le produit est actif
+  productSectionId String?  // ID de la section de produit
+  productCategoryId String?  // ID de la catégorie de produit
+  orderId String?  // ID de la commande du produit
+  // Relations
+  productSection ProductSection? @relation(fields: [productSectionId], references: [id])
+  productCategory ProductCategory? @relation(fields: [productCategoryId], references: [id])
+  orderItems OrderItem[] // Items de la commande
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("products")
+}
+
+model ProductCategory {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la catégorie
+  description String?  // Description de la catégorie
+  products    Product[] // Produits de la catégorie
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("product_categories")
+}
+
+model AchievementSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  achievements Achievement[] // Réalisations de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("achievement_sections")
+}
+
+model Achievement {
+  id          String            @id @default(cuid())
+  label       String?           // Label de la valeur (ex: "Étudiants accompagnés")
+  value       Int?              // Valeur numérique (pour les statistiques)
+  icon        String?           // Emoji ou icône (ex: "🎓", "👥")
+  color       String?           // Couleur du thème (red, yellow, green, blue)
+  achievementSectionId String?  // ID de la section de réalisation
+  // Métadonnées
+  order       Int               @default(0) // Ordre d'affichage
+  isActive    Boolean           @default(true) // Si la réalisation est visible
+  
+  // Relations
+  achievementSection AchievementSection? @relation(fields: [achievementSectionId], references: [id])
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  publishedAt DateTime?         // Date de publication
+
+
+  @@index([isActive])
+  @@index([order])
+  @@map("achievements")
+}
+
+model Person {
+  id          String   @id @default(cuid())
+  firstName   String   // Prénom de la personne
+  lastName    String   // Nom de la personne
+  email       String?   // Email de la personne
+  phone       String   // Numéro de téléphone de la personne
+  addressId   String?  // ID de l'adresse de la personne
+  roles       Role[]   @default([VOLUNTEER]) // Rôles de la personne
+
+  donations Donation[] // Donations de la personne
+  memberShips MemberShip[] // Cotisations de la personne
+  orders Order[] // Commandes de la personne
+  
+  // Relations
+  address Address? @relation(fields: [addressId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("people")
+}
+
+model VolunteerSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  volunteers  Volunteer[] // Bénévoles de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("volunteer_sections")
+}
+
+model Volunteer {
+  id          String   @id @default(cuid())
+  personId    String   @unique
+  isActive    Boolean  @default(true) // Si le bénévole est actif
+  volunteerSectionId String?  // ID de la section de bénévole
+
+  // Relations
+  volunteerSection VolunteerSection? @relation(fields: [volunteerSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("volunteers")
+}
+
+model TeamMemberSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  teamMembers TeamMember[] // Membres de l'équipe de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("team_member_sections")
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  personId    String   @unique
+  description String?  // Description du membre de l'équipe
+  imageId     String?  // ID de l'image principale du membre de l'équipe
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si le membre de l'équipe est actif
+  teamMemberSectionId String?  // ID de la section de membre de l'équipe
+
+  // Relations
+  teamMemberSection TeamMemberSection? @relation(fields: [teamMemberSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("team_members")
+}
+
+model SocialMedia {
+  id          String   @id @default(cuid())
+  name        String   // Nom du réseau social
+  url         String   // URL du réseau social
+  icon        String?  // Icone du réseau social
+  order       Int      @default(0) // Ordre d'affichage
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("social_medias")
+}
+
+model ReportActivitySection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reports     ReportActivity[] // Rapports d'activité de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("report_activity_sections")
+}
+
+model ReportActivity {
+  id          String   @id @default(cuid())
+  label String?  // Label du rapport
+  year        Int      // Année du rapport
+  pdfUrl      String   // URL du rapport
+  reportActivitySectionId String?  // ID de la section de rapport d'activité
+
+  // Relations
+  reportActivitySection ReportActivitySection? @relation(fields: [reportActivitySectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("report_activities")
+}
+
+model AboutUsSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  aboutUs     AboutUs[] // A propos de nous de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("about_us_sections")
+}
+
+model AboutUs {
+  id          String   @id @default(cuid())
+  title       String   // Titre de l'about us
+  description String?  // Description de l'about us
+  imageId     String?  // ID de l'image principale de l'about us
+  aboutUsSectionId String?  // ID de la section de about us
+
+  // Relations
+  aboutUsSection AboutUsSection? @relation(fields: [aboutUsSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("about_us")
+}
+
+model MemberShip {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  amount      Int      // Prix de la cotisation
+  year        Int      // Année de la cotisation
+  isActive    Boolean  @default(true) // Si la cotisation est actif
+  personId    String   @unique
+
+  // Relations
+  person Person? @relation(fields: [personId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("member_ships")
+}
+
+model Donation {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  message String?  // Message de la donation
+  amount      Int      // Prix de la donation
+  personId    String   @unique
+
+  // Relations
+  person Person? @relation(fields: [personId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("donations")
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  address     String   // Adresse de la personne
+  city        String   // Ville de la personne
+  country     String   // Pays de la personne
+  zipCode     String   // Code postal de la personne
+  state       String   // État de la personne
+  countryCode String   // Code pays de la personne
+
+  person Person[] // Personnes liées à l'adresse
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("addresses")
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  phone       String   // Numéro de téléphone de l'association
+  email       String   // Email de l'association      String   // Email de l'association
+  addressId   String   @unique
+
+ @@map("contacts")
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  orderNumber String   // Numéro de la commande
+  totalAmount Int      // Montant total de la commande
+  status      String   // Statut de la commande
+  personId    String   
+
+  // Relations
+  person Person @relation(fields: [personId], references: [id])
+  items OrderItem[] // Items de la commande
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("orders")
+}
+
+// Table de jointure pour Order et Product avec quantité
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String   // ID de la commande
+  productId   String   // ID du produit
+  quantity    Int      // Quantité commandée
+  price       Int      // Prix unitaire au moment de la commande (en centimes)
+  subtotal    Int      // Sous-total (quantity * price) en centimes
+  
+  // Relations
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+
+ 

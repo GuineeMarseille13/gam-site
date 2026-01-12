@@ -18,100 +18,165 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model Image
+ * 
+ */
+export type Image = Prisma.ImageModel
+/**
+ * Model Video
+ * 
+ */
+export type Video = Prisma.VideoModel
+/**
+ * Model WelcomeSection
+ * 
+ */
+export type WelcomeSection = Prisma.WelcomeSectionModel
+/**
+ * Model Reason
+ * 
+ */
+export type Reason = Prisma.ReasonModel
+/**
+ * Model PoleSection
+ * 
+ */
+export type PoleSection = Prisma.PoleSectionModel
+/**
  * Model Pole
  * 
  */
 export type Pole = Prisma.PoleModel
 /**
- * Model PoleService
+ * Model DetailsPole
  * 
  */
-export type PoleService = Prisma.PoleServiceModel
+export type DetailsPole = Prisma.DetailsPoleModel
 /**
- * Model PoleEventImage
+ * Model PartnerSection
  * 
  */
-export type PoleEventImage = Prisma.PoleEventImageModel
-/**
- * Model Event
- * 
- */
-export type Event = Prisma.EventModel
-/**
- * Model EventMedia
- * 
- */
-export type EventMedia = Prisma.EventMediaModel
-/**
- * Model Product
- * 
- */
-export type Product = Prisma.ProductModel
+export type PartnerSection = Prisma.PartnerSectionModel
 /**
  * Model Partner
  * 
  */
 export type Partner = Prisma.PartnerModel
 /**
+ * Model EventSection
+ * 
+ */
+export type EventSection = Prisma.EventSectionModel
+/**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel
+/**
+ * Model ReviewSection
+ * 
+ */
+export type ReviewSection = Prisma.ReviewSectionModel
+/**
  * Model Review
  * 
  */
 export type Review = Prisma.ReviewModel
 /**
- * Model Statistic
+ * Model ProductSection
  * 
  */
-export type Statistic = Prisma.StatisticModel
+export type ProductSection = Prisma.ProductSectionModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductCategory
+ * 
+ */
+export type ProductCategory = Prisma.ProductCategoryModel
+/**
+ * Model AchievementSection
+ * 
+ */
+export type AchievementSection = Prisma.AchievementSectionModel
+/**
+ * Model Achievement
+ * 
+ */
+export type Achievement = Prisma.AchievementModel
+/**
+ * Model Person
+ * 
+ */
+export type Person = Prisma.PersonModel
+/**
+ * Model VolunteerSection
+ * 
+ */
+export type VolunteerSection = Prisma.VolunteerSectionModel
 /**
  * Model Volunteer
  * 
  */
 export type Volunteer = Prisma.VolunteerModel
 /**
+ * Model TeamMemberSection
+ * 
+ */
+export type TeamMemberSection = Prisma.TeamMemberSectionModel
+/**
  * Model TeamMember
  * 
  */
 export type TeamMember = Prisma.TeamMemberModel
 /**
- * Model AssociationInfo
+ * Model SocialMedia
  * 
  */
-export type AssociationInfo = Prisma.AssociationInfoModel
+export type SocialMedia = Prisma.SocialMediaModel
 /**
- * Model ActivityReport
+ * Model ReportActivitySection
  * 
  */
-export type ActivityReport = Prisma.ActivityReportModel
+export type ReportActivitySection = Prisma.ReportActivitySectionModel
 /**
- * Model ContactMethod
+ * Model ReportActivity
  * 
  */
-export type ContactMethod = Prisma.ContactMethodModel
+export type ReportActivity = Prisma.ReportActivityModel
 /**
- * Model SocialNetwork
+ * Model AboutUsSection
  * 
  */
-export type SocialNetwork = Prisma.SocialNetworkModel
+export type AboutUsSection = Prisma.AboutUsSectionModel
 /**
- * Model CarouselItem
+ * Model AboutUs
  * 
  */
-export type CarouselItem = Prisma.CarouselItemModel
+export type AboutUs = Prisma.AboutUsModel
 /**
- * Model ContactSubmission
+ * Model MemberShip
  * 
  */
-export type ContactSubmission = Prisma.ContactSubmissionModel
-/**
- * Model AdhesionSubmission
- * 
- */
-export type AdhesionSubmission = Prisma.AdhesionSubmissionModel
+export type MemberShip = Prisma.MemberShipModel
 /**
  * Model Donation
  * 
  */
 export type Donation = Prisma.DonationModel
+/**
+ * Model Address
+ * 
+ */
+export type Address = Prisma.AddressModel
+/**
+ * Model Contact
+ * 
+ */
+export type Contact = Prisma.ContactModel
 /**
  * Model Order
  * 
@@ -122,33 +187,3 @@ export type Order = Prisma.OrderModel
  * 
  */
 export type OrderItem = Prisma.OrderItemModel
-/**
- * Model Category
- * 
- */
-export type Category = Prisma.CategoryModel
-/**
- * Model Media
- * 
- */
-export type Media = Prisma.MediaModel
-/**
- * Model Setting
- * 
- */
-export type Setting = Prisma.SettingModel
-/**
- * Model User
- * 
- */
-export type User = Prisma.UserModel
-/**
- * Model Notification
- * 
- */
-export type Notification = Prisma.NotificationModel
-/**
- * Model Log
- * 
- */
-export type Log = Prisma.LogModel

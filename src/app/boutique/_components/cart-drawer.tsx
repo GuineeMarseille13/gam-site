@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, X, ArrowLeft, CreditCard, CheckCircle2, Trash2 } from "lucide-react";
+import { ShoppingCart, X, ArrowLeft, CreditCard, CheckCircle2, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import type { CartItem, CheckoutData } from "../_schemas/product.schema";
 import { checkoutDataSchema } from "../_schemas/product.schema";
+import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
 interface CartDrawerProps {
   open: boolean;
@@ -19,10 +20,13 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemove, onClear }: CartDrawerProps) {
-  const [step, setStep] = useState<"cart" | "checkout" | "done">("cart");
+  const [step, setStep] = useState<"cart" | "checkout" | "payment" | "done">("cart");
   const [form, setForm] = useState<CheckoutData>({ firstName: "", lastName: "", phone: undefined, email: undefined });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   const formattedTotal = useMemo(
     () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalPrice),
@@ -45,17 +49,59 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
     };
   }, [open]);
 
-  const handleCheckoutSubmit = (e: React.FormEvent) => {
+  const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     const parsed = checkoutDataSchema.safeParse(form);
     if (!parsed.success) {
       const flat = parsed.error.flatten();
       setErrors(Object.fromEntries(Object.entries(flat.fieldErrors).map(([k, v]) => [k, v?.[0] ?? ""])));
       return;
     }
-    // simulate success (no backend)
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/payment_intents/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items,
+          customer: parsed.data,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la création du paiement");
+      }
+
+      const { clientSecret: secret } = await response.json();
+      if (secret) {
+        setClientSecret(secret);
+        setStep("payment");
+      } else {
+        throw new Error("Secret de paiement non disponible");
+      }
+    } catch (err) {
+      console.error("Erreur lors du paiement:", err);
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
     onClear();
     setStep("done");
+    setClientSecret(null);
+  };
+
+  const handlePaymentCancel = () => {
+    setStep("checkout");
+    setClientSecret(null);
+    setError(null);
   };
 
   useEffect(() => setMounted(true), []);
@@ -100,7 +146,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   )}
                   <div className="min-w-0">
                     <h3 className="text-lg font-bold text-gray-900 truncate leading-6">
-                      {step === "cart" ? "Votre panier" : step === "checkout" ? "Validation" : "Merci !"}
+                      {step === "cart" ? "Votre panier" : step === "checkout" ? "Validation" : step === "payment" ? "Paiement" : "Merci !"}
                     </h3>
                     {step !== "done" && (
                       <p className="text-xs text-gray-600 mt-0.5">
@@ -139,6 +185,12 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-200/50" 
                     : "bg-gray-100 text-gray-600"
                 }`}>Validation</span>
+                <span className="text-gray-300">→</span>
+                <span className={`px-3 py-1.5 rounded-full font-semibold transition-all ${
+                  step === "payment" 
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-200/50" 
+                    : "bg-gray-100 text-gray-600"
+                }`}>Paiement</span>
                 <span className="text-gray-300">→</span>
                 <span className={`px-3 py-1.5 rounded-full font-semibold transition-all ${
                   step === "done" 
@@ -294,9 +346,11 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     />
                     {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
                   </div>
-                  <div className="rounded-xl bg-yellow-50 border-2 border-yellow-200 p-4 text-xs text-yellow-900">
-                    Paiement simulé: les informations sont collectées pour finaliser le panier, aucun enregistrement serveur.
-                  </div>
+                  {error && (
+                    <div className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-xs text-red-700">
+                      {error}
+                    </div>
+                  )}
                 </div>
                 <div className="border-t p-5 flex gap-3">
                   <motion.button 
@@ -310,16 +364,46 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   </motion.button>
                   <motion.button 
                     type="submit" 
+                    disabled={isLoading}
                     title="Procéder au paiement"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300"
+                    whileHover={!isLoading ? { scale: 1.02 } : {}}
+                    whileTap={!isLoading ? { scale: 0.98 } : {}}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <CreditCard className="w-4 h-4" />
-                    <span>Payer {formattedTotal}</span>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Préparation...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4" />
+                        <span>Payer {formattedTotal}</span>
+                      </>
+                    )}
                   </motion.button>
                 </div>
               </form>
+            )}
+
+            {step === "payment" && clientSecret && (
+              <div className="flex-1 flex flex-col overflow-auto min-h-0">
+                <div className="flex-1 p-4 sm:p-5 overflow-y-auto">
+                  <div className="mb-4 sm:mb-6">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Finaliser le paiement</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Total: <span className="font-semibold text-gray-900">{formattedTotal}</span>
+                    </p>
+                  </div>
+                  <StripePaymentForm
+                    clientSecret={clientSecret}
+                    members={[]}
+                    message=""
+                    total={totalPrice}
+                    onSuccess={handlePaymentSuccess}
+                    onCancel={handlePaymentCancel}
+                  />
+                </div>
+              </div>
             )}
 
             {step === "done" && (

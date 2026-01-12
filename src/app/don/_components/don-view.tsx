@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, CheckCircle2, DollarSign, Target, Users, Sparkles } from "lucide-react";
+import { Heart, CheckCircle2, DollarSign, Target, Users, Sparkles, Loader2, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT_EUR, type Don } from "../_schemas/don.schema";
+import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
 export default function DonView() {
   const [formData, setFormData] = useState<Partial<Don>>({
@@ -17,6 +18,11 @@ export default function DonView() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [validatedFormData, setValidatedFormData] = useState<Don | null>(null);
 
   const frenchPhoneRegex = /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/;
 
@@ -46,11 +52,12 @@ export default function DonView() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
     
     if (!formData.amount || formData.amount < MIN_DON_AMOUNT_EUR || formData.amount > MAX_DON_AMOUNT_EUR) {
-      alert(`Le montant doit être entre ${MIN_DON_AMOUNT_EUR}€ et ${MAX_DON_AMOUNT_EUR}€`);
+      setError(`Le montant doit être entre ${MIN_DON_AMOUNT_EUR}€ et ${MAX_DON_AMOUNT_EUR}€`);
       return;
     }
 
@@ -67,10 +74,56 @@ export default function DonView() {
     if (!parsed.success) {
       const errors = parsed.error.flatten();
       const fieldErrors = Object.values(errors.fieldErrors).flat();
-      alert(fieldErrors[0] || "Veuillez vérifier le formulaire.");
+      setError(fieldErrors[0] as string || "Veuillez vérifier le formulaire.");
       return;
     }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/payment_intents/don", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la création du paiement");
+      }
+
+      const { clientSecret: secret } = await response.json();
+      if (secret) {
+        setClientSecret(secret);
+        setValidatedFormData(parsed.data);
+        setShowPaymentForm(true);
+      } else {
+        throw new Error("Secret de paiement non disponible");
+      }
+    } catch (err) {
+      console.error("Erreur lors du paiement:", err);
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handlePaymentSuccess = () => {
     setSubmitted(true);
+    setShowPaymentForm(false);
+  }
+
+  const handleBackToForm = () => {
+    setShowPaymentForm(false);
+    setClientSecret(null);
+    setError(null);
+  }
+
+  const handlePaymentCancel = () => {
+    setShowPaymentForm(false);
+    setClientSecret(null);
+    setError(null);
   }
 
   if (submitted) {
@@ -98,17 +151,50 @@ export default function DonView() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto"
         >
-          Votre don de <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
+          Votre paiement a été effectué avec succès. Votre don de <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
           Votre soutien fait toute la différence.
         </motion.p>
-        <motion.p 
-          initial={{ opacity: 0, y: 8 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ delay: 0.35, duration: 0.4 }}
-          className="mt-6 text-sm sm:text-base text-gray-500"
+      </div>
+    );
+  }
+
+  if (showPaymentForm && clientSecret && validatedFormData) {
+    return (
+      <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-10">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-pink-200 via-rose-200 to-red-200 shadow-xl shadow-pink-100/50"
         >
-          Nous vous recontacterons rapidement pour finaliser le paiement.
-        </motion.p>
+          <div className="rounded-2xl sm:rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-4 sm:p-6 md:p-8 shadow-inner">
+            <motion.button
+              onClick={handleBackToForm}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors text-xs sm:text-sm"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="font-medium">Retour au formulaire</span>
+            </motion.button>
+
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Finaliser le paiement</h2>
+              <p className="text-sm sm:text-base text-gray-600">
+                Total à payer: <span className="font-semibold text-gray-900">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(validatedFormData.amount)}</span>
+              </p>
+            </div>
+
+            <StripePaymentForm
+              clientSecret={clientSecret}
+              members={[]}
+              message={validatedFormData.message || ""}
+              total={validatedFormData.amount}
+              onSuccess={handlePaymentSuccess}
+              onCancel={handlePaymentCancel}
+            />
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -303,6 +389,16 @@ export default function DonView() {
             />
           </motion.div>
 
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -8 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-red-700 text-sm sm:text-base"
+            >
+              {error}
+            </motion.div>
+          )}
+
           {/* Submit Button */}
           <motion.div 
             initial={{ opacity: 0, y: 8 }} 
@@ -312,11 +408,20 @@ export default function DonView() {
           >
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300"
+              disabled={isLoading}
+              whileHover={!isLoading ? { scale: 1.02 } : {}}
+              whileTap={!isLoading ? { scale: 0.98 } : {}}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Heart className="w-5 h-5" /> Faire un don
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" /> Préparation du paiement...
+                </>
+              ) : (
+                <>
+                  <Heart className="w-5 h-5" /> Faire un don
+                </>
+              )}
             </motion.button>
           </motion.div>
         </form>

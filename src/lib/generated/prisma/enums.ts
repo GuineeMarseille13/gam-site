@@ -9,132 +9,62 @@
 * 🟢 You can import this file directly.
 */
 
-export const EventMediaType = {
-  image: 'image',
-  video: 'video'
+export const Page = {
+  HOME: 'HOME',
+  EVENEMENTS: 'EVENEMENTS',
+  POLES: 'POLES',
+  ASSOCIATION: 'ASSOCIATION',
+  BOUTIQUE: 'BOUTIQUE',
+  CONTACTS: 'CONTACTS',
+  ADHESION: 'ADHESION',
+  DON: 'DON'
 } as const
 
-export type EventMediaType = (typeof EventMediaType)[keyof typeof EventMediaType]
+export type Page = (typeof Page)[keyof typeof Page]
 
 
-export const ReviewRating = {
-  ONE: 'ONE',
-  TWO: 'TWO',
-  THREE: 'THREE',
-  FOUR: 'FOUR',
-  FIVE: 'FIVE'
+export const Section = {
+  CAROUSEL: 'CAROUSEL',
+  PRESENTATION: 'PRESENTATION',
+  POLES: 'POLES',
+  PARTENAIRES: 'PARTENAIRES',
+  EVENEMENTS: 'EVENEMENTS',
+  REVIEWS: 'REVIEWS',
+  PRODUITS: 'PRODUITS',
+  TIMELINE: 'TIMELINE',
+  MEDIA_GALLERY: 'MEDIA_GALLERY',
+  POLE_HERO: 'POLE_HERO',
+  POLE_EVENTS: 'POLE_EVENTS',
+  POLE_SERVICES: 'POLE_SERVICES',
+  PRESIDENT: 'PRESIDENT',
+  TEAM: 'TEAM',
+  ABOUT_US: 'ABOUT_US',
+  WHAT_WE_OFFER: 'WHAT_WE_OFFER',
+  ACTIVITY_REPORTS: 'ACTIVITY_REPORTS',
+  PRODUCT_CARD: 'PRODUCT_CARD',
+  PRODUCT_DETAIL: 'PRODUCT_DETAIL',
+  HEADER: 'HEADER',
+  FOOTER: 'FOOTER',
+  BANNER: 'BANNER'
 } as const
 
-export type ReviewRating = (typeof ReviewRating)[keyof typeof ReviewRating]
+export type Section = (typeof Section)[keyof typeof Section]
 
 
-export const StatisticColor = {
-  red: 'red',
-  yellow: 'yellow',
-  green: 'green',
-  blue: 'blue'
+export const Role = {
+  PRESIDENT: 'PRESIDENT',
+  VICE_PRESIDENT: 'VICE_PRESIDENT',
+  SECRETARY: 'SECRETARY',
+  TREASURER: 'TREASURER',
+  VOLUNTEER: 'VOLUNTEER',
+  BOARD_MEMBER: 'BOARD_MEMBER',
+  ADVISOR: 'ADVISOR',
+  COUNCIL_MEMBER: 'COUNCIL_MEMBER',
+  MEMBER: 'MEMBER',
+  PATRON: 'PATRON',
+  AMBASSADOR: 'AMBASSADOR',
+  FRIEND: 'FRIEND',
+  OTHER: 'OTHER'
 } as const
 
-export type StatisticColor = (typeof StatisticColor)[keyof typeof StatisticColor]
-
-
-export const ContactMethodType = {
-  email: 'email',
-  phone: 'phone',
-  address: 'address'
-} as const
-
-export type ContactMethodType = (typeof ContactMethodType)[keyof typeof ContactMethodType]
-
-
-export const SocialPlatform = {
-  facebook: 'facebook',
-  instagram: 'instagram',
-  tiktok: 'tiktok',
-  linkedin: 'linkedin',
-  twitter: 'twitter',
-  youtube: 'youtube',
-  snapchat: 'snapchat'
-} as const
-
-export type SocialPlatform = (typeof SocialPlatform)[keyof typeof SocialPlatform]
-
-
-export const ContactSubmissionStatus = {
-  pending: 'pending',
-  read: 'read',
-  replied: 'replied',
-  archived: 'archived'
-} as const
-
-export type ContactSubmissionStatus = (typeof ContactSubmissionStatus)[keyof typeof ContactSubmissionStatus]
-
-
-export const AdhesionStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  confirmed: 'confirmed',
-  cancelled: 'cancelled'
-} as const
-
-export type AdhesionStatus = (typeof AdhesionStatus)[keyof typeof AdhesionStatus]
-
-
-export const DonationStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  confirmed: 'confirmed',
-  cancelled: 'cancelled'
-} as const
-
-export type DonationStatus = (typeof DonationStatus)[keyof typeof DonationStatus]
-
-
-export const OrderStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  processing: 'processing',
-  shipped: 'shipped',
-  delivered: 'delivered',
-  cancelled: 'cancelled'
-} as const
-
-export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
-
-
-export const CategoryType = {
-  product: 'product',
-  event: 'event',
-  partner: 'partner'
-} as const
-
-export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
-
-
-export const MediaType = {
-  image: 'image',
-  video: 'video',
-  document: 'document',
-  pdf: 'pdf'
-} as const
-
-export type MediaType = (typeof MediaType)[keyof typeof MediaType]
-
-
-export const SettingType = {
-  string: 'string',
-  number: 'number',
-  boolean: 'boolean',
-  json: 'json'
-} as const
-
-export type SettingType = (typeof SettingType)[keyof typeof SettingType]
-
-
-export const UserRole = {
-  admin: 'admin',
-  editor: 'editor',
-  viewer: 'viewer'
-} as const
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+export type Role = (typeof Role)[keyof typeof Role]

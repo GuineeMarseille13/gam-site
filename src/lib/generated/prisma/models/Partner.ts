@@ -20,112 +20,76 @@ export type PartnerModel = runtime.Types.Result.DefaultSelection<Prisma.$Partner
 
 export type AggregatePartner = {
   _count: PartnerCountAggregateOutputType | null
-  _avg: PartnerAvgAggregateOutputType | null
-  _sum: PartnerSumAggregateOutputType | null
   _min: PartnerMinAggregateOutputType | null
   _max: PartnerMaxAggregateOutputType | null
-}
-
-export type PartnerAvgAggregateOutputType = {
-  order: number | null
-}
-
-export type PartnerSumAggregateOutputType = {
-  order: number | null
 }
 
 export type PartnerMinAggregateOutputType = {
   id: string | null
   name: string | null
-  logo: string | null
   description: string | null
-  website: string | null
-  category: string | null
-  order: number | null
-  isActive: boolean | null
+  imageId: string | null
+  url: string | null
+  partnerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  categoryId: string | null
 }
 
 export type PartnerMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  logo: string | null
   description: string | null
-  website: string | null
-  category: string | null
-  order: number | null
-  isActive: boolean | null
+  imageId: string | null
+  url: string | null
+  partnerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  categoryId: string | null
 }
 
 export type PartnerCountAggregateOutputType = {
   id: number
   name: number
-  logo: number
   description: number
-  website: number
-  category: number
-  order: number
-  isActive: number
+  imageId: number
+  url: number
+  partnerSectionId: number
   createdAt: number
   updatedAt: number
-  categoryId: number
   _all: number
 }
 
 
-export type PartnerAvgAggregateInputType = {
-  order?: true
-}
-
-export type PartnerSumAggregateInputType = {
-  order?: true
-}
-
 export type PartnerMinAggregateInputType = {
   id?: true
   name?: true
-  logo?: true
   description?: true
-  website?: true
-  category?: true
-  order?: true
-  isActive?: true
+  imageId?: true
+  url?: true
+  partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
 }
 
 export type PartnerMaxAggregateInputType = {
   id?: true
   name?: true
-  logo?: true
   description?: true
-  website?: true
-  category?: true
-  order?: true
-  isActive?: true
+  imageId?: true
+  url?: true
+  partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
 }
 
 export type PartnerCountAggregateInputType = {
   id?: true
   name?: true
-  logo?: true
   description?: true
-  website?: true
-  category?: true
-  order?: true
-  isActive?: true
+  imageId?: true
+  url?: true
+  partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
   _all?: true
 }
 
@@ -167,18 +131,6 @@ export type PartnerAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: PartnerAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: PartnerSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: PartnerMinAggregateInputType
@@ -209,8 +161,6 @@ export type PartnerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: PartnerCountAggregateInputType | true
-  _avg?: PartnerAvgAggregateInputType
-  _sum?: PartnerSumAggregateInputType
   _min?: PartnerMinAggregateInputType
   _max?: PartnerMaxAggregateInputType
 }
@@ -218,18 +168,13 @@ export type PartnerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type PartnerGroupByOutputType = {
   id: string
   name: string
-  logo: string
   description: string | null
-  website: string | null
-  category: string | null
-  order: number
-  isActive: boolean
+  imageId: string | null
+  url: string | null
+  partnerSectionId: string | null
   createdAt: Date
   updatedAt: Date
-  categoryId: string | null
   _count: PartnerCountAggregateOutputType | null
-  _avg: PartnerAvgAggregateOutputType | null
-  _sum: PartnerSumAggregateOutputType | null
   _min: PartnerMinAggregateOutputType | null
   _max: PartnerMaxAggregateOutputType | null
 }
@@ -255,31 +200,25 @@ export type PartnerWhereInput = {
   NOT?: Prisma.PartnerWhereInput | Prisma.PartnerWhereInput[]
   id?: Prisma.StringFilter<"Partner"> | string
   name?: Prisma.StringFilter<"Partner"> | string
-  logo?: Prisma.StringFilter<"Partner"> | string
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
-  website?: Prisma.StringNullableFilter<"Partner"> | string | null
-  category?: Prisma.StringNullableFilter<"Partner"> | string | null
-  order?: Prisma.IntFilter<"Partner"> | number
-  isActive?: Prisma.BoolFilter<"Partner"> | boolean
+  imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
+  url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Partner"> | string | null
-  categoryRef?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  partnerSection?: Prisma.XOR<Prisma.PartnerSectionNullableScalarRelationFilter, Prisma.PartnerSectionWhereInput> | null
 }
 
 export type PartnerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  website?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  imageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  url?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  categoryRef?: Prisma.CategoryOrderByWithRelationInput
+  partnerSection?: Prisma.PartnerSectionOrderByWithRelationInput
 }
 
 export type PartnerWhereUniqueInput = Prisma.AtLeast<{
@@ -288,35 +227,27 @@ export type PartnerWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PartnerWhereInput[]
   NOT?: Prisma.PartnerWhereInput | Prisma.PartnerWhereInput[]
   name?: Prisma.StringFilter<"Partner"> | string
-  logo?: Prisma.StringFilter<"Partner"> | string
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
-  website?: Prisma.StringNullableFilter<"Partner"> | string | null
-  category?: Prisma.StringNullableFilter<"Partner"> | string | null
-  order?: Prisma.IntFilter<"Partner"> | number
-  isActive?: Prisma.BoolFilter<"Partner"> | boolean
+  imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
+  url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Partner"> | string | null
-  categoryRef?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  partnerSection?: Prisma.XOR<Prisma.PartnerSectionNullableScalarRelationFilter, Prisma.PartnerSectionWhereInput> | null
 }, "id">
 
 export type PartnerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  website?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  imageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  url?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PartnerCountOrderByAggregateInput
-  _avg?: Prisma.PartnerAvgOrderByAggregateInput
   _max?: Prisma.PartnerMaxOrderByAggregateInput
   _min?: Prisma.PartnerMinOrderByAggregateInput
-  _sum?: Prisma.PartnerSumOrderByAggregateInput
 }
 
 export type PartnerScalarWhereWithAggregatesInput = {
@@ -325,96 +256,75 @@ export type PartnerScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PartnerScalarWhereWithAggregatesInput | Prisma.PartnerScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Partner"> | string
   name?: Prisma.StringWithAggregatesFilter<"Partner"> | string
-  logo?: Prisma.StringWithAggregatesFilter<"Partner"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
-  website?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
-  category?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
-  order?: Prisma.IntWithAggregatesFilter<"Partner"> | number
-  isActive?: Prisma.BoolWithAggregatesFilter<"Partner"> | boolean
+  imageId?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
+  url?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
+  partnerSectionId?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Partner"> | Date | string
-  categoryId?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
 }
 
 export type PartnerCreateInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryRef?: Prisma.CategoryCreateNestedOneWithoutPartnersInput
+  partnerSection?: Prisma.PartnerSectionCreateNestedOneWithoutPartnersInput
 }
 
 export type PartnerUncheckedCreateInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
+  partnerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryId?: string | null
 }
 
 export type PartnerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryRef?: Prisma.CategoryUpdateOneWithoutPartnersNestedInput
+  partnerSection?: Prisma.PartnerSectionUpdateOneWithoutPartnersNestedInput
 }
 
 export type PartnerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PartnerCreateManyInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
+  partnerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryId?: string | null
 }
 
 export type PartnerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -422,65 +332,12 @@ export type PartnerUpdateManyMutationInput = {
 export type PartnerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type PartnerCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  website?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type PartnerAvgOrderByAggregateInput = {
-  order?: Prisma.SortOrder
-}
-
-export type PartnerMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  website?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type PartnerMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  website?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type PartnerSumOrderByAggregateInput = {
-  order?: Prisma.SortOrder
 }
 
 export type PartnerListRelationFilter = {
@@ -493,98 +350,125 @@ export type PartnerOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type PartnerCreateNestedManyWithoutCategoryRefInput = {
-  create?: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput> | Prisma.PartnerCreateWithoutCategoryRefInput[] | Prisma.PartnerUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutCategoryRefInput | Prisma.PartnerCreateOrConnectWithoutCategoryRefInput[]
-  createMany?: Prisma.PartnerCreateManyCategoryRefInputEnvelope
+export type PartnerCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  url?: Prisma.SortOrder
+  partnerSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PartnerMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  url?: Prisma.SortOrder
+  partnerSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PartnerMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  url?: Prisma.SortOrder
+  partnerSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type PartnerCreateNestedManyWithoutPartnerSectionInput = {
+  create?: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput> | Prisma.PartnerCreateWithoutPartnerSectionInput[] | Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput[]
+  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput | Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput[]
+  createMany?: Prisma.PartnerCreateManyPartnerSectionInputEnvelope
   connect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
 }
 
-export type PartnerUncheckedCreateNestedManyWithoutCategoryRefInput = {
-  create?: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput> | Prisma.PartnerCreateWithoutCategoryRefInput[] | Prisma.PartnerUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutCategoryRefInput | Prisma.PartnerCreateOrConnectWithoutCategoryRefInput[]
-  createMany?: Prisma.PartnerCreateManyCategoryRefInputEnvelope
+export type PartnerUncheckedCreateNestedManyWithoutPartnerSectionInput = {
+  create?: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput> | Prisma.PartnerCreateWithoutPartnerSectionInput[] | Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput[]
+  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput | Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput[]
+  createMany?: Prisma.PartnerCreateManyPartnerSectionInputEnvelope
   connect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
 }
 
-export type PartnerUpdateManyWithoutCategoryRefNestedInput = {
-  create?: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput> | Prisma.PartnerCreateWithoutCategoryRefInput[] | Prisma.PartnerUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutCategoryRefInput | Prisma.PartnerCreateOrConnectWithoutCategoryRefInput[]
-  upsert?: Prisma.PartnerUpsertWithWhereUniqueWithoutCategoryRefInput | Prisma.PartnerUpsertWithWhereUniqueWithoutCategoryRefInput[]
-  createMany?: Prisma.PartnerCreateManyCategoryRefInputEnvelope
+export type PartnerUpdateManyWithoutPartnerSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput> | Prisma.PartnerCreateWithoutPartnerSectionInput[] | Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput[]
+  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput | Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput[]
+  upsert?: Prisma.PartnerUpsertWithWhereUniqueWithoutPartnerSectionInput | Prisma.PartnerUpsertWithWhereUniqueWithoutPartnerSectionInput[]
+  createMany?: Prisma.PartnerCreateManyPartnerSectionInputEnvelope
   set?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   disconnect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   delete?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   connect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
-  update?: Prisma.PartnerUpdateWithWhereUniqueWithoutCategoryRefInput | Prisma.PartnerUpdateWithWhereUniqueWithoutCategoryRefInput[]
-  updateMany?: Prisma.PartnerUpdateManyWithWhereWithoutCategoryRefInput | Prisma.PartnerUpdateManyWithWhereWithoutCategoryRefInput[]
+  update?: Prisma.PartnerUpdateWithWhereUniqueWithoutPartnerSectionInput | Prisma.PartnerUpdateWithWhereUniqueWithoutPartnerSectionInput[]
+  updateMany?: Prisma.PartnerUpdateManyWithWhereWithoutPartnerSectionInput | Prisma.PartnerUpdateManyWithWhereWithoutPartnerSectionInput[]
   deleteMany?: Prisma.PartnerScalarWhereInput | Prisma.PartnerScalarWhereInput[]
 }
 
-export type PartnerUncheckedUpdateManyWithoutCategoryRefNestedInput = {
-  create?: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput> | Prisma.PartnerCreateWithoutCategoryRefInput[] | Prisma.PartnerUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutCategoryRefInput | Prisma.PartnerCreateOrConnectWithoutCategoryRefInput[]
-  upsert?: Prisma.PartnerUpsertWithWhereUniqueWithoutCategoryRefInput | Prisma.PartnerUpsertWithWhereUniqueWithoutCategoryRefInput[]
-  createMany?: Prisma.PartnerCreateManyCategoryRefInputEnvelope
+export type PartnerUncheckedUpdateManyWithoutPartnerSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput> | Prisma.PartnerCreateWithoutPartnerSectionInput[] | Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput[]
+  connectOrCreate?: Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput | Prisma.PartnerCreateOrConnectWithoutPartnerSectionInput[]
+  upsert?: Prisma.PartnerUpsertWithWhereUniqueWithoutPartnerSectionInput | Prisma.PartnerUpsertWithWhereUniqueWithoutPartnerSectionInput[]
+  createMany?: Prisma.PartnerCreateManyPartnerSectionInputEnvelope
   set?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   disconnect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   delete?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
   connect?: Prisma.PartnerWhereUniqueInput | Prisma.PartnerWhereUniqueInput[]
-  update?: Prisma.PartnerUpdateWithWhereUniqueWithoutCategoryRefInput | Prisma.PartnerUpdateWithWhereUniqueWithoutCategoryRefInput[]
-  updateMany?: Prisma.PartnerUpdateManyWithWhereWithoutCategoryRefInput | Prisma.PartnerUpdateManyWithWhereWithoutCategoryRefInput[]
+  update?: Prisma.PartnerUpdateWithWhereUniqueWithoutPartnerSectionInput | Prisma.PartnerUpdateWithWhereUniqueWithoutPartnerSectionInput[]
+  updateMany?: Prisma.PartnerUpdateManyWithWhereWithoutPartnerSectionInput | Prisma.PartnerUpdateManyWithWhereWithoutPartnerSectionInput[]
   deleteMany?: Prisma.PartnerScalarWhereInput | Prisma.PartnerScalarWhereInput[]
 }
 
-export type PartnerCreateWithoutCategoryRefInput = {
+export type PartnerCreateWithoutPartnerSectionInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PartnerUncheckedCreateWithoutCategoryRefInput = {
+export type PartnerUncheckedCreateWithoutPartnerSectionInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PartnerCreateOrConnectWithoutCategoryRefInput = {
+export type PartnerCreateOrConnectWithoutPartnerSectionInput = {
   where: Prisma.PartnerWhereUniqueInput
-  create: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput>
+  create: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput>
 }
 
-export type PartnerCreateManyCategoryRefInputEnvelope = {
-  data: Prisma.PartnerCreateManyCategoryRefInput | Prisma.PartnerCreateManyCategoryRefInput[]
+export type PartnerCreateManyPartnerSectionInputEnvelope = {
+  data: Prisma.PartnerCreateManyPartnerSectionInput | Prisma.PartnerCreateManyPartnerSectionInput[]
   skipDuplicates?: boolean
 }
 
-export type PartnerUpsertWithWhereUniqueWithoutCategoryRefInput = {
+export type PartnerUpsertWithWhereUniqueWithoutPartnerSectionInput = {
   where: Prisma.PartnerWhereUniqueInput
-  update: Prisma.XOR<Prisma.PartnerUpdateWithoutCategoryRefInput, Prisma.PartnerUncheckedUpdateWithoutCategoryRefInput>
-  create: Prisma.XOR<Prisma.PartnerCreateWithoutCategoryRefInput, Prisma.PartnerUncheckedCreateWithoutCategoryRefInput>
+  update: Prisma.XOR<Prisma.PartnerUpdateWithoutPartnerSectionInput, Prisma.PartnerUncheckedUpdateWithoutPartnerSectionInput>
+  create: Prisma.XOR<Prisma.PartnerCreateWithoutPartnerSectionInput, Prisma.PartnerUncheckedCreateWithoutPartnerSectionInput>
 }
 
-export type PartnerUpdateWithWhereUniqueWithoutCategoryRefInput = {
+export type PartnerUpdateWithWhereUniqueWithoutPartnerSectionInput = {
   where: Prisma.PartnerWhereUniqueInput
-  data: Prisma.XOR<Prisma.PartnerUpdateWithoutCategoryRefInput, Prisma.PartnerUncheckedUpdateWithoutCategoryRefInput>
+  data: Prisma.XOR<Prisma.PartnerUpdateWithoutPartnerSectionInput, Prisma.PartnerUncheckedUpdateWithoutPartnerSectionInput>
 }
 
-export type PartnerUpdateManyWithWhereWithoutCategoryRefInput = {
+export type PartnerUpdateManyWithWhereWithoutPartnerSectionInput = {
   where: Prisma.PartnerScalarWhereInput
-  data: Prisma.XOR<Prisma.PartnerUpdateManyMutationInput, Prisma.PartnerUncheckedUpdateManyWithoutCategoryRefInput>
+  data: Prisma.XOR<Prisma.PartnerUpdateManyMutationInput, Prisma.PartnerUncheckedUpdateManyWithoutPartnerSectionInput>
 }
 
 export type PartnerScalarWhereInput = {
@@ -593,65 +477,50 @@ export type PartnerScalarWhereInput = {
   NOT?: Prisma.PartnerScalarWhereInput | Prisma.PartnerScalarWhereInput[]
   id?: Prisma.StringFilter<"Partner"> | string
   name?: Prisma.StringFilter<"Partner"> | string
-  logo?: Prisma.StringFilter<"Partner"> | string
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
-  website?: Prisma.StringNullableFilter<"Partner"> | string | null
-  category?: Prisma.StringNullableFilter<"Partner"> | string | null
-  order?: Prisma.IntFilter<"Partner"> | number
-  isActive?: Prisma.BoolFilter<"Partner"> | boolean
+  imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
+  url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Partner"> | string | null
 }
 
-export type PartnerCreateManyCategoryRefInput = {
+export type PartnerCreateManyPartnerSectionInput = {
   id?: string
   name: string
-  logo: string
   description?: string | null
-  website?: string | null
-  category?: string | null
-  order?: number
-  isActive?: boolean
+  imageId?: string | null
+  url?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type PartnerUpdateWithoutCategoryRefInput = {
+export type PartnerUpdateWithoutPartnerSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type PartnerUncheckedUpdateWithoutCategoryRefInput = {
+export type PartnerUncheckedUpdateWithoutPartnerSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type PartnerUncheckedUpdateManyWithoutCategoryRefInput = {
+export type PartnerUncheckedUpdateManyWithoutPartnerSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  logo?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -661,90 +530,75 @@ export type PartnerUncheckedUpdateManyWithoutCategoryRefInput = {
 export type PartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  logo?: boolean
   description?: boolean
-  website?: boolean
-  category?: boolean
-  order?: boolean
-  isActive?: boolean
+  imageId?: boolean
+  url?: boolean
+  partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["partner"]>
 
 export type PartnerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  logo?: boolean
   description?: boolean
-  website?: boolean
-  category?: boolean
-  order?: boolean
-  isActive?: boolean
+  imageId?: boolean
+  url?: boolean
+  partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["partner"]>
 
 export type PartnerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  logo?: boolean
   description?: boolean
-  website?: boolean
-  category?: boolean
-  order?: boolean
-  isActive?: boolean
+  imageId?: boolean
+  url?: boolean
+  partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["partner"]>
 
 export type PartnerSelectScalar = {
   id?: boolean
   name?: boolean
-  logo?: boolean
   description?: boolean
-  website?: boolean
-  category?: boolean
-  order?: boolean
-  isActive?: boolean
+  imageId?: boolean
+  url?: boolean
+  partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
 }
 
-export type PartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "logo" | "description" | "website" | "category" | "order" | "isActive" | "createdAt" | "updatedAt" | "categoryId", ExtArgs["result"]["partner"]>
+export type PartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageId" | "url" | "partnerSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["partner"]>
 export type PartnerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }
 export type PartnerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }
 export type PartnerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  categoryRef?: boolean | Prisma.Partner$categoryRefArgs<ExtArgs>
+  partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }
 
 export type $PartnerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Partner"
   objects: {
-    categoryRef: Prisma.$CategoryPayload<ExtArgs> | null
+    partnerSection: Prisma.$PartnerSectionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    logo: string
     description: string | null
-    website: string | null
-    category: string | null
-    order: number
-    isActive: boolean
+    imageId: string | null
+    url: string | null
+    partnerSectionId: string | null
     createdAt: Date
     updatedAt: Date
-    categoryId: string | null
   }, ExtArgs["result"]["partner"]>
   composites: {}
 }
@@ -1139,7 +993,7 @@ readonly fields: PartnerFieldRefs;
  */
 export interface Prisma__PartnerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  categoryRef<T extends Prisma.Partner$categoryRefArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Partner$categoryRefArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  partnerSection<T extends Prisma.Partner$partnerSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Partner$partnerSectionArgs<ExtArgs>>): Prisma.Prisma__PartnerSectionClient<runtime.Types.Result.GetResult<Prisma.$PartnerSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1171,15 +1025,12 @@ export interface Prisma__PartnerClient<T, Null = never, ExtArgs extends runtime.
 export interface PartnerFieldRefs {
   readonly id: Prisma.FieldRef<"Partner", 'String'>
   readonly name: Prisma.FieldRef<"Partner", 'String'>
-  readonly logo: Prisma.FieldRef<"Partner", 'String'>
   readonly description: Prisma.FieldRef<"Partner", 'String'>
-  readonly website: Prisma.FieldRef<"Partner", 'String'>
-  readonly category: Prisma.FieldRef<"Partner", 'String'>
-  readonly order: Prisma.FieldRef<"Partner", 'Int'>
-  readonly isActive: Prisma.FieldRef<"Partner", 'Boolean'>
+  readonly imageId: Prisma.FieldRef<"Partner", 'String'>
+  readonly url: Prisma.FieldRef<"Partner", 'String'>
+  readonly partnerSectionId: Prisma.FieldRef<"Partner", 'String'>
   readonly createdAt: Prisma.FieldRef<"Partner", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Partner", 'DateTime'>
-  readonly categoryId: Prisma.FieldRef<"Partner", 'String'>
 }
     
 
@@ -1576,22 +1427,22 @@ export type PartnerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * Partner.categoryRef
+ * Partner.partnerSection
  */
-export type Partner$categoryRefArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Partner$partnerSectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Category
+   * Select specific fields to fetch from the PartnerSection
    */
-  select?: Prisma.CategorySelect<ExtArgs> | null
+  select?: Prisma.PartnerSectionSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Category
+   * Omit specific fields from the PartnerSection
    */
-  omit?: Prisma.CategoryOmit<ExtArgs> | null
+  omit?: Prisma.PartnerSectionOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.CategoryInclude<ExtArgs> | null
-  where?: Prisma.CategoryWhereInput
+  include?: Prisma.PartnerSectionInclude<ExtArgs> | null
+  where?: Prisma.PartnerSectionWhereInput
 }
 
 /**

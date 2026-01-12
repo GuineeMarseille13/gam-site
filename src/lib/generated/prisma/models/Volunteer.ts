@@ -20,98 +20,62 @@ export type VolunteerModel = runtime.Types.Result.DefaultSelection<Prisma.$Volun
 
 export type AggregateVolunteer = {
   _count: VolunteerCountAggregateOutputType | null
-  _avg: VolunteerAvgAggregateOutputType | null
-  _sum: VolunteerSumAggregateOutputType | null
   _min: VolunteerMinAggregateOutputType | null
   _max: VolunteerMaxAggregateOutputType | null
 }
 
-export type VolunteerAvgAggregateOutputType = {
-  order: number | null
-}
-
-export type VolunteerSumAggregateOutputType = {
-  order: number | null
-}
-
 export type VolunteerMinAggregateOutputType = {
   id: string | null
-  name: string | null
-  image: string | null
-  role: string | null
-  initials: string | null
-  order: number | null
+  personId: string | null
   isActive: boolean | null
+  volunteerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type VolunteerMaxAggregateOutputType = {
   id: string | null
-  name: string | null
-  image: string | null
-  role: string | null
-  initials: string | null
-  order: number | null
+  personId: string | null
   isActive: boolean | null
+  volunteerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type VolunteerCountAggregateOutputType = {
   id: number
-  name: number
-  image: number
-  role: number
-  initials: number
-  order: number
+  personId: number
   isActive: number
+  volunteerSectionId: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
-export type VolunteerAvgAggregateInputType = {
-  order?: true
-}
-
-export type VolunteerSumAggregateInputType = {
-  order?: true
-}
-
 export type VolunteerMinAggregateInputType = {
   id?: true
-  name?: true
-  image?: true
-  role?: true
-  initials?: true
-  order?: true
+  personId?: true
   isActive?: true
+  volunteerSectionId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type VolunteerMaxAggregateInputType = {
   id?: true
-  name?: true
-  image?: true
-  role?: true
-  initials?: true
-  order?: true
+  personId?: true
   isActive?: true
+  volunteerSectionId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type VolunteerCountAggregateInputType = {
   id?: true
-  name?: true
-  image?: true
-  role?: true
-  initials?: true
-  order?: true
+  personId?: true
   isActive?: true
+  volunteerSectionId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -155,18 +119,6 @@ export type VolunteerAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: VolunteerAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: VolunteerSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: VolunteerMinAggregateInputType
@@ -197,25 +149,18 @@ export type VolunteerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: VolunteerCountAggregateInputType | true
-  _avg?: VolunteerAvgAggregateInputType
-  _sum?: VolunteerSumAggregateInputType
   _min?: VolunteerMinAggregateInputType
   _max?: VolunteerMaxAggregateInputType
 }
 
 export type VolunteerGroupByOutputType = {
   id: string
-  name: string
-  image: string
-  role: string | null
-  initials: string
-  order: number
+  personId: string
   isActive: boolean
+  volunteerSectionId: string | null
   createdAt: Date
   updatedAt: Date
   _count: VolunteerCountAggregateOutputType | null
-  _avg: VolunteerAvgAggregateOutputType | null
-  _sum: VolunteerSumAggregateOutputType | null
   _min: VolunteerMinAggregateOutputType | null
   _max: VolunteerMaxAggregateOutputType | null
 }
@@ -240,58 +185,47 @@ export type VolunteerWhereInput = {
   OR?: Prisma.VolunteerWhereInput[]
   NOT?: Prisma.VolunteerWhereInput | Prisma.VolunteerWhereInput[]
   id?: Prisma.StringFilter<"Volunteer"> | string
-  name?: Prisma.StringFilter<"Volunteer"> | string
-  image?: Prisma.StringFilter<"Volunteer"> | string
-  role?: Prisma.StringNullableFilter<"Volunteer"> | string | null
-  initials?: Prisma.StringFilter<"Volunteer"> | string
-  order?: Prisma.IntFilter<"Volunteer"> | number
+  personId?: Prisma.StringFilter<"Volunteer"> | string
   isActive?: Prisma.BoolFilter<"Volunteer"> | boolean
+  volunteerSectionId?: Prisma.StringNullableFilter<"Volunteer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
+  volunteerSection?: Prisma.XOR<Prisma.VolunteerSectionNullableScalarRelationFilter, Prisma.VolunteerSectionWhereInput> | null
 }
 
 export type VolunteerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  role?: Prisma.SortOrderInput | Prisma.SortOrder
-  initials?: Prisma.SortOrder
-  order?: Prisma.SortOrder
+  personId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  volunteerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  volunteerSection?: Prisma.VolunteerSectionOrderByWithRelationInput
 }
 
 export type VolunteerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  personId?: string
   AND?: Prisma.VolunteerWhereInput | Prisma.VolunteerWhereInput[]
   OR?: Prisma.VolunteerWhereInput[]
   NOT?: Prisma.VolunteerWhereInput | Prisma.VolunteerWhereInput[]
-  name?: Prisma.StringFilter<"Volunteer"> | string
-  image?: Prisma.StringFilter<"Volunteer"> | string
-  role?: Prisma.StringNullableFilter<"Volunteer"> | string | null
-  initials?: Prisma.StringFilter<"Volunteer"> | string
-  order?: Prisma.IntFilter<"Volunteer"> | number
   isActive?: Prisma.BoolFilter<"Volunteer"> | boolean
+  volunteerSectionId?: Prisma.StringNullableFilter<"Volunteer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
-}, "id">
+  volunteerSection?: Prisma.XOR<Prisma.VolunteerSectionNullableScalarRelationFilter, Prisma.VolunteerSectionWhereInput> | null
+}, "id" | "personId">
 
 export type VolunteerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  role?: Prisma.SortOrderInput | Prisma.SortOrder
-  initials?: Prisma.SortOrder
-  order?: Prisma.SortOrder
+  personId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  volunteerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VolunteerCountOrderByAggregateInput
-  _avg?: Prisma.VolunteerAvgOrderByAggregateInput
   _max?: Prisma.VolunteerMaxOrderByAggregateInput
   _min?: Prisma.VolunteerMinOrderByAggregateInput
-  _sum?: Prisma.VolunteerSumOrderByAggregateInput
 }
 
 export type VolunteerScalarWhereWithAggregatesInput = {
@@ -299,83 +233,61 @@ export type VolunteerScalarWhereWithAggregatesInput = {
   OR?: Prisma.VolunteerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VolunteerScalarWhereWithAggregatesInput | Prisma.VolunteerScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Volunteer"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Volunteer"> | string
-  image?: Prisma.StringWithAggregatesFilter<"Volunteer"> | string
-  role?: Prisma.StringNullableWithAggregatesFilter<"Volunteer"> | string | null
-  initials?: Prisma.StringWithAggregatesFilter<"Volunteer"> | string
-  order?: Prisma.IntWithAggregatesFilter<"Volunteer"> | number
+  personId?: Prisma.StringWithAggregatesFilter<"Volunteer"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"Volunteer"> | boolean
+  volunteerSectionId?: Prisma.StringNullableWithAggregatesFilter<"Volunteer"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Volunteer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Volunteer"> | Date | string
 }
 
 export type VolunteerCreateInput = {
   id?: string
-  name: string
-  image: string
-  role?: string | null
-  initials: string
-  order?: number
+  personId: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  volunteerSection?: Prisma.VolunteerSectionCreateNestedOneWithoutVolunteersInput
 }
 
 export type VolunteerUncheckedCreateInput = {
   id?: string
-  name: string
-  image: string
-  role?: string | null
-  initials: string
-  order?: number
+  personId: string
   isActive?: boolean
+  volunteerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type VolunteerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initials?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  volunteerSection?: Prisma.VolunteerSectionUpdateOneWithoutVolunteersNestedInput
 }
 
 export type VolunteerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initials?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  volunteerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VolunteerCreateManyInput = {
   id?: string
-  name: string
-  image: string
-  role?: string | null
-  initials: string
-  order?: number
+  personId: string
   isActive?: boolean
+  volunteerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type VolunteerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initials?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,123 +295,240 @@ export type VolunteerUpdateManyMutationInput = {
 
 export type VolunteerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initials?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  volunteerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type VolunteerListRelationFilter = {
+  every?: Prisma.VolunteerWhereInput
+  some?: Prisma.VolunteerWhereInput
+  none?: Prisma.VolunteerWhereInput
+}
+
+export type VolunteerOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type VolunteerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  initials?: Prisma.SortOrder
-  order?: Prisma.SortOrder
+  personId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  volunteerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type VolunteerAvgOrderByAggregateInput = {
-  order?: Prisma.SortOrder
-}
-
 export type VolunteerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  initials?: Prisma.SortOrder
-  order?: Prisma.SortOrder
+  personId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  volunteerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type VolunteerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  initials?: Prisma.SortOrder
-  order?: Prisma.SortOrder
+  personId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  volunteerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type VolunteerSumOrderByAggregateInput = {
-  order?: Prisma.SortOrder
+export type VolunteerCreateNestedManyWithoutVolunteerSectionInput = {
+  create?: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput> | Prisma.VolunteerCreateWithoutVolunteerSectionInput[] | Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput[]
+  connectOrCreate?: Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput | Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput[]
+  createMany?: Prisma.VolunteerCreateManyVolunteerSectionInputEnvelope
+  connect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+}
+
+export type VolunteerUncheckedCreateNestedManyWithoutVolunteerSectionInput = {
+  create?: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput> | Prisma.VolunteerCreateWithoutVolunteerSectionInput[] | Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput[]
+  connectOrCreate?: Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput | Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput[]
+  createMany?: Prisma.VolunteerCreateManyVolunteerSectionInputEnvelope
+  connect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+}
+
+export type VolunteerUpdateManyWithoutVolunteerSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput> | Prisma.VolunteerCreateWithoutVolunteerSectionInput[] | Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput[]
+  connectOrCreate?: Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput | Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput[]
+  upsert?: Prisma.VolunteerUpsertWithWhereUniqueWithoutVolunteerSectionInput | Prisma.VolunteerUpsertWithWhereUniqueWithoutVolunteerSectionInput[]
+  createMany?: Prisma.VolunteerCreateManyVolunteerSectionInputEnvelope
+  set?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  disconnect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  delete?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  connect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  update?: Prisma.VolunteerUpdateWithWhereUniqueWithoutVolunteerSectionInput | Prisma.VolunteerUpdateWithWhereUniqueWithoutVolunteerSectionInput[]
+  updateMany?: Prisma.VolunteerUpdateManyWithWhereWithoutVolunteerSectionInput | Prisma.VolunteerUpdateManyWithWhereWithoutVolunteerSectionInput[]
+  deleteMany?: Prisma.VolunteerScalarWhereInput | Prisma.VolunteerScalarWhereInput[]
+}
+
+export type VolunteerUncheckedUpdateManyWithoutVolunteerSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput> | Prisma.VolunteerCreateWithoutVolunteerSectionInput[] | Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput[]
+  connectOrCreate?: Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput | Prisma.VolunteerCreateOrConnectWithoutVolunteerSectionInput[]
+  upsert?: Prisma.VolunteerUpsertWithWhereUniqueWithoutVolunteerSectionInput | Prisma.VolunteerUpsertWithWhereUniqueWithoutVolunteerSectionInput[]
+  createMany?: Prisma.VolunteerCreateManyVolunteerSectionInputEnvelope
+  set?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  disconnect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  delete?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  connect?: Prisma.VolunteerWhereUniqueInput | Prisma.VolunteerWhereUniqueInput[]
+  update?: Prisma.VolunteerUpdateWithWhereUniqueWithoutVolunteerSectionInput | Prisma.VolunteerUpdateWithWhereUniqueWithoutVolunteerSectionInput[]
+  updateMany?: Prisma.VolunteerUpdateManyWithWhereWithoutVolunteerSectionInput | Prisma.VolunteerUpdateManyWithWhereWithoutVolunteerSectionInput[]
+  deleteMany?: Prisma.VolunteerScalarWhereInput | Prisma.VolunteerScalarWhereInput[]
+}
+
+export type VolunteerCreateWithoutVolunteerSectionInput = {
+  id?: string
+  personId: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VolunteerUncheckedCreateWithoutVolunteerSectionInput = {
+  id?: string
+  personId: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VolunteerCreateOrConnectWithoutVolunteerSectionInput = {
+  where: Prisma.VolunteerWhereUniqueInput
+  create: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput>
+}
+
+export type VolunteerCreateManyVolunteerSectionInputEnvelope = {
+  data: Prisma.VolunteerCreateManyVolunteerSectionInput | Prisma.VolunteerCreateManyVolunteerSectionInput[]
+  skipDuplicates?: boolean
+}
+
+export type VolunteerUpsertWithWhereUniqueWithoutVolunteerSectionInput = {
+  where: Prisma.VolunteerWhereUniqueInput
+  update: Prisma.XOR<Prisma.VolunteerUpdateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedUpdateWithoutVolunteerSectionInput>
+  create: Prisma.XOR<Prisma.VolunteerCreateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedCreateWithoutVolunteerSectionInput>
+}
+
+export type VolunteerUpdateWithWhereUniqueWithoutVolunteerSectionInput = {
+  where: Prisma.VolunteerWhereUniqueInput
+  data: Prisma.XOR<Prisma.VolunteerUpdateWithoutVolunteerSectionInput, Prisma.VolunteerUncheckedUpdateWithoutVolunteerSectionInput>
+}
+
+export type VolunteerUpdateManyWithWhereWithoutVolunteerSectionInput = {
+  where: Prisma.VolunteerScalarWhereInput
+  data: Prisma.XOR<Prisma.VolunteerUpdateManyMutationInput, Prisma.VolunteerUncheckedUpdateManyWithoutVolunteerSectionInput>
+}
+
+export type VolunteerScalarWhereInput = {
+  AND?: Prisma.VolunteerScalarWhereInput | Prisma.VolunteerScalarWhereInput[]
+  OR?: Prisma.VolunteerScalarWhereInput[]
+  NOT?: Prisma.VolunteerScalarWhereInput | Prisma.VolunteerScalarWhereInput[]
+  id?: Prisma.StringFilter<"Volunteer"> | string
+  personId?: Prisma.StringFilter<"Volunteer"> | string
+  isActive?: Prisma.BoolFilter<"Volunteer"> | boolean
+  volunteerSectionId?: Prisma.StringNullableFilter<"Volunteer"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Volunteer"> | Date | string
+}
+
+export type VolunteerCreateManyVolunteerSectionInput = {
+  id?: string
+  personId: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VolunteerUpdateWithoutVolunteerSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VolunteerUncheckedUpdateWithoutVolunteerSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VolunteerUncheckedUpdateManyWithoutVolunteerSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type VolunteerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  image?: boolean
-  role?: boolean
-  initials?: boolean
-  order?: boolean
+  personId?: boolean
   isActive?: boolean
+  volunteerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["volunteer"]>
 
 export type VolunteerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  image?: boolean
-  role?: boolean
-  initials?: boolean
-  order?: boolean
+  personId?: boolean
   isActive?: boolean
+  volunteerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["volunteer"]>
 
 export type VolunteerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  image?: boolean
-  role?: boolean
-  initials?: boolean
-  order?: boolean
+  personId?: boolean
   isActive?: boolean
+  volunteerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
 }, ExtArgs["result"]["volunteer"]>
 
 export type VolunteerSelectScalar = {
   id?: boolean
-  name?: boolean
-  image?: boolean
-  role?: boolean
-  initials?: boolean
-  order?: boolean
+  personId?: boolean
   isActive?: boolean
+  volunteerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VolunteerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "image" | "role" | "initials" | "order" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["volunteer"]>
+export type VolunteerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "personId" | "isActive" | "volunteerSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["volunteer"]>
+export type VolunteerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
+}
+export type VolunteerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
+}
+export type VolunteerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  volunteerSection?: boolean | Prisma.Volunteer$volunteerSectionArgs<ExtArgs>
+}
 
 export type $VolunteerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Volunteer"
-  objects: {}
+  objects: {
+    volunteerSection: Prisma.$VolunteerSectionPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
-    image: string
-    role: string | null
-    initials: string
-    order: number
+    personId: string
     isActive: boolean
+    volunteerSectionId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["volunteer"]>
@@ -896,6 +925,7 @@ readonly fields: VolunteerFieldRefs;
  */
 export interface Prisma__VolunteerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  volunteerSection<T extends Prisma.Volunteer$volunteerSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Volunteer$volunteerSectionArgs<ExtArgs>>): Prisma.Prisma__VolunteerSectionClient<runtime.Types.Result.GetResult<Prisma.$VolunteerSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -926,12 +956,9 @@ export interface Prisma__VolunteerClient<T, Null = never, ExtArgs extends runtim
  */
 export interface VolunteerFieldRefs {
   readonly id: Prisma.FieldRef<"Volunteer", 'String'>
-  readonly name: Prisma.FieldRef<"Volunteer", 'String'>
-  readonly image: Prisma.FieldRef<"Volunteer", 'String'>
-  readonly role: Prisma.FieldRef<"Volunteer", 'String'>
-  readonly initials: Prisma.FieldRef<"Volunteer", 'String'>
-  readonly order: Prisma.FieldRef<"Volunteer", 'Int'>
+  readonly personId: Prisma.FieldRef<"Volunteer", 'String'>
   readonly isActive: Prisma.FieldRef<"Volunteer", 'Boolean'>
+  readonly volunteerSectionId: Prisma.FieldRef<"Volunteer", 'String'>
   readonly createdAt: Prisma.FieldRef<"Volunteer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Volunteer", 'DateTime'>
 }
@@ -951,6 +978,10 @@ export type VolunteerFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * Filter, which Volunteer to fetch.
    */
   where: Prisma.VolunteerWhereUniqueInput
@@ -969,6 +1000,10 @@ export type VolunteerFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * Filter, which Volunteer to fetch.
    */
   where: Prisma.VolunteerWhereUniqueInput
@@ -986,6 +1021,10 @@ export type VolunteerFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Volunteer
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
   /**
    * Filter, which Volunteer to fetch.
    */
@@ -1035,6 +1074,10 @@ export type VolunteerFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * Filter, which Volunteer to fetch.
    */
   where?: Prisma.VolunteerWhereInput
@@ -1083,6 +1126,10 @@ export type VolunteerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * Filter, which Volunteers to fetch.
    */
   where?: Prisma.VolunteerWhereInput
@@ -1126,6 +1173,10 @@ export type VolunteerCreateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * The data needed to create a Volunteer.
    */
   data: Prisma.XOR<Prisma.VolunteerCreateInput, Prisma.VolunteerUncheckedCreateInput>
@@ -1159,6 +1210,10 @@ export type VolunteerCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    */
   data: Prisma.VolunteerCreateManyInput | Prisma.VolunteerCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1173,6 +1228,10 @@ export type VolunteerUpdateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Volunteer
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
   /**
    * The data needed to update a Volunteer.
    */
@@ -1225,6 +1284,10 @@ export type VolunteerUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many Volunteers to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1239,6 +1302,10 @@ export type VolunteerUpsertArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Volunteer
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
   /**
    * The filter to search for the Volunteer to update in case it exists.
    */
@@ -1266,6 +1333,10 @@ export type VolunteerDeleteArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
+  /**
    * Filter which Volunteer to delete.
    */
   where: Prisma.VolunteerWhereUniqueInput
@@ -1286,6 +1357,25 @@ export type VolunteerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
+ * Volunteer.volunteerSection
+ */
+export type Volunteer$volunteerSectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VolunteerSection
+   */
+  select?: Prisma.VolunteerSectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VolunteerSection
+   */
+  omit?: Prisma.VolunteerSectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerSectionInclude<ExtArgs> | null
+  where?: Prisma.VolunteerSectionWhereInput
+}
+
+/**
  * Volunteer without action
  */
 export type VolunteerDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1297,4 +1387,8 @@ export type VolunteerDefaultArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Volunteer
    */
   omit?: Prisma.VolunteerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VolunteerInclude<ExtArgs> | null
 }

@@ -11,21 +11,21 @@ export const contactMethods: ContactMethod[] = [
   {
     icon: Mail,
     label: "Email",
-    value: "contact@gam-association.fr",
-    href: "mailto:contact@gam-association.fr",
+    value: "guineeamarseille13@gmail.com",
+    href: "mailto:guineeamarseille13@gmail.com",
     color: "from-blue-100 to-indigo-100 text-blue-700",
   },
   {
     icon: Phone,
     label: "Téléphone",
-    value: "+33 6 12 34 56 78",
-    href: "tel:+33612345678",
+    value: "+33 7 67 13 39 28",
+    href: "tel:+33767133928",
     color: "from-green-100 to-emerald-100 text-green-700",
   },
   {
     icon: MapPin,
     label: "Adresse",
-    value: "Marseille, France",
+    value: "2 Boulevard Louis Frangin, 13005 Marseille",
     color: "from-amber-100 to-yellow-100 text-amber-700",
   },
 ];
