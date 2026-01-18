@@ -5,11 +5,17 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface Volunteer {
-  id: number;
+  id: string | number;
   name: string;
   image: string;
   role?: string;
   initials: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+interface VolunteersSectionProps {
+  volunteers?: Volunteer[];
 }
 
 interface FloatingVolunteer extends Volunteer {
@@ -96,7 +102,7 @@ const volunteers: Volunteer[] = [
   },
 ];
 
-export default function VolunteersSection() {
+export default function VolunteersSection({ volunteers: propVolunteers }: VolunteersSectionProps) {
   const [floatingVolunteers, setFloatingVolunteers] = useState<
     FloatingVolunteer[]
   >([]);
@@ -250,7 +256,18 @@ export default function VolunteersSection() {
         };
       };
 
-      const newFloatingVolunteers: FloatingVolunteer[] = volunteers.map(
+      // Utiliser les bénévoles passés en props ou les valeurs par défaut
+      const volunteersToUse = propVolunteers && propVolunteers.length > 0
+        ? propVolunteers.map((v) => ({
+            id: typeof v.id === 'string' ? parseInt(v.id) || 0 : v.id,
+            name: v.name,
+            image: v.image,
+            role: v.role,
+            initials: v.initials,
+          }))
+        : volunteers;
+
+      const newFloatingVolunteers: FloatingVolunteer[] = volunteersToUse.map(
         (volunteer, index) => {
           const position = findValidPosition();
           positions.push(position);
@@ -289,7 +306,7 @@ export default function VolunteersSection() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, propVolunteers]);
 
   // Nettoyage
   useEffect(() => {
@@ -380,7 +397,7 @@ export default function VolunteersSection() {
             <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
               {floatingVolunteers.map((volunteer, index) => (
                 <div
-                  key={volunteer.id}
+                  key={`${volunteer.id}-${index}`}
                   className="absolute transition-none"
                   style={{
                     left: `${volunteer.x}px`,

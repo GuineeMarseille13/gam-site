@@ -256,9 +256,9 @@ export default function Carousel({
       {/* Dots Indicator modernisés */}
       {showDots && totalItems > 1 && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 z-10">
-          {safeItems.map((_, index) => (
+          {safeItems.map((item, index) => (
             <button
-              key={index}
+              key={`carousel-dot-${item.id || index}`}
               onClick={() => goToSlide(index)}
               className={`transition-all duration-300 ${
                 index === currentIndex

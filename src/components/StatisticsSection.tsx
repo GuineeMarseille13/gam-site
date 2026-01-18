@@ -7,11 +7,18 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Statistic {
+  id?: string;
   label: string;
   value: number;
   color: "red" | "yellow" | "green" | "blue";
   icon: string;
   suffix?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+interface StatisticsSectionProps {
+  statistics?: Statistic[];
 }
 
 interface StatisticCardProps {
@@ -160,13 +167,13 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
   );
 };
 
-const StatisticsSection = () => {
+const StatisticsSection = ({ statistics: propStatistics }: StatisticsSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
 
-  // Données des statistiques - vous pouvez les modifier selon vos besoins
-  const statistics: Statistic[] = [
+  // Données par défaut des statistiques
+  const defaultStatistics: Statistic[] = [
     {
       label: "Partenaires",
       value: 25,
@@ -210,6 +217,11 @@ const StatisticsSection = () => {
       icon: "�",
     },
   ];
+
+  // Utiliser les statistiques passées en props ou les valeurs par défaut
+  const statistics = propStatistics && propStatistics.length > 0
+    ? propStatistics
+    : defaultStatistics;
 
   // Intersection Observer pour déclencher l'animation quand la section est visible
   useEffect(() => {
