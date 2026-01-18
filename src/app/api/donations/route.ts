@@ -1,34 +1,26 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
-import { donPayloadSchema } from '@/app/don/_schemas/don.schema'
+/**
+ * API Routes pour les dons
+ */
+import { createCrudHandler } from '@/lib/api/handlers'
+import { z } from 'zod'
 
-// POST /api/donations - Créer un don
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = donPayloadSchema.parse(body)
+const createDonationSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  message: z.string().optional().nullable(),
+  amount: z.number().int().positive('Amount must be positive'),
+  personId: z.string().min(1, 'Person ID is required'),
+})
 
-    const donation = await prisma.donation.create({
-      data: {
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        email: validatedData.email || null,
-        phone: validatedData.phone || null,
-        amount: validatedData.amount,
-        message: validatedData.message || null,
-        status: 'pending',
-        isAnonymous: false,
-      },
-    })
+const updateDonationSchema = createDonationSchema.partial()
 
-    // TODO: Envoyer un email de confirmation
-    // TODO: Intégrer le paiement
+const handlers = createCrudHandler({
+  modelName: 'Donation',
+  validateCreate: (data) => createDonationSchema.parse(data),
+  validateUpdate: (data) => updateDonationSchema.parse(data),
+})
 
-    return successResponse(donation, 'Don créé avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
+export const GET = handlers.GET
+export const POST = handlers.POST
+export const PUT = handlers.PUT
+export const DELETE = handlers.DELETE
 

@@ -20,114 +20,94 @@ export type EventModel = runtime.Types.Result.DefaultSelection<Prisma.$EventPayl
 
 export type AggregateEvent = {
   _count: EventCountAggregateOutputType | null
-  _avg: EventAvgAggregateOutputType | null
-  _sum: EventSumAggregateOutputType | null
   _min: EventMinAggregateOutputType | null
   _max: EventMaxAggregateOutputType | null
-}
-
-export type EventAvgAggregateOutputType = {
-  year: number | null
-}
-
-export type EventSumAggregateOutputType = {
-  year: number | null
 }
 
 export type EventMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  date: Date | null
+  imageId: string | null
+  videoId: string | null
+  startDate: Date | null
+  endDate: Date | null
   location: string | null
-  year: number | null
-  category: string | null
-  isPublished: boolean | null
+  eventSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  categoryId: string | null
 }
 
 export type EventMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  date: Date | null
+  imageId: string | null
+  videoId: string | null
+  startDate: Date | null
+  endDate: Date | null
   location: string | null
-  year: number | null
-  category: string | null
-  isPublished: boolean | null
+  eventSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  categoryId: string | null
 }
 
 export type EventCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  date: number
+  imageId: number
+  videoId: number
+  startDate: number
+  endDate: number
   location: number
-  year: number
-  category: number
-  tags: number
-  isPublished: number
+  eventSectionId: number
   createdAt: number
   updatedAt: number
-  categoryId: number
   _all: number
 }
 
-
-export type EventAvgAggregateInputType = {
-  year?: true
-}
-
-export type EventSumAggregateInputType = {
-  year?: true
-}
 
 export type EventMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  imageId?: true
+  videoId?: true
+  startDate?: true
+  endDate?: true
   location?: true
-  year?: true
-  category?: true
-  isPublished?: true
+  eventSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
 }
 
 export type EventMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  imageId?: true
+  videoId?: true
+  startDate?: true
+  endDate?: true
   location?: true
-  year?: true
-  category?: true
-  isPublished?: true
+  eventSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
 }
 
 export type EventCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  imageId?: true
+  videoId?: true
+  startDate?: true
+  endDate?: true
   location?: true
-  year?: true
-  category?: true
-  tags?: true
-  isPublished?: true
+  eventSectionId?: true
   createdAt?: true
   updatedAt?: true
-  categoryId?: true
   _all?: true
 }
 
@@ -169,18 +149,6 @@ export type EventAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: EventAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: EventSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: EventMinAggregateInputType
@@ -211,8 +179,6 @@ export type EventGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: EventCountAggregateInputType | true
-  _avg?: EventAvgAggregateInputType
-  _sum?: EventSumAggregateInputType
   _min?: EventMinAggregateInputType
   _max?: EventMaxAggregateInputType
 }
@@ -220,19 +186,16 @@ export type EventGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type EventGroupByOutputType = {
   id: string
   title: string
-  description: string
-  date: Date
+  description: string | null
+  imageId: string | null
+  videoId: string | null
+  startDate: Date
+  endDate: Date
   location: string | null
-  year: number
-  category: string | null
-  tags: string[]
-  isPublished: boolean
+  eventSectionId: string | null
   createdAt: Date
   updatedAt: Date
-  categoryId: string | null
   _count: EventCountAggregateOutputType | null
-  _avg: EventAvgAggregateOutputType | null
-  _sum: EventSumAggregateOutputType | null
   _min: EventMinAggregateOutputType | null
   _max: EventMaxAggregateOutputType | null
 }
@@ -258,35 +221,31 @@ export type EventWhereInput = {
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   id?: Prisma.StringFilter<"Event"> | string
   title?: Prisma.StringFilter<"Event"> | string
-  description?: Prisma.StringFilter<"Event"> | string
-  date?: Prisma.DateTimeFilter<"Event"> | Date | string
+  description?: Prisma.StringNullableFilter<"Event"> | string | null
+  imageId?: Prisma.StringNullableFilter<"Event"> | string | null
+  videoId?: Prisma.StringNullableFilter<"Event"> | string | null
+  startDate?: Prisma.DateTimeFilter<"Event"> | Date | string
+  endDate?: Prisma.DateTimeFilter<"Event"> | Date | string
   location?: Prisma.StringNullableFilter<"Event"> | string | null
-  year?: Prisma.IntFilter<"Event"> | number
-  category?: Prisma.StringNullableFilter<"Event"> | string | null
-  tags?: Prisma.StringNullableListFilter<"Event">
-  isPublished?: Prisma.BoolFilter<"Event"> | boolean
+  eventSectionId?: Prisma.StringNullableFilter<"Event"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Event"> | string | null
-  media?: Prisma.EventMediaListRelationFilter
-  categoryRef?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  eventSection?: Prisma.XOR<Prisma.EventSectionNullableScalarRelationFilter, Prisma.EventSectionWhereInput> | null
 }
 
 export type EventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
-  year?: Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  tags?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  eventSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
-  media?: Prisma.EventMediaOrderByRelationAggregateInput
-  categoryRef?: Prisma.CategoryOrderByWithRelationInput
+  eventSection?: Prisma.EventSectionOrderByWithRelationInput
 }
 
 export type EventWhereUniqueInput = Prisma.AtLeast<{
@@ -295,38 +254,33 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EventWhereInput[]
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   title?: Prisma.StringFilter<"Event"> | string
-  description?: Prisma.StringFilter<"Event"> | string
-  date?: Prisma.DateTimeFilter<"Event"> | Date | string
+  description?: Prisma.StringNullableFilter<"Event"> | string | null
+  imageId?: Prisma.StringNullableFilter<"Event"> | string | null
+  videoId?: Prisma.StringNullableFilter<"Event"> | string | null
+  startDate?: Prisma.DateTimeFilter<"Event"> | Date | string
+  endDate?: Prisma.DateTimeFilter<"Event"> | Date | string
   location?: Prisma.StringNullableFilter<"Event"> | string | null
-  year?: Prisma.IntFilter<"Event"> | number
-  category?: Prisma.StringNullableFilter<"Event"> | string | null
-  tags?: Prisma.StringNullableListFilter<"Event">
-  isPublished?: Prisma.BoolFilter<"Event"> | boolean
+  eventSectionId?: Prisma.StringNullableFilter<"Event"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Event"> | string | null
-  media?: Prisma.EventMediaListRelationFilter
-  categoryRef?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  eventSection?: Prisma.XOR<Prisma.EventSectionNullableScalarRelationFilter, Prisma.EventSectionWhereInput> | null
 }, "id">
 
 export type EventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
-  year?: Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  tags?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  eventSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EventCountOrderByAggregateInput
-  _avg?: Prisma.EventAvgOrderByAggregateInput
   _max?: Prisma.EventMaxOrderByAggregateInput
   _min?: Prisma.EventMinOrderByAggregateInput
-  _sum?: Prisma.EventSumOrderByAggregateInput
 }
 
 export type EventScalarWhereWithAggregatesInput = {
@@ -335,107 +289,96 @@ export type EventScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EventScalarWhereWithAggregatesInput | Prisma.EventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Event"> | string
   title?: Prisma.StringWithAggregatesFilter<"Event"> | string
-  description?: Prisma.StringWithAggregatesFilter<"Event"> | string
-  date?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
+  imageId?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
+  videoId?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
+  startDate?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
+  endDate?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
   location?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
-  year?: Prisma.IntWithAggregatesFilter<"Event"> | number
-  category?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
-  tags?: Prisma.StringNullableListFilter<"Event">
-  isPublished?: Prisma.BoolWithAggregatesFilter<"Event"> | boolean
+  eventSectionId?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
-  categoryId?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
 }
 
 export type EventCreateInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput
-  categoryRef?: Prisma.CategoryCreateNestedOneWithoutEventsInput
+  eventSection?: Prisma.EventSectionCreateNestedOneWithoutEventsInput
 }
 
 export type EventUncheckedCreateInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
+  eventSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryId?: string | null
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput
-  categoryRef?: Prisma.CategoryUpdateOneWithoutEventsNestedInput
+  eventSection?: Prisma.EventSectionUpdateOneWithoutEventsNestedInput
 }
 
 export type EventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eventSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type EventCreateManyInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
+  eventSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryId?: string | null
 }
 
 export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,72 +386,15 @@ export type EventUpdateManyMutationInput = {
 export type EventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eventSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type EventCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  year?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type EventAvgOrderByAggregateInput = {
-  year?: Prisma.SortOrder
-}
-
-export type EventMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  year?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type EventMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  year?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-  categoryId?: Prisma.SortOrder
-}
-
-export type EventSumOrderByAggregateInput = {
-  year?: Prisma.SortOrder
-}
-
-export type EventScalarRelationFilter = {
-  is?: Prisma.EventWhereInput
-  isNot?: Prisma.EventWhereInput
 }
 
 export type EventListRelationFilter = {
@@ -521,201 +407,140 @@ export type EventOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type EventCreatetagsInput = {
-  set: string[]
+export type EventCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  videoId?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  eventSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
-export type EventUpdatetagsInput = {
-  set?: string[]
-  push?: string | string[]
+export type EventMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  videoId?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  eventSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
-export type EventCreateNestedOneWithoutMediaInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutMediaInput, Prisma.EventUncheckedCreateWithoutMediaInput>
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutMediaInput
-  connect?: Prisma.EventWhereUniqueInput
+export type EventMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  imageId?: Prisma.SortOrder
+  videoId?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  eventSectionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
-export type EventUpdateOneRequiredWithoutMediaNestedInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutMediaInput, Prisma.EventUncheckedCreateWithoutMediaInput>
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutMediaInput
-  upsert?: Prisma.EventUpsertWithoutMediaInput
-  connect?: Prisma.EventWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutMediaInput, Prisma.EventUpdateWithoutMediaInput>, Prisma.EventUncheckedUpdateWithoutMediaInput>
-}
-
-export type EventCreateNestedManyWithoutCategoryRefInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput> | Prisma.EventCreateWithoutCategoryRefInput[] | Prisma.EventUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutCategoryRefInput | Prisma.EventCreateOrConnectWithoutCategoryRefInput[]
-  createMany?: Prisma.EventCreateManyCategoryRefInputEnvelope
+export type EventCreateNestedManyWithoutEventSectionInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput> | Prisma.EventCreateWithoutEventSectionInput[] | Prisma.EventUncheckedCreateWithoutEventSectionInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventSectionInput | Prisma.EventCreateOrConnectWithoutEventSectionInput[]
+  createMany?: Prisma.EventCreateManyEventSectionInputEnvelope
   connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
 }
 
-export type EventUncheckedCreateNestedManyWithoutCategoryRefInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput> | Prisma.EventCreateWithoutCategoryRefInput[] | Prisma.EventUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutCategoryRefInput | Prisma.EventCreateOrConnectWithoutCategoryRefInput[]
-  createMany?: Prisma.EventCreateManyCategoryRefInputEnvelope
+export type EventUncheckedCreateNestedManyWithoutEventSectionInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput> | Prisma.EventCreateWithoutEventSectionInput[] | Prisma.EventUncheckedCreateWithoutEventSectionInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventSectionInput | Prisma.EventCreateOrConnectWithoutEventSectionInput[]
+  createMany?: Prisma.EventCreateManyEventSectionInputEnvelope
   connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
 }
 
-export type EventUpdateManyWithoutCategoryRefNestedInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput> | Prisma.EventCreateWithoutCategoryRefInput[] | Prisma.EventUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutCategoryRefInput | Prisma.EventCreateOrConnectWithoutCategoryRefInput[]
-  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutCategoryRefInput | Prisma.EventUpsertWithWhereUniqueWithoutCategoryRefInput[]
-  createMany?: Prisma.EventCreateManyCategoryRefInputEnvelope
+export type EventUpdateManyWithoutEventSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput> | Prisma.EventCreateWithoutEventSectionInput[] | Prisma.EventUncheckedCreateWithoutEventSectionInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventSectionInput | Prisma.EventCreateOrConnectWithoutEventSectionInput[]
+  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutEventSectionInput | Prisma.EventUpsertWithWhereUniqueWithoutEventSectionInput[]
+  createMany?: Prisma.EventCreateManyEventSectionInputEnvelope
   set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
-  update?: Prisma.EventUpdateWithWhereUniqueWithoutCategoryRefInput | Prisma.EventUpdateWithWhereUniqueWithoutCategoryRefInput[]
-  updateMany?: Prisma.EventUpdateManyWithWhereWithoutCategoryRefInput | Prisma.EventUpdateManyWithWhereWithoutCategoryRefInput[]
+  update?: Prisma.EventUpdateWithWhereUniqueWithoutEventSectionInput | Prisma.EventUpdateWithWhereUniqueWithoutEventSectionInput[]
+  updateMany?: Prisma.EventUpdateManyWithWhereWithoutEventSectionInput | Prisma.EventUpdateManyWithWhereWithoutEventSectionInput[]
   deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
 }
 
-export type EventUncheckedUpdateManyWithoutCategoryRefNestedInput = {
-  create?: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput> | Prisma.EventCreateWithoutCategoryRefInput[] | Prisma.EventUncheckedCreateWithoutCategoryRefInput[]
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutCategoryRefInput | Prisma.EventCreateOrConnectWithoutCategoryRefInput[]
-  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutCategoryRefInput | Prisma.EventUpsertWithWhereUniqueWithoutCategoryRefInput[]
-  createMany?: Prisma.EventCreateManyCategoryRefInputEnvelope
+export type EventUncheckedUpdateManyWithoutEventSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput> | Prisma.EventCreateWithoutEventSectionInput[] | Prisma.EventUncheckedCreateWithoutEventSectionInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventSectionInput | Prisma.EventCreateOrConnectWithoutEventSectionInput[]
+  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutEventSectionInput | Prisma.EventUpsertWithWhereUniqueWithoutEventSectionInput[]
+  createMany?: Prisma.EventCreateManyEventSectionInputEnvelope
   set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
   connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
-  update?: Prisma.EventUpdateWithWhereUniqueWithoutCategoryRefInput | Prisma.EventUpdateWithWhereUniqueWithoutCategoryRefInput[]
-  updateMany?: Prisma.EventUpdateManyWithWhereWithoutCategoryRefInput | Prisma.EventUpdateManyWithWhereWithoutCategoryRefInput[]
+  update?: Prisma.EventUpdateWithWhereUniqueWithoutEventSectionInput | Prisma.EventUpdateWithWhereUniqueWithoutEventSectionInput[]
+  updateMany?: Prisma.EventUpdateManyWithWhereWithoutEventSectionInput | Prisma.EventUpdateManyWithWhereWithoutEventSectionInput[]
   deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
 }
 
-export type EventCreateWithoutMediaInput = {
+export type EventCreateWithoutEventSectionInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryRef?: Prisma.CategoryCreateNestedOneWithoutEventsInput
 }
 
-export type EventUncheckedCreateWithoutMediaInput = {
+export type EventUncheckedCreateWithoutEventSectionInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  categoryId?: string | null
 }
 
-export type EventCreateOrConnectWithoutMediaInput = {
+export type EventCreateOrConnectWithoutEventSectionInput = {
   where: Prisma.EventWhereUniqueInput
-  create: Prisma.XOR<Prisma.EventCreateWithoutMediaInput, Prisma.EventUncheckedCreateWithoutMediaInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput>
 }
 
-export type EventUpsertWithoutMediaInput = {
-  update: Prisma.XOR<Prisma.EventUpdateWithoutMediaInput, Prisma.EventUncheckedUpdateWithoutMediaInput>
-  create: Prisma.XOR<Prisma.EventCreateWithoutMediaInput, Prisma.EventUncheckedCreateWithoutMediaInput>
-  where?: Prisma.EventWhereInput
-}
-
-export type EventUpdateToOneWithWhereWithoutMediaInput = {
-  where?: Prisma.EventWhereInput
-  data: Prisma.XOR<Prisma.EventUpdateWithoutMediaInput, Prisma.EventUncheckedUpdateWithoutMediaInput>
-}
-
-export type EventUpdateWithoutMediaInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryRef?: Prisma.CategoryUpdateOneWithoutEventsNestedInput
-}
-
-export type EventUncheckedUpdateWithoutMediaInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type EventCreateWithoutCategoryRefInput = {
-  id?: string
-  title: string
-  description: string
-  date: Date | string
-  location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput
-}
-
-export type EventUncheckedCreateWithoutCategoryRefInput = {
-  id?: string
-  title: string
-  description: string
-  date: Date | string
-  location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput
-}
-
-export type EventCreateOrConnectWithoutCategoryRefInput = {
-  where: Prisma.EventWhereUniqueInput
-  create: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput>
-}
-
-export type EventCreateManyCategoryRefInputEnvelope = {
-  data: Prisma.EventCreateManyCategoryRefInput | Prisma.EventCreateManyCategoryRefInput[]
+export type EventCreateManyEventSectionInputEnvelope = {
+  data: Prisma.EventCreateManyEventSectionInput | Prisma.EventCreateManyEventSectionInput[]
   skipDuplicates?: boolean
 }
 
-export type EventUpsertWithWhereUniqueWithoutCategoryRefInput = {
+export type EventUpsertWithWhereUniqueWithoutEventSectionInput = {
   where: Prisma.EventWhereUniqueInput
-  update: Prisma.XOR<Prisma.EventUpdateWithoutCategoryRefInput, Prisma.EventUncheckedUpdateWithoutCategoryRefInput>
-  create: Prisma.XOR<Prisma.EventCreateWithoutCategoryRefInput, Prisma.EventUncheckedCreateWithoutCategoryRefInput>
+  update: Prisma.XOR<Prisma.EventUpdateWithoutEventSectionInput, Prisma.EventUncheckedUpdateWithoutEventSectionInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutEventSectionInput, Prisma.EventUncheckedCreateWithoutEventSectionInput>
 }
 
-export type EventUpdateWithWhereUniqueWithoutCategoryRefInput = {
+export type EventUpdateWithWhereUniqueWithoutEventSectionInput = {
   where: Prisma.EventWhereUniqueInput
-  data: Prisma.XOR<Prisma.EventUpdateWithoutCategoryRefInput, Prisma.EventUncheckedUpdateWithoutCategoryRefInput>
+  data: Prisma.XOR<Prisma.EventUpdateWithoutEventSectionInput, Prisma.EventUncheckedUpdateWithoutEventSectionInput>
 }
 
-export type EventUpdateManyWithWhereWithoutCategoryRefInput = {
+export type EventUpdateManyWithWhereWithoutEventSectionInput = {
   where: Prisma.EventScalarWhereInput
-  data: Prisma.XOR<Prisma.EventUpdateManyMutationInput, Prisma.EventUncheckedUpdateManyWithoutCategoryRefInput>
+  data: Prisma.XOR<Prisma.EventUpdateManyMutationInput, Prisma.EventUncheckedUpdateManyWithoutEventSectionInput>
 }
 
 export type EventScalarWhereInput = {
@@ -724,204 +549,158 @@ export type EventScalarWhereInput = {
   NOT?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
   id?: Prisma.StringFilter<"Event"> | string
   title?: Prisma.StringFilter<"Event"> | string
-  description?: Prisma.StringFilter<"Event"> | string
-  date?: Prisma.DateTimeFilter<"Event"> | Date | string
+  description?: Prisma.StringNullableFilter<"Event"> | string | null
+  imageId?: Prisma.StringNullableFilter<"Event"> | string | null
+  videoId?: Prisma.StringNullableFilter<"Event"> | string | null
+  startDate?: Prisma.DateTimeFilter<"Event"> | Date | string
+  endDate?: Prisma.DateTimeFilter<"Event"> | Date | string
   location?: Prisma.StringNullableFilter<"Event"> | string | null
-  year?: Prisma.IntFilter<"Event"> | number
-  category?: Prisma.StringNullableFilter<"Event"> | string | null
-  tags?: Prisma.StringNullableListFilter<"Event">
-  isPublished?: Prisma.BoolFilter<"Event"> | boolean
+  eventSectionId?: Prisma.StringNullableFilter<"Event"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
-  categoryId?: Prisma.StringNullableFilter<"Event"> | string | null
 }
 
-export type EventCreateManyCategoryRefInput = {
+export type EventCreateManyEventSectionInput = {
   id?: string
   title: string
-  description: string
-  date: Date | string
+  description?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  startDate: Date | string
+  endDate: Date | string
   location?: string | null
-  year: number
-  category?: string | null
-  tags?: Prisma.EventCreatetagsInput | string[]
-  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type EventUpdateWithoutCategoryRefInput = {
+export type EventUpdateWithoutEventSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput
-}
-
-export type EventUncheckedUpdateWithoutCategoryRefInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput
-}
-
-export type EventUncheckedUpdateManyWithoutCategoryRefInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.EventUpdatetagsInput | string[]
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-
-/**
- * Count Type EventCountOutputType
- */
-
-export type EventCountOutputType = {
-  media: number
+export type EventUncheckedUpdateWithoutEventSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type EventCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  media?: boolean | EventCountOutputTypeCountMediaArgs
+export type EventUncheckedUpdateManyWithoutEventSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the EventCountOutputType
-   */
-  select?: Prisma.EventCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.EventMediaWhereInput
-}
 
 
 export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  imageId?: boolean
+  videoId?: boolean
+  startDate?: boolean
+  endDate?: boolean
   location?: boolean
-  year?: boolean
-  category?: boolean
-  tags?: boolean
-  isPublished?: boolean
+  eventSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
-  _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  imageId?: boolean
+  videoId?: boolean
+  startDate?: boolean
+  endDate?: boolean
   location?: boolean
-  year?: boolean
-  category?: boolean
-  tags?: boolean
-  isPublished?: boolean
+  eventSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  imageId?: boolean
+  videoId?: boolean
+  startDate?: boolean
+  endDate?: boolean
   location?: boolean
-  year?: boolean
-  category?: boolean
-  tags?: boolean
-  isPublished?: boolean
+  eventSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  imageId?: boolean
+  videoId?: boolean
+  startDate?: boolean
+  endDate?: boolean
   location?: boolean
-  year?: boolean
-  category?: boolean
-  tags?: boolean
-  isPublished?: boolean
+  eventSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  categoryId?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "date" | "location" | "year" | "category" | "tags" | "isPublished" | "createdAt" | "updatedAt" | "categoryId", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "imageId" | "videoId" | "startDate" | "endDate" | "location" | "eventSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
-  _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }
 export type EventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }
 export type EventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  categoryRef?: boolean | Prisma.Event$categoryRefArgs<ExtArgs>
+  eventSection?: boolean | Prisma.Event$eventSectionArgs<ExtArgs>
 }
 
 export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Event"
   objects: {
-    media: Prisma.$EventMediaPayload<ExtArgs>[]
-    categoryRef: Prisma.$CategoryPayload<ExtArgs> | null
+    eventSection: Prisma.$EventSectionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
-    description: string
-    date: Date
+    description: string | null
+    imageId: string | null
+    videoId: string | null
+    startDate: Date
+    endDate: Date
     location: string | null
-    year: number
-    category: string | null
-    tags: string[]
-    isPublished: boolean
+    eventSectionId: string | null
     createdAt: Date
     updatedAt: Date
-    categoryId: string | null
   }, ExtArgs["result"]["event"]>
   composites: {}
 }
@@ -1316,8 +1095,7 @@ readonly fields: EventFieldRefs;
  */
 export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  media<T extends Prisma.Event$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  categoryRef<T extends Prisma.Event$categoryRefArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$categoryRefArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  eventSection<T extends Prisma.Event$eventSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$eventSectionArgs<ExtArgs>>): Prisma.Prisma__EventSectionClient<runtime.Types.Result.GetResult<Prisma.$EventSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1350,15 +1128,14 @@ export interface EventFieldRefs {
   readonly id: Prisma.FieldRef<"Event", 'String'>
   readonly title: Prisma.FieldRef<"Event", 'String'>
   readonly description: Prisma.FieldRef<"Event", 'String'>
-  readonly date: Prisma.FieldRef<"Event", 'DateTime'>
+  readonly imageId: Prisma.FieldRef<"Event", 'String'>
+  readonly videoId: Prisma.FieldRef<"Event", 'String'>
+  readonly startDate: Prisma.FieldRef<"Event", 'DateTime'>
+  readonly endDate: Prisma.FieldRef<"Event", 'DateTime'>
   readonly location: Prisma.FieldRef<"Event", 'String'>
-  readonly year: Prisma.FieldRef<"Event", 'Int'>
-  readonly category: Prisma.FieldRef<"Event", 'String'>
-  readonly tags: Prisma.FieldRef<"Event", 'String[]'>
-  readonly isPublished: Prisma.FieldRef<"Event", 'Boolean'>
+  readonly eventSectionId: Prisma.FieldRef<"Event", 'String'>
   readonly createdAt: Prisma.FieldRef<"Event", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Event", 'DateTime'>
-  readonly categoryId: Prisma.FieldRef<"Event", 'String'>
 }
     
 
@@ -1755,46 +1532,22 @@ export type EventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Event.media
+ * Event.eventSection
  */
-export type Event$mediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Event$eventSectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the EventMedia
+   * Select specific fields to fetch from the EventSection
    */
-  select?: Prisma.EventMediaSelect<ExtArgs> | null
+  select?: Prisma.EventSectionSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the EventMedia
+   * Omit specific fields from the EventSection
    */
-  omit?: Prisma.EventMediaOmit<ExtArgs> | null
+  omit?: Prisma.EventSectionOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventMediaInclude<ExtArgs> | null
-  where?: Prisma.EventMediaWhereInput
-  orderBy?: Prisma.EventMediaOrderByWithRelationInput | Prisma.EventMediaOrderByWithRelationInput[]
-  cursor?: Prisma.EventMediaWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.EventMediaScalarFieldEnum | Prisma.EventMediaScalarFieldEnum[]
-}
-
-/**
- * Event.categoryRef
- */
-export type Event$categoryRefArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Category
-   */
-  select?: Prisma.CategorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Category
-   */
-  omit?: Prisma.CategoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CategoryInclude<ExtArgs> | null
-  where?: Prisma.CategoryWhereInput
+  include?: Prisma.EventSectionInclude<ExtArgs> | null
+  where?: Prisma.EventSectionWhereInput
 }
 
 /**

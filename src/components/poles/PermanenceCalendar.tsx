@@ -253,7 +253,7 @@ export default function PermanenceCalendar({
             />
           </motion.div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-            Calendrier des Permanences 2025
+            Calendrier des Permanences {new Date().getFullYear()}
           </h2>
         </motion.div>
         <motion.div

@@ -1,51 +1,25 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
+/**
+ * API Routes pour les bénévoles
+ */
+import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
 const createVolunteerSchema = z.object({
-  name: z.string().min(1),
-  image: z.string().url(),
-  role: z.string().optional(),
-  initials: z.string().min(1).max(2),
-  order: z.number().int().default(0),
+  personId: z.string().min(1, 'Person ID is required'),
   isActive: z.boolean().default(true),
+  volunteerSectionId: z.string().optional().nullable(),
 })
 
-// GET /api/volunteers - Liste tous les bénévoles
-export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const activeOnly = searchParams.get('active') !== 'false'
+const updateVolunteerSchema = createVolunteerSchema.partial()
 
-    const where: any = {}
-    if (activeOnly) where.isActive = true
+const handlers = createCrudHandler({
+  modelName: 'Volunteer',
+  validateCreate: (data) => createVolunteerSchema.parse(data),
+  validateUpdate: (data) => updateVolunteerSchema.parse(data),
+})
 
-    const volunteers = await prisma.volunteer.findMany({
-      where,
-      orderBy: { order: 'asc' },
-    })
-
-    return successResponse(volunteers)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
-
-// POST /api/volunteers - Créer un nouveau bénévole
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = createVolunteerSchema.parse(body)
-
-    const volunteer = await prisma.volunteer.create({
-      data: validatedData,
-    })
-
-    return successResponse(volunteer, 'Bénévole créé avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
+export const GET = handlers.GET
+export const POST = handlers.POST
+export const PUT = handlers.PUT
+export const DELETE = handlers.DELETE
 

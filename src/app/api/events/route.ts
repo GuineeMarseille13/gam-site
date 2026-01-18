@@ -1,85 +1,58 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
+/**
+ * API Routes pour les événements
+ * GET    /api/events - Liste tous les événements
+ * GET    /api/events?id=xxx - Récupère un événement par ID
+ * POST   /api/events - Crée un nouvel événement
+ * PUT    /api/events?id=xxx - Met à jour un événement
+ * DELETE /api/events?id=xxx - Supprime un événement
+ */
+
+import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
+// Schéma de validation pour la création
 const createEventSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  date: z.string().datetime(),
-  location: z.string().optional(),
-  year: z.number().int(),
-  category: z.string().optional(),
-  tags: z.array(z.string()).default([]),
-  isPublished: z.boolean().default(false),
-  categoryId: z.string().optional(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional().nullable(),
+  imageId: z.string().optional().nullable(),
+  videoId: z.string().optional().nullable(),
+  startDate: z.string().datetime('Invalid start date').or(z.date()),
+  endDate: z.string().datetime('Invalid end date').or(z.date()),
+  location: z.string().optional().nullable(),
+  eventSectionId: z.string().optional().nullable(),
 })
 
-// GET /api/events - Liste tous les événements
-export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const year = searchParams.get('year')
-    const published = searchParams.get('published') === 'true'
-    const categoryId = searchParams.get('categoryId')
+// Schéma de validation pour la mise à jour
+const updateEventSchema = createEventSchema.partial()
 
-    const where: any = {}
-    if (year) where.year = parseInt(year)
-    if (published) where.isPublished = true
-    if (categoryId) where.categoryId = categoryId
-
-    const events = await prisma.event.findMany({
-      where,
-      include: {
-        media: {
-          orderBy: { order: 'asc' },
-        },
-        categoryRef: true,
-      },
-      orderBy: { date: 'desc' },
-    })
-
-    // Grouper par année si demandé
-    const groupByYear = searchParams.get('groupByYear') === 'true'
-    if (groupByYear) {
-      const eventsByYear = events.reduce((acc, event) => {
-        if (!acc[event.year]) {
-          acc[event.year] = []
-        }
-        acc[event.year].push(event)
-        return acc
-      }, {} as Record<number, typeof events>)
-
-      return successResponse(eventsByYear)
+const handlers = createCrudHandler({
+  modelName: 'Event',
+  validateCreate: (data) => {
+    const parsed = createEventSchema.parse(data)
+    // Convertir les dates string en Date si nécessaire
+    if (typeof parsed.startDate === 'string') {
+      parsed.startDate = new Date(parsed.startDate)
     }
+    if (typeof parsed.endDate === 'string') {
+      parsed.endDate = new Date(parsed.endDate)
+    }
+    return parsed
+  },
+  validateUpdate: (data) => {
+    const parsed = updateEventSchema.parse(data)
+    // Convertir les dates string en Date si nécessaire
+    if (parsed.startDate && typeof parsed.startDate === 'string') {
+      parsed.startDate = new Date(parsed.startDate)
+    }
+    if (parsed.endDate && typeof parsed.endDate === 'string') {
+      parsed.endDate = new Date(parsed.endDate)
+    }
+    return parsed
+  },
+})
 
-    return successResponse(events)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
-
-// POST /api/events - Créer un nouvel événement
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = createEventSchema.parse(body)
-
-    const event = await prisma.event.create({
-      data: {
-        ...validatedData,
-        date: new Date(validatedData.date),
-      },
-      include: {
-        media: true,
-        categoryRef: true,
-      },
-    })
-
-    return successResponse(event, 'Événement créé avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
+export const GET = handlers.GET
+export const POST = handlers.POST
+export const PUT = handlers.PUT
+export const DELETE = handlers.DELETE
 

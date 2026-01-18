@@ -20,94 +20,140 @@ export type ReviewModel = runtime.Types.Result.DefaultSelection<Prisma.$ReviewPa
 
 export type AggregateReview = {
   _count: ReviewCountAggregateOutputType | null
+  _avg: ReviewAvgAggregateOutputType | null
+  _sum: ReviewSumAggregateOutputType | null
   _min: ReviewMinAggregateOutputType | null
   _max: ReviewMaxAggregateOutputType | null
 }
 
+export type ReviewAvgAggregateOutputType = {
+  rating: number | null
+  order: number | null
+}
+
+export type ReviewSumAggregateOutputType = {
+  rating: number | null
+  order: number | null
+}
+
 export type ReviewMinAggregateOutputType = {
   id: string | null
-  name: string | null
-  role: string | null
+  firstName: string | null
+  lastName: string | null
+  role: $Enums.Role | null
   body: string | null
-  img: string | null
+  avatarUrl: string | null
   country: string | null
-  rating: $Enums.ReviewRating | null
-  isPublished: boolean | null
-  isFeatured: boolean | null
+  rating: number | null
+  order: number | null
+  isActive: boolean | null
+  isVerified: boolean | null
+  reviewSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  publishedAt: Date | null
 }
 
 export type ReviewMaxAggregateOutputType = {
   id: string | null
-  name: string | null
-  role: string | null
+  firstName: string | null
+  lastName: string | null
+  role: $Enums.Role | null
   body: string | null
-  img: string | null
+  avatarUrl: string | null
   country: string | null
-  rating: $Enums.ReviewRating | null
-  isPublished: boolean | null
-  isFeatured: boolean | null
+  rating: number | null
+  order: number | null
+  isActive: boolean | null
+  isVerified: boolean | null
+  reviewSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  publishedAt: Date | null
 }
 
 export type ReviewCountAggregateOutputType = {
   id: number
-  name: number
+  firstName: number
+  lastName: number
   role: number
   body: number
-  img: number
+  avatarUrl: number
   country: number
   rating: number
-  isPublished: number
-  isFeatured: number
+  order: number
+  isActive: number
+  isVerified: number
+  reviewSectionId: number
   createdAt: number
   updatedAt: number
+  publishedAt: number
   _all: number
 }
 
 
+export type ReviewAvgAggregateInputType = {
+  rating?: true
+  order?: true
+}
+
+export type ReviewSumAggregateInputType = {
+  rating?: true
+  order?: true
+}
+
 export type ReviewMinAggregateInputType = {
   id?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   role?: true
   body?: true
-  img?: true
+  avatarUrl?: true
   country?: true
   rating?: true
-  isPublished?: true
-  isFeatured?: true
+  order?: true
+  isActive?: true
+  isVerified?: true
+  reviewSectionId?: true
   createdAt?: true
   updatedAt?: true
+  publishedAt?: true
 }
 
 export type ReviewMaxAggregateInputType = {
   id?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   role?: true
   body?: true
-  img?: true
+  avatarUrl?: true
   country?: true
   rating?: true
-  isPublished?: true
-  isFeatured?: true
+  order?: true
+  isActive?: true
+  isVerified?: true
+  reviewSectionId?: true
   createdAt?: true
   updatedAt?: true
+  publishedAt?: true
 }
 
 export type ReviewCountAggregateInputType = {
   id?: true
-  name?: true
+  firstName?: true
+  lastName?: true
   role?: true
   body?: true
-  img?: true
+  avatarUrl?: true
   country?: true
   rating?: true
-  isPublished?: true
-  isFeatured?: true
+  order?: true
+  isActive?: true
+  isVerified?: true
+  reviewSectionId?: true
   createdAt?: true
   updatedAt?: true
+  publishedAt?: true
   _all?: true
 }
 
@@ -149,6 +195,18 @@ export type ReviewAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ReviewAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ReviewSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ReviewMinAggregateInputType
@@ -179,23 +237,31 @@ export type ReviewGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: ReviewCountAggregateInputType | true
+  _avg?: ReviewAvgAggregateInputType
+  _sum?: ReviewSumAggregateInputType
   _min?: ReviewMinAggregateInputType
   _max?: ReviewMaxAggregateInputType
 }
 
 export type ReviewGroupByOutputType = {
   id: string
-  name: string
-  role: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
   body: string
-  img: string
-  country: string
-  rating: $Enums.ReviewRating
-  isPublished: boolean
-  isFeatured: boolean
+  avatarUrl: string | null
+  country: string | null
+  rating: number
+  order: number
+  isActive: boolean
+  isVerified: boolean
+  reviewSectionId: string | null
   createdAt: Date
   updatedAt: Date
+  publishedAt: Date | null
   _count: ReviewCountAggregateOutputType | null
+  _avg: ReviewAvgAggregateOutputType | null
+  _sum: ReviewSumAggregateOutputType | null
   _min: ReviewMinAggregateOutputType | null
   _max: ReviewMaxAggregateOutputType | null
 }
@@ -220,30 +286,40 @@ export type ReviewWhereInput = {
   OR?: Prisma.ReviewWhereInput[]
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   id?: Prisma.StringFilter<"Review"> | string
-  name?: Prisma.StringFilter<"Review"> | string
-  role?: Prisma.StringFilter<"Review"> | string
+  firstName?: Prisma.StringFilter<"Review"> | string
+  lastName?: Prisma.StringFilter<"Review"> | string
+  role?: Prisma.EnumRoleFilter<"Review"> | $Enums.Role
   body?: Prisma.StringFilter<"Review"> | string
-  img?: Prisma.StringFilter<"Review"> | string
-  country?: Prisma.StringFilter<"Review"> | string
-  rating?: Prisma.EnumReviewRatingFilter<"Review"> | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFilter<"Review"> | boolean
-  isFeatured?: Prisma.BoolFilter<"Review"> | boolean
+  avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
+  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  rating?: Prisma.IntFilter<"Review"> | number
+  order?: Prisma.IntFilter<"Review"> | number
+  isActive?: Prisma.BoolFilter<"Review"> | boolean
+  isVerified?: Prisma.BoolFilter<"Review"> | boolean
+  reviewSectionId?: Prisma.StringNullableFilter<"Review"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
+  publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+  reviewSection?: Prisma.XOR<Prisma.ReviewSectionNullableScalarRelationFilter, Prisma.ReviewSectionWhereInput> | null
 }
 
 export type ReviewOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  img?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  isFeatured?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  reviewSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewSection?: Prisma.ReviewSectionOrderByWithRelationInput
 }
 
 export type ReviewWhereUniqueInput = Prisma.AtLeast<{
@@ -251,33 +327,44 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   OR?: Prisma.ReviewWhereInput[]
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
-  name?: Prisma.StringFilter<"Review"> | string
-  role?: Prisma.StringFilter<"Review"> | string
+  firstName?: Prisma.StringFilter<"Review"> | string
+  lastName?: Prisma.StringFilter<"Review"> | string
+  role?: Prisma.EnumRoleFilter<"Review"> | $Enums.Role
   body?: Prisma.StringFilter<"Review"> | string
-  img?: Prisma.StringFilter<"Review"> | string
-  country?: Prisma.StringFilter<"Review"> | string
-  rating?: Prisma.EnumReviewRatingFilter<"Review"> | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFilter<"Review"> | boolean
-  isFeatured?: Prisma.BoolFilter<"Review"> | boolean
+  avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
+  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  rating?: Prisma.IntFilter<"Review"> | number
+  order?: Prisma.IntFilter<"Review"> | number
+  isActive?: Prisma.BoolFilter<"Review"> | boolean
+  isVerified?: Prisma.BoolFilter<"Review"> | boolean
+  reviewSectionId?: Prisma.StringNullableFilter<"Review"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
+  publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+  reviewSection?: Prisma.XOR<Prisma.ReviewSectionNullableScalarRelationFilter, Prisma.ReviewSectionWhereInput> | null
 }, "id">
 
 export type ReviewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  img?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  isFeatured?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  reviewSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ReviewCountOrderByAggregateInput
+  _avg?: Prisma.ReviewAvgOrderByAggregateInput
   _max?: Prisma.ReviewMaxOrderByAggregateInput
   _min?: Prisma.ReviewMinOrderByAggregateInput
+  _sum?: Prisma.ReviewSumOrderByAggregateInput
 }
 
 export type ReviewScalarWhereWithAggregatesInput = {
@@ -285,237 +372,529 @@ export type ReviewScalarWhereWithAggregatesInput = {
   OR?: Prisma.ReviewScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ReviewScalarWhereWithAggregatesInput | Prisma.ReviewScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  role?: Prisma.StringWithAggregatesFilter<"Review"> | string
+  firstName?: Prisma.StringWithAggregatesFilter<"Review"> | string
+  lastName?: Prisma.StringWithAggregatesFilter<"Review"> | string
+  role?: Prisma.EnumRoleWithAggregatesFilter<"Review"> | $Enums.Role
   body?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  img?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  country?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  rating?: Prisma.EnumReviewRatingWithAggregatesFilter<"Review"> | $Enums.ReviewRating
-  isPublished?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
-  isFeatured?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
+  avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  country?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  rating?: Prisma.IntWithAggregatesFilter<"Review"> | number
+  order?: Prisma.IntWithAggregatesFilter<"Review"> | number
+  isActive?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
+  isVerified?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
+  reviewSectionId?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Review"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Review"> | Date | string
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Review"> | Date | string | null
 }
 
 export type ReviewCreateInput = {
   id?: string
-  name: string
-  role: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
   body: string
-  img: string
-  country: string
-  rating?: $Enums.ReviewRating
-  isPublished?: boolean
-  isFeatured?: boolean
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  reviewSection?: Prisma.ReviewSectionCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateInput = {
   id?: string
-  name: string
-  role: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
   body: string
-  img: string
-  country: string
-  rating?: $Enums.ReviewRating
-  isPublished?: boolean
-  isFeatured?: boolean
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publishedAt?: Date | string | null
 }
 
 export type ReviewUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  img?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.EnumReviewRatingFieldUpdateOperationsInput | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewSection?: Prisma.ReviewSectionUpdateOneWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  img?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.EnumReviewRatingFieldUpdateOperationsInput | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reviewSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReviewCreateManyInput = {
   id?: string
-  name: string
-  role: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
   body: string
-  img: string
-  country: string
-  rating?: $Enums.ReviewRating
-  isPublished?: boolean
-  isFeatured?: boolean
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publishedAt?: Date | string | null
 }
 
 export type ReviewUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  img?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.EnumReviewRatingFieldUpdateOperationsInput | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReviewUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   body?: Prisma.StringFieldUpdateOperationsInput | string
-  img?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.EnumReviewRatingFieldUpdateOperationsInput | $Enums.ReviewRating
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reviewSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type ReviewListRelationFilter = {
+  every?: Prisma.ReviewWhereInput
+  some?: Prisma.ReviewWhereInput
+  none?: Prisma.ReviewWhereInput
+}
+
+export type ReviewOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ReviewCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  img?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   country?: Prisma.SortOrder
   rating?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  isFeatured?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  reviewSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+}
+
+export type ReviewAvgOrderByAggregateInput = {
+  rating?: Prisma.SortOrder
+  order?: Prisma.SortOrder
 }
 
 export type ReviewMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  img?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   country?: Prisma.SortOrder
   rating?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  isFeatured?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  reviewSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
 }
 
 export type ReviewMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   body?: Prisma.SortOrder
-  img?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   country?: Prisma.SortOrder
   rating?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  isFeatured?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  reviewSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
 }
 
-export type EnumReviewRatingFieldUpdateOperationsInput = {
-  set?: $Enums.ReviewRating
+export type ReviewSumOrderByAggregateInput = {
+  rating?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+}
+
+export type ReviewCreateNestedManyWithoutReviewSectionInput = {
+  create?: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput> | Prisma.ReviewCreateWithoutReviewSectionInput[] | Prisma.ReviewUncheckedCreateWithoutReviewSectionInput[]
+  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutReviewSectionInput | Prisma.ReviewCreateOrConnectWithoutReviewSectionInput[]
+  createMany?: Prisma.ReviewCreateManyReviewSectionInputEnvelope
+  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+}
+
+export type ReviewUncheckedCreateNestedManyWithoutReviewSectionInput = {
+  create?: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput> | Prisma.ReviewCreateWithoutReviewSectionInput[] | Prisma.ReviewUncheckedCreateWithoutReviewSectionInput[]
+  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutReviewSectionInput | Prisma.ReviewCreateOrConnectWithoutReviewSectionInput[]
+  createMany?: Prisma.ReviewCreateManyReviewSectionInputEnvelope
+  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+}
+
+export type ReviewUpdateManyWithoutReviewSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput> | Prisma.ReviewCreateWithoutReviewSectionInput[] | Prisma.ReviewUncheckedCreateWithoutReviewSectionInput[]
+  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutReviewSectionInput | Prisma.ReviewCreateOrConnectWithoutReviewSectionInput[]
+  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutReviewSectionInput | Prisma.ReviewUpsertWithWhereUniqueWithoutReviewSectionInput[]
+  createMany?: Prisma.ReviewCreateManyReviewSectionInputEnvelope
+  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutReviewSectionInput | Prisma.ReviewUpdateWithWhereUniqueWithoutReviewSectionInput[]
+  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutReviewSectionInput | Prisma.ReviewUpdateManyWithWhereWithoutReviewSectionInput[]
+  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
+}
+
+export type ReviewUncheckedUpdateManyWithoutReviewSectionNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput> | Prisma.ReviewCreateWithoutReviewSectionInput[] | Prisma.ReviewUncheckedCreateWithoutReviewSectionInput[]
+  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutReviewSectionInput | Prisma.ReviewCreateOrConnectWithoutReviewSectionInput[]
+  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutReviewSectionInput | Prisma.ReviewUpsertWithWhereUniqueWithoutReviewSectionInput[]
+  createMany?: Prisma.ReviewCreateManyReviewSectionInputEnvelope
+  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
+  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutReviewSectionInput | Prisma.ReviewUpdateWithWhereUniqueWithoutReviewSectionInput[]
+  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutReviewSectionInput | Prisma.ReviewUpdateManyWithWhereWithoutReviewSectionInput[]
+  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
+}
+
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type ReviewCreateWithoutReviewSectionInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  body: string
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+}
+
+export type ReviewUncheckedCreateWithoutReviewSectionInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  body: string
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+}
+
+export type ReviewCreateOrConnectWithoutReviewSectionInput = {
+  where: Prisma.ReviewWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput>
+}
+
+export type ReviewCreateManyReviewSectionInputEnvelope = {
+  data: Prisma.ReviewCreateManyReviewSectionInput | Prisma.ReviewCreateManyReviewSectionInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReviewUpsertWithWhereUniqueWithoutReviewSectionInput = {
+  where: Prisma.ReviewWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReviewUpdateWithoutReviewSectionInput, Prisma.ReviewUncheckedUpdateWithoutReviewSectionInput>
+  create: Prisma.XOR<Prisma.ReviewCreateWithoutReviewSectionInput, Prisma.ReviewUncheckedCreateWithoutReviewSectionInput>
+}
+
+export type ReviewUpdateWithWhereUniqueWithoutReviewSectionInput = {
+  where: Prisma.ReviewWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReviewUpdateWithoutReviewSectionInput, Prisma.ReviewUncheckedUpdateWithoutReviewSectionInput>
+}
+
+export type ReviewUpdateManyWithWhereWithoutReviewSectionInput = {
+  where: Prisma.ReviewScalarWhereInput
+  data: Prisma.XOR<Prisma.ReviewUpdateManyMutationInput, Prisma.ReviewUncheckedUpdateManyWithoutReviewSectionInput>
+}
+
+export type ReviewScalarWhereInput = {
+  AND?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
+  OR?: Prisma.ReviewScalarWhereInput[]
+  NOT?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
+  id?: Prisma.StringFilter<"Review"> | string
+  firstName?: Prisma.StringFilter<"Review"> | string
+  lastName?: Prisma.StringFilter<"Review"> | string
+  role?: Prisma.EnumRoleFilter<"Review"> | $Enums.Role
+  body?: Prisma.StringFilter<"Review"> | string
+  avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
+  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  rating?: Prisma.IntFilter<"Review"> | number
+  order?: Prisma.IntFilter<"Review"> | number
+  isActive?: Prisma.BoolFilter<"Review"> | boolean
+  isVerified?: Prisma.BoolFilter<"Review"> | boolean
+  reviewSectionId?: Prisma.StringNullableFilter<"Review"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
+  publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+}
+
+export type ReviewCreateManyReviewSectionInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  body: string
+  avatarUrl?: string | null
+  country?: string | null
+  rating?: number
+  order?: number
+  isActive?: boolean
+  isVerified?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+}
+
+export type ReviewUpdateWithoutReviewSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type ReviewUncheckedUpdateWithoutReviewSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type ReviewUncheckedUpdateManyWithoutReviewSectionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
 
 export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   role?: boolean
   body?: boolean
-  img?: boolean
+  avatarUrl?: boolean
   country?: boolean
   rating?: boolean
-  isPublished?: boolean
-  isFeatured?: boolean
+  order?: boolean
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publishedAt?: boolean
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   role?: boolean
   body?: boolean
-  img?: boolean
+  avatarUrl?: boolean
   country?: boolean
   rating?: boolean
-  isPublished?: boolean
-  isFeatured?: boolean
+  order?: boolean
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publishedAt?: boolean
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   role?: boolean
   body?: boolean
-  img?: boolean
+  avatarUrl?: boolean
   country?: boolean
   rating?: boolean
-  isPublished?: boolean
-  isFeatured?: boolean
+  order?: boolean
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publishedAt?: boolean
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectScalar = {
   id?: boolean
-  name?: boolean
+  firstName?: boolean
+  lastName?: boolean
   role?: boolean
   body?: boolean
-  img?: boolean
+  avatarUrl?: boolean
   country?: boolean
   rating?: boolean
-  isPublished?: boolean
-  isFeatured?: boolean
+  order?: boolean
+  isActive?: boolean
+  isVerified?: boolean
+  reviewSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publishedAt?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "role" | "body" | "img" | "country" | "rating" | "isPublished" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "role" | "body" | "avatarUrl" | "country" | "rating" | "order" | "isActive" | "isVerified" | "reviewSectionId" | "createdAt" | "updatedAt" | "publishedAt", ExtArgs["result"]["review"]>
+export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
+}
+export type ReviewIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
+}
+export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
+}
 
 export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Review"
-  objects: {}
+  objects: {
+    reviewSection: Prisma.$ReviewSectionPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
-    role: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
     body: string
-    img: string
-    country: string
-    rating: $Enums.ReviewRating
-    isPublished: boolean
-    isFeatured: boolean
+    avatarUrl: string | null
+    country: string | null
+    rating: number
+    order: number
+    isActive: boolean
+    isVerified: boolean
+    reviewSectionId: string | null
     createdAt: Date
     updatedAt: Date
+    publishedAt: Date | null
   }, ExtArgs["result"]["review"]>
   composites: {}
 }
@@ -910,6 +1289,7 @@ readonly fields: ReviewFieldRefs;
  */
 export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  reviewSection<T extends Prisma.Review$reviewSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Review$reviewSectionArgs<ExtArgs>>): Prisma.Prisma__ReviewSectionClient<runtime.Types.Result.GetResult<Prisma.$ReviewSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -940,16 +1320,20 @@ export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface ReviewFieldRefs {
   readonly id: Prisma.FieldRef<"Review", 'String'>
-  readonly name: Prisma.FieldRef<"Review", 'String'>
-  readonly role: Prisma.FieldRef<"Review", 'String'>
+  readonly firstName: Prisma.FieldRef<"Review", 'String'>
+  readonly lastName: Prisma.FieldRef<"Review", 'String'>
+  readonly role: Prisma.FieldRef<"Review", 'Role'>
   readonly body: Prisma.FieldRef<"Review", 'String'>
-  readonly img: Prisma.FieldRef<"Review", 'String'>
+  readonly avatarUrl: Prisma.FieldRef<"Review", 'String'>
   readonly country: Prisma.FieldRef<"Review", 'String'>
-  readonly rating: Prisma.FieldRef<"Review", 'ReviewRating'>
-  readonly isPublished: Prisma.FieldRef<"Review", 'Boolean'>
-  readonly isFeatured: Prisma.FieldRef<"Review", 'Boolean'>
+  readonly rating: Prisma.FieldRef<"Review", 'Int'>
+  readonly order: Prisma.FieldRef<"Review", 'Int'>
+  readonly isActive: Prisma.FieldRef<"Review", 'Boolean'>
+  readonly isVerified: Prisma.FieldRef<"Review", 'Boolean'>
+  readonly reviewSectionId: Prisma.FieldRef<"Review", 'String'>
   readonly createdAt: Prisma.FieldRef<"Review", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Review", 'DateTime'>
+  readonly publishedAt: Prisma.FieldRef<"Review", 'DateTime'>
 }
     
 
@@ -966,6 +1350,10 @@ export type ReviewFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Review
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
   /**
    * Filter, which Review to fetch.
    */
@@ -985,6 +1373,10 @@ export type ReviewFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  /**
    * Filter, which Review to fetch.
    */
   where: Prisma.ReviewWhereUniqueInput
@@ -1002,6 +1394,10 @@ export type ReviewFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Review
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
   /**
    * Filter, which Review to fetch.
    */
@@ -1051,6 +1447,10 @@ export type ReviewFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  /**
    * Filter, which Review to fetch.
    */
   where?: Prisma.ReviewWhereInput
@@ -1099,6 +1499,10 @@ export type ReviewFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  /**
    * Filter, which Reviews to fetch.
    */
   where?: Prisma.ReviewWhereInput
@@ -1142,6 +1546,10 @@ export type ReviewCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  /**
    * The data needed to create a Review.
    */
   data: Prisma.XOR<Prisma.ReviewCreateInput, Prisma.ReviewUncheckedCreateInput>
@@ -1175,6 +1583,10 @@ export type ReviewCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    */
   data: Prisma.ReviewCreateManyInput | Prisma.ReviewCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1189,6 +1601,10 @@ export type ReviewUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Review
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
   /**
    * The data needed to update a Review.
    */
@@ -1241,6 +1657,10 @@ export type ReviewUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many Reviews to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1255,6 +1675,10 @@ export type ReviewUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Review
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
   /**
    * The filter to search for the Review to update in case it exists.
    */
@@ -1282,6 +1706,10 @@ export type ReviewDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  /**
    * Filter which Review to delete.
    */
   where: Prisma.ReviewWhereUniqueInput
@@ -1302,6 +1730,25 @@ export type ReviewDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * Review.reviewSection
+ */
+export type Review$reviewSectionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReviewSection
+   */
+  select?: Prisma.ReviewSectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReviewSection
+   */
+  omit?: Prisma.ReviewSectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewSectionInclude<ExtArgs> | null
+  where?: Prisma.ReviewSectionWhereInput
+}
+
+/**
  * Review without action
  */
 export type ReviewDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1313,4 +1760,8 @@ export type ReviewDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Review
    */
   omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
 }

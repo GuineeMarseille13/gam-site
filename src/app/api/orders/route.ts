@@ -1,93 +1,46 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
+/**
+ * API Routes pour les commandes
+ * GET    /api/orders - Liste toutes les commandes
+ * GET    /api/orders?id=xxx - Récupère une commande par ID
+ * POST   /api/orders - Crée une nouvelle commande
+ * PUT    /api/orders?id=xxx - Met à jour une commande
+ * DELETE /api/orders?id=xxx - Supprime une commande
+ */
+
+import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
+// Schéma de validation pour la création
 const createOrderSchema = z.object({
-  customer: z.object({
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
-    email: z.string().email(),
-    phone: z.string().optional(),
-  }),
-  items: z.array(z.object({
-    productId: z.string(),
-    quantity: z.number().int().min(1),
-  })),
-  shippingAddress: z.object({
-    street: z.string(),
-    city: z.string(),
-    postalCode: z.string(),
-    country: z.string(),
-  }).optional(),
+  orderNumber: z.string().min(1, 'Order number is required'),
+  personId: z.string().optional(),
+  totalAmount: z.number().int().positive('Total amount must be positive'),
+  status: z.string().default('PENDING'),
   paymentMethod: z.string().optional(),
+  paymentReference: z.string().optional(),
+  customer: z.record(z.any()).optional(),
+  shippingAddress: z.record(z.any()).optional(),
+  notes: z.string().optional(),
 })
 
-// POST /api/orders - Créer une commande
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = createOrderSchema.parse(body)
+// Schéma de validation pour la mise à jour
+const updateOrderSchema = createOrderSchema.partial()
 
-    // Calculer le total et vérifier les produits
-    let totalAmount = 0
-    const orderItems = []
-
-    for (const item of validatedData.items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-      })
-
-      if (!product) {
-        throw new Error(`Produit ${item.productId} introuvable`)
-      }
-
-      if (!product.inStock || product.stockQuantity < item.quantity) {
-        throw new Error(`Stock insuffisant pour ${product.name}`)
-      }
-
-      const itemPrice = product.price.toNumber() * item.quantity
-      totalAmount += itemPrice
-
-      orderItems.push({
-        productId: product.id,
-        quantity: item.quantity,
-        price: product.price,
-      })
+const handlers = createCrudHandler({
+  modelName: 'Order',
+  validateCreate: (data) => createOrderSchema.parse(data),
+  validateUpdate: (data) => updateOrderSchema.parse(data),
+  beforeCreate: async (data) => {
+    // Générer un numéro de commande si non fourni
+    if (!data.orderNumber) {
+      data.orderNumber = `CMD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
     }
+    return data
+  },
+})
 
-    // Générer un numéro de commande unique
-    const orderNumber = `CMD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
-
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        customer: validatedData.customer,
-        totalAmount,
-        shippingAddress: validatedData.shippingAddress || null,
-        paymentMethod: validatedData.paymentMethod || null,
-        status: 'pending',
-        items: {
-          create: orderItems,
-        },
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    })
-
-    // TODO: Envoyer un email de confirmation
-    // TODO: Intégrer le paiement
-    // TODO: Mettre à jour le stock
-
-    return successResponse(order, 'Commande créée avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
+export const GET = handlers.GET
+export const POST = handlers.POST
+export const PUT = handlers.PUT
+export const DELETE = handlers.DELETE
 

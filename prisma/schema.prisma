@@ -13,651 +13,588 @@ datasource db {
   provider = "postgresql"
 }
 
-
-// ============================================================================
-// ENUMS
-// ============================================================================
-
-enum EventMediaType {
-  image
-  video
+// Enum pour les pages de l'application
+enum Page {
+  HOME
+  CONTACTS
+  ASSOCIATION
+  MEMBERSHIP
+  SHOP
+  DONATION
 }
 
-enum ReviewRating {
-  ONE
-  TWO
-  THREE
-  FOUR
-  FIVE
+// Enum pour les sections spécifiques
+enum Section {
+  // Page Home
+  CAROUSEL
+  PRESENTATION
+  POLE
+  PARTNER
+  EVENT
+  REVIEW
+  PRODUCT
+  ACHIEVEMENT
+  VOLUNTEER
+
+  
+  // Page Pôles
+  POLE_HERO
+  POLE_EVENTS
+  POLE_SERVICES
+  
+  // Page Association
+  PRESIDENT
+  ABOUT_US
+  ACTIVITY_REPORTS
+  TEAM
+  
 }
 
-enum StatisticColor {
-  red
-  yellow
-  green
-  blue
+enum Role {
+  PRESIDENT           // Président
+  VICE_PRESIDENT      // Vice-président
+  SECRETARY           // Secrétaire
+  ASSISTANT_SECRETARY // Secrétaire adjoint
+  TREASURER           // Trésorière
+  ASSISTANT_TREASURER // Trésorière adjoint
+  VOLUNTEER           // Bénévole
+  MEMBER              // Membre
+  AMBASSADOR          // Ambassadeur
+  OTHER               // Autre
 }
 
-enum ContactMethodType {
-  email
-  phone
-  address
+
+model Image {
+  id          String   @id @default(cuid())
+  title       String?  // Titre de l'image
+  description String?  // Description optionnelle
+  url         String   // URL ou chemin de l'image
+  alt         String?  // Texte alternatif pour l'accessibilité
+  page        Page     // Page où l'image est utilisée
+  section     Section  // Section spécifique de la page
+  order       Int?     @default(0) // Ordre d'affichage dans la section
+  width       Int?     // Largeur en pixels
+  height      Int?     // Hauteur en pixels
+  size        Int?     // Taille du fichier en bytes
+  format      String?  // Format de l'image (jpg, png, webp, etc.)
+  isActive    Boolean  @default(true) // Si l'image est active/visible
+  metadata    Json?    // Métadonnées supplémentaires (ex: exif, tags, etc.)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations optionnelles
+  poleId      String?  // Si l'image est liée à un pôle spécifique
+  eventId     Int?     // Si l'image est liée à un événement spécifique
+  productId   String?  // Si l'image est liée à un produit spécifique
+
+  @@index([page, section])
+  @@index([isActive])
+  @@index([poleId])
+  @@index([eventId])
+  @@index([productId])
+  @@map("images")
 }
 
-enum SocialPlatform {
-  facebook
-  instagram
-  tiktok
-  linkedin
-  twitter
-  youtube
-  snapchat
+model Video  {
+  id          String   @id @default(cuid())
+  url         String   // URL ou chemin de la vidéo
+  title       String?  // Titre de la vidéo
+  description String?  // Description optionnelle
+  thumbnail   String?  // URL de l'image de prévisualisation
+  page        Page     // Page où la vidéo est utilisée
+  section     Section  // Section spécifique de la page
+  order       Int?     @default(0) // Ordre d'affichage dans la section
+  duration    Int?     // Durée en secondes
+  size        Int?     // Taille du fichier en bytes
+  format      String?  // Format de la vidéo (mp4, webm, etc.)
+  isActive    Boolean  @default(true) // Si la vidéo est active/visible
+  autoplay    Boolean  @default(false) // Si la vidéo doit être en autoplay
+  loop        Boolean  @default(false) // Si la vidéo doit être en boucle
+  muted       Boolean  @default(true) // Si la vidéo doit être muette par défaut
+  metadata    Json?    // Métadonnées supplémentaires (ex: résolution, codec, etc.)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations optionnelles
+  poleId      String?  // Si la vidéo est liée à un pôle spécifique
+  eventId     Int?     // Si la vidéo est liée à un événement spécifique
+  productId   String?  // Si la vidéo est liée à un produit spécifique
+
+  @@index([page, section])
+  @@index([isActive])
+  @@index([poleId])
+  @@index([eventId])
+  @@index([productId])
+  @@map("videos")
 }
 
-enum ContactSubmissionStatus {
-  pending
-  read
-  replied
-  archived
+model WelcomeSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reasons     Reason[] // Raisons de la section
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("welcome_sections")
 }
 
-enum AdhesionStatus {
-  pending
-  paid
-  confirmed
-  cancelled
-}
-
-enum DonationStatus {
-  pending
-  paid
-  confirmed
-  cancelled
-}
-
-enum OrderStatus {
-  pending
-  paid
-  processing
-  shipped
-  delivered
-  cancelled
-}
-
-enum CategoryType {
-  product
-  event
-  partner
-}
-
-enum MediaType {
-  image
-  video
-  document
-  pdf
-}
-
-enum SettingType {
-  string
-  number
-  boolean
-  json
-}
-
-enum UserRole {
-  admin
-  editor
-  viewer
-}
-
-// ============================================================================
-// MODELS PRINCIPAUX
-// ============================================================================
-
-model Pole {
-  id                String   @id @default(uuid())
-  slug              String   @unique
-  title             String
-  shortDescription  String   @db.Text
-  description       String   @db.Text
-  image             String
-  features          String[] @default([])
-  contactInfo       Json?    // { email?, phone?, schedule?, address? }
-  permanenceDates   String[] @default([]) // Format: "YYYY-MM-DD"
-  statistics        Json?    // { title?, items: [{ value, label, description? }] }
-  colorScheme       Json     // { primary, secondary, accent }
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+model Reason {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la raison
+  icon        String?  // Icone de la raison
+  color       String?  // Couleur de la raison
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si la raison est actif
+  welcomeSectionId String?  // ID de la section d'accueil
 
   // Relations
-  services          PoleService[]
-  eventImages       PoleEventImage[]
+  welcomeSection WelcomeSection? @relation(fields: [welcomeSectionId], references: [id])
 
-  @@index([slug])
-  @@index([isActive])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("reasons")
+}
+
+model PoleSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  poles       Pole[] // Pôles de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("pole_sections")
+}
+
+model Pole {
+  id          String   @id @default(cuid())
+  name        String   // Nom du pôle
+  description String?  // Description du pôle
+  imageId     String?  // ID de l'image principale du pôle
+  poleSectionId String?  // ID de la section de pôle
+  detailsPoleId String @unique
+
+  // Relations
+  poleSection PoleSection? @relation(fields: [poleSectionId], references: [id])
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("poles")
 }
 
-model PoleService {
-  id          String   @id @default(uuid())
-  poleId      String
-  title       String
-  description String   @db.Text
-  icon        String
-  order       Int      @default(0)
+model DetailsPole {
+  id          String   @id @default(cuid())
+  title       String   // Titre du détail du pôle
+  description String?  // Description du détail du pôle
+  reason      String?  // Raison du détail du pôle
+  imageId     String?  // ID de l'image principale du détail du pôle
+  videoId     String?  // ID de la vidéo principale du détail du pôle
+  isActive    Boolean  @default(true) // Si le détail du pôle est actif
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  pole        Pole     @relation(fields: [poleId], references: [id], onDelete: Cascade)
 
-  @@index([poleId])
-  @@index([order])
-  @@map("pole_services")
+  @@map("details_poles")
 }
 
-model PoleEventImage {
-  id          String   @id @default(uuid())
-  poleId      String
-  url         String
-  title       String?
-  description String?   @db.Text
-  order       Int      @default(0)
+model PartnerSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  partners    Partner[] // Partenaires de la section
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  pole        Pole     @relation(fields: [poleId], references: [id], onDelete: Cascade)
-
-  @@index([poleId])
-  @@index([order])
-  @@map("pole_event_images")
-}
-
-model Event {
-  id          String        @id @default(uuid())
-  title       String
-  description String        @db.Text
-  date        DateTime
-  location    String?
-  year        Int
-  category    String?
-  tags        String[]      @default([])
-  isPublished Boolean       @default(false)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  // Relations
-  media       EventMedia[]
-  categoryRef Category?      @relation(fields: [categoryId], references: [id])
-  categoryId String?
-
-  @@index([year])
-  @@index([date])
-  @@index([isPublished])
-  @@index([categoryId])
-  @@map("events")
-}
-
-model EventMedia {
-  id          String        @id @default(uuid())
-  eventId     String
-  type        EventMediaType
-  url         String
-  description String?       @db.Text
-  order       Int          @default(0)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  @@index([eventId])
-  @@index([order])
-  @@map("event_media")
-}
-
-model Product {
-  id            String    @id @default(uuid())
-  name          String
-  description   String?    @db.Text
-  image         String
-  images        String[]   @default([])
-  price         Decimal    @db.Decimal(10, 2)
-  originalPrice Decimal?   @db.Decimal(10, 2)
-  category      String?
-  inStock       Boolean   @default(true)
-  stockQuantity Int       @default(0)
-  featured      Boolean   @default(false)
-  discount      Int?      // Pourcentage (0-100)
-  sku           String?   @unique
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  categoryRef   Category?  @relation(fields: [categoryId], references: [id])
-  categoryId   String?
-  orderItems   OrderItem[]
-
-  @@index([categoryId])
-  @@index([inStock])
-  @@index([featured])
-  @@index([isActive])
-  @@index([sku])
-  @@map("products")
+  @@map("partner_sections")
 }
 
 model Partner {
-  id          String   @id @default(uuid())
-  name        String
-  logo        String
-  description String?   @db.Text
-  website     String?
-  category    String?
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String   // Nom du partenaire
+  description String?  // Description du partenaire
+  imageId     String?  // ID de l'image principale du partenaire
+  url         String?  // URL du partenaire
+  partnerSectionId String?  // ID de la section de partenaires
 
   // Relations
-  categoryRef Category? @relation(fields: [categoryId], references: [id])
-  categoryId  String?
+  partnerSection PartnerSection? @relation(fields: [partnerSectionId], references: [id])
 
-  @@index([categoryId])
-  @@index([order])
-  @@index([isActive])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("partners")
 }
 
-model Review {
-  id          String       @id @default(uuid())
-  name        String
-  role        String
-  body        String       @db.Text
-  img         String
-  country     String
-  rating      ReviewRating @default(FIVE)
-  isPublished Boolean      @default(false)
-  isFeatured  Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+model EventSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  events      Event[] // Événements de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("event_sections")
+}
 
-  @@index([isPublished])
-  @@index([isFeatured])
+model Event {
+  id          String   @id @default(cuid())
+  title        String   // Nom de l'événement
+  description String?  // Description de l'événement
+  imageId     String?  // ID de l'image principale de l'événement
+  videoId     String?  // ID de la vidéo principale de l'événement
+  startDate   DateTime // Date de début de l'événement
+  endDate     DateTime // Date de fin de l'événement
+  location    String?  // Lieu de l'événement
+
+  eventSectionId String?  // ID de la section d'événement
+
+  // Relations
+  eventSection EventSection? @relation(fields: [eventSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("events")
+}
+
+model ReviewSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reviews     Review[] // Avis de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("review_sections")
+}
+
+model Review {
+  id          String    @id @default(cuid())
+  firstName   String    // Prénom de la personne
+  lastName    String    // Nom de la personne
+  role        Role // Rôle de la personne
+  body        String    @db.Text // Contenu du témoignage/avis
+  avatarUrl   String?  // URL de l'image de profil
+  country     String?  // Pays (ex: "🇬🇳 Guinée" ou "Guinée")
+  rating      Int      @default(5) // Note sur 5 étoiles (1-5)
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si l'avis est visible
+  isVerified  Boolean  @default(false) // Si l'avis est vérifié/modéré
+  reviewSectionId String?  // ID de la section d'avis
+
+  // Relations
+  reviewSection ReviewSection? @relation(fields: [reviewSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime? // Date de publication (si différente de createdAt)
+
+  @@index([isActive])
   @@index([rating])
+  @@index([order])
   @@map("reviews")
 }
 
-model Statistic {
-  id        String          @id @default(uuid())
-  label     String
-  value     Int
-  color     StatisticColor
-  icon      String
-  suffix    String?
-  order     Int            @default(0)
-  isActive  Boolean        @default(true)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+model ProductSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  products    Product[] // Produits de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("product_sections")
+}
 
-  @@index([order])
+model Product {
+  id          String   @id @default(cuid())
+  title       String   // Titre du produit
+  description String?  // Description du produit
+  imageId     String?  // ID de l'image principale du produit
+  price       Int      // Prix du produit
+  stock       Int      // Stock du produit
+  isActive    Boolean  @default(true) // Si le produit est actif
+  productSectionId String?  // ID de la section de produit
+  productCategoryId String?  // ID de la catégorie de produit
+  orderId String?  // ID de la commande du produit
+  // Relations
+  productSection ProductSection? @relation(fields: [productSectionId], references: [id])
+  productCategory ProductCategory? @relation(fields: [productCategoryId], references: [id])
+  orderItems OrderItem[] // Items de la commande
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("products")
+}
+
+model ProductCategory {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la catégorie
+  description String?  // Description de la catégorie
+  products    Product[] // Produits de la catégorie
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("product_categories")
+}
+
+model AchievementSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  achievements Achievement[] // Réalisations de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("achievement_sections")
+}
+
+model Achievement {
+  id          String            @id @default(cuid())
+  label       String?           // Label de la valeur (ex: "Étudiants accompagnés")
+  value       Int?              // Valeur numérique (pour les statistiques)
+  icon        String?           // Emoji ou icône (ex: "🎓", "👥")
+  color       String?           // Couleur du thème (red, yellow, green, blue)
+  achievementSectionId String?  // ID de la section de réalisation
+  // Métadonnées
+  order       Int               @default(0) // Ordre d'affichage
+  isActive    Boolean           @default(true) // Si la réalisation est visible
+  
+  // Relations
+  achievementSection AchievementSection? @relation(fields: [achievementSectionId], references: [id])
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  publishedAt DateTime?         // Date de publication
+
+
   @@index([isActive])
-  @@map("statistics")
+  @@index([order])
+  @@map("achievements")
+}
+
+model Person {
+  id          String   @id @default(cuid())
+  firstName   String   // Prénom de la personne
+  lastName    String   // Nom de la personne
+  email       String?   // Email de la personne
+  phone       String   // Numéro de téléphone de la personne
+  addressId   String?  // ID de l'adresse de la personne
+  roles       Role[]   @default([VOLUNTEER]) // Rôles de la personne
+
+  donations Donation[] // Donations de la personne
+  memberShips MemberShip[] // Cotisations de la personne
+  orders Order[] // Commandes de la personne
+  
+  // Relations
+  address Address? @relation(fields: [addressId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("people")
+}
+
+model VolunteerSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  volunteers  Volunteer[] // Bénévoles de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("volunteer_sections")
 }
 
 model Volunteer {
-  id        String   @id @default(uuid())
-  name      String
-  image     String
-  role      String?
-  initials  String
-  order     Int      @default(0)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  personId    String   @unique
+  isActive    Boolean  @default(true) // Si le bénévole est actif
+  volunteerSectionId String?  // ID de la section de bénévole
 
-  @@index([order])
-  @@index([isActive])
+  // Relations
+  volunteerSection VolunteerSection? @relation(fields: [volunteerSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("volunteers")
 }
 
-model TeamMember {
-  id        String   @id @default(uuid())
-  name      String
-  role      String
-  image     String
-  order     Int      @default(0)
-  bio       String?  @db.Text
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model TeamMemberSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  teamMembers TeamMember[] // Membres de l'équipe de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("team_member_sections")
+}
 
-  @@index([order])
-  @@index([isActive])
+model TeamMember {
+  id          String   @id @default(cuid())
+  personId    String   @unique
+  description String?  // Description du membre de l'équipe
+  imageId     String?  // ID de l'image principale du membre de l'équipe
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true) // Si le membre de l'équipe est actif
+  teamMemberSectionId String?  // ID de la section de membre de l'équipe
+
+  // Relations
+  teamMemberSection TeamMemberSection? @relation(fields: [teamMemberSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("team_members")
 }
 
-model AssociationInfo {
-  id            String   @id @default(uuid())
-  name          String
-  description   String?   @db.Text
-  logo          String?
-  president     Json?     // { name, role, image, message }
-  aboutUs       Json?     // { whoWeAre: { title, text, image }, whatWeOffer: { title, text, image } }
-  foundingDate  DateTime?
-  address       String?
-  contactEmail  String?
-  contactPhone  String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@map("association_info")
-}
-
-model ActivityReport {
-  id          String   @id @default(uuid())
-  year        Int      @unique
-  title       String
-  pdfUrl      String
-  description String?   @db.Text
-  isPublished Boolean  @default(false)
+model SocialMedia {
+  id          String   @id @default(cuid())
+  name        String   // Nom du réseau social
+  url         String   // URL du réseau social
+  icon        String?  // Icone du réseau social
+  order       Int      @default(0) // Ordre d'affichage
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([year])
-  @@index([isPublished])
-  @@map("activity_reports")
+  @@map("social_medias")
 }
 
-model ContactMethod {
-  id        String            @id @default(uuid())
-  type      ContactMethodType
-  label     String
-  value     String
-  href      String?
-  icon      String
-  color     String
-  order     Int               @default(0)
-  isActive  Boolean           @default(true)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-
-  @@index([order])
-  @@index([isActive])
-  @@map("contact_methods")
-}
-
-model SocialNetwork {
-  id        String         @id @default(uuid())
-  platform  SocialPlatform @unique
-  label     String
-  href      String
-  color     String
-  icon      String
-  order     Int            @default(0)
-  isActive  Boolean        @default(true)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-
-  @@index([order])
-  @@index([isActive])
-  @@index([platform])
-  @@map("social_networks")
-}
-
-model CarouselItem {
-  id          String   @id @default(uuid())
-  image       String
-  title       String
-  description String   @db.Text
-  link        String?
-  linkText    String?
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
+model ReportActivitySection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  reports     ReportActivity[] // Rapports d'activité de la section
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([order])
-  @@index([isActive])
-  @@map("carousel_items")
+  @@map("report_activity_sections")
 }
 
-model ContactSubmission {
-  id        String                  @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String
-  phone     String?
-  subject   String
-  message   String                  @db.Text
-  status    ContactSubmissionStatus @default(pending)
-  repliedAt DateTime?
-  repliedBy String?                // User ID
-  notes     String?                 @db.Text
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+model ReportActivity {
+  id          String   @id @default(cuid())
+  label String?  // Label du rapport
+  year        Int      // Année du rapport
+  pdfUrl      String   // URL du rapport
+  reportActivitySectionId String?  // ID de la section de rapport d'activité
 
   // Relations
-  repliedByUser User? @relation(fields: [repliedByUserId], references: [id])
-  repliedByUserId String?
+  reportActivitySection ReportActivitySection? @relation(fields: [reportActivitySectionId], references: [id])
 
-  @@index([status])
-  @@index([createdAt])
-  @@index([email])
-  @@map("contact_submissions")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("report_activities")
 }
 
-model AdhesionSubmission {
-  id              String          @id @default(uuid())
-  members         Json            // Array of { firstName, lastName, phone, email }
-  message         String?         @db.Text
-  totalAmount     Decimal         @db.Decimal(10, 2)
-  status          AdhesionStatus  @default(pending)
-  paymentMethod   String?
-  paymentReference String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+model AboutUsSection {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  aboutUs     AboutUs[] // A propos de nous de la section
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("about_us_sections")
+}
 
-  @@index([status])
-  @@index([createdAt])
-  @@index([paymentReference])
-  @@map("adhesion_submissions")
+model AboutUs {
+  id          String   @id @default(cuid())
+  title       String   // Titre de l'about us
+  description String?  // Description de l'about us
+  imageId     String?  // ID de l'image principale de l'about us
+  aboutUsSectionId String?  // ID de la section de about us
+
+  // Relations
+  aboutUsSection AboutUsSection? @relation(fields: [aboutUsSectionId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("about_us")
+}
+
+model MemberShip {
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  description String?  // Description de la section
+  amount      Int      // Prix de la cotisation
+  year        Int      // Année de la cotisation
+  isActive    Boolean  @default(true) // Si la cotisation est actif
+  personId    String   @unique
+
+  // Relations
+  person Person? @relation(fields: [personId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("member_ships")
 }
 
 model Donation {
-  id              String         @id @default(uuid())
-  firstName       String
-  lastName        String
-  email           String?
-  phone           String?
-  amount          Decimal        @db.Decimal(10, 2)
-  message         String?        @db.Text
-  status          DonationStatus @default(pending)
-  paymentMethod   String?
-  paymentReference String?
-  isAnonymous     Boolean        @default(false)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id          String   @id @default(cuid())
+  title       String   // Titre de la section
+  message String?  // Message de la donation
+  amount      Int      // Prix de la donation
+  personId    String   @unique
 
-  @@index([status])
-  @@index([createdAt])
-  @@index([email])
-  @@index([paymentReference])
+  // Relations
+  person Person? @relation(fields: [personId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("donations")
 }
 
+model Address {
+  id          String   @id @default(cuid())
+  address     String   // Adresse de la personne
+  city        String   // Ville de la personne
+  country     String   // Pays de la personne
+  zipCode     String   // Code postal de la personne
+  state       String   // État de la personne
+  countryCode String   // Code pays de la personne
+
+  person Person[] // Personnes liées à l'adresse
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("addresses")
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  phone       String   // Numéro de téléphone de l'association
+  email       String   // Email de l'association      String   // Email de l'association
+  addressId   String   @unique
+
+ @@map("contacts")
+}
+
 model Order {
-  id              String      @id @default(uuid())
-  orderNumber     String      @unique
-  customer        Json        // { firstName, lastName, email, phone }
-  totalAmount     Decimal     @db.Decimal(10, 2)
-  status          OrderStatus @default(pending)
-  shippingAddress Json?       // { street, city, postalCode, country }
-  paymentMethod   String?
-  paymentReference String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id          String   @id @default(cuid())
+  orderNumber String   // Numéro de la commande
+  totalAmount Int      // Montant total de la commande
+  status      String   // Statut de la commande
+  personId    String   
 
   // Relations
-  items           OrderItem[]
+  person Person @relation(fields: [personId], references: [id])
+  items OrderItem[] // Items de la commande
 
-  @@index([orderNumber])
-  @@index([status])
-  @@index([createdAt])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   @@map("orders")
 }
 
+// Table de jointure pour Order et Product avec quantité
 model OrderItem {
-  id        String   @id @default(uuid())
-  orderId   String
-  productId String
-  quantity  Int
-  price     Decimal  @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id])
-
+  id          String   @id @default(cuid())
+  orderId     String   // ID de la commande
+  productId   String   // ID du produit
+  quantity    Int      // Quantité commandée
+  price       Int      // Prix unitaire au moment de la commande (en centimes)
+  subtotal    Int      // Sous-total (quantity * price) en centimes
+  
+  // Relations
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
   @@index([orderId])
   @@index([productId])
   @@map("order_items")
 }
 
-model Category {
-  id          String       @id @default(uuid())
-  name        String
-  slug        String       @unique
-  description String?      @db.Text
-  image       String?
-  type        CategoryType
-  parentId    String?
-  isActive    Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
 
-  // Relations
-  parent      Category?    @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children    Category[]   @relation("CategoryHierarchy")
-  products    Product[]
-  events      Event[]
-  partners    Partner[]
-
-  @@index([slug])
-  @@index([type])
-  @@index([parentId])
-  @@index([isActive])
-  @@map("categories")
-}
-
-model Media {
-  id          String    @id @default(uuid())
-  filename    String
-  originalName String
-  mimeType    String
-  url         String
-  size        Int
-  type        MediaType
-  alt         String?
-  description String?   @db.Text
-  uploadedBy  String?   // User ID
-  createdAt   DateTime  @default(now())
-
-  // Relations
-  uploadedByUser User?  @relation(fields: [uploadedByUserId], references: [id])
-  uploadedByUserId String?
-
-  @@index([type])
-  @@index([uploadedByUserId])
-  @@index([createdAt])
-  @@map("media")
-}
-
-model Setting {
-  id          String      @id @default(uuid())
-  key         String      @unique
-  value       Json
-  type        SettingType
-  description String?     @db.Text
-  category    String?
-  updatedAt   DateTime    @updatedAt
-  updatedBy   String?     // User ID
-
-  // Relations
-  updatedByUser User?     @relation(fields: [updatedByUserId], references: [id])
-  updatedByUserId String?
-
-  @@index([key])
-  @@index([category])
-  @@map("settings")
-}
-
-// ============================================================================
-// MODELS SUPPORT
-// ============================================================================
-
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String   // Hashé
-  firstName String
-  lastName  String
-  role      UserRole @default(viewer)
-  isActive  Boolean  @default(true)
-  lastLogin DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  contactSubmissionsReplied ContactSubmission[]
-  mediaUploaded            Media[]
-  settingsUpdated           Setting[]
-  logs                     Log[]
-  notifications            Notification[]
-
-  @@index([email])
-  @@index([role])
-  @@index([isActive])
-  @@map("users")
-}
-
-model Notification {
-  id          String   @id @default(uuid())
-  type        String
-  title       String
-  message     String   @db.Text
-  recipientId String   // User ID
-  isRead      Boolean  @default(false)
-  readAt      DateTime?
-  createdAt   DateTime @default(now())
-
-  // Relations
-  recipient   User     @relation(fields: [recipientUserId], references: [id])
-  recipientUserId String
-
-  @@index([recipientUserId])
-  @@index([isRead])
-  @@index([createdAt])
-  @@map("notifications")
-}
-
-model Log {
-  id         String   @id @default(uuid())
-  action     String
-  entityType String?
-  entityId   String?
-  userId     String?  // User ID
-  details    Json?
-  ipAddress  String?
-  userAgent  String?
-  createdAt  DateTime @default(now())
-
-  // Relations
-  user       User?    @relation(fields: [userId], references: [id])
-
-  @@index([action])
-  @@index([entityType])
-  @@index([entityId])
-  @@index([userId])
-  @@index([createdAt])
-  @@map("logs")
-}
+ 

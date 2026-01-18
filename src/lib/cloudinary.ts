@@ -1,0 +1,104 @@
+import { v2 as cloudinary } from 'cloudinary'
+
+let isConfigured = false
+
+function ensureCloudinaryConfig() {
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error('Cloudinary credentials are not set in environment variables')
+  }
+
+  if (!isConfigured) {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+    isConfigured = true
+  }
+}
+
+export interface UploadImageResult {
+  url: string
+  publicId: string
+  width: number
+  height: number
+  format: string
+  size: number
+}
+
+export interface UploadVideoResult {
+  url: string
+  publicId: string
+  duration: number
+  format: string
+  size: number
+  thumbnail: string
+}
+
+export async function uploadImage(
+  file: File | Buffer,
+  folder?: string
+): Promise<UploadImageResult> {
+  ensureCloudinaryConfig()
+  
+  const buffer = file instanceof File 
+    ? Buffer.from(await file.arrayBuffer())
+    : file
+
+  const mimeType = file instanceof File && file.type 
+    ? file.type.split('/')[1] || 'jpeg'
+    : 'jpeg'
+
+  const result = await cloudinary.uploader.upload(
+    `data:image/${mimeType};base64,${buffer.toString('base64')}`,
+    {
+      folder: folder || 'gam/images',
+      resource_type: 'image',
+      transformation: [
+        { quality: 'auto' },
+        { fetch_format: 'auto' }
+      ]
+    }
+  )
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+    width: result.width,
+    height: result.height,
+    format: result.format,
+    size: result.bytes,
+  }
+}
+
+export async function uploadVideo(
+  file: File | Buffer,
+  folder?: string
+): Promise<UploadVideoResult> {
+  ensureCloudinaryConfig()
+  
+  const buffer = file instanceof File 
+    ? Buffer.from(await file.arrayBuffer())
+    : file
+
+  const mimeType = file instanceof File && file.type 
+    ? file.type.split('/')[1] || 'mp4'
+    : 'mp4'
+
+  const result = await cloudinary.uploader.upload(
+    `data:video/${mimeType};base64,${buffer.toString('base64')}`,
+    {
+      folder: folder || 'gam/videos',
+      resource_type: 'video',
+    }
+  )
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+    duration: Math.round(result.duration || 0),
+    format: result.format,
+    size: result.bytes,
+    thumbnail: result.thumbnail_url || '',
+  }
+}

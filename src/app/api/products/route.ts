@@ -1,75 +1,46 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
+/**
+ * API Routes pour les produits
+ * GET    /api/products - Liste tous les produits
+ * GET    /api/products?id=xxx - Récupère un produit par ID
+ * POST   /api/products - Crée un nouveau produit
+ * PUT    /api/products?id=xxx - Met à jour un produit
+ * DELETE /api/products?id=xxx - Supprime un produit
+ */
+
+import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
+// Schéma de validation pour la création
 const createProductSchema = z.object({
-  name: z.string().min(1),
+  title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
-  image: z.string().url(),
-  images: z.array(z.string().url()).default([]),
-  price: z.number().positive(),
-  originalPrice: z.number().positive().optional(),
-  category: z.string().optional(),
-  inStock: z.boolean().default(true),
-  stockQuantity: z.number().int().min(0).default(0),
-  featured: z.boolean().default(false),
-  discount: z.number().int().min(0).max(100).optional(),
-  sku: z.string().optional(),
-  categoryId: z.string().optional(),
+  price: z.number().int().positive('Price must be positive'),
+  stock: z.number().int().min(0, 'Stock cannot be negative').default(0),
   isActive: z.boolean().default(true),
+  productSectionId: z.string().optional(),
+  productCategoryId: z.string().optional(),
+  imageId: z.string().optional(),
 })
 
-// GET /api/products - Liste tous les produits
-export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const featured = searchParams.get('featured') === 'true'
-    const categoryId = searchParams.get('categoryId')
-    const inStock = searchParams.get('inStock') === 'true'
-    const activeOnly = searchParams.get('active') !== 'false'
+// Schéma de validation pour la mise à jour
+const updateProductSchema = createProductSchema.partial()
 
-    const where: any = {}
-    if (activeOnly) where.isActive = true
-    if (featured) where.featured = true
-    if (categoryId) where.categoryId = categoryId
-    if (inStock) where.inStock = true
+const handlers = createCrudHandler({
+  modelName: 'Product',
+  validateCreate: (data) => createProductSchema.parse(data),
+  validateUpdate: (data) => updateProductSchema.parse(data),
+  beforeCreate: async (data) => {
+    // Logique avant création (ex: génération de slug, etc.)
+    return data
+  },
+  afterCreate: async (result) => {
+    // Logique après création (ex: envoi de notification, etc.)
+    console.log(`Product created: ${result.id}`)
+  },
+})
 
-    const products = await prisma.product.findMany({
-      where,
-      include: {
-        categoryRef: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    })
-
-    return successResponse(products)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
-
-// POST /api/products - Créer un nouveau produit
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = createProductSchema.parse(body)
-
-    const product = await prisma.product.create({
-      data: {
-        ...validatedData,
-        price: validatedData.price,
-        originalPrice: validatedData.originalPrice,
-      },
-      include: {
-        categoryRef: true,
-      },
-    })
-
-    return successResponse(product, 'Produit créé avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
-}
+export const GET = handlers.GET
+export const POST = handlers.POST
+export const PUT = handlers.PUT
+export const DELETE = handlers.DELETE
 
