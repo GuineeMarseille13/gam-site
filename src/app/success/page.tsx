@@ -1,35 +1,31 @@
-import { redirect, useSearchParams } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 import { stripe } from '../../lib/stripe'
 
-"use client";
-export default async function SuccessPage() {
-  const searchParams = useSearchParams()
-  const session_id = searchParams.get('session_id')
+export default async function SuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const params = await searchParams
+  const paymentIntentId = typeof params.payment_intent === 'string' ? params.payment_intent : undefined
 
-  if (!session_id)
-    throw new Error('Please provide a valid session_id (`cs_test_...`)')
+  if (!paymentIntentId) redirect('/')
 
-  const {
-    status,
-    customer_details
-  } = await stripe.checkout.sessions.retrieve(session_id, {
-    expand: ['line_items', 'payment_intent']
-  })
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
-  if (status === 'open') {
+
+  if (paymentIntent.status !== 'succeeded') {
     return redirect('/')
   }
 
-  if (status === 'complete') {
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{' '}
-          {customer_details?.email}. If you have any questions, please email{' '}
-        </p>
-        <a href="mailto:orders@example.com">orders@example.com</a>.
-      </section>
-    )
-  }
+  return (
+    <section id="success">
+      <p>
+        Merci pour votre paiement ! Un email de confirmation sera envoyé à{' '}
+        {paymentIntent.receipt_email}. Si vous avez des questions, contactez-nous à{' '}
+      </p>
+      <a href="mailto:orders@example.com">orders@example.com</a>.
+    </section>
+  )
 }

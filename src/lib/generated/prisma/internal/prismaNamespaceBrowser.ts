@@ -84,7 +84,9 @@ export const ModelName = {
   Address: 'Address',
   Contact: 'Contact',
   Order: 'Order',
-  OrderItem: 'OrderItem'
+  OrderItem: 'OrderItem',
+  Payment: 'Payment',
+  PaymentHistory: 'PaymentHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -507,6 +509,7 @@ export const MemberShipScalarFieldEnum = {
   year: 'year',
   isActive: 'isActive',
   personId: 'personId',
+  paymentId: 'paymentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -520,6 +523,7 @@ export const DonationScalarFieldEnum = {
   message: 'message',
   amount: 'amount',
   personId: 'personId',
+  paymentId: 'paymentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -556,7 +560,7 @@ export const OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
   totalAmount: 'totalAmount',
-  status: 'status',
+  paymentId: 'paymentId',
   personId: 'personId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -577,6 +581,36 @@ export const OrderItemScalarFieldEnum = {
 } as const
 
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  paymentReference: 'paymentReference',
+  amount: 'amount',
+  status: 'status',
+  type: 'type',
+  paymentMethod: 'paymentMethod',
+  paymentDate: 'paymentDate',
+  personId: 'personId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const PaymentHistoryScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  personId: 'personId',
+  status: 'status',
+  type: 'type',
+  paymentDate: 'paymentDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentHistoryScalarFieldEnum = (typeof PaymentHistoryScalarFieldEnum)[keyof typeof PaymentHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

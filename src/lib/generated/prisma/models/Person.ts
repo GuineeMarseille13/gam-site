@@ -213,7 +213,9 @@ export type PersonWhereInput = {
   donations?: Prisma.DonationListRelationFilter
   memberShips?: Prisma.MemberShipListRelationFilter
   orders?: Prisma.OrderListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
+  paymentHistories?: Prisma.PaymentHistoryListRelationFilter
 }
 
 export type PersonOrderByWithRelationInput = {
@@ -229,7 +231,9 @@ export type PersonOrderByWithRelationInput = {
   donations?: Prisma.DonationOrderByRelationAggregateInput
   memberShips?: Prisma.MemberShipOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
   address?: Prisma.AddressOrderByWithRelationInput
+  paymentHistories?: Prisma.PaymentHistoryOrderByRelationAggregateInput
 }
 
 export type PersonWhereUniqueInput = Prisma.AtLeast<{
@@ -248,7 +252,9 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   donations?: Prisma.DonationListRelationFilter
   memberShips?: Prisma.MemberShipListRelationFilter
   orders?: Prisma.OrderListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
+  paymentHistories?: Prisma.PaymentHistoryListRelationFilter
 }, "id">
 
 export type PersonOrderByWithAggregationInput = {
@@ -293,7 +299,9 @@ export type PersonCreateInput = {
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUncheckedCreateInput = {
@@ -309,6 +317,8 @@ export type PersonUncheckedCreateInput = {
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUpdateInput = {
@@ -323,7 +333,9 @@ export type PersonUpdateInput = {
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateInput = {
@@ -339,6 +351,8 @@ export type PersonUncheckedUpdateInput = {
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonCreateManyInput = {
@@ -535,6 +549,36 @@ export type PersonUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutOrdersInput, Prisma.PersonUpdateWithoutOrdersInput>, Prisma.PersonUncheckedUpdateWithoutOrdersInput>
 }
 
+export type PersonCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPaymentsInput, Prisma.PersonUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.PersonWhereUniqueInput
+}
+
+export type PersonUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPaymentsInput, Prisma.PersonUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.PersonUpsertWithoutPaymentsInput
+  connect?: Prisma.PersonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutPaymentsInput, Prisma.PersonUpdateWithoutPaymentsInput>, Prisma.PersonUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type PersonCreateNestedOneWithoutPaymentHistoriesInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedCreateWithoutPaymentHistoriesInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPaymentHistoriesInput
+  connect?: Prisma.PersonWhereUniqueInput
+}
+
+export type PersonUpdateOneWithoutPaymentHistoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedCreateWithoutPaymentHistoriesInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPaymentHistoriesInput
+  upsert?: Prisma.PersonUpsertWithoutPaymentHistoriesInput
+  disconnect?: Prisma.PersonWhereInput | boolean
+  delete?: Prisma.PersonWhereInput | boolean
+  connect?: Prisma.PersonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutPaymentHistoriesInput, Prisma.PersonUpdateWithoutPaymentHistoriesInput>, Prisma.PersonUncheckedUpdateWithoutPaymentHistoriesInput>
+}
+
 export type PersonCreateWithoutMemberShipsInput = {
   id?: string
   firstName: string
@@ -546,7 +590,9 @@ export type PersonCreateWithoutMemberShipsInput = {
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutMemberShipsInput = {
@@ -561,6 +607,8 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutMemberShipsInput = {
@@ -590,7 +638,9 @@ export type PersonUpdateWithoutMemberShipsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutMemberShipsInput = {
@@ -605,6 +655,8 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutDonationsInput = {
@@ -618,7 +670,9 @@ export type PersonCreateWithoutDonationsInput = {
   updatedAt?: Date | string
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutDonationsInput = {
@@ -633,6 +687,8 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   updatedAt?: Date | string
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutDonationsInput = {
@@ -662,7 +718,9 @@ export type PersonUpdateWithoutDonationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutDonationsInput = {
@@ -677,6 +735,8 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutAddressInput = {
@@ -691,6 +751,8 @@ export type PersonCreateWithoutAddressInput = {
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutAddressInput = {
@@ -705,6 +767,8 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutAddressInput = {
@@ -759,7 +823,9 @@ export type PersonCreateWithoutOrdersInput = {
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutOrdersInput = {
@@ -774,6 +840,8 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutOrdersInput = {
@@ -803,7 +871,9 @@ export type PersonUpdateWithoutOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutOrdersInput = {
@@ -818,6 +888,168 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+}
+
+export type PersonCreateWithoutPaymentsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+}
+
+export type PersonUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPaymentsInput, Prisma.PersonUncheckedCreateWithoutPaymentsInput>
+}
+
+export type PersonUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutPaymentsInput, Prisma.PersonUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPaymentsInput, Prisma.PersonUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.PersonWhereInput
+}
+
+export type PersonUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.PersonWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutPaymentsInput, Prisma.PersonUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type PersonUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+}
+
+export type PersonCreateWithoutPaymentHistoriesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+}
+
+export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutPaymentHistoriesInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedCreateWithoutPaymentHistoriesInput>
+}
+
+export type PersonUpsertWithoutPaymentHistoriesInput = {
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedUpdateWithoutPaymentHistoriesInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedCreateWithoutPaymentHistoriesInput>
+  where?: Prisma.PersonWhereInput
+}
+
+export type PersonUpdateToOneWithWhereWithoutPaymentHistoriesInput = {
+  where?: Prisma.PersonWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutPaymentHistoriesInput, Prisma.PersonUncheckedUpdateWithoutPaymentHistoriesInput>
+}
+
+export type PersonUpdateWithoutPaymentHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonCreateManyAddressInput = {
@@ -843,6 +1075,8 @@ export type PersonUpdateWithoutAddressInput = {
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutAddressInput = {
@@ -857,6 +1091,8 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateManyWithoutAddressInput = {
@@ -879,12 +1115,16 @@ export type PersonCountOutputType = {
   donations: number
   memberShips: number
   orders: number
+  payments: number
+  paymentHistories: number
 }
 
 export type PersonCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   donations?: boolean | PersonCountOutputTypeCountDonationsArgs
   memberShips?: boolean | PersonCountOutputTypeCountMemberShipsArgs
   orders?: boolean | PersonCountOutputTypeCountOrdersArgs
+  payments?: boolean | PersonCountOutputTypeCountPaymentsArgs
+  paymentHistories?: boolean | PersonCountOutputTypeCountPaymentHistoriesArgs
 }
 
 /**
@@ -918,6 +1158,20 @@ export type PersonCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.OrderWhereInput
 }
 
+/**
+ * PersonCountOutputType without action
+ */
+export type PersonCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * PersonCountOutputType without action
+ */
+export type PersonCountOutputTypeCountPaymentHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentHistoryWhereInput
+}
+
 
 export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -932,7 +1186,9 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
   orders?: boolean | Prisma.Person$ordersArgs<ExtArgs>
+  payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
@@ -979,7 +1235,9 @@ export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
   orders?: boolean | Prisma.Person$ordersArgs<ExtArgs>
+  payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PersonIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -995,7 +1253,9 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     donations: Prisma.$DonationPayload<ExtArgs>[]
     memberShips: Prisma.$MemberShipPayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
     address: Prisma.$AddressPayload<ExtArgs> | null
+    paymentHistories: Prisma.$PaymentHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1404,7 +1664,9 @@ export interface Prisma__PersonClient<T, Null = never, ExtArgs extends runtime.T
   donations<T extends Prisma.Person$donationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$donationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DonationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberShips<T extends Prisma.Person$memberShipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$memberShipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberShipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.Person$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Person$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   address<T extends Prisma.Person$addressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$addressArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  paymentHistories<T extends Prisma.Person$paymentHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1911,6 +2173,30 @@ export type Person$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * Person.payments
+ */
+export type Person$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
  * Person.address
  */
 export type Person$addressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1927,6 +2213,30 @@ export type Person$addressArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.AddressInclude<ExtArgs> | null
   where?: Prisma.AddressWhereInput
+}
+
+/**
+ * Person.paymentHistories
+ */
+export type Person$paymentHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentHistory
+   */
+  select?: Prisma.PaymentHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentHistory
+   */
+  omit?: Prisma.PaymentHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentHistoryInclude<ExtArgs> | null
+  where?: Prisma.PaymentHistoryWhereInput
+  orderBy?: Prisma.PaymentHistoryOrderByWithRelationInput | Prisma.PaymentHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentHistoryScalarFieldEnum | Prisma.PaymentHistoryScalarFieldEnum[]
 }
 
 /**

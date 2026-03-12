@@ -63,6 +63,14 @@ enum Role {
   OTHER               // Autre
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+  EXPIRED
+}
 
 model Image {
   id          String   @id @default(cuid())
@@ -380,10 +388,12 @@ model Person {
   donations Donation[] // Donations de la personne
   memberShips MemberShip[] // Cotisations de la personne
   orders Order[] // Commandes de la personne
-  
+  payments Payment[] // Paiements de la personne
+
   // Relations
   address Address? @relation(fields: [addressId], references: [id])
-
+  paymentHistories PaymentHistory[] // Historiques de paiement de la personne
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   @@map("people")
@@ -508,10 +518,12 @@ model MemberShip {
   amount      Int      // Prix de la cotisation
   year        Int      // Année de la cotisation
   isActive    Boolean  @default(true) // Si la cotisation est actif
-  personId    String   @unique
+  personId    String
+  paymentId   String   @unique // ID du paiement
 
   // Relations
   person Person? @relation(fields: [personId], references: [id])
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -523,10 +535,12 @@ model Donation {
   title       String   // Titre de la section
   message String?  // Message de la donation
   amount      Int      // Prix de la donation
-  personId    String   @unique
+  personId    String
+  paymentId   String   @unique // ID du paiement
 
   // Relations
   person Person? @relation(fields: [personId], references: [id])
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -562,13 +576,13 @@ model Order {
   id          String   @id @default(cuid())
   orderNumber String   // Numéro de la commande
   totalAmount Int      // Montant total de la commande
-  status      String   // Statut de la commande
+  paymentId   String   @unique // ID du paiement
   personId    String   
 
   // Relations
   person Person @relation(fields: [personId], references: [id])
   items OrderItem[] // Items de la commande
-
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -596,5 +610,39 @@ model OrderItem {
   @@map("order_items")
 }
 
+model Payment {
+  id          String   @id @default(cuid())
+  paymentReference String @unique // Référence de paiement Stripe
+  amount      Int      // Montant du paiement
+  status      PaymentStatus   // Statut du paiement
+  type      String   // Type de paiement
+  paymentMethod String   // Méthode de paiement
+  paymentDate DateTime @default(now()) // Date de paiement
+  personId    String
 
- 
+  // Relations
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  orders Order[] // Commandes liées au paiement
+  donations Donation[] // Donations liées au paiement
+  memberShips MemberShip[] // Adhésions liées au paiement
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("payments")
+}
+
+model PaymentHistory {
+  id          String   @id @default(cuid())
+  paymentId   String   // ID du paiement
+  personId    String   // ID de la personne 
+  status      PaymentStatus   // Statut du paiement
+  type      String   // Type de paiement
+  paymentDate DateTime @default(now()) // Date de paiement
+
+  // Relations
+  person Person? @relation(fields: [personId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("payment_histories")
+}

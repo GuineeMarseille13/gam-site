@@ -61,7 +61,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/payment_intents/cart", {
+      const response = await fetch("/api/payment_intents/order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
