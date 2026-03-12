@@ -4,34 +4,38 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updateAdhesionSchema = z.object({
-  status: z.enum(['pending', 'paid', 'confirmed', 'cancelled']).optional(),
-  paymentMethod: z.string().optional(),
-  paymentReference: z.string().optional(),
+const updateMemberShipSchema = z.object({
+  isActive: z.boolean().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
 })
 
-// GET /api/adhesion/submissions/[id] - Récupérer une soumission d'adhésion par ID
+// GET /api/adhesion/submissions/[id] - Récupérer une adhésion par ID
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const submission = await prisma.adhesionSubmission.findUnique({
+    const memberShip = await prisma.memberShip.findUnique({
       where: { id },
+      include: {
+        person: true,
+        payment: true,
+      },
     })
 
-    if (!submission) {
-      return notFoundResponse('Soumission d\'adhésion')
+    if (!memberShip) {
+      return notFoundResponse('Adhésion')
     }
 
-    return successResponse(submission)
+    return successResponse(memberShip)
   } catch (error) {
     return handleApiError(error)
   }
 }
 
-// PUT /api/adhesion/submissions/[id] - Mettre à jour une soumission d'adhésion
+// PUT /api/adhesion/submissions/[id] - Mettre à jour une adhésion
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -39,16 +43,19 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
-    const validatedData = updateAdhesionSchema.parse(body)
+    const validatedData = updateMemberShipSchema.parse(body)
 
-    const submission = await prisma.adhesionSubmission.update({
+    const memberShip = await prisma.memberShip.update({
       where: { id },
       data: validatedData,
+      include: {
+        person: true,
+        payment: true,
+      },
     })
 
-    return successResponse(submission, 'Soumission d\'adhésion mise à jour avec succès')
+    return successResponse(memberShip, 'Adhésion mise à jour avec succès')
   } catch (error) {
     return handleApiError(error)
   }
 }
-

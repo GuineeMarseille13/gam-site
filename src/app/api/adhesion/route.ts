@@ -1,32 +1,12 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { successResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
-import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR } from '@/app/adhesion/_schemas/adhesion.schema'
+import { NextResponse } from 'next/server'
 
-// POST /api/adhesion - Créer une soumission d'adhésion
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const validatedData = adhesionPayloadSchema.parse(body)
-
-    const totalAmount = validatedData.members.length * PRICE_PER_MEMBER_EUR
-
-    const submission = await prisma.adhesionSubmission.create({
-      data: {
-        members: validatedData.members,
-        message: validatedData.message || null,
-        totalAmount,
-        status: 'pending',
-      },
-    })
-
-    // TODO: Envoyer un email de confirmation
-    // TODO: Intégrer le paiement
-
-    return successResponse(submission, 'Demande d\'adhésion créée avec succès', 201)
-  } catch (error) {
-    return handleApiError(error)
-  }
+// POST /api/adhesion - Déprécié : l'adhésion est désormais créée via le webhook Stripe
+// après paiement. Utiliser POST /api/payment_intents pour initier le flux de paiement.
+export async function POST() {
+  return NextResponse.json(
+    {
+      error: 'Ce endpoint est déprécié. L\'adhésion est créée automatiquement après le paiement Stripe. Utilisez POST /api/payment_intents pour initier le paiement.',
+    },
+    { status: 410 }
+  )
 }
-

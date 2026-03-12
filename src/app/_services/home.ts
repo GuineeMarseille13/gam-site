@@ -95,26 +95,8 @@ interface ApiResponse<T> {
  * Récupère les éléments du carrousel
  */
 export async function getCarouselItems(): Promise<CarouselItem[]> {
-  try {
-    const response = await fetch('/api/carousel?active=true', {
-      cache: 'no-store',
-    });
-    
-    if (!response.ok) {
-      console.warn('Erreur lors de la récupération du carrousel:', response.statusText);
-      return [];
-    }
-    
-    const result: ApiResponse<CarouselItem[]> = await response.json();
-    if (!result.success || !result.data) {
-      console.warn('Aucune donnée de carrousel disponible');
-      return [];
-    }
-    return result.data;
-  } catch (error) {
-    console.error('Erreur lors de la récupération du carrousel:', error);
-    return [];
-  }
+  // Route supprimée — le carrousel utilise ses données statiques intégrées
+  return [];
 }
 
 /**
@@ -184,14 +166,8 @@ export async function getReviews(): Promise<Review[]> {
  * Récupère les statistiques actives
  */
 export async function getStatistics(): Promise<Statistic[]> {
-  const response = await fetch('/api/statistics?active=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Statistic[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des statistiques');
-  }
-  return result.data;
+  // Route supprimée — StatisticsSection utilise ses données statiques intégrées
+  return [];
 }
 
 /**

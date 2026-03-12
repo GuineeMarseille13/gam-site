@@ -3,28 +3,32 @@ import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 
-// GET /api/adhesion/submissions - Liste toutes les soumissions d'adhésion
+// GET /api/adhesion/submissions - Liste toutes les adhésions
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const status = searchParams.get('status')
+    const isActiveParam = searchParams.get('isActive')
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined
 
     const where: any = {}
-    if (status) where.status = status
+    if (isActiveParam !== null) where.isActive = isActiveParam === 'true'
 
-    const submissions = await prisma.adhesionSubmission.findMany({
+    const memberShips = await prisma.memberShip.findMany({
       where,
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
+      include: {
+        person: true,
+        payment: true,
+      },
     })
 
-    const total = await prisma.adhesionSubmission.count({ where })
+    const total = await prisma.memberShip.count({ where })
 
     return successResponse({
-      data: submissions,
+      data: memberShips,
       total,
       limit,
       offset,
@@ -33,4 +37,3 @@ export async function GET(request: NextRequest) {
     return handleApiError(error)
   }
 }
-
