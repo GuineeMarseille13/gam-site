@@ -10,7 +10,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import { Loader2, CreditCard, CheckCircle2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { type Member } from "../_schemas/adhesion.schema";
 
 const stripePromise = loadStripe(
@@ -36,7 +35,6 @@ function PaymentForm({
 }: StripePaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [succeeded, setSucceeded] = useState(false);
@@ -87,13 +85,11 @@ function PaymentForm({
         setIsProcessing(false);
       } else {
         setSucceeded(true);
-        if (onSuccess) {
-          onSuccess();
-        }
-        // Rediriger vers la page de succès après un court délai
         setTimeout(() => {
-          router.push("/success");
-        }, 2000);
+          if (onSuccess) {
+            onSuccess();
+          }
+        }, 5000);
       }
     } catch (err) {
       console.error("Erreur lors du paiement:", err);

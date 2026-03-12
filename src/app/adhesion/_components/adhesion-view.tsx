@@ -126,7 +126,7 @@ export default function AdhesionView() {
     setClientSecret(null);
     setError(null);
     // Optionnel : rediriger vers la page cancel
-    // window.location.href = "/cancel";
+    window.location.href = "/cancel";
   }
 
   if (submitted) {
@@ -283,111 +283,111 @@ export default function AdhesionView() {
             </div>
           </motion.div>
 
-        <div className="space-y-4">
-          {members.map((m, idx) => (
-            <motion.div 
-              key={idx} 
-              initial={{ opacity: 0, y: 12 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: idx * 0.05 }} 
-              className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center rounded-xl border-2 border-gray-200/80 bg-white/50 p-4 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Prénom *" value={m.firstName} onChange={(e)=>updateField(idx,'firstName',e.target.value)} required />
-              <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Nom *" value={m.lastName} onChange={(e)=>updateField(idx,'lastName',e.target.value)} required />
-              <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Téléphone *" value={m.phone||""} onChange={(e)=>updateField(idx,'phone',e.target.value)} required inputMode="tel" />
-              <input className="w-full sm:col-span-2 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Email (optionnel)" value={m.email||""} onChange={(e)=>updateField(idx,'email',e.target.value)} type="email" inputMode="email" />
-              <div className="sm:col-span-1 flex items-center justify-end">
-                {members.length>1 && (
-                  <motion.button 
-                    type="button" 
-                    onClick={()=>removeRow(idx)} 
-                    aria-label="Retirer" 
-                    title="Retirer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-xl border-2 border-red-200 text-red-600 hover:bg-red-50 cursor-pointer transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </motion.button>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 8 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ delay: 0.5 }} 
-          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-        >
-          <motion.button 
-            type="button" 
-            onClick={addRow} 
-            disabled={!canAddRow}
-            whileHover={canAddRow ? { scale: 1.02 } : {}}
-            whileTap={canAddRow ? { scale: 0.98 } : {}}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gray-900 text-white shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base font-semibold transition-all duration-200"
-          >
-            <Plus className="w-4 h-4" /> Ajouter une personne
-          </motion.button>
-          <div className="text-center sm:text-right space-y-1">
-            <div className="text-xs sm:text-sm text-gray-600">{members.length} x {PRICE_PER_MEMBER_EUR.toFixed(0)} €</div>
-            <div className="text-lg sm:text-xl font-bold text-gray-900">Total: {new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(total)}</div>
+          <div className="space-y-4">
+            {members.map((m, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 12 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: idx * 0.05 }} 
+                className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center rounded-xl border-2 border-gray-200/80 bg-white/50 p-4 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Prénom *" value={m.firstName} onChange={(e)=>updateField(idx,'firstName',e.target.value)} required />
+                <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Nom *" value={m.lastName} onChange={(e)=>updateField(idx,'lastName',e.target.value)} required />
+                <input className="w-full sm:col-span-3 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Téléphone *" value={m.phone||""} onChange={(e)=>updateField(idx,'phone',e.target.value)} required inputMode="tel" />
+                <input className="w-full sm:col-span-2 rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white" placeholder="Email (optionnel)" value={m.email||""} onChange={(e)=>updateField(idx,'email',e.target.value)} type="email" inputMode="email" />
+                <div className="sm:col-span-1 flex items-center justify-end">
+                  {members.length>1 && (
+                    <motion.button 
+                      type="button" 
+                      onClick={()=>removeRow(idx)} 
+                      aria-label="Retirer" 
+                      title="Retirer"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 rounded-xl border-2 border-red-200 text-red-600 hover:bg-red-50 cursor-pointer transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </motion.button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 8 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ delay: 0.55 }} 
-          className="space-y-2"
-        >
-          <label className="text-sm sm:text-base font-semibold text-gray-900">Message (optionnel)</label>
-          <textarea 
-            className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white resize-none" 
-            rows={4} 
-            value={message} 
-            onChange={(e)=>setMessage(e.target.value)} 
-            placeholder="Un mot pour l'équipe..." 
-          />
-        </motion.div>
-
-        {error && (
           <motion.div 
-            initial={{ opacity: 0, y: -8 }} 
+            initial={{ opacity: 0, y: 8 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-red-700 text-sm sm:text-base"
+            transition={{ delay: 0.5 }} 
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
           >
-            {error}
+            <motion.button 
+              type="button" 
+              onClick={addRow} 
+              disabled={!canAddRow}
+              whileHover={canAddRow ? { scale: 1.02 } : {}}
+              whileTap={canAddRow ? { scale: 0.98 } : {}}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gray-900 text-white shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base font-semibold transition-all duration-200"
+            >
+              <Plus className="w-4 h-4" /> Ajouter une personne
+            </motion.button>
+            <div className="text-center sm:text-right space-y-1">
+              <div className="text-xs sm:text-sm text-gray-600">{members.length} x {PRICE_PER_MEMBER_EUR.toFixed(0)} €</div>
+              <div className="text-lg sm:text-xl font-bold text-gray-900">Total: {new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(total)}</div>
+            </div>
           </motion.div>
-        )}
 
-        <motion.div 
-          initial={{ opacity: 0, y: 8 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ delay: 0.6 }} 
-          className="flex justify-center pt-2"
-        >
-          <motion.button
-            type="submit"
-            disabled={isLoading}
-            whileHover={!isLoading ? { scale: 1.02 } : {}}
-            whileTap={!isLoading ? { scale: 0.98 } : {}}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          <motion.div 
+            initial={{ opacity: 0, y: 8 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.55 }} 
+            className="space-y-2"
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" /> Redirection vers le paiement...
-              </>
-            ) : (
-              <>
-                <Users className="w-5 h-5" /> {members.length > 1 ? "Valider les adhésions" : "Valider l'adhésion"}
-              </>
-            )}
-          </motion.button>
-        </motion.div>
-      </form>
+            <label className="text-sm sm:text-base font-semibold text-gray-900">Message (optionnel)</label>
+            <textarea 
+              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 hover:border-amber-300 transition-all duration-200 bg-white resize-none" 
+              rows={4} 
+              value={message} 
+              onChange={(e)=>setMessage(e.target.value)} 
+              placeholder="Un mot pour l'équipe..." 
+            />
+          </motion.div>
+
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -8 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-red-700 text-sm sm:text-base"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          <motion.div 
+            initial={{ opacity: 0, y: 8 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.6 }} 
+            className="flex justify-center pt-2"
+          >
+            <motion.button
+              type="submit"
+              disabled={isLoading}
+              whileHover={!isLoading ? { scale: 1.02 } : {}}
+              whileTap={!isLoading ? { scale: 0.98 } : {}}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" /> Redirection vers le paiement...
+                </>
+              ) : (
+                <>
+                  <Users className="w-5 h-5" /> {members.length > 1 ? "Valider les adhésions" : "Valider l'adhésion"}
+                </>
+              )}
+            </motion.button>
+          </motion.div>
+        </form>
       </motion.div>
     </div>
   );

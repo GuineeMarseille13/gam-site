@@ -35,6 +35,14 @@ export interface UploadVideoResult {
   thumbnail: string
 }
 
+export interface UploadPdfResult {
+  url: string
+  publicId: string
+  format: string
+  size: number
+  originalFilename: string
+}
+
 export async function uploadImage(
   file: File | Buffer,
   folder?: string
@@ -100,5 +108,31 @@ export async function uploadVideo(
     format: result.format,
     size: result.bytes,
     thumbnail: result.thumbnail_url || '',
+  }
+}
+
+export async function uploadPdf(
+  file: File | Buffer,
+  folder?: string
+): Promise<UploadPdfResult> {
+  ensureCloudinaryConfig()
+
+  const buffer = file instanceof File ? Buffer.from(await file.arrayBuffer()) : file
+
+  // Cloudinary PDF uploads use resource_type: "raw"
+  const result = await cloudinary.uploader.upload(
+    `data:application/pdf;base64,${buffer.toString('base64')}`,
+    {
+      folder: folder || 'gam/pdfs',
+      resource_type: 'raw',
+    }
+  )
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+    format: result.format || 'pdf',
+    size: result.bytes,
+    originalFilename: result.original_filename || '',
   }
 }

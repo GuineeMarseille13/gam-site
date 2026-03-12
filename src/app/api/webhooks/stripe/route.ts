@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 
 import { stripe } from '@/lib/stripe'
+import { rollbackPaymentIfRecorded } from '@/app/api/webhooks/_services/payment-rollback.service'
 import { saveAdhesionFromPaymentIntent, saveAdhesionFromStripeSession } from '@/app/adhesion/_services/adhesion.service'
 import { saveDonFromPaymentIntent } from '@/app/don/_services/don.service'
 import { saveOrderFromPaymentIntent } from '@/app/boutique/_services/order.service'
@@ -32,13 +33,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // Récupérer le body brut pour la vérification de signature
     const body = await request.text()
 
     let event: Stripe.Event
-
     try {
-      // Vérifier la signature du webhook
       event = stripe.webhooks.constructEvent(
         body,
         signature,
@@ -52,77 +50,33 @@ export async function POST(request: Request) {
       )
     }
 
-    // Gérer les événements pertinents
-    switch (event.type) {
-      case 'payment_intent.succeeded': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent
+    console.log(`[Webhook] Événement reçu: ${event.type}`)
 
-        // Vérifier que le paiement est bien complété
-        if (paymentIntent.status === 'succeeded' && paymentIntent.metadata?.type) {
-          try {
-            const type = paymentIntent.metadata.type
-
-            switch (type) {
-              case 'adhesion':
-                await saveAdhesionFromPaymentIntent(paymentIntent)
-                console.log(`Adhésion enregistrée pour le PaymentIntent: ${paymentIntent.id}`)
-                break
-
-              case 'donation':
-                await saveDonFromPaymentIntent(paymentIntent)
-                console.log(`Don enregistré pour le PaymentIntent: ${paymentIntent.id}`)
-                break
-
-              case 'order':
-                await saveOrderFromPaymentIntent(paymentIntent)
-                console.log(`Commande enregistrée pour le PaymentIntent: ${paymentIntent.id}`)
-                break
-
-              default:
-                console.log(`Type de paiement non géré: ${type} pour le PaymentIntent: ${paymentIntent.id}`)
-            }
-          } catch (err) {
-            console.error('Erreur lors de l\'enregistrement du paiement:', err)
-            // Ne pas retourner d'erreur pour éviter que Stripe réessaie indéfiniment
-            // On log l'erreur pour investigation manuelle
-          }
-        }
-        break
+    // Succès : enregistrer le paiement + l'action selon le type (don, adhésion, commande)
+    if (event.type === 'payment_intent.succeeded') {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      console.log(`[Webhook] PaymentIntent status=${paymentIntent.status}, metadata=`, paymentIntent.metadata)
+      if (paymentIntent.status === 'succeeded' && paymentIntent.metadata?.type) {
+        await handlePaymentSuccess(paymentIntent)
+      } else {
+        console.log(`[Webhook] PaymentIntent ignoré: status=${paymentIntent.status}, type=${paymentIntent.metadata?.type || 'ABSENT'}`)
       }
+      return NextResponse.json({ received: true })
+    }
 
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session
-
-        // Vérifier que c'est bien une session de paiement (pas un abonnement)
-        if (session.mode === 'payment' && session.payment_status === 'paid') {
-          try {
-            await saveAdhesionFromStripeSession(session)
-            console.log(`Adhésion enregistrée pour la session: ${session.id}`)
-          } catch (err) {
-            console.error('Erreur lors de l\'enregistrement de l\'adhésion:', err)
-            // Ne pas retourner d'erreur pour éviter que Stripe réessaie indéfiniment
-            // On log l'erreur pour investigation manuelle
-          }
-        }
-        break
+    if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
+      const session = event.data.object as Stripe.Checkout.Session
+      if (session.mode === 'payment' && session.payment_status === 'paid') {
+        await handleCheckoutSessionSuccess(session)
       }
+      return NextResponse.json({ received: true })
+    }
 
-      case 'checkout.session.async_payment_succeeded': {
-        const session = event.data.object as Stripe.Checkout.Session
-        if (session.mode === 'payment') {
-          try {
-            await saveAdhesionFromStripeSession(session)
-            console.log(`Adhésion enregistrée (paiement asynchrone) pour la session: ${session.id}`)
-          } catch (err) {
-            console.error('Erreur lors de l\'enregistrement de l\'adhésion:', err)
-          }
-        }
-        break
-      }
-
-      default:
-        // Événements non gérés (on les ignore silencieusement)
-        console.log(`Événement non géré: ${event.type}`)
+    // 3. Échec / annulation : supprimer le paiement et l’entité liée s’ils avaient été enregistrés
+    if (event.type === 'payment_intent.payment_failed' || event.type === 'payment_intent.canceled') {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      await rollbackPaymentIfRecorded(paymentIntent.id, paymentIntent.metadata?.type )
+      return NextResponse.json({ received: true })
     }
 
     return NextResponse.json({ received: true })
@@ -135,3 +89,35 @@ export async function POST(request: Request) {
   }
 }
 
+async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+  const type = paymentIntent.metadata?.type ?? ''
+  try {
+    switch (type) {
+      case 'adhesion':
+        await saveAdhesionFromPaymentIntent(paymentIntent)
+        console.log(`Adhésion enregistrée pour le PaymentIntent: ${paymentIntent.id}`)
+        break
+      case 'donation':
+        await saveDonFromPaymentIntent(paymentIntent)
+        console.log(`Don enregistré pour le PaymentIntent: ${paymentIntent.id}`)
+        break
+      case 'order':
+        await saveOrderFromPaymentIntent(paymentIntent)
+        console.log(`Commande enregistrée pour le PaymentIntent: ${paymentIntent.id}`)
+        break
+      default:
+        console.log(`Type de paiement non géré: ${type} pour le PaymentIntent: ${paymentIntent.id}`)
+    }
+  } catch (err) {
+    console.error(`Erreur lors de l'enregistrement du paiement (type=${type}):`, err)
+  }
+}
+
+async function handleCheckoutSessionSuccess(session: Stripe.Checkout.Session): Promise<void> {
+  try {
+    await saveAdhesionFromStripeSession(session)
+    console.log(`Adhésion enregistrée pour la session: ${session.id}`)
+  } catch (err) {
+    console.error('Erreur lors de l\'enregistrement de l\'adhésion (session):', err)
+  }
+}

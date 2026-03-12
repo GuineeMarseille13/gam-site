@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     const amount = quantity * PRICE_PER_MEMBER_EUR * 100 // Montant en centimes
 
     // Créer un PaymentIntent avec uniquement les cartes
+    // Permet de preparer stripe pour un paiement
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: 'eur',

@@ -1,7 +1,8 @@
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
-import { DonationStatus } from '@/lib/generated/prisma/enums'
 import { donPayloadSchema } from '../_schemas/don.schema'
+import { PaymentStatus } from '@/types/paiement-status'
+import { findOrCreatePerson } from '@/lib/person.utils'
 
 /**
  * Sauvegarde un don à partir d'un PaymentIntent Stripe complété
@@ -36,37 +37,69 @@ export async function saveDonFromPaymentIntent(
     const totalAmount = paymentIntent.amount / 100
 
     // Vérifier si le don existe déjà (éviter les doublons)
-    const existingDon = await prisma.donation.findFirst({
+    const existingPayment = await prisma.payment.findFirst({
       where: {
         paymentReference: paymentIntent.id,
       },
     })
 
-    if (existingDon) {
+    if (existingPayment) {
       console.log(`Don déjà enregistré pour le PaymentIntent: ${paymentIntent.id}`)
       return
     }
 
-    // Sauvegarder le don dans la base de données
-    await prisma.donation.create({
-      data: {
-        firstName: validated.firstName,
-        lastName: validated.lastName,
-        email: validated.email || null,
-        phone: validated.phone || null,
-        amount: totalAmount,
-        message: validated.message || null,
-        status: DonationStatus.paid,
-        paymentMethod: 'stripe',
-        paymentReference: paymentIntent.id,
-        isAnonymous: false,
-      },
+    // Operation transactionnelle
+    await prisma.$transaction(async (tx) => {
+      // Trouver ou créer la personne
+      const personId = await findOrCreatePerson(tx, {
+        firstName,
+        lastName,
+        phone: phone || undefined,
+        email: email || undefined,
+      })
+
+      // Sauvegarder un paiement dans la base de données
+      const payment = await tx.payment.create({
+        data: {
+          paymentReference: paymentIntent.id,
+          amount: totalAmount,
+          status: PaymentStatus.PAID,
+          type: 'donation',
+          paymentMethod: paymentIntent.payment_method_types[0],
+          personId,
+        },
+      })
+
+      // Sauvegarder le don dans la base de données
+      await tx.donation.create({
+        data: {
+          personId,
+          title: 'Don',
+          amount: totalAmount,
+          message: message || null,
+          paymentId: payment.id,
+        },
+      })
+
+      // Sauvegarder l'historique de paiement
+      await tx.paymentHistory.create({
+        data: {
+          paymentId: paymentIntent.id,
+          personId,
+          status: PaymentStatus.PAID,
+          type: 'donation',
+        },
+      })
     })
 
     console.log(`Don sauvegardé: ${validated.firstName} ${validated.lastName}, montant: ${totalAmount}€`)
   } catch (err) {
+    // Ignorer les doublons (race condition entre webhooks simultanés)
+    if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2002') {
+      console.log(`Don déjà enregistré (doublon détecté) pour le PaymentIntent: ${paymentIntent.id}`)
+      return
+    }
     console.error('Erreur dans saveDonFromPaymentIntent:', err)
     throw err
   }
 }
-

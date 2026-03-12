@@ -44,6 +44,7 @@ export type MemberShipMinAggregateOutputType = {
   year: number | null
   isActive: boolean | null
   personId: string | null
+  paymentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +57,7 @@ export type MemberShipMaxAggregateOutputType = {
   year: number | null
   isActive: boolean | null
   personId: string | null
+  paymentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +70,7 @@ export type MemberShipCountAggregateOutputType = {
   year: number
   isActive: number
   personId: number
+  paymentId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -92,6 +95,7 @@ export type MemberShipMinAggregateInputType = {
   year?: true
   isActive?: true
   personId?: true
+  paymentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -104,6 +108,7 @@ export type MemberShipMaxAggregateInputType = {
   year?: true
   isActive?: true
   personId?: true
+  paymentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -116,6 +121,7 @@ export type MemberShipCountAggregateInputType = {
   year?: true
   isActive?: true
   personId?: true
+  paymentId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -215,6 +221,7 @@ export type MemberShipGroupByOutputType = {
   year: number
   isActive: boolean
   personId: string
+  paymentId: string
   createdAt: Date
   updatedAt: Date
   _count: MemberShipCountAggregateOutputType | null
@@ -250,9 +257,11 @@ export type MemberShipWhereInput = {
   year?: Prisma.IntFilter<"MemberShip"> | number
   isActive?: Prisma.BoolFilter<"MemberShip"> | boolean
   personId?: Prisma.StringFilter<"MemberShip"> | string
+  paymentId?: Prisma.StringFilter<"MemberShip"> | string
   createdAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
   person?: Prisma.XOR<Prisma.PersonNullableScalarRelationFilter, Prisma.PersonWhereInput> | null
+  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
 }
 
 export type MemberShipOrderByWithRelationInput = {
@@ -263,14 +272,16 @@ export type MemberShipOrderByWithRelationInput = {
   year?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  paymentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   person?: Prisma.PersonOrderByWithRelationInput
+  payment?: Prisma.PaymentOrderByWithRelationInput
 }
 
 export type MemberShipWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  personId?: string
+  paymentId?: string
   AND?: Prisma.MemberShipWhereInput | Prisma.MemberShipWhereInput[]
   OR?: Prisma.MemberShipWhereInput[]
   NOT?: Prisma.MemberShipWhereInput | Prisma.MemberShipWhereInput[]
@@ -279,10 +290,12 @@ export type MemberShipWhereUniqueInput = Prisma.AtLeast<{
   amount?: Prisma.IntFilter<"MemberShip"> | number
   year?: Prisma.IntFilter<"MemberShip"> | number
   isActive?: Prisma.BoolFilter<"MemberShip"> | boolean
+  personId?: Prisma.StringFilter<"MemberShip"> | string
   createdAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
   person?: Prisma.XOR<Prisma.PersonNullableScalarRelationFilter, Prisma.PersonWhereInput> | null
-}, "id" | "personId">
+  payment?: Prisma.XOR<Prisma.PaymentScalarRelationFilter, Prisma.PaymentWhereInput>
+}, "id" | "paymentId">
 
 export type MemberShipOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -292,6 +305,7 @@ export type MemberShipOrderByWithAggregationInput = {
   year?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  paymentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MemberShipCountOrderByAggregateInput
@@ -312,6 +326,7 @@ export type MemberShipScalarWhereWithAggregatesInput = {
   year?: Prisma.IntWithAggregatesFilter<"MemberShip"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"MemberShip"> | boolean
   personId?: Prisma.StringWithAggregatesFilter<"MemberShip"> | string
+  paymentId?: Prisma.StringWithAggregatesFilter<"MemberShip"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"MemberShip"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"MemberShip"> | Date | string
 }
@@ -326,6 +341,7 @@ export type MemberShipCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   person?: Prisma.PersonCreateNestedOneWithoutMemberShipsInput
+  payment: Prisma.PaymentCreateNestedOneWithoutMemberShipsInput
 }
 
 export type MemberShipUncheckedCreateInput = {
@@ -336,6 +352,7 @@ export type MemberShipUncheckedCreateInput = {
   year: number
   isActive?: boolean
   personId: string
+  paymentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -350,6 +367,7 @@ export type MemberShipUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   person?: Prisma.PersonUpdateOneWithoutMemberShipsNestedInput
+  payment?: Prisma.PaymentUpdateOneRequiredWithoutMemberShipsNestedInput
 }
 
 export type MemberShipUncheckedUpdateInput = {
@@ -360,6 +378,7 @@ export type MemberShipUncheckedUpdateInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -372,6 +391,7 @@ export type MemberShipCreateManyInput = {
   year: number
   isActive?: boolean
   personId: string
+  paymentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -395,6 +415,7 @@ export type MemberShipUncheckedUpdateManyInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -417,6 +438,7 @@ export type MemberShipCountOrderByAggregateInput = {
   year?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  paymentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -434,6 +456,7 @@ export type MemberShipMaxOrderByAggregateInput = {
   year?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  paymentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -446,6 +469,7 @@ export type MemberShipMinOrderByAggregateInput = {
   year?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  paymentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -497,6 +521,48 @@ export type MemberShipUncheckedUpdateManyWithoutPersonNestedInput = {
   deleteMany?: Prisma.MemberShipScalarWhereInput | Prisma.MemberShipScalarWhereInput[]
 }
 
+export type MemberShipCreateNestedManyWithoutPaymentInput = {
+  create?: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput> | Prisma.MemberShipCreateWithoutPaymentInput[] | Prisma.MemberShipUncheckedCreateWithoutPaymentInput[]
+  connectOrCreate?: Prisma.MemberShipCreateOrConnectWithoutPaymentInput | Prisma.MemberShipCreateOrConnectWithoutPaymentInput[]
+  createMany?: Prisma.MemberShipCreateManyPaymentInputEnvelope
+  connect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+}
+
+export type MemberShipUncheckedCreateNestedManyWithoutPaymentInput = {
+  create?: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput> | Prisma.MemberShipCreateWithoutPaymentInput[] | Prisma.MemberShipUncheckedCreateWithoutPaymentInput[]
+  connectOrCreate?: Prisma.MemberShipCreateOrConnectWithoutPaymentInput | Prisma.MemberShipCreateOrConnectWithoutPaymentInput[]
+  createMany?: Prisma.MemberShipCreateManyPaymentInputEnvelope
+  connect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+}
+
+export type MemberShipUpdateManyWithoutPaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput> | Prisma.MemberShipCreateWithoutPaymentInput[] | Prisma.MemberShipUncheckedCreateWithoutPaymentInput[]
+  connectOrCreate?: Prisma.MemberShipCreateOrConnectWithoutPaymentInput | Prisma.MemberShipCreateOrConnectWithoutPaymentInput[]
+  upsert?: Prisma.MemberShipUpsertWithWhereUniqueWithoutPaymentInput | Prisma.MemberShipUpsertWithWhereUniqueWithoutPaymentInput[]
+  createMany?: Prisma.MemberShipCreateManyPaymentInputEnvelope
+  set?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  disconnect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  delete?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  connect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  update?: Prisma.MemberShipUpdateWithWhereUniqueWithoutPaymentInput | Prisma.MemberShipUpdateWithWhereUniqueWithoutPaymentInput[]
+  updateMany?: Prisma.MemberShipUpdateManyWithWhereWithoutPaymentInput | Prisma.MemberShipUpdateManyWithWhereWithoutPaymentInput[]
+  deleteMany?: Prisma.MemberShipScalarWhereInput | Prisma.MemberShipScalarWhereInput[]
+}
+
+export type MemberShipUncheckedUpdateManyWithoutPaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput> | Prisma.MemberShipCreateWithoutPaymentInput[] | Prisma.MemberShipUncheckedCreateWithoutPaymentInput[]
+  connectOrCreate?: Prisma.MemberShipCreateOrConnectWithoutPaymentInput | Prisma.MemberShipCreateOrConnectWithoutPaymentInput[]
+  upsert?: Prisma.MemberShipUpsertWithWhereUniqueWithoutPaymentInput | Prisma.MemberShipUpsertWithWhereUniqueWithoutPaymentInput[]
+  createMany?: Prisma.MemberShipCreateManyPaymentInputEnvelope
+  set?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  disconnect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  delete?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  connect?: Prisma.MemberShipWhereUniqueInput | Prisma.MemberShipWhereUniqueInput[]
+  update?: Prisma.MemberShipUpdateWithWhereUniqueWithoutPaymentInput | Prisma.MemberShipUpdateWithWhereUniqueWithoutPaymentInput[]
+  updateMany?: Prisma.MemberShipUpdateManyWithWhereWithoutPaymentInput | Prisma.MemberShipUpdateManyWithWhereWithoutPaymentInput[]
+  deleteMany?: Prisma.MemberShipScalarWhereInput | Prisma.MemberShipScalarWhereInput[]
+}
+
 export type MemberShipCreateWithoutPersonInput = {
   id?: string
   title: string
@@ -506,6 +572,7 @@ export type MemberShipCreateWithoutPersonInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  payment: Prisma.PaymentCreateNestedOneWithoutMemberShipsInput
 }
 
 export type MemberShipUncheckedCreateWithoutPersonInput = {
@@ -515,6 +582,7 @@ export type MemberShipUncheckedCreateWithoutPersonInput = {
   amount: number
   year: number
   isActive?: boolean
+  paymentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -556,8 +624,59 @@ export type MemberShipScalarWhereInput = {
   year?: Prisma.IntFilter<"MemberShip"> | number
   isActive?: Prisma.BoolFilter<"MemberShip"> | boolean
   personId?: Prisma.StringFilter<"MemberShip"> | string
+  paymentId?: Prisma.StringFilter<"MemberShip"> | string
   createdAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MemberShip"> | Date | string
+}
+
+export type MemberShipCreateWithoutPaymentInput = {
+  id?: string
+  title: string
+  description?: string | null
+  amount: number
+  year: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  person?: Prisma.PersonCreateNestedOneWithoutMemberShipsInput
+}
+
+export type MemberShipUncheckedCreateWithoutPaymentInput = {
+  id?: string
+  title: string
+  description?: string | null
+  amount: number
+  year: number
+  isActive?: boolean
+  personId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MemberShipCreateOrConnectWithoutPaymentInput = {
+  where: Prisma.MemberShipWhereUniqueInput
+  create: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput>
+}
+
+export type MemberShipCreateManyPaymentInputEnvelope = {
+  data: Prisma.MemberShipCreateManyPaymentInput | Prisma.MemberShipCreateManyPaymentInput[]
+  skipDuplicates?: boolean
+}
+
+export type MemberShipUpsertWithWhereUniqueWithoutPaymentInput = {
+  where: Prisma.MemberShipWhereUniqueInput
+  update: Prisma.XOR<Prisma.MemberShipUpdateWithoutPaymentInput, Prisma.MemberShipUncheckedUpdateWithoutPaymentInput>
+  create: Prisma.XOR<Prisma.MemberShipCreateWithoutPaymentInput, Prisma.MemberShipUncheckedCreateWithoutPaymentInput>
+}
+
+export type MemberShipUpdateWithWhereUniqueWithoutPaymentInput = {
+  where: Prisma.MemberShipWhereUniqueInput
+  data: Prisma.XOR<Prisma.MemberShipUpdateWithoutPaymentInput, Prisma.MemberShipUncheckedUpdateWithoutPaymentInput>
+}
+
+export type MemberShipUpdateManyWithWhereWithoutPaymentInput = {
+  where: Prisma.MemberShipScalarWhereInput
+  data: Prisma.XOR<Prisma.MemberShipUpdateManyMutationInput, Prisma.MemberShipUncheckedUpdateManyWithoutPaymentInput>
 }
 
 export type MemberShipCreateManyPersonInput = {
@@ -567,6 +686,7 @@ export type MemberShipCreateManyPersonInput = {
   amount: number
   year: number
   isActive?: boolean
+  paymentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -580,6 +700,7 @@ export type MemberShipUpdateWithoutPersonInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payment?: Prisma.PaymentUpdateOneRequiredWithoutMemberShipsNestedInput
 }
 
 export type MemberShipUncheckedUpdateWithoutPersonInput = {
@@ -589,6 +710,7 @@ export type MemberShipUncheckedUpdateWithoutPersonInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  paymentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -600,6 +722,55 @@ export type MemberShipUncheckedUpdateManyWithoutPersonInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  paymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MemberShipCreateManyPaymentInput = {
+  id?: string
+  title: string
+  description?: string | null
+  amount: number
+  year: number
+  isActive?: boolean
+  personId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MemberShipUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  person?: Prisma.PersonUpdateOneWithoutMemberShipsNestedInput
+}
+
+export type MemberShipUncheckedUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MemberShipUncheckedUpdateManyWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -614,9 +785,11 @@ export type MemberShipSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   year?: boolean
   isActive?: boolean
   personId?: boolean
+  paymentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["memberShip"]>
 
 export type MemberShipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -627,9 +800,11 @@ export type MemberShipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   year?: boolean
   isActive?: boolean
   personId?: boolean
+  paymentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["memberShip"]>
 
 export type MemberShipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -640,9 +815,11 @@ export type MemberShipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   year?: boolean
   isActive?: boolean
   personId?: boolean
+  paymentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["memberShip"]>
 
 export type MemberShipSelectScalar = {
@@ -653,25 +830,30 @@ export type MemberShipSelectScalar = {
   year?: boolean
   isActive?: boolean
   personId?: boolean
+  paymentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MemberShipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "amount" | "year" | "isActive" | "personId" | "createdAt" | "updatedAt", ExtArgs["result"]["memberShip"]>
+export type MemberShipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "amount" | "year" | "isActive" | "personId" | "paymentId" | "createdAt" | "updatedAt", ExtArgs["result"]["memberShip"]>
 export type MemberShipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 export type MemberShipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 export type MemberShipIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   person?: boolean | Prisma.MemberShip$personArgs<ExtArgs>
+  payment?: boolean | Prisma.PaymentDefaultArgs<ExtArgs>
 }
 
 export type $MemberShipPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MemberShip"
   objects: {
     person: Prisma.$PersonPayload<ExtArgs> | null
+    payment: Prisma.$PaymentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -681,6 +863,7 @@ export type $MemberShipPayload<ExtArgs extends runtime.Types.Extensions.Internal
     year: number
     isActive: boolean
     personId: string
+    paymentId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["memberShip"]>
@@ -1078,6 +1261,7 @@ readonly fields: MemberShipFieldRefs;
 export interface Prisma__MemberShipClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   person<T extends Prisma.MemberShip$personArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberShip$personArgs<ExtArgs>>): Prisma.Prisma__PersonClient<runtime.Types.Result.GetResult<Prisma.$PersonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  payment<T extends Prisma.PaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1114,6 +1298,7 @@ export interface MemberShipFieldRefs {
   readonly year: Prisma.FieldRef<"MemberShip", 'Int'>
   readonly isActive: Prisma.FieldRef<"MemberShip", 'Boolean'>
   readonly personId: Prisma.FieldRef<"MemberShip", 'String'>
+  readonly paymentId: Prisma.FieldRef<"MemberShip", 'String'>
   readonly createdAt: Prisma.FieldRef<"MemberShip", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"MemberShip", 'DateTime'>
 }

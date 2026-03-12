@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BackgroundLogo from "@/components/BackgroundLogo";
+import BannerCard from "@/components/BannerCard";
+import EventPromoOverlay from "@/components/EventPromoOverlay";
 import FloatingActionButton from "@/components/FloatingActionButton";
 import Header from "@/components/Header";
 import { QueryProvider } from "@/providers/QueryProvider";
@@ -32,6 +34,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
+        <EventPromoOverlay />
+        <BannerCard />
         <BackgroundLogo />
         <Header />
         <main className="p-4 pt-2 relative z-10">{children}</main>
