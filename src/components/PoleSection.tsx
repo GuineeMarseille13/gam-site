@@ -2,11 +2,57 @@
 
 import { motion } from "framer-motion";
 import { PoleCard } from "@/components/PoleCard";
-import { poles } from "@/data/poles";
+import { poles as staticPoles } from "@/data/poles";
+import type { PoleItem } from "@/app/_services/home";
 
-const PoleSection = () => {
+const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
+
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+interface PoleSectionProps {
+  poles?: PoleItem[];
+}
+
+const PoleSection = ({ poles }: PoleSectionProps) => {
+  const items =
+    poles && poles.length > 0
+      ? poles.map((pole, index) => {
+          const slug = slugify(pole.name);
+          const staticMatch = staticPoles.find((s) => s.slug === slug);
+          const image = pole.imageId
+            ? `${CLOUDINARY_BASE}/${pole.imageId}`
+            : staticMatch?.image ?? staticPoles[index % staticPoles.length].image;
+          return {
+            key: pole.id,
+            image,
+            title: pole.name,
+            description: pole.description ?? staticMatch?.shortDescription,
+            slug,
+            index,
+          };
+        })
+      : staticPoles.map((pole, index) => ({
+          key: pole.slug,
+          image: pole.image,
+          title: pole.title,
+          description: pole.shortDescription,
+          slug: pole.slug,
+          index,
+        }));
+
   return (
-    <section id="poles" className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
+    <section
+      id="poles"
+      className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* En-tête de section */}
         <motion.div
@@ -46,14 +92,14 @@ const PoleSection = () => {
 
         {/* Grille de cartes */}
         <div className="flex flex-wrap gap-6 sm:gap-8 justify-center items-stretch">
-          {poles.map((pole, index) => (
+          {items.map((item) => (
             <PoleCard
-              key={pole.slug}
-              image={pole.image}
-              title={pole.title}
-              description={pole.shortDescription}
-              slug={pole.slug}
-              index={index}
+              key={item.key}
+              image={item.image}
+              title={item.title}
+              description={item.description}
+              slug={item.slug}
+              index={item.index}
             />
           ))}
         </div>

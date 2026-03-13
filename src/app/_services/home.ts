@@ -16,7 +16,7 @@ export interface CarouselItem {
 export interface Partner {
   id: string;
   name: string;
-  logo: string;
+  logo?: string;
   description?: string;
   website?: string;
   category?: string;
@@ -42,11 +42,18 @@ export interface Review {
   name: string;
   role: string;
   body: string;
-  img: string;
+  img?: string;
   country: string;
   rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
   isPublished: boolean;
   isFeatured: boolean;
+}
+
+export interface PoleItem {
+  id: string;
+  name: string;
+  description?: string;
+  imageId?: string;
 }
 
 export interface Statistic {
@@ -84,11 +91,22 @@ export interface Product {
   discount?: number;
 }
 
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
+
+const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload';
+
+/**
+ * Récupère les pôles d'activité
+ */
+export async function getPoles(): Promise<PoleItem[]> {
+  try {
+    const response = await fetch('/api/poles', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    // L'API retourne directement le tableau
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -103,63 +121,91 @@ export async function getCarouselItems(): Promise<CarouselItem[]> {
  * Récupère les partenaires
  */
 export async function getPartners(): Promise<Partner[]> {
-  const response = await fetch('/api/partners?active=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Partner[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des partenaires');
+  try {
+    const response = await fetch('/api/partners', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+    return data.map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      logo: p.imageId ? `${CLOUDINARY_BASE}/${p.imageId}` : undefined,
+      description: p.description ?? undefined,
+      website: p.url ?? undefined,
+      order: p.order ?? 0,
+      isActive: p.isActive ?? true,
+    }));
+  } catch {
+    return [];
   }
-  return result.data;
 }
 
 /**
  * Récupère les événements récents (limite à 5)
  */
 export async function getRecentEvents(): Promise<Event[]> {
-  const response = await fetch('/api/events?published=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Event[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des événements');
+  try {
+    const response = await fetch('/api/events', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+
+    return data
+      .sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+      .slice(0, 5)
+      .map((event: any) => {
+        const startDate = new Date(event.startDate);
+        return {
+          id: event.id,
+          title: event.title,
+          description: event.description ?? '',
+          date: startDate.toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }),
+          location: event.location ?? undefined,
+          year: startDate.getFullYear(),
+          category: undefined,
+          image: event.imageId ? `${CLOUDINARY_BASE}/${event.imageId}` : undefined,
+          video: event.videoId ? `${CLOUDINARY_BASE}/${event.videoId}` : undefined,
+        };
+      });
+  } catch {
+    return [];
   }
-  
-  // Trier par date décroissante et limiter à 5
-  const events = result.data
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
-  
-  // Transformer les données pour correspondre au format attendu
-  return events.map((event: any) => ({
-    id: event.id,
-    title: event.title,
-    description: event.description,
-    date: new Date(event.date).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }),
-    location: event.location,
-    year: event.year,
-    category: event.category,
-    image: event.media?.[0]?.url || undefined,
-    video: event.media?.find((m: any) => m.type === 'video')?.url || undefined,
-  }));
 }
 
 /**
  * Récupère les témoignages publiés
  */
+const RATING_MAP: Record<number, Review['rating']> = {
+  1: 'ONE', 2: 'TWO', 3: 'THREE', 4: 'FOUR', 5: 'FIVE',
+};
+
 export async function getReviews(): Promise<Review[]> {
-  const response = await fetch('/api/reviews?published=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Review[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des témoignages');
+  try {
+    const response = await fetch('/api/reviews', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+
+    return data
+      .filter((r: any) => r.isActive)
+      .map((r: any) => ({
+        id: r.id,
+        name: `${r.firstName} ${r.lastName}`,
+        role: r.role,
+        body: r.body,
+        img: r.avatarUrl || undefined,
+        country: r.country ?? '',
+        rating: RATING_MAP[r.rating] ?? 'FIVE',
+        isPublished: r.isActive,
+        isFeatured: r.isVerified ?? false,
+      }));
+  } catch {
+    return [];
   }
-  return result.data;
 }
 
 /**
@@ -174,27 +220,27 @@ export async function getStatistics(): Promise<Statistic[]> {
  * Récupère les bénévoles actifs
  */
 export async function getVolunteers(): Promise<Volunteer[]> {
-  const response = await fetch('/api/volunteers?active=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Volunteer[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des bénévoles');
+  try {
+    const response = await fetch('/api/volunteers', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data) ? data.filter((v: any) => v.isActive) : [];
+  } catch {
+    return [];
   }
-  return result.data;
 }
 
 /**
  * Récupère les produits en vedette
  */
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await fetch('/api/products?featured=true&active=true&inStock=true', {
-    cache: 'no-store',
-  });
-  const result: ApiResponse<Product[]> = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || 'Erreur lors de la récupération des produits');
+  try {
+    const response = await fetch('/api/products', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data) ? data.filter((p: any) => p.featured && p.inStock) : [];
+  } catch {
+    return [];
   }
-  return result.data;
 }
 

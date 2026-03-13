@@ -57,17 +57,26 @@ export async function uploadImage(
     ? file.type.split('/')[1] || 'jpeg'
     : 'jpeg'
 
-  const result = await cloudinary.uploader.upload(
-    `data:image/${mimeType};base64,${buffer.toString('base64')}`,
-    {
-      folder: folder || 'gam/images',
-      resource_type: 'image',
-      transformation: [
-        { quality: 'auto' },
-        { fetch_format: 'auto' }
-      ]
+  let result
+  try {
+    result = await cloudinary.uploader.upload(
+      `data:image/${mimeType};base64,${buffer.toString('base64')}`,
+      {
+        folder: folder || 'gam/images',
+        resource_type: 'image',
+        transformation: [
+          { quality: 'auto' },
+          { fetch_format: 'auto' }
+        ]
+      }
+    )
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (msg.includes('File size too large')) {
+      throw new Error(`Le fichier est trop volumineux. La taille maximale autorisée est 10 Mo. Veuillez compresser l'image avant de l'uploader.`)
     }
-  )
+    throw err
+  }
 
   return {
     url: result.secure_url,
@@ -109,6 +118,11 @@ export async function uploadVideo(
     size: result.bytes,
     thumbnail: result.thumbnail_url || '',
   }
+}
+
+export async function deleteImage(publicId: string): Promise<void> {
+  ensureCloudinaryConfig()
+  await cloudinary.uploader.destroy(publicId, { resource_type: 'image' })
 }
 
 export async function uploadPdf(

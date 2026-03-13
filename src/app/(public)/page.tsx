@@ -18,6 +18,7 @@ import type { Product } from "@/app/(public)/boutique/_schemas/product.schema";
 import {
   useCarouselItems,
   usePartners,
+  usePoles,
   useRecentEvents,
   useReviews,
   useStatistics,
@@ -384,6 +385,7 @@ export default function Home() {
   // Récupération des données dynamiques
   const { data: carouselItems = [], isLoading: isLoadingCarousel, isError: isErrorCarousel } = useCarouselItems();
   const { data: partnersData = [], isLoading: isLoadingPartners } = usePartners();
+  const { data: polesData = [], isLoading: isLoadingPoles } = usePoles();
   const { data: recentEvents = [], isLoading: isLoadingEvents } = useRecentEvents();
   const { data: reviews = [], isLoading: isLoadingReviews } = useReviews();
   const { data: statistics = [], isLoading: isLoadingStatistics } = useStatistics();
@@ -507,11 +509,11 @@ export default function Home() {
         <PresentationSection />
       )}
 
-      {/* Section Pôles - Remplacée complètement par le skeleton pendant le chargement initial */}
-      {isInitialLoading ? (
+      {/* Section Pôles - données dynamiques depuis le bureau */}
+      {isLoadingPoles ? (
         <PoleSectionSkeleton />
       ) : (
-        <PoleSection />
+        <PoleSection poles={polesData.length > 0 ? polesData : undefined} />
       )}
 
       {/* Carrousel des partenaires - Remplacé complètement par le skeleton */}
@@ -619,7 +621,7 @@ export default function Home() {
         {isLoadingVolunteers ? (
           <VolunteersSectionSkeleton />
         ) : (
-          <VolunteersSection volunteers={volunteers} />
+          <VolunteersSection />
         )}
         
         {/* Slogan GAM - Remplacé complètement par le skeleton pendant le chargement initial */}

@@ -1,15 +1,17 @@
 "use client"
 
+import { useActionState } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/bureau/submit-button"
-import { ImageIdField } from "@/components/bureau/image-id-field"
+import { ImageUploadField } from "@/components/bureau/image-upload-field"
+import type { ActionState } from "../_actions/actions"
 
 interface PoleFormProps {
-  action: (formData: FormData) => Promise<void>
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
   defaultValues?: {
     name?: string
     description?: string | null
@@ -18,8 +20,15 @@ interface PoleFormProps {
 }
 
 export function PoleForm({ action, defaultValues }: PoleFormProps) {
+  const [state, formAction] = useActionState(action, null)
+
   return (
-    <form action={action} className="space-y-4 max-w-xl">
+    <form action={formAction} className="space-y-4 max-w-xl">
+      {state?.error && (
+        <p className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {state.error}
+        </p>
+      )}
       <div className="space-y-2">
         <Label htmlFor="name">Nom *</Label>
         <Input id="name" name="name" required defaultValue={defaultValues?.name ?? ""} />
@@ -28,7 +37,10 @@ export function PoleForm({ action, defaultValues }: PoleFormProps) {
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" rows={3} defaultValue={defaultValues?.description ?? ""} />
       </div>
-      <ImageIdField defaultValue={defaultValues?.imageId} />
+      <ImageUploadField
+        defaultValue={defaultValues?.imageId}
+        label="Image du pôle"
+      />
       <div className="flex gap-2">
         <SubmitButton>Enregistrer</SubmitButton>
         <Button variant="outline" asChild>

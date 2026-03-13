@@ -5,17 +5,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface Volunteer {
-  id: string | number;
+  id: number;
   name: string;
   image: string;
   role?: string;
   initials: string;
-  order?: number;
-  isActive?: boolean;
-}
-
-interface VolunteersSectionProps {
-  volunteers?: Volunteer[];
 }
 
 interface FloatingVolunteer extends Volunteer {
@@ -102,7 +96,7 @@ const volunteers: Volunteer[] = [
   },
 ];
 
-export default function VolunteersSection({ volunteers: propVolunteers }: VolunteersSectionProps) {
+export default function VolunteersSection() {
   const [floatingVolunteers, setFloatingVolunteers] = useState<
     FloatingVolunteer[]
   >([]);
@@ -256,18 +250,7 @@ export default function VolunteersSection({ volunteers: propVolunteers }: Volunt
         };
       };
 
-      // Utiliser les bénévoles passés en props ou les valeurs par défaut
-      const volunteersToUse = propVolunteers && propVolunteers.length > 0
-        ? propVolunteers.map((v) => ({
-            id: typeof v.id === 'string' ? parseInt(v.id) || 0 : v.id,
-            name: v.name,
-            image: v.image,
-            role: v.role,
-            initials: v.initials,
-          }))
-        : volunteers;
-
-      const newFloatingVolunteers: FloatingVolunteer[] = volunteersToUse.map(
+      const newFloatingVolunteers: FloatingVolunteer[] = volunteers.map(
         (volunteer, index) => {
           const position = findValidPosition();
           positions.push(position);
@@ -306,7 +289,7 @@ export default function VolunteersSection({ volunteers: propVolunteers }: Volunt
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isVisible, propVolunteers]);
+  }, [isVisible]);
 
   // Nettoyage
   useEffect(() => {
@@ -397,7 +380,7 @@ export default function VolunteersSection({ volunteers: propVolunteers }: Volunt
             <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
               {floatingVolunteers.map((volunteer, index) => (
                 <div
-                  key={`${volunteer.id}-${index}`}
+                  key={volunteer.id}
                   className="absolute transition-none"
                   style={{
                     left: `${volunteer.x}px`,

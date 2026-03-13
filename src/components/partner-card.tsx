@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface PartnerCardProps {
   /** Identifiant unique du partenaire */
@@ -10,7 +9,7 @@ interface PartnerCardProps {
   /** Nom du partenaire (affiché en titre) */
   name: string;
   /** URL du logo (Image optimisée Next.js) */
-  logo: string;
+  logo?: string;
   /** Description courte (optionnelle) */
   description?: string;
   /** URL du site web (optionnelle) */
@@ -57,8 +56,8 @@ export function PartnerCard({
         }}
       />
 
-      <Card
-        className="relative h-[360px] sm:h-[380px] md:h-[400px] overflow-hidden border border-gray-200/60 bg-gradient-to-br from-white via-gray-50/80 to-white backdrop-blur-sm transition-all duration-500"
+      <div
+        className="relative h-[420px] sm:h-[450px] overflow-hidden rounded-xl border border-gray-200/60 bg-white transition-all duration-500"
         style={{
           boxShadow: `
             0 4px 6px -1px rgba(0, 0, 0, 0.05),
@@ -68,31 +67,39 @@ export function PartnerCard({
         }}
         aria-labelledby={`partner-${id}-title`}
       >
-        {/* Accent diagonal amélioré */}
+        {/* Accent diagonal */}
         <div
-          className={`absolute -top-24 -right-24 h-64 w-64 rotate-45 bg-gradient-to-r ${accentGradientClassName} opacity-5 group-hover:opacity-10 transition-opacity duration-500`}
+          className={`absolute -top-24 -right-24 h-64 w-64 rotate-45 bg-gradient-to-r ${accentGradientClassName} opacity-5 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none`}
         />
 
         {/* Effet de brillance au survol */}
-        <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+        <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none z-10" />
 
-        <CardContent className="p-0 h-full flex flex-col">
-          {/* Zone logo améliorée */}
-          <div className="relative h-48 sm:h-52 md:h-56 flex items-center justify-center bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80">
-            <motion.div
-              className="relative w-full h-full p-6"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
-            >
-              <Image
-                src={logo}
-                alt={`Logo ${name}`}
-                fill
-                className="object-contain"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                priority={false}
-              />
-            </motion.div>
+        <div className="h-full flex flex-col">
+          {/* Zone image */}
+          <div className="relative w-full h-[280px] overflow-hidden">
+            {logo ? (
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="absolute inset-0 w-full h-full"
+              >
+                <Image
+                  src={logo}
+                  alt={`Logo ${name}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={false}
+                />
+              </motion.div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                <span className="text-6xl font-bold text-gray-300">
+                  {name[0]}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Contenu */}
@@ -109,7 +116,7 @@ export function PartnerCard({
               </p>
             )}
 
-            {/* CTA amélioré */}
+            {/* CTA */}
             <div className="mt-auto pt-2">
               {hasWebsite ? (
                 <motion.a
@@ -142,8 +149,8 @@ export function PartnerCard({
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </motion.div>
   );
 }
@@ -151,7 +158,7 @@ export function PartnerCard({
 export interface PartnerCardData {
   id: number;
   name: string;
-  logo: string;
+  logo?: string;
   description?: string;
   website?: string;
 }

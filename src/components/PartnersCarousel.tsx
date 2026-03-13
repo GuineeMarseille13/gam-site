@@ -8,7 +8,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 interface Partner {
   id: number;
   name: string;
-  logo: string;
+  logo?: string;
   description?: string;
   website?: string;
   category?: string;
@@ -155,11 +155,12 @@ export default function PartnersCarousel({
     );
   }
 
-  // Calculer la largeur d'une card (en pourcentage) avec gestion de l'hydratation
-  const cardWidth = isMounted && isMobile ? 100 : 30 / effectiveSlidesToShow;
+  // Largeur fixe d'une card (px) + gap (40px = gap-10)
+  const cardWidthPx = isMounted && isMobile ? 300 : 300;
+  const gapPx = 40;
 
-  // Calculer le décalage pour le mouvement horizontal
-  const translateX = -(currentIndex * cardWidth);
+  // Calculer le décalage en px
+  const translateXPx = -(currentIndex * (cardWidthPx + gapPx));
 
   // Créer un tableau étendu pour la boucle infinie
   const extendedPartners = loop
@@ -224,9 +225,9 @@ export default function PartnersCarousel({
             onMouseLeave={handleMouseLeave}
           >
             <motion.div
-              className="flex gap-5 sm:gap-6 md:gap-8 lg:gap-10"
+              className="flex gap-10"
               animate={{
-                x: `${translateX}%`,
+                x: translateXPx,
               }}
               transition={{
                 type: "spring",
@@ -234,21 +235,12 @@ export default function PartnersCarousel({
                 damping: 30,
                 duration: 0.6,
               }}
-              style={{
-                width:
-                  isMounted && isMobile
-                    ? "100%"
-                    : `${
-                        (extendedPartners.length * 100) / effectiveSlidesToShow
-                      }%`,
-              }}
             >
               {extendedPartners.map((partner, index) => (
                 <motion.div
                   key={`${partner.id}-${index}`}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 w-full max-w-[300px] sm:w-[280px] md:w-[300px]"
                   style={{
-                    width: `${cardWidth}%`,
                     opacity: isClient ? 1 : 0, // Masquer pendant l'hydratation
                   }}
                   initial={{ opacity: 0, y: 20, scale: 0.95 }}

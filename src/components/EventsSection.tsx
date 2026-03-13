@@ -271,67 +271,24 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="relative"
     >
-      {/* Point sur la timeline (desktop) */}
-      {!isMobile && (
-        <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 border-4 border-white shadow-lg z-10" />
-      )}
-
       {/* Point sur la timeline (mobile) */}
       {isMobile && (
         <div className="absolute left-4 top-6 w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 border-2 border-white shadow-md z-10" />
       )}
 
-      {/* Layout Desktop - Deux colonnes fixes pour garantir les espacements */}
+      {/* Layout Desktop */}
       {!isMobile && (
-        <div className="flex w-full items-center">
-          {/* Colonne de gauche (50% de la largeur) */}
-          <div className="w-1/2 flex justify-end pr-2">
-            {!isImageOnLeft ? (
-              // Texte à gauche
-              <div className="max-w-md text-right pr-10">
-                <motion.h3
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
-                  }
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-                  className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
-                >
-                  {event.title}
-                </motion.h3>
-                <motion.p
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
-                  }
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                  className="text-sm sm:text-base text-gray-600 leading-relaxed"
-                >
-                  {event.description}
-                </motion.p>
-              </div>
-            ) : (
-              // Image à gauche (proche de la ligne)
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={
-                  isInView
-                    ? { opacity: 1, scale: 1 }
-                    : { opacity: 0, scale: 0.9 }
-                }
-                transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
-                className="flex-shrink-0 w-80 lg:w-96"
-              >
-                {/* Date et Location - Toujours au-dessus de l'image */}
+        <div className="flex flex-col w-full">
+          {/* Ligne 1 : date + point (parfaitement alignés) */}
+          <div className="flex w-full items-center mb-3">
+            {/* Côté gauche : date si image à gauche */}
+            <div className="w-1/2 flex justify-end pr-2">
+              {isImageOnLeft && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={
-                    isInView
-                      ? { opacity: 1, scale: 1 }
-                      : { opacity: 0, scale: 0.8 }
-                  }
+                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
-                  className="mb-3 flex flex-wrap items-center gap-2 justify-end"
+                  className="flex flex-wrap items-center gap-2 justify-end"
                 >
                   <span className="inline-block px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-md">
                     {event.date}
@@ -343,123 +300,123 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                     </span>
                   )}
                 </motion.div>
-                <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
-                  {event.video ? (
-                    <video
-                      src={event.video}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : event.image ? (
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      width={300}
-                      height={200}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
-                      <span className="text-4xl">📅</span>
-                    </div>
+              )}
+            </div>
+            {/* Point central */}
+            <div className="flex-shrink-0 w-4 h-4 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 border-4 border-white shadow-lg z-10" />
+            {/* Côté droit : date si image à droite */}
+            <div className="w-1/2 flex justify-start pl-2">
+              {!isImageOnLeft && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
+                  className="flex flex-wrap items-center gap-2"
+                >
+                  <span className="inline-block px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-md">
+                    {event.date}
+                  </span>
+                  {event.location && (
+                    <span className="text-sm text-gray-500 flex items-center gap-1">
+                      <span>📍</span>
+                      {event.location}
+                    </span>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
+            </div>
           </div>
 
-          {/* Colonne de droite (50% de la largeur) */}
-          <div className="w-1/2 flex justify-start pl-2">
-            {isImageOnLeft ? (
-              // Texte à droite
-              <div className="max-w-md text-left pl-10">
-                <motion.h3
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }
-                  }
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-                  className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
-                >
-                  {event.title}
-                </motion.h3>
-                <motion.p
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }
-                  }
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                  className="text-sm sm:text-base text-gray-600 leading-relaxed"
-                >
-                  {event.description}
-                </motion.p>
-              </div>
-            ) : (
-              // Image à droite (proche de la ligne)
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={
-                  isInView
-                    ? { opacity: 1, scale: 1 }
-                    : { opacity: 0, scale: 0.9 }
-                }
-                transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
-                className="flex-shrink-0 w-80 lg:w-96"
-              >
-                {/* Date et Location - Toujours au-dessus de l'image */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={
-                    isInView
-                      ? { opacity: 1, scale: 1 }
-                      : { opacity: 0, scale: 0.8 }
-                  }
-                  transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
-                  className="mb-3 flex flex-wrap items-center gap-2"
-                >
-                  <span className="inline-block px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-md">
-                    {event.date}
-                  </span>
-                  {event.location && (
-                    <span className="text-sm text-gray-500 flex items-center gap-1">
-                      <span>📍</span>
-                      {event.location}
-                    </span>
-                  )}
-                </motion.div>
-                <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
-                  {event.video ? (
-                    <video
-                      src={event.video}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : event.image ? (
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                      width={300}
-                      height={200}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
-                      <span className="text-4xl">📅</span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {/* Ligne 2 : contenu (image / texte) */}
+          <div className="flex w-full items-center">
+            {/* Colonne de gauche */}
+            <div className="w-1/2 flex justify-end pr-2">
+              {!isImageOnLeft ? (
+                <div className="max-w-md text-right pr-10">
+                  <motion.h3
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+                    className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+                  >
+                    {event.title}
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
+                    className="text-sm sm:text-base text-gray-600 leading-relaxed"
+                  >
+                    {event.description}
+                  </motion.p>
                 </div>
-              </motion.div>
-            )}
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
+                  className="flex-shrink-0 w-80 lg:w-96"
+                >
+                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
+                    {event.video ? (
+                      <video src={event.video} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : event.image ? (
+                      <Image src={event.image} alt={event.title} width={300} height={200} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
+                        <span className="text-4xl">📅</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+            {/* Espaceur central (même largeur que le point) */}
+            <div className="flex-shrink-0 w-4" />
+            {/* Colonne de droite */}
+            <div className="w-1/2 flex justify-start pl-2">
+              {isImageOnLeft ? (
+                <div className="max-w-md text-left pl-10">
+                  <motion.h3
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+                    className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+                  >
+                    {event.title}
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
+                    className="text-sm sm:text-base text-gray-600 leading-relaxed"
+                  >
+                    {event.description}
+                  </motion.p>
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
+                  className="flex-shrink-0 w-80 lg:w-96"
+                >
+                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
+                    {event.video ? (
+                      <video src={event.video} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : event.image ? (
+                      <Image src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" width={300} height={200} />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
+                        <span className="text-4xl">📅</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "tsx prisma/seed.ts",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "poles:upload": "tsx scripts/upload-pole-images.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

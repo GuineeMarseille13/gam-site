@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 interface PoleCardProps {
-  image: string;
+  image?: string;
   title: string;
   description?: string;
   slug: string;
@@ -130,20 +130,28 @@ export const PoleCard = ({
           >
             {/* Section image avec overlay - hauteur fixe identique pour toutes les images */}
             <div className="relative w-full h-[280px] overflow-hidden">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="absolute inset-0 w-full h-full"
-              >
-                <Image
-                  src={image}
-                  alt={title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover"
-                  priority={index < 3}
-                />
-              </motion.div>
+              {image ? (
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                    priority={index < 3}
+                  />
+                </motion.div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                  <span className="text-6xl font-bold text-gray-300">
+                    {title[0]}
+                  </span>
+                </div>
+              )}
 
               {/* Overlay gradient au survol */}
               <motion.div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

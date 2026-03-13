@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getCarouselItems,
   getPartners,
+  getPoles,
   getRecentEvents,
   getReviews,
   getStatistics,
@@ -13,6 +14,7 @@ import {
   getFeaturedProducts,
   type CarouselItem,
   type Partner,
+  type PoleItem,
   type Event,
   type Review,
   type Statistic,
@@ -28,6 +30,17 @@ export function useCarouselItems() {
     queryKey: ['carousel-items'],
     queryFn: getCarouselItems,
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+/**
+ * Hook pour récupérer les pôles d'activité
+ */
+export function usePoles() {
+  return useQuery<PoleItem[]>({
+    queryKey: ['poles'],
+    queryFn: getPoles,
+    staleTime: 10 * 60 * 1000, // 10 minutes (données stables)
   });
 }
 
