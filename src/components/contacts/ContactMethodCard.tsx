@@ -5,8 +5,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ContactMethod } from "@/app/contacts/_types/contacts.types";
-import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/contacts/_config/contacts.config";
+import { ContactMethod } from "@/app/(public)/contacts/_types/contacts.types";
+import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/(public)/contacts/_config/contacts.config";
 
 interface ContactMethodCardProps {
   method: ContactMethod;

@@ -5,7 +5,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "@/app/contacts/_config/contacts.config";
+import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "@/app/(public)/contacts/_config/contacts.config";
 
 export default function ContactsHero() {
   return (

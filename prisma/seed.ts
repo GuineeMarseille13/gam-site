@@ -474,6 +474,47 @@ async function main() {
         eventSectionId: eventSection.id,
       },
     }),
+    // Événements 2026
+    prisma.event.create({
+      data: {
+        title: 'Gala de Printemps GAM 2026',
+        description: 'Soirée de gala annuelle de l\'association avec dîner, performances artistiques et remise de distinctions honorifiques.',
+        startDate: new Date('2026-04-18T19:00:00Z'),
+        endDate: new Date('2026-04-18T23:30:00Z'),
+        location: 'Palais du Pharo, Marseille',
+        eventSectionId: eventSection.id,
+      },
+    }),
+    prisma.event.create({
+      data: {
+        title: 'Journée de la Femme Guinéenne',
+        description: 'Célébration et mise en valeur des femmes de la communauté guinéenne : témoignages, exposition et table ronde.',
+        startDate: new Date('2026-03-08T10:00:00Z'),
+        endDate: new Date('2026-03-08T18:00:00Z'),
+        location: 'Maison de la Région, Marseille',
+        eventSectionId: eventSection.id,
+      },
+    }),
+    prisma.event.create({
+      data: {
+        title: 'Tournoi Sportif Intercommunautaire',
+        description: 'Tournoi de football et basketball réunissant plusieurs associations de la diaspora africaine à Marseille.',
+        startDate: new Date('2026-06-14T09:00:00Z'),
+        endDate: new Date('2026-06-14T18:00:00Z'),
+        location: 'Stade Vallier, Marseille',
+        eventSectionId: eventSection.id,
+      },
+    }),
+    prisma.event.create({
+      data: {
+        title: 'Forum de l\'Orientation et de l\'Emploi',
+        description: 'Forum dédié à l\'insertion professionnelle des jeunes guinéens : ateliers CV, rencontres avec des employeurs et témoignages de parcours réussis.',
+        startDate: new Date('2026-02-21T09:00:00Z'),
+        endDate: new Date('2026-02-21T17:00:00Z'),
+        location: 'CCI Marseille Provence',
+        eventSectionId: eventSection.id,
+      },
+    }),
   ])
 
   // ============================================
@@ -853,43 +894,70 @@ async function main() {
   // 18. MEMBERSHIPS
   // ============================================
   console.log('💳 Creating memberships...')
-  const memberships = await Promise.all([
-    prisma.memberShip.create({
-      data: {
-        title: 'Adhésion Annuelle 2024',
-        description: 'Adhésion annuelle à l\'association GAM',
-        amount: 2000, // 20€ en centimes
-        year: 2024,
-        isActive: true,
-        personId: persons[7].id, // Fatoumata DIALLO
+  const membership1 = await prisma.memberShip.create({
+    data: {
+      title: 'Adhésion Annuelle 2024',
+      description: 'Adhésion annuelle à l\'association GAM',
+      amount: 2000,
+      year: 2024,
+      isActive: true,
+      person: { connect: { id: persons[7].id } },
+      payment: {
+        create: {
+          paymentReference: 'pi_seed_membership_001',
+          amount: 2000,
+          status: 'PAID',
+          type: 'adhesion',
+          paymentMethod: 'card',
+          person: { connect: { id: persons[7].id } },
+        },
       },
-    }),
-    prisma.memberShip.create({
-      data: {
-        title: 'Adhésion Annuelle 2024',
-        description: 'Adhésion annuelle à l\'association GAM',
-        amount: 2000,
-        year: 2024,
-        isActive: true,
-        personId: persons[8].id, // Amadou CAMARA
+    },
+  })
+
+  const membership2 = await prisma.memberShip.create({
+    data: {
+      title: 'Adhésion Annuelle 2024',
+      description: 'Adhésion annuelle à l\'association GAM',
+      amount: 2000,
+      year: 2024,
+      isActive: true,
+      person: { connect: { id: persons[8].id } },
+      payment: {
+        create: {
+          paymentReference: 'pi_seed_membership_002',
+          amount: 2000,
+          status: 'PAID',
+          type: 'adhesion',
+          paymentMethod: 'card',
+          person: { connect: { id: persons[8].id } },
+        },
       },
-    }),
-  ])
+    },
+  })
 
   // ============================================
   // 19. DONATIONS
   // ============================================
   console.log('💰 Creating donations...')
-  const donations = await Promise.all([
-    prisma.donation.create({
-      data: {
-        title: 'Don pour les projets',
-        message: 'Soutien aux projets de l\'association',
-        amount: 5000, // 50€ en centimes
-        personId: persons[9].id, // Aissatou BAH
+  const donation1 = await prisma.donation.create({
+    data: {
+      title: 'Don pour les projets',
+      message: 'Soutien aux projets de l\'association',
+      amount: 5000,
+      person: { connect: { id: persons[9].id } },
+      payment: {
+        create: {
+          paymentReference: 'pi_seed_donation_001',
+          amount: 5000,
+          status: 'PAID',
+          type: 'donation',
+          paymentMethod: 'card',
+          person: { connect: { id: persons[9].id } },
+        },
       },
-    }),
-  ])
+    },
+  })
 
   // ============================================
   // 20. ORDERS
@@ -898,18 +966,36 @@ async function main() {
   const order1 = await prisma.order.create({
     data: {
       orderNumber: 'CMD-2024-001',
-      totalAmount: 3500, // 35€ en centimes (20€ + 15€)
-      status: 'PAID',
-      personId: persons[7].id, // Fatoumata DIALLO
+      totalAmount: 3500,
+      person: { connect: { id: persons[7].id } },
+      payment: {
+        create: {
+          paymentReference: 'pi_seed_order_001',
+          amount: 3500,
+          status: 'PAID',
+          type: 'order',
+          paymentMethod: 'card',
+          person: { connect: { id: persons[7].id } },
+        },
+      },
     },
   })
 
   const order2 = await prisma.order.create({
     data: {
       orderNumber: 'CMD-2024-002',
-      totalAmount: 5500, // 55€ en centimes (35€ + 20€)
-      status: 'PAID',
-      personId: persons[8].id, // Amadou CAMARA
+      totalAmount: 5500,
+      person: { connect: { id: persons[8].id } },
+      payment: {
+        create: {
+          paymentReference: 'pi_seed_order_002',
+          amount: 5500,
+          status: 'PAID',
+          type: 'order',
+          paymentMethod: 'card',
+          person: { connect: { id: persons[8].id } },
+        },
+      },
     },
   })
 

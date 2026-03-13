@@ -6,8 +6,8 @@
 
 import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
-import { ContactFormData } from "@/app/contacts/_types/contacts.types";
-import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/contacts/_config/contacts.config";
+import { ContactFormData } from "@/app/(public)/contacts/_types/contacts.types";
+import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/(public)/contacts/_config/contacts.config";
 
 interface FormFieldProps {
   name: keyof ContactFormData;

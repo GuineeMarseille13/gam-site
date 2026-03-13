@@ -12,9 +12,9 @@ import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import EventsSection from "@/components/EventsSection";
-import { ProductCard } from "@/app/boutique/_components/product-card";
-import { useCart } from "@/app/boutique/_hooks/use-cart";
-import type { Product } from "@/app/boutique/_schemas/product.schema";
+import { ProductCard } from "@/app/(public)/boutique/_components/product-card";
+import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";
+import type { Product } from "@/app/(public)/boutique/_schemas/product.schema";
 import {
   useCarouselItems,
   usePartners,
@@ -536,15 +536,19 @@ export default function Home() {
         <EventsSectionSkeleton />
       ) : (
         <EventsSection
-          events={recentEvents.map((event, idx) => ({
-            id: parseInt(event.id) || idx + 1,
-            title: event.title,
-            description: event.description,
-            date: event.date,
-            image: event.image,
-            video: event.video,
-            location: event.location,
-          }))}
+          events={
+            recentEvents.length > 0
+              ? recentEvents.map((event, idx) => ({
+                  id: parseInt(event.id) || idx + 1,
+                  title: event.title,
+                  description: event.description,
+                  date: event.date,
+                  image: event.image,
+                  video: event.video,
+                  location: event.location,
+                }))
+              : undefined
+          }
         />
       )}
 

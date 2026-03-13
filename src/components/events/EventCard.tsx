@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import MediaGallery from "./MediaGallery";
 import { Event } from "@/types/events";
-import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/evenements/_config/events.config";
+import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/(public)/evenements/_config/events.config";
 
 interface EventCardProps {
   event: Event;

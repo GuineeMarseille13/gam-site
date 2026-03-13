@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { stripe } from '@/lib/stripe'
-import { donPayloadSchema } from '@/app/don/_schemas/don.schema'
+import { donPayloadSchema } from '@/app/(public)/don/_schemas/don.schema'
 
 export async function POST(request: Request) {
   try {

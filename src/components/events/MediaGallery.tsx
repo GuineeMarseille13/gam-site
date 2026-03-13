@@ -4,8 +4,8 @@ import { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { EventMedia } from "@/types/events";
-import { useMediaNavigation } from "@/app/evenements/_hooks/useMediaNavigation";
-import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/evenements/_config/events.config";
+import { useMediaNavigation } from "@/app/(public)/evenements/_hooks/useMediaNavigation";
+import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/(public)/evenements/_config/events.config";
 
 interface MediaGalleryProps {
   media: EventMedia[];

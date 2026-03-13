@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { stripe } from '@/lib/stripe'
-import { checkoutDataSchema, cartItemSchema } from '@/app/boutique/_schemas/product.schema'
+import { checkoutDataSchema, cartItemSchema } from '@/app/(public)/boutique/_schemas/product.schema'
 import { z } from 'zod'
 
 const cartCheckoutSchema = z.object({

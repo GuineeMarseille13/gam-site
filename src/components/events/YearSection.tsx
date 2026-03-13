@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import EventCard from "./EventCard";
 import { Event } from "@/types/events";
-import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/evenements/_config/events.config";
+import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/(public)/evenements/_config/events.config";
 
 interface YearSectionProps {
   year: number;

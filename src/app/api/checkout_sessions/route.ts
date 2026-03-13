@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
 import { stripe } from '@/lib/stripe'
-import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR } from '@/app/adhesion/_schemas/adhesion.schema'
+import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR } from '@/app/(public)/adhesion/_schemas/adhesion.schema'
 
 export async function POST(request: Request) {
   try {

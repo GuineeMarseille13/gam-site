@@ -4,9 +4,9 @@ import Stripe from 'stripe'
 
 import { stripe } from '@/lib/stripe'
 import { rollbackPaymentIfRecorded } from '@/app/api/webhooks/_services/payment-rollback.service'
-import { saveAdhesionFromPaymentIntent, saveAdhesionFromStripeSession } from '@/app/adhesion/_services/adhesion.service'
-import { saveDonFromPaymentIntent } from '@/app/don/_services/don.service'
-import { saveOrderFromPaymentIntent } from '@/app/boutique/_services/order.service'
+import { saveAdhesionFromPaymentIntent, saveAdhesionFromStripeSession } from '@/app/(public)/adhesion/_services/adhesion.service'
+import { saveDonFromPaymentIntent } from '@/app/(public)/don/_services/don.service'
+import { saveOrderFromPaymentIntent } from '@/app/(public)/boutique/_services/order.service'
 
 // Désactiver le parsing automatique du body pour les webhooks Stripe
 export const runtime = 'nodejs'

@@ -5,7 +5,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "@/app/evenements/_config/events.config";
+import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "@/app/(public)/evenements/_config/events.config";
 
 interface EventsHeroProps {
   title?: string;

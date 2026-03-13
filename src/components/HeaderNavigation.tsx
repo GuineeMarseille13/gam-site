@@ -6,8 +6,8 @@ import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/app/boutique/_hooks/use-cart";
-import { CART_TOGGLE_EVENT } from "@/app/boutique/_services/cart-storage";
+import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";
+import { CART_TOGGLE_EVENT } from "@/app/(public)/boutique/_services/cart-storage";
 
 interface NavigationItem {
   label: string;
