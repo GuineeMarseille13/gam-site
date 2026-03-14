@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { VideoTestimonial } from "@/app/_services/home";
 
 // ---------------------------------------------------------------------------
@@ -79,69 +79,77 @@ function VideoCard({ video, index, onClick }: CardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.45, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
-      className="shrink-0 w-[82vw] xs:w-[82vw] sm:w-[400px] md:w-[440px] cursor-pointer group h-full"
+      whileHover={{ scale: 1.03, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
+      whileTap={{ scale: 0.98 }}
+      className="shrink-0 w-[82vw] sm:w-[340px] md:w-[380px] cursor-pointer group h-full"
       onClick={onClick}
     >
-      <div className="h-full flex flex-col rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-black/40">
-        {/* Thumbnail */}
-        <div className="relative w-full aspect-video overflow-hidden bg-slate-800">
+
+<div className="relative h-full rounded-2xl overflow-hidden ring-1 ring-white/0 group-hover:ring-white/20 shadow-md group-hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)] transition-all duration-500">
+
+        {/* Thumbnail full-card */}
+        <div className="relative w-full aspect-[4/3] overflow-hidden">
           {thumb ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={thumb}
               alt={video.title ?? "Témoignage vidéo"}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900" />
           )}
 
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+          {/* Overlay de base */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/5 transition-opacity duration-500" />
+          {/* Overlay supplémentaire au hover — assombrit le haut pour le badge */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500" />
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {/* Badge top-right */}
+          <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[10px] font-semibold text-white/80 tracking-wide uppercase">Vidéo</span>
+          </div>
 
-          {/* Play button */}
+          {/* Play button centré */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Pulse ring */}
-              <div className="absolute inset-0 rounded-full bg-white/20 scale-150 opacity-0 group-hover:opacity-100 group-hover:scale-[2] transition-all duration-500" />
+            <div className="relative flex items-center justify-center">
+              {/* Double ring de glow */}
+              <span className="absolute w-14 h-14 rounded-full bg-white/10 scale-100 group-hover:scale-[2] opacity-0 group-hover:opacity-100 transition-all duration-600 ease-out" />
+              <span className="absolute w-14 h-14 rounded-full bg-red-500/20 scale-100 group-hover:scale-[2.6] opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out delay-75" />
+              {/* Bouton */}
               <motion.div
-                whileHover={{ scale: 1.12 }}
-                whileTap={{ scale: 0.92 }}
-                className="relative w-16 h-16 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-2xl shadow-black/50 group-hover:bg-white transition-colors duration-200"
+                whileTap={{ scale: 0.85 }}
+                className="relative z-10 flex items-center justify-center w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/40 group-hover:bg-white group-hover:border-white group-hover:scale-110 shadow-lg transition-all duration-350 ease-out"
               >
-                <Play className="w-6 h-6 text-slate-900 translate-x-0.5" fill="currentColor" />
+                <Play
+                  className="w-5 h-5 translate-x-[2px] text-white group-hover:text-red-500 transition-colors duration-300"
+                  fill="currentColor"
+                />
               </motion.div>
             </div>
           </div>
 
-          {/* Duration badge placeholder */}
-          <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-sm">
-            <span className="text-[10px] font-medium text-white/80 tracking-wide">▶ Lire</span>
-          </div>
-        </div>
+          {/* Texte en bas — glisse vers le haut au hover */}
+          <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-10 translate-y-1 group-hover:translate-y-0 transition-transform duration-400 ease-out">
+            {video.title && (
+              <p className="text-sm font-bold text-white leading-snug line-clamp-1 drop-shadow-md">
+                {video.title}
+              </p>
+            )}
+            {video.description && (
+              <p className="text-[11px] text-white/60 group-hover:text-white/80 mt-1 line-clamp-2 leading-relaxed transition-colors duration-300">
+                {video.description}
+              </p>
+            )}
+            {!video.title && !video.description && (
+              <p className="text-[11px] text-white/50 italic">Cliquez pour visionner</p>
+            )}
 
-        {/* Card footer */}
-        <div className="flex-1 p-4 bg-black/30 backdrop-blur-sm">
-          <div className="flex items-start gap-3">
-            <Quote className="w-4 h-4 text-red-400/70 shrink-0 mt-0.5" />
-            <div className="min-w-0">
-              {video.title && (
-                <p className="text-sm font-semibold text-white line-clamp-1 leading-snug">
-                  {video.title}
-                </p>
-              )}
-              {video.description && (
-                <p className="text-xs text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
-                  {video.description}
-                </p>
-              )}
-              {!video.title && !video.description && (
-                <p className="text-xs text-slate-500 italic">Cliquez pour visionner</p>
-              )}
+            {/* CTA — apparaît au hover */}
+            <div className="mt-2.5 flex items-center gap-1.5 text-red-400 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300 delay-75">
+              <Play className="w-2.5 h-2.5 shrink-0" fill="currentColor" />
+              <span className="text-[10px] font-semibold tracking-widest uppercase">Regarder</span>
             </div>
           </div>
         </div>
@@ -203,13 +211,12 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
   const activeVideo = activeIndex !== null ? videos[activeIndex] : null;
 
 
-  return (
-    <section className="relative w-full py-16 sm:py-20 overflow-hidden">
+  return (  
+    <section className="relative w-full py-10 sm:py-20 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-stone-950 via-neutral-900 to-stone-950" />
-      {/* Warm radial glows — cohérents avec la palette amber/red du site */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(245,158,11,0.07),transparent)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_35%_at_80%_100%,rgba(239,68,68,0.06),transparent)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-orange-50/60 to-amber-50/40" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_30%_50%,rgba(251,191,36,0.10),transparent)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_80%_20%,rgba(239,68,68,0.07),transparent)]" />
 
       <div className="relative z-10">
         {/* Header */}
@@ -220,18 +227,16 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-red-400/80 mb-3">
+           
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
               Témoignages
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
-              Ils parlent de nous
             </h2>
             <div className="mt-4 flex items-center justify-center gap-3">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-red-500/60" />
-              <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-red-500/60" />
+              <div className="h-px w-12 bg-gradient-to-r from-transparent to-red-400/70" />
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              <div className="h-px w-12 bg-gradient-to-l from-transparent to-red-400/70" />
             </div>
-            <p className="mt-5 text-base sm:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
+            <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
               Découvrez les témoignages de ceux qui font vivre l&apos;association au quotidien.
             </p>
           </motion.div>
