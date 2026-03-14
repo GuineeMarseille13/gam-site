@@ -8,7 +8,7 @@ interface Review {
   name: string;
   role: string;
   body: string;
-  img: string;
+  img?: string;
   country: string;
   rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
   isPublished: boolean;

@@ -12,6 +12,7 @@ import {
   getStatistics,
   getVolunteers,
   getFeaturedProducts,
+  getVideoTestimonials,
   type CarouselItem,
   type Partner,
   type PoleItem,
@@ -20,6 +21,7 @@ import {
   type Statistic,
   type Volunteer,
   type Product,
+  type VideoTestimonial,
 } from '../_services/home';
 
 /**
@@ -96,6 +98,17 @@ export function useVolunteers() {
     queryKey: ['volunteers'],
     queryFn: getVolunteers,
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+/**
+ * Hook pour récupérer les témoignages vidéo
+ */
+export function useVideoTestimonials() {
+  return useQuery<VideoTestimonial[]>({
+    queryKey: ['video-testimonials'],
+    queryFn: getVideoTestimonials,
+    staleTime: 5 * 60 * 1000,
   });
 }
 

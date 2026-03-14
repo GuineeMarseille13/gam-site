@@ -230,6 +230,39 @@ export async function getVolunteers(): Promise<Volunteer[]> {
   }
 }
 
+export interface VideoTestimonial {
+  id: string;
+  url: string;
+  title?: string;
+  description?: string;
+  thumbnail?: string;
+  order: number;
+}
+
+/**
+ * Récupère les témoignages vidéo (page HOME, section REVIEW)
+ */
+export async function getVideoTestimonials(): Promise<VideoTestimonial[]> {
+  try {
+    const where = encodeURIComponent(JSON.stringify({ page: 'HOME', section: 'REVIEW', isActive: true }));
+    const orderBy = encodeURIComponent(JSON.stringify({ order: 'asc' }));
+    const response = await fetch(`/api/videos?where=${where}&orderBy=${orderBy}`, { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+    return data.map((v: any) => ({
+      id: v.id,
+      url: v.url,
+      title: v.title ?? undefined,
+      description: v.description ?? undefined,
+      thumbnail: v.thumbnail ?? undefined,
+      order: v.order ?? 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Récupère les produits en vedette
  */

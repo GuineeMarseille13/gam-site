@@ -20,6 +20,7 @@ import {
   IconIdBadge2,
   IconLayoutGrid,
   IconHandClick,
+  IconVideo,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -58,6 +59,7 @@ const navigation = {
     { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
     { title: "Partenaires", url: "/bureau/partenaires", icon: IconHandClick },
     { title: "Produits", url: "/bureau/produits", icon: IconPackage },
+    { title: "Témoignages vidéo", url: "/bureau/temoignages-video", icon: IconVideo },
     { title: "Statistiques", url: "/bureau/statistiques", icon: IconChartBar },
   ],
   admin: [

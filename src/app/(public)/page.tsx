@@ -12,6 +12,7 @@ import VolunteersSection from "@/components/VolunteersSection";
 import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import EventsSection from "@/components/EventsSection";
+import VideoTestimonialsSection from "@/components/VideoTestimonialsSection";
 import { ProductCard } from "@/app/(public)/boutique/_components/product-card";
 import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";
 import type { Product } from "@/app/(public)/boutique/_schemas/product.schema";
@@ -24,6 +25,7 @@ import {
   useStatistics,
   useVolunteers,
   useFeaturedProducts,
+  useVideoTestimonials,
 } from "@/app/_hooks/use-home-data";
 import {
   CarouselSkeleton,
@@ -391,6 +393,7 @@ export default function Home() {
   const { data: statistics = [], isLoading: isLoadingStatistics } = useStatistics();
   const { data: volunteers = [], isLoading: isLoadingVolunteers } = useVolunteers();
   const { data: featuredProducts = [], isLoading: isLoadingProducts } = useFeaturedProducts();
+  const { data: videoTestimonials = [] } = useVideoTestimonials();
 
   const { add } = useCart();
   const router = useRouter();
@@ -595,12 +598,15 @@ export default function Home() {
         )
       )}
 
-      {/* Section Témoignages */}
+      {/* Section Témoignages texte */}
       {isLoadingReviews ? (
         <ReviewsSectionSkeleton />
       ) : (
         <ReviewsSection reviews={reviews} />
       )}
+
+      {/* Section Témoignages vidéo */}
+      <VideoTestimonialsSection videos={videoTestimonials} />
 
       {/* Section Statistiques - Remplacée complètement par le skeleton */}
       {isLoadingStatistics ? (
