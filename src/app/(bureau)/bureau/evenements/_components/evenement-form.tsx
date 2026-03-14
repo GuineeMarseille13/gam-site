@@ -1,12 +1,14 @@
 "use client"
 
+import { useActionState } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/bureau/submit-button"
-import { ImageIdField } from "@/components/bureau/image-id-field"
+import { ImageUploadField } from "@/components/bureau/image-upload-field"
+import type { ActionState } from "../_actions/actions"
 
 function toDatetimeLocal(date?: Date | null): string {
   if (!date) return ""
@@ -16,7 +18,7 @@ function toDatetimeLocal(date?: Date | null): string {
 }
 
 interface EvenementFormProps {
-  action: (formData: FormData) => Promise<void>
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
   defaultValues?: {
     title?: string
     description?: string | null
@@ -28,8 +30,15 @@ interface EvenementFormProps {
 }
 
 export function EvenementForm({ action, defaultValues }: EvenementFormProps) {
+  const [state, formAction] = useActionState(action, null)
+
   return (
-    <form action={action} className="space-y-4 max-w-xl">
+    <form action={formAction} className="space-y-4 max-w-xl">
+      {state?.error && (
+        <p className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {state.error}
+        </p>
+      )}
       <div className="space-y-2">
         <Label htmlFor="title">Titre *</Label>
         <Input id="title" name="title" required defaultValue={defaultValues?.title ?? ""} />
@@ -52,7 +61,10 @@ export function EvenementForm({ action, defaultValues }: EvenementFormProps) {
         <Label htmlFor="location">Lieu</Label>
         <Input id="location" name="location" defaultValue={defaultValues?.location ?? ""} />
       </div>
-      <ImageIdField defaultValue={defaultValues?.imageId} />
+      <ImageUploadField
+        defaultValue={defaultValues?.imageId}
+        label="Image de l'événement"
+      />
       <div className="flex gap-2">
         <SubmitButton>Enregistrer</SubmitButton>
         <Button variant="outline" asChild>

@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { RowActions } from "@/components/bureau/row-actions"
+import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deleteEvenement } from "./_actions/actions"
 
 export const metadata: Metadata = { title: "Événements" }
@@ -44,7 +45,8 @@ export default async function EvenementsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-6">Titre</TableHead>
+                <TableHead className="pl-6 w-14">Image</TableHead>
+                <TableHead>Titre</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Lieu</TableHead>
                 <TableHead>Statut</TableHead>
@@ -54,7 +56,7 @@ export default async function EvenementsPage() {
             <TableBody>
               {evenements.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
                     Aucun événement enregistré
                   </TableCell>
                 </TableRow>
@@ -62,6 +64,9 @@ export default async function EvenementsPage() {
                 evenements.map((event) => (
                   <TableRow key={event.id}>
                     <TableCell className="pl-6">
+                      <CloudinaryImage imageId={event.imageId} alt={event.title} thumbSize={40} />
+                    </TableCell>
+                    <TableCell>
                       <div className="font-medium">{event.title}</div>
                       {event.description && (
                         <div className="max-w-xs truncate text-xs text-muted-foreground">
