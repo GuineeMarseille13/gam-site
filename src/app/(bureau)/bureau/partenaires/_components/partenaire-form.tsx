@@ -1,11 +1,12 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
 import { SubmitButton } from "@/components/bureau/submit-button"
 import { ImageUploadField } from "@/components/bureau/image-upload-field"
 import type { ActionState } from "../_actions/actions"
@@ -17,11 +18,13 @@ interface PartenaireFormProps {
     description?: string | null
     url?: string | null
     imageId?: string | null
+    published?: boolean
   }
 }
 
 export function PartenaireForm({ action, defaultValues }: PartenaireFormProps) {
   const [state, formAction] = useActionState(action, null)
+  const [published, setPublished] = useState(defaultValues?.published ?? false)
 
   return (
     <form action={formAction} className="space-y-4 max-w-xl">
@@ -46,6 +49,22 @@ export function PartenaireForm({ action, defaultValues }: PartenaireFormProps) {
         defaultValue={defaultValues?.imageId}
         label="Logo du partenaire"
       />
+
+      {/* Visibilité */}
+      <div className="flex items-center justify-between rounded-lg border p-3">
+        <div>
+          <p className="text-sm font-medium">Visible sur le site</p>
+          <p className="text-xs text-muted-foreground">
+            {published ? "Le partenaire est publié et visible par tous." : "Le partenaire est masqué au public."}
+          </p>
+        </div>
+        <Switch
+          checked={published}
+          onCheckedChange={setPublished}
+        />
+        <input type="hidden" name="published" value={String(published)} />
+      </div>
+
       <div className="flex gap-2">
         <SubmitButton>Enregistrer</SubmitButton>
         <Button variant="outline" asChild>

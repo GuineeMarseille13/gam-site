@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deletePartenaire } from "./_actions/actions"
@@ -39,13 +40,14 @@ export default async function PartenairesPage() {
                 <TableHead>Nom</TableHead>
                 <TableHead>Site web</TableHead>
                 <TableHead>Description</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead className="pr-6 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {partenaires.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
                     Aucun partenaire enregistré
                   </TableCell>
                 </TableRow>
@@ -72,6 +74,14 @@ export default async function PartenairesPage() {
                     </TableCell>
                     <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
                       {partenaire.description ?? "—"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className={partenaire.published ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-600"}
+                      >
+                        {partenaire.published ? "Publié" : "Brouillon"}
+                      </Badge>
                     </TableCell>
                     <TableCell className="pr-6">
                       <RowActions

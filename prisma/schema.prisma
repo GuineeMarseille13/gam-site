@@ -223,6 +223,7 @@ model Partner {
   description String?  // Description du partenaire
   imageId     String?  // ID de l'image principale du partenaire
   url         String?  // URL du partenaire
+  published   Boolean  @default(false) // Visible sur le site
   partnerSectionId String?  // ID de la section de partenaires
 
   // Relations

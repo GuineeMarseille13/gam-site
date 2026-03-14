@@ -162,8 +162,8 @@ export default function PartnersCarousel({
   // Calculer le décalage en px
   const translateXPx = -(currentIndex * (cardWidthPx + gapPx));
 
-  // Créer un tableau étendu pour la boucle infinie
-  const extendedPartners = loop
+  // Créer un tableau étendu pour la boucle infinie (seulement s'il y a plus de partenaires que de slides visibles)
+  const extendedPartners = loop && totalPartners > effectiveSlidesToShow
     ? [...safePartners, ...safePartners.slice(0, effectiveSlidesToShow)]
     : safePartners;
 

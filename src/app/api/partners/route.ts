@@ -1,6 +1,8 @@
 /**
  * API Routes pour les partenaires
  */
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
@@ -20,7 +22,15 @@ const handlers = createCrudHandler({
   validateUpdate: (data) => updatePartnerSchema.parse(data),
 })
 
-export const GET = handlers.GET
+// GET public : retourne uniquement les partenaires publiés
+export async function GET(_request: NextRequest) {
+  const partners = await prisma.partner.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+  })
+  return NextResponse.json(partners)
+}
+
 export const POST = handlers.POST
 export const PUT = handlers.PUT
 export const DELETE = handlers.DELETE

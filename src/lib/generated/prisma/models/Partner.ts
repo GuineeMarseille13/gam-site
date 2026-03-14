@@ -30,6 +30,7 @@ export type PartnerMinAggregateOutputType = {
   description: string | null
   imageId: string | null
   url: string | null
+  published: boolean | null
   partnerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +42,7 @@ export type PartnerMaxAggregateOutputType = {
   description: string | null
   imageId: string | null
   url: string | null
+  published: boolean | null
   partnerSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +54,7 @@ export type PartnerCountAggregateOutputType = {
   description: number
   imageId: number
   url: number
+  published: number
   partnerSectionId: number
   createdAt: number
   updatedAt: number
@@ -65,6 +68,7 @@ export type PartnerMinAggregateInputType = {
   description?: true
   imageId?: true
   url?: true
+  published?: true
   partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +80,7 @@ export type PartnerMaxAggregateInputType = {
   description?: true
   imageId?: true
   url?: true
+  published?: true
   partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +92,7 @@ export type PartnerCountAggregateInputType = {
   description?: true
   imageId?: true
   url?: true
+  published?: true
   partnerSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +177,7 @@ export type PartnerGroupByOutputType = {
   description: string | null
   imageId: string | null
   url: string | null
+  published: boolean
   partnerSectionId: string | null
   createdAt: Date
   updatedAt: Date
@@ -203,6 +210,7 @@ export type PartnerWhereInput = {
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
   imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
   url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  published?: Prisma.BoolFilter<"Partner"> | boolean
   partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
@@ -215,6 +223,7 @@ export type PartnerOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
+  published?: Prisma.SortOrder
   partnerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -230,6 +239,7 @@ export type PartnerWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
   imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
   url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  published?: Prisma.BoolFilter<"Partner"> | boolean
   partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
@@ -242,6 +252,7 @@ export type PartnerOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
+  published?: Prisma.SortOrder
   partnerSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -259,6 +270,7 @@ export type PartnerScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
   imageId?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
   url?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
+  published?: Prisma.BoolWithAggregatesFilter<"Partner"> | boolean
   partnerSectionId?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Partner"> | Date | string
@@ -270,6 +282,7 @@ export type PartnerCreateInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   partnerSection?: Prisma.PartnerSectionCreateNestedOneWithoutPartnersInput
@@ -281,6 +294,7 @@ export type PartnerUncheckedCreateInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   partnerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -292,6 +306,7 @@ export type PartnerUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   partnerSection?: Prisma.PartnerSectionUpdateOneWithoutPartnersNestedInput
@@ -303,6 +318,7 @@ export type PartnerUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   partnerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,6 +330,7 @@ export type PartnerCreateManyInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   partnerSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -325,6 +342,7 @@ export type PartnerUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -335,6 +353,7 @@ export type PartnerUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   partnerSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,6 +375,7 @@ export type PartnerCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   url?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   partnerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -367,6 +387,7 @@ export type PartnerMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   url?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   partnerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -378,6 +399,7 @@ export type PartnerMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   url?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   partnerSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -431,6 +453,7 @@ export type PartnerCreateWithoutPartnerSectionInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -441,6 +464,7 @@ export type PartnerUncheckedCreateWithoutPartnerSectionInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -480,6 +504,7 @@ export type PartnerScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Partner"> | string | null
   imageId?: Prisma.StringNullableFilter<"Partner"> | string | null
   url?: Prisma.StringNullableFilter<"Partner"> | string | null
+  published?: Prisma.BoolFilter<"Partner"> | boolean
   partnerSectionId?: Prisma.StringNullableFilter<"Partner"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Partner"> | Date | string
@@ -491,6 +516,7 @@ export type PartnerCreateManyPartnerSectionInput = {
   description?: string | null
   imageId?: string | null
   url?: string | null
+  published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -501,6 +527,7 @@ export type PartnerUpdateWithoutPartnerSectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -511,6 +538,7 @@ export type PartnerUncheckedUpdateWithoutPartnerSectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -521,6 +549,7 @@ export type PartnerUncheckedUpdateManyWithoutPartnerSectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -533,6 +562,7 @@ export type PartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   imageId?: boolean
   url?: boolean
+  published?: boolean
   partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -545,6 +575,7 @@ export type PartnerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   imageId?: boolean
   url?: boolean
+  published?: boolean
   partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -557,6 +588,7 @@ export type PartnerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   imageId?: boolean
   url?: boolean
+  published?: boolean
   partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -569,12 +601,13 @@ export type PartnerSelectScalar = {
   description?: boolean
   imageId?: boolean
   url?: boolean
+  published?: boolean
   partnerSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageId" | "url" | "partnerSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["partner"]>
+export type PartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageId" | "url" | "published" | "partnerSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["partner"]>
 export type PartnerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   partnerSection?: boolean | Prisma.Partner$partnerSectionArgs<ExtArgs>
 }
@@ -596,6 +629,7 @@ export type $PartnerPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: string | null
     imageId: string | null
     url: string | null
+    published: boolean
     partnerSectionId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1028,6 +1062,7 @@ export interface PartnerFieldRefs {
   readonly description: Prisma.FieldRef<"Partner", 'String'>
   readonly imageId: Prisma.FieldRef<"Partner", 'String'>
   readonly url: Prisma.FieldRef<"Partner", 'String'>
+  readonly published: Prisma.FieldRef<"Partner", 'Boolean'>
   readonly partnerSectionId: Prisma.FieldRef<"Partner", 'String'>
   readonly createdAt: Prisma.FieldRef<"Partner", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Partner", 'DateTime'>

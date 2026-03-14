@@ -27,8 +27,9 @@ export async function createPartenaire(
     const url = (formData.get("url") as string) || null
     const imageId = await resolveImageId(formData)
 
+    const published = formData.get("published") === "true"
     await prisma.partner.create({
-      data: { name, description, url, imageId },
+      data: { name, description, url, imageId, published },
     })
 
     revalidatePath("/bureau/partenaires")
@@ -53,9 +54,10 @@ export async function updatePartenaire(
     const url = (formData.get("url") as string) || null
     const imageId = await resolveImageId(formData)
 
+    const published = formData.get("published") === "true"
     await prisma.partner.update({
       where: { id },
-      data: { name, description, url, imageId },
+      data: { name, description, url, imageId, published },
     })
 
     revalidatePath("/bureau/partenaires")

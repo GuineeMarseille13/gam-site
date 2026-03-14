@@ -3277,6 +3277,7 @@ export const PartnerScalarFieldEnum = {
   description: 'description',
   imageId: 'imageId',
   url: 'url',
+  published: 'published',
   partnerSectionId: 'partnerSectionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
