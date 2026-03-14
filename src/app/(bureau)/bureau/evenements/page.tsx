@@ -77,16 +77,24 @@ export default async function EvenementsPage() {
                     <TableCell>{formatDate(event.startDate)}</TableCell>
                     <TableCell className="text-muted-foreground">{event.location ?? "—"}</TableCell>
                     <TableCell>
-                      <Badge
-                        variant="secondary"
-                        className={
-                          event.startDate && event.startDate > new Date()
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-gray-100 text-gray-500"
-                        }
-                      >
-                        {event.startDate && event.startDate > new Date() ? "À venir" : "Passé"}
-                      </Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge
+                          variant="secondary"
+                          className={
+                            event.startDate && event.startDate > new Date()
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-gray-100 text-gray-500"
+                          }
+                        >
+                          {event.startDate && event.startDate > new Date() ? "À venir" : "Passé"}
+                        </Badge>
+                        <Badge
+                          variant="secondary"
+                          className={event.published ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-600"}
+                        >
+                          {event.published ? "Publié" : "Brouillon"}
+                        </Badge>
+                      </div>
                     </TableCell>
                     <TableCell className="pr-6">
                       <RowActions

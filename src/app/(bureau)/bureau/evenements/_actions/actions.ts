@@ -28,9 +28,10 @@ export async function createEvenement(
     const imageId = await resolveImageId(formData)
     const startDate = new Date(formData.get("startDate") as string)
     const endDate = new Date(formData.get("endDate") as string)
+    const published = formData.get("published") === "true"
 
     await prisma.event.create({
-      data: { title, description, location, imageId, startDate, endDate },
+      data: { title, description, location, imageId, startDate, endDate, published },
     })
 
     revalidatePath("/bureau/evenements")
@@ -55,10 +56,11 @@ export async function updateEvenement(
     const imageId = await resolveImageId(formData)
     const startDate = new Date(formData.get("startDate") as string)
     const endDate = new Date(formData.get("endDate") as string)
+    const published = formData.get("published") === "true"
 
     await prisma.event.update({
       where: { id },
-      data: { title, description, location, imageId, startDate, endDate },
+      data: { title, description, location, imageId, startDate, endDate, published },
     })
 
     revalidatePath("/bureau/evenements")

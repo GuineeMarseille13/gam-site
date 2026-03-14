@@ -252,6 +252,7 @@ model Event {
   startDate   DateTime // Date de début de l'événement
   endDate     DateTime // Date de fin de l'événement
   location    String?  // Lieu de l'événement
+  published   Boolean  @default(false) // Visible sur le site
 
   eventSectionId String?  // ID de la section d'événement
 

@@ -4,6 +4,7 @@ import type { EventsByYear } from "@/types/events"
 
 async function getEventsByYear(): Promise<EventsByYear> {
   const events = await prisma.event.findMany({
+    where: { published: true },
     orderBy: { startDate: "desc" },
   })
 
