@@ -163,7 +163,6 @@ const AUTO_SPEED = 50; // px/s
 export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSectionProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [paused, setPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -187,10 +186,6 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
       s.scrollLeft += AUTO_SPEED * dt;
       // Réinitialisation silencieuse au milieu → loop parfait
       if (s.scrollLeft >= s.scrollWidth / 2) s.scrollLeft -= s.scrollWidth / 2;
-      // Mise à jour du dot actif
-      const itemWidth = s.scrollWidth / loopVideos.length;
-      const idx = Math.round(s.scrollLeft / itemWidth) % videos.length;
-      setCurrentSlide(Math.max(0, Math.min(idx, videos.length - 1)));
       animId = requestAnimationFrame(tick);
     };
     animId = requestAnimationFrame(tick);
@@ -207,13 +202,6 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
 
   const activeVideo = activeIndex !== null ? videos[activeIndex] : null;
 
-  const scrollToSlide = (i: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const itemWidth = el.scrollWidth / loopVideos.length;
-    el.scrollTo({ left: itemWidth * i, behavior: "smooth" });
-    setCurrentSlide(i);
-  };
 
   return (
     <section className="relative w-full py-16 sm:py-20 overflow-hidden">
@@ -270,21 +258,6 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
           </div>
         </div>
 
-        {/* Dots */}
-        {videos.length > 1 && (
-          <div className="flex justify-center gap-2 mt-6">
-            {videos.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => scrollToSlide(i)}
-                className={`h-1 rounded-full transition-all duration-400 ${
-                  currentSlide === i ? "w-8 bg-red-400" : "w-4 bg-white/20 hover:bg-white/40"
-                }`}
-                aria-label={`Vidéo ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       {mounted && createPortal(
