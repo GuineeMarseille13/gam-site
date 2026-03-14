@@ -444,18 +444,24 @@ export default function Home() {
 
   // Transformer les données des produits pour correspondre au format attendu
   const transformedProducts = useMemo(() => {
-    return featuredProducts.map((product) => ({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      description: product.description,
-      category: product.category,
-      inStock: product.inStock,
-      featured: product.featured,
-      discount: product.discount,
-      originalPrice: product.originalPrice,
-    }));
+    return featuredProducts.map((product: any) => {
+      const hasDiscount = product.discountActive && product.discountPercent > 0;
+      const effectivePrice = hasDiscount
+        ? Math.round(product.price * (1 - product.discountPercent / 100))
+        : product.price;
+      return {
+        id: product.id,
+        name: product.title ?? "",
+        image: product.imageId
+          ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_600,h_600,c_fill,q_auto,f_auto/${product.imageId}`
+          : "",
+        price: effectivePrice,
+        originalPrice: hasDiscount ? product.price : undefined,
+        discount: hasDiscount ? product.discountPercent : undefined,
+        description: product.description,
+        inStock: (product.stock ?? 0) > 0,
+      };
+    });
   }, [featuredProducts]);
 
   // Fonction pour gérer le clic sur "Commander"
@@ -554,20 +560,13 @@ export default function Home() {
         />
       )}
 
-      {/* Section Témoignages - Remplacée complètement par le skeleton */}
-      {isLoadingReviews ? (
-        <ReviewsSectionSkeleton />
-      ) : (
-        <ReviewsSection reviews={reviews} />
-      )}
-
-      {/* Section Produits - Remplacée complètement par le skeleton */}
+      {/* Section Produits */}
       {isLoadingProducts ? (
         <ProductsSectionSkeleton />
       ) : (
         transformedProducts.length > 0 && (
-          <section className="w-full">
-            <div className="text-center sm:mb-6">
+          <section className="w-full py-10 sm:py-12">
+            <div className="text-center mb-6 sm:mb-8">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
                 Nos Produits
               </h2>
@@ -579,34 +578,28 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Carrousel de produits (avec ProductCard) */}
-            <div
-              className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div
-                ref={scrollRef}
-                className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                {duplicatedCatalog.map((p, index) => {
-                  const uniqueKey = `product-${p.id}-${index}`;
-                  return (
-                    <div
-                      key={uniqueKey}
-                      className="snap-start shrink-0 w-[320px] sm:w-[360px]"
-                    >
-                      <ProductCard
-                        product={p}
-                        onAdd={handleOrder}
-                      />
-                    </div>
-                  );
-                })}
+            <div className="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
+              <div className={`flex gap-5 sm:gap-6 py-4 ${
+                transformedProducts.length <= 4
+                  ? "justify-center flex-wrap"
+                  : "overflow-x-auto snap-x snap-mandatory scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              }`}>
+                {transformedProducts.map((p) => (
+                  <div key={p.id} className="snap-start shrink-0 w-[340px] self-stretch">
+                    <ProductCard product={p} onAdd={handleOrder} />
+                  </div>
+                ))}
               </div>
             </div>
           </section>
         )
+      )}
+
+      {/* Section Témoignages */}
+      {isLoadingReviews ? (
+        <ReviewsSectionSkeleton />
+      ) : (
+        <ReviewsSection reviews={reviews} />
       )}
 
       {/* Section Statistiques - Remplacée complètement par le skeleton */}

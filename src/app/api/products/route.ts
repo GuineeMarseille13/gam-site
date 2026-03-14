@@ -1,16 +1,40 @@
 /**
  * API Routes pour les produits
- * GET    /api/products - Liste tous les produits
- * GET    /api/products?id=xxx - Récupère un produit par ID
+ * GET    /api/products - Liste tous les produits (filtrés par query params)
  * POST   /api/products - Crée un nouveau produit
- * PUT    /api/products?id=xxx - Met à jour un produit
- * DELETE /api/products?id=xxx - Supprime un produit
+ * PUT    /api/products - Met à jour un produit
+ * DELETE /api/products - Supprime un produit
  */
 
+import { NextRequest } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { successResponse } from '@/lib/api/response'
+import { handleApiError } from '@/lib/api/errors'
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
-// Schéma de validation pour la création
+// GET /api/products - Liste les produits avec filtres optionnels
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams
+    const activeOnly = searchParams.get('active') !== 'false'
+    const inStock = searchParams.get('inStock') === 'true'
+
+    const where: any = {}
+    if (activeOnly) where.isActive = true
+    if (inStock) where.stock = { gt: 0 }
+
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+    })
+
+    return successResponse(products)
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+
 const createProductSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
@@ -22,25 +46,14 @@ const createProductSchema = z.object({
   imageId: z.string().optional(),
 })
 
-// Schéma de validation pour la mise à jour
 const updateProductSchema = createProductSchema.partial()
 
 const handlers = createCrudHandler({
   modelName: 'Product',
   validateCreate: (data) => createProductSchema.parse(data),
   validateUpdate: (data) => updateProductSchema.parse(data),
-  beforeCreate: async (data) => {
-    // Logique avant création (ex: génération de slug, etc.)
-    return data
-  },
-  afterCreate: async (result) => {
-    // Logique après création (ex: envoi de notification, etc.)
-    console.log(`Product created: ${result.id}`)
-  },
 })
 
-export const GET = handlers.GET
 export const POST = handlers.POST
 export const PUT = handlers.PUT
 export const DELETE = handlers.DELETE
-

@@ -227,27 +227,31 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                     </div>
                   ) : (
                     items.map((it) => (
-                      <div key={it.product.id} className="flex items-center justify-between gap-2 sm:gap-3 rounded-lg border p-2.5 sm:p-3 hover:shadow-sm transition-shadow">
-                        {/* Left: thumbnail + name + unit price */}
-                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                          <div className="relative h-16 w-16 shrink-0 aspect-square p-1 rounded-md bg-gray-100 overflow-hidden">
-                            <Image
-                              src={it.product.image}
-                              alt={it.product.name}
-                              fill
-                              className="object-contain"
-                              sizes="64px"
-                            />
+                      <div key={it.product.id} className="flex flex-col gap-2 rounded-lg border p-2.5 sm:p-3 hover:shadow-sm transition-shadow">
+                        {/* Top: thumbnail + name */}
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <div className="relative h-14 w-14 shrink-0 rounded-md bg-gray-100 overflow-hidden">
+                            {it.product.image ? (
+                              <Image
+                                src={it.product.image}
+                                alt={it.product.name}
+                                fill
+                                className="object-cover"
+                                sizes="56px"
+                              />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs">—</div>
+                            )}
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="font-medium text-gray-900 line-clamp-2 sm:line-clamp-1">{it.product.name}</div>
-                            <div className="text-xs text-gray-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(it.product.price)} / unité</div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900 leading-snug">{it.product.name}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(it.product.price)} / unité</div>
                           </div>
                         </div>
 
-                        {/* Right: qty controls + line total + remove */}
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="flex items-center rounded-md border bg-white">
+                        {/* Bottom: qty controls + line total + remove */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center rounded-md border bg-white">
                             <button
                               aria-label="Diminuer la quantité"
                               className="px-1.5 py-1 text-gray-700 hover:bg-gray-50 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
@@ -265,7 +269,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                               +
                             </button>
                           </div>
-                          <div className="hidden sm:block text-xs sm:text-sm font-medium text-gray-900 min-w-[56px] text-right">
+                          <div className="text-sm font-semibold text-gray-900">
                             {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(it.quantity * it.product.price)}
                           </div>
                           <button

@@ -1,5 +1,6 @@
 "use client"
 
+import { useActionState, useState } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -7,10 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { SubmitButton } from "@/components/bureau/submit-button"
-import { ImageIdField } from "@/components/bureau/image-id-field"
+import { ImageUploadField } from "@/components/bureau/image-upload-field"
+import type { ActionState } from "../_actions/actions"
 
 interface ProduitFormProps {
-  action: (formData: FormData) => Promise<void>
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
   defaultValues?: {
     title?: string
     description?: string | null
@@ -19,13 +21,23 @@ interface ProduitFormProps {
     isActive?: boolean
     imageId?: string | null
     productCategoryId?: string | null
+    discountActive?: boolean
+    discountPercent?: number | null
   }
   categories?: { id: string; title: string }[]
 }
 
 export function ProduitForm({ action, defaultValues, categories = [] }: ProduitFormProps) {
+  const [state, formAction] = useActionState(action, null)
+  const [discountActive, setDiscountActive] = useState(defaultValues?.discountActive ?? false)
+
   return (
-    <form action={action} className="space-y-4 max-w-xl">
+    <form action={formAction} className="space-y-4 max-w-xl">
+      {state?.error && (
+        <p className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {state.error}
+        </p>
+      )}
       <div className="space-y-2">
         <Label htmlFor="title">Titre *</Label>
         <Input id="title" name="title" required defaultValue={defaultValues?.title ?? ""} />
@@ -36,7 +48,7 @@ export function ProduitForm({ action, defaultValues, categories = [] }: ProduitF
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="price">Prix (€) *</Label>
+          <Label htmlFor="price">Prix de base (€) *</Label>
           <Input
             id="price"
             name="price"
@@ -52,6 +64,36 @@ export function ProduitForm({ action, defaultValues, categories = [] }: ProduitF
           <Input id="stock" name="stock" type="number" min="0" required defaultValue={defaultValues?.stock ?? 0} />
         </div>
       </div>
+
+      {/* Réduction */}
+      <div className="rounded-md border p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="discountActive"
+            name="discountActive"
+            checked={discountActive}
+            onCheckedChange={(v) => setDiscountActive(v === true)}
+          />
+          <Label htmlFor="discountActive">Activer une réduction</Label>
+        </div>
+        {discountActive && (
+          <div className="space-y-2">
+            <Label htmlFor="discountPercent">Pourcentage de réduction (%)</Label>
+            <Input
+              id="discountPercent"
+              name="discountPercent"
+              type="number"
+              min="1"
+              max="99"
+              required
+              defaultValue={defaultValues?.discountPercent ?? ""}
+              placeholder="ex : 10"
+              className="max-w-[140px]"
+            />
+          </div>
+        )}
+      </div>
+
       {categories.length > 0 && (
         <div className="space-y-2">
           <Label htmlFor="productCategoryId">Catégorie</Label>
@@ -68,7 +110,7 @@ export function ProduitForm({ action, defaultValues, categories = [] }: ProduitF
           </select>
         </div>
       )}
-      <ImageIdField defaultValue={defaultValues?.imageId} />
+      <ImageUploadField defaultValue={defaultValues?.imageId} label="Image du produit" />
       <div className="flex items-center gap-2">
         <Checkbox id="isActive" name="isActive" defaultChecked={defaultValues?.isActive ?? true} />
         <Label htmlFor="isActive">Produit actif (visible en boutique)</Label>

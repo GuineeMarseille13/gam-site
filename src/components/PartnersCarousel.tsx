@@ -114,10 +114,11 @@ export default function PartnersCarousel({
   // Gestion du timer d'autoplay
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (isPlaying && !isPaused && totalPartners > 1) {
+    // Ne scroller que si les partenaires dépassent les slides visibles
+    if (isPlaying && !isPaused && totalPartners > effectiveSlidesToShow) {
       timerRef.current = setInterval(nextSlide, interval);
     }
-  }, [isPlaying, isPaused, interval, nextSlide, totalPartners]);
+  }, [isPlaying, isPaused, interval, nextSlide, totalPartners, effectiveSlidesToShow]);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -225,9 +226,9 @@ export default function PartnersCarousel({
             onMouseLeave={handleMouseLeave}
           >
             <motion.div
-              className="flex gap-10"
+              className={`flex gap-10 ${totalPartners <= effectiveSlidesToShow ? "justify-center" : ""}`}
               animate={{
-                x: translateXPx,
+                x: totalPartners > effectiveSlidesToShow ? translateXPx : 0,
               }}
               transition={{
                 type: "spring",

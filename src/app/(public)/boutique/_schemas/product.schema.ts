@@ -6,7 +6,7 @@ import { z } from "zod";
 export const productSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
-  image: z.string().url().or(z.string().min(1)),
+  image: z.string().optional().default(""),
   price: z.number().nonnegative(),
   originalPrice: z.number().nonnegative().optional(),
   description: z.string().optional(),

@@ -317,9 +317,11 @@ model Product {
   title       String   // Titre du produit
   description String?  // Description du produit
   imageId     String?  // ID de l'image principale du produit
-  price       Int      // Prix du produit
+  price       Int      // Prix de base du produit (en centimes)
   stock       Int      // Stock du produit
   isActive    Boolean  @default(true) // Si le produit est actif
+  discountActive  Boolean @default(false) // Si la réduction est activée
+  discountPercent Int?                    // Pourcentage de réduction (1-99)
   productSectionId String?  // ID de la section de produit
   productCategoryId String?  // ID de la catégorie de produit
   orderId String?  // ID de la commande du produit

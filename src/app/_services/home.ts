@@ -235,10 +235,10 @@ export async function getVolunteers(): Promise<Volunteer[]> {
  */
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
-    const response = await fetch('/api/products', { cache: 'no-store' });
+    const response = await fetch('/api/products?active=true&inStock=true', { cache: 'no-store' });
     if (!response.ok) return [];
-    const data = await response.json();
-    return Array.isArray(data) ? data.filter((p: any) => p.featured && p.inStock) : [];
+    const result = await response.json();
+    return Array.isArray(result.data) ? result.data : [];
   } catch {
     return [];
   }

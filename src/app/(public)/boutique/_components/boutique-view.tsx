@@ -3,15 +3,44 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { getCatalog } from "../_services/products";
 import { ShoppingCart } from "lucide-react";
 import { CART_OPEN_EVENT, CART_TOGGLE_EVENT } from "../_services/cart-storage";
 import { useCart } from "../_hooks/use-cart";
 import { ProductCard } from "./product-card";
 import { CartDrawer } from "./cart-drawer";
+import type { Product } from "../_schemas/product.schema";
+
+const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
+
+function transformProduct(p: any): Product {
+  const hasDiscount = p.discountActive && p.discountPercent > 0;
+  const effectivePrice = hasDiscount
+    ? Math.round(p.price * (1 - p.discountPercent / 100))
+    : p.price;
+  return {
+    id: p.id,
+    name: p.title ?? "",
+    image: p.imageId ? `${CLOUDINARY_BASE}/w_600,h_600,c_fill,q_auto,f_auto/${p.imageId}` : "",
+    price: effectivePrice,
+    originalPrice: hasDiscount ? p.price : undefined,
+    discount: hasDiscount ? p.discountPercent : undefined,
+    description: p.description ?? undefined,
+    inStock: (p.stock ?? 0) > 0,
+  };
+}
 
 export function BoutiqueView() {
-  const catalog = useMemo(() => getCatalog(), []);
+  const [catalog, setCatalog] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products?active=true", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((result) => {
+        const raw = Array.isArray(result.data) ? result.data : [];
+        setCatalog(raw.map(transformProduct));
+      })
+      .catch(() => {});
+  }, []);
   const { items, totalPrice, totalQuantity, add, update, remove, clear } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const DRAWER_STATE_KEY = "boutique.drawer.open.v1";
