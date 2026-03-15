@@ -208,12 +208,33 @@ export async function getReviews(): Promise<Review[]> {
   }
 }
 
+const VALID_COLORS = ['red', 'yellow', 'green', 'blue'] as const;
+
 /**
- * Récupère les statistiques actives
+ * Récupère les statistiques actives depuis la base de données.
  */
 export async function getStatistics(): Promise<Statistic[]> {
-  // Route supprimée — StatisticsSection utilise ses données statiques intégrées
-  return [];
+  try {
+    const response = await fetch('/api/achievements', { cache: 'no-store' });
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+    return data
+      .filter((a: any) => a.isActive && a.label && a.value != null)
+      .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+      .map((a: any) => ({
+        id: a.id,
+        label: a.label,
+        value: a.value,
+        color: (VALID_COLORS.includes(a.color) ? a.color : 'blue') as Statistic['color'],
+        icon: a.icon ?? '📊',
+        suffix: a.suffix ?? undefined,
+        order: a.order ?? 0,
+        isActive: true,
+      }));
+  } catch {
+    return [];
+  }
 }
 
 /**

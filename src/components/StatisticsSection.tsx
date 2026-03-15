@@ -108,7 +108,7 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
         )}
       />
 
-      {/* Particules flottantes - adaptées pour la nouvelle disposition */}
+      {/* Particules flottantes */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(3)].map((_, i) => (
           <div
@@ -128,7 +128,7 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
       </div>
 
       <CardContent className="relative z-10 p-4 h-full flex items-center justify-center min-w-0">
-        {/* Section droite : Nombre en grand */}
+        {/* Nombre en grand */}
         <div className="flex-shrink-0 mr-4">
           <div
             className={cn(
@@ -144,15 +144,13 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
             {count}
           </div>
         </div>
-        {/* Section gauche : Icône et titre */}
+        {/* Icône et titre */}
         <div className="flex items-center space-x-3 flex-1 min-w-0">
-          {/* Titre */}
           <div className="flex-1 min-w-0">
             <p className="text-sm md:text-base font-semibold text-slate-700 leading-tight truncate">
               {statistic.label}
             </p>
           </div>
-          {/* Icône */}
           <div
             className={cn(
               "text-2xl md:text-3xl transition-transform duration-500 flex-shrink-0",
@@ -167,63 +165,11 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
   );
 };
 
-const StatisticsSection = ({ statistics: propStatistics }: StatisticsSectionProps) => {
+const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
 
-  // Données par défaut des statistiques
-  const defaultStatistics: Statistic[] = [
-    {
-      label: "Partenaires",
-      value: 25,
-      color: "blue",
-      icon: "👥",
-    },
-    {
-      label: "Projets",
-      value: 25,
-      color: "blue",
-      icon: "💡",
-    },
-    {
-      label: "Étudiants accompagnés",
-      value: 245,
-      color: "red",
-      icon: "🎓",
-    },
-    {
-      label: "Mineurs non accompagnés aidés",
-      value: 89,
-      color: "yellow",
-      icon: "🤝",
-    },
-    {
-      label: "Hébergements d'urgence",
-      value: 156,
-      color: "green",
-      icon: "🏠",
-    },
-    {
-      label: "Évènements",
-      value: 25,
-      color: "red",
-      icon: "🎉",
-    },
-    {
-      label: "Nombre étudiants accompagnés",
-      value: 25,
-      color: "green",
-      icon: "�",
-    },
-  ];
-
-  // Utiliser les statistiques passées en props ou les valeurs par défaut
-  const statistics = propStatistics && propStatistics.length > 0
-    ? propStatistics
-    : defaultStatistics;
-
-  // Intersection Observer pour déclencher l'animation quand la section est visible
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -247,6 +193,8 @@ const StatisticsSection = ({ statistics: propStatistics }: StatisticsSectionProp
       }
     };
   }, []);
+
+  if (statistics.length === 0) return null;
 
   return (
     <section
@@ -282,7 +230,7 @@ const StatisticsSection = ({ statistics: propStatistics }: StatisticsSectionProp
           </p>
         </div>
 
-        {/* Cartes statistiques avec largeur dynamique */}
+        {/* Cartes statistiques */}
         <div
           className={cn(
             "flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5 max-w-6xl mx-auto",
@@ -291,7 +239,7 @@ const StatisticsSection = ({ statistics: propStatistics }: StatisticsSectionProp
         >
           {statistics.map((stat, index) => (
             <div
-              key={stat.label}
+              key={stat.id ?? stat.label}
               className={cn("min-w-0 flex-shrink-0", isMobile ? "w-full" : "")}
             >
               <StatisticCard

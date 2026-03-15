@@ -48,14 +48,13 @@ export async function createVideoTemoignage(
       },
     })
 
-    REVALIDATE_PATHS.forEach(revalidatePath)
+    REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
     redirect("/bureau/temoignages-video")
   } catch (err) {
     if (isRedirectError(err)) throw err
     console.error("[createVideoTemoignage]", err)
     return { error: err instanceof Error ? err.message : "Erreur inconnue" }
   }
-  return null
 }
 
 export async function updateVideoTemoignage(
@@ -75,17 +74,16 @@ export async function updateVideoTemoignage(
       data: { url, title, description, thumbnail, order, isActive },
     })
 
-    REVALIDATE_PATHS.forEach(revalidatePath)
+    REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
     redirect("/bureau/temoignages-video")
   } catch (err) {
     if (isRedirectError(err)) throw err
     console.error("[updateVideoTemoignage]", err)
     return { error: err instanceof Error ? err.message : "Erreur inconnue" }
   }
-  return null
 }
 
 export async function deleteVideoTemoignage(id: string) {
   await prisma.video.delete({ where: { id } })
-  REVALIDATE_PATHS.forEach(revalidatePath)
+  REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
 }
