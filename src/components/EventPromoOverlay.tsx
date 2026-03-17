@@ -113,22 +113,12 @@ export default function EventPromoOverlay({ popup }: { popup: PopupData | null }
             <motion.article
               variants={cardVariants} initial="hidden" animate="visible" exit="exit"
               role="dialog" aria-modal="true"
-              className="relative w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/50"
+              className={`relative w-full overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/20 ${
+                popup.type === "IMAGE_TEXT"
+                  ? "max-w-sm rounded-3xl bg-gray-950"
+                  : "max-w-xl rounded-3xl bg-white/95 backdrop-blur-xl ring-white/50"
+              }`}
             >
-              {/* Bouton fermeture — uniquement pour IMAGE_TEXT (PROSPECTUS a son propre footer) */}
-              {popup.type === "IMAGE_TEXT" && (
-                <motion.button
-                  onClick={close}
-                  whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/40 transition-colors cursor-pointer"
-                  aria-label="Fermer"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </motion.button>
-              )}
 
               {popup.type === "IMAGE_TEXT" ? (
                 <ImageTextContent popup={popup} close={close} />
@@ -146,95 +136,134 @@ export default function EventPromoOverlay({ popup }: { popup: PopupData | null }
 // ── IMAGE_TEXT ─────────────────────────────────────────────────────────────────
 
 function ImageTextContent({ popup, close }: { popup: PopupData; close: () => void }) {
-  return (
-    <>
-      {/* Image */}
-      <div className="relative w-full h-52 sm:h-60 overflow-hidden">
-        {popup.imageId ? (
-          <Image src={imgUrl(popup.imageId)} alt={popup.title ?? "Annonce"} fill className="object-cover" priority />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-amber-200 to-lime-200 flex items-center justify-center">
-            <span className="text-6xl">📅</span>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+  const hasMeta = popup.date || popup.location;
 
-        {popup.badge && (
-          <motion.span variants={badgeVariants} initial="hidden" animate="visible"
-            className="absolute top-4 left-4 px-3 py-1 text-xs font-bold tracking-widest uppercase text-white bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-lg">
+  return (
+    <div className="max-h-[92dvh] overflow-y-auto">
+
+      {/* ── Header : badge + fermer — hors image ── */}
+      <div className="flex items-center justify-between gap-2 bg-gray-950 px-4 py-3">
+        {popup.badge ? (
+          <motion.span
+            variants={badgeVariants} initial="hidden" animate="visible"
+            className="rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white shadow"
+          >
             {popup.badge}
           </motion.span>
-        )}
+        ) : <span />}
 
-        {popup.date && (
-          <motion.div custom={0} variants={contentVariants} initial="hidden" animate="visible"
-            className="absolute bottom-4 left-4 right-4">
-            <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
-              <svg className="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {popup.date}
-            </div>
-          </motion.div>
-        )}
+        <motion.button
+          onClick={close}
+          whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+          aria-label="Fermer"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </motion.button>
       </div>
 
-      {/* Texte */}
-      <div className="px-6 py-5 space-y-3">
-        <motion.div custom={1} variants={contentVariants} initial="hidden" animate="visible">
-          {popup.title && (
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">{popup.title}</h2>
-          )}
-          {popup.subtitle && (
-            <p className="mt-0.5 text-sm font-medium bg-gradient-to-r from-amber-500 to-lime-500 bg-clip-text text-transparent">
-              {popup.subtitle}
-            </p>
-          )}
-        </motion.div>
+      {/* ── Image — proportions naturelles ── */}
+      {popup.imageId ? (
+        <Image
+          src={imgUrl(popup.imageId, 600)}
+          alt={popup.title ?? "Annonce"}
+          width={600}
+          height={900}
+          className="w-full h-auto"
+          priority
+        />
+      ) : (
+        <div className="flex aspect-[2/3] w-full items-center justify-center bg-gradient-to-br from-amber-400/20 to-lime-400/10">
+          <span className="text-6xl opacity-40">📅</span>
+        </div>
+      )}
 
-        {popup.location && (
-          <motion.div custom={2} variants={contentVariants} initial="hidden" animate="visible"
-            className="flex items-center gap-1.5 text-gray-500 text-sm">
-            <svg className="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            {popup.location}
+      {/* ── Zone texte ── */}
+      <div className="space-y-3 bg-gray-950 px-5 pb-5 pt-4">
+
+        {/* Date + lieu — même ligne */}
+        {hasMeta && (
+          <motion.div
+            custom={0} variants={contentVariants} initial="hidden" animate="visible"
+            className="flex flex-wrap items-center gap-x-4 gap-y-1.5"
+          >
+            {popup.date && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-white/60">
+                <svg className="h-3.5 w-3.5 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {popup.date}
+              </span>
+            )}
+            {popup.date && popup.location && (
+              <span className="h-3 w-px bg-white/15" aria-hidden />
+            )}
+            {popup.location && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-white/60">
+                <svg className="h-3.5 w-3.5 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {popup.location}
+              </span>
+            )}
           </motion.div>
         )}
 
+        {/* Titre + sous-titre */}
+        {(popup.title || popup.subtitle) && (
+          <motion.div custom={1} variants={contentVariants} initial="hidden" animate="visible">
+            {popup.title && (
+              <h2 className="text-lg font-black leading-snug text-white">{popup.title}</h2>
+            )}
+            {popup.subtitle && (
+              <p className="mt-0.5 text-sm font-semibold text-amber-400">{popup.subtitle}</p>
+            )}
+          </motion.div>
+        )}
+
+        {/* Description */}
         {popup.description && (
-          <motion.p custom={3} variants={contentVariants} initial="hidden" animate="visible"
-            className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+          <motion.p
+            custom={2} variants={contentVariants} initial="hidden" animate="visible"
+            className="text-sm leading-relaxed text-white/50 line-clamp-3"
+          >
             {popup.description}
           </motion.p>
         )}
 
-        <motion.div custom={4} variants={contentVariants} initial="hidden" animate="visible"
-          className="flex items-center gap-3 pt-1">
+        {/* Actions */}
+        <motion.div
+          custom={3} variants={contentVariants} initial="hidden" animate="visible"
+          className="flex flex-col gap-2 pt-1"
+        >
           {popup.ctaUrl && (
-            <Link href={popup.ctaUrl} onClick={close} className="flex-1">
+            <Link href={popup.ctaUrl} onClick={close}>
               <motion.span
                 whileHover={{ scale: 1.02, y: -1 }} whileTap={{ scale: 0.98 }}
-                className="group relative flex items-center justify-center gap-2 w-full px-5 py-2.5 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 shadow-lg shadow-amber-400/30 overflow-hidden cursor-pointer">
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                className="group relative flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-lime-400 px-5 py-2.5 text-sm font-bold text-gray-900 shadow-lg shadow-amber-500/25"
+              >
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <span className="relative">{popup.ctaLabel ?? "En savoir plus"}</span>
-                <svg className="w-4 h-4 relative transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </motion.span>
             </Link>
           )}
-          <motion.button onClick={close} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            className="px-4 py-2.5 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer whitespace-nowrap">
-            Plus tard
+          <motion.button
+            onClick={close}
+            whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.97 }}
+            className="w-full cursor-pointer rounded-full py-2 text-sm font-medium text-white/35 transition-colors hover:bg-white/6 hover:text-white/60"
+          >
+            Fermer
           </motion.button>
         </motion.div>
 
-        <div className="h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent" />
       </div>
-    </>
+    </div>
   );
 }
 
