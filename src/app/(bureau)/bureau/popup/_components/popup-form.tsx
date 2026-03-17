@@ -147,36 +147,47 @@ export function PopupForm({ action, defaultValues, cancelHref = "/bureau/popup" 
         <div className="grid gap-6 md:grid-cols-5">
 
           {/* Image */}
-          <div className="md:col-span-2 space-y-2">
-            <p className="text-sm font-medium">Image principale</p>
-            <input ref={imgFileRef} type="file" accept="image/*" className="hidden" onChange={handleImgFile} />
-            {imgSrc ? (
-              <div className="group relative overflow-hidden rounded-2xl border bg-muted shadow-sm">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imgSrc} alt="Aperçu" className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
-                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
-                  <button type="button" onClick={() => imgFileRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-900 shadow backdrop-blur-sm hover:bg-white">
-                    <IconUpload className="size-3.5" /> Changer
-                  </button>
-                  <button type="button" onClick={removeImg}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm hover:bg-black/80">
-                    <IconX className="size-3.5" /> Retirer
-                  </button>
+          <div className="md:col-span-2">
+            <div className="sticky top-6 space-y-2">
+              <p className="text-sm font-medium">Image principale</p>
+              <input ref={imgFileRef} type="file" accept="image/*" className="hidden" onChange={handleImgFile} />
+
+              {imgSrc ? (
+                <div className="group relative overflow-hidden rounded-2xl border bg-muted shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imgSrc}
+                    alt="Aperçu"
+                    className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
+                    <button type="button" onClick={() => imgFileRef.current?.click()}
+                      className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-gray-900 shadow backdrop-blur-sm transition hover:bg-white">
+                      <IconUpload className="size-3.5" /> Changer l&apos;image
+                    </button>
+                    <button type="button" onClick={removeImg}
+                      className="inline-flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/80">
+                      <IconX className="size-3.5" /> Supprimer
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <button type="button" onClick={() => imgFileRef.current?.click()}
-                className="group flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
-                <div className="flex size-12 items-center justify-center rounded-xl border border-dashed border-current opacity-40 group-hover:opacity-70">
-                  <IconPhoto className="size-6" />
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-medium">Cliquer pour choisir</p>
-                  <p className="mt-0.5 text-xs opacity-60">JPG, PNG, WebP — max {MAX_MB} Mo</p>
-                </div>
-              </button>
-            )}
+              ) : (
+                <button type="button" onClick={() => imgFileRef.current?.click()}
+                  className="group flex aspect-[3/4] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
+                  <div className="flex size-14 items-center justify-center rounded-2xl border border-dashed border-current opacity-40 transition-opacity group-hover:opacity-70">
+                    <IconPhoto className="size-7" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium">Cliquer pour choisir</p>
+                    <p className="mt-0.5 text-xs opacity-60">JPG, PNG, WebP — max {MAX_MB} Mo</p>
+                  </div>
+                </button>
+              )}
+
+              <p className="text-[11px] text-muted-foreground">
+                Format recommandé : portrait 3/4 · min. 800 × 1000 px
+              </p>
+            </div>
           </div>
 
           {/* Champs texte */}
