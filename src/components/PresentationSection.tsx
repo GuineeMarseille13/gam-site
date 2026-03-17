@@ -30,7 +30,7 @@ const PresentationSection = () => {
   ];
 
   return (
-    <section className="w-full sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
+    <section className="w-full sm:py-6 md:py-8 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
       {/* Effet de fond décoratif */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
 
@@ -136,7 +136,7 @@ const PresentationSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+            className="mt-10 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
           >
             {features.map((feature, index) => {
               const IconComponent = feature.icon;

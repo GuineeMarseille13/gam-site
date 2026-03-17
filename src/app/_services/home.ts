@@ -110,11 +110,27 @@ export async function getPoles(): Promise<PoleItem[]> {
 }
 
 /**
- * Récupère les éléments du carrousel
+ * Récupère les éléments du carrousel (page HOME, section CAROUSEL, actifs)
  */
 export async function getCarouselItems(): Promise<CarouselItem[]> {
-  // Route supprimée — le carrousel utilise ses données statiques intégrées
-  return [];
+  try {
+    const where   = encodeURIComponent(JSON.stringify({ page: 'HOME', section: 'CAROUSEL', isActive: true }))
+    const orderBy = encodeURIComponent(JSON.stringify({ order: 'asc' }))
+    const response = await fetch(`/api/images?where=${where}&orderBy=${orderBy}`, { cache: 'no-store' })
+    if (!response.ok) return []
+    const data = await response.json()
+    if (!Array.isArray(data)) return []
+    return data.map((img: any) => ({
+      id:          img.id,
+      image:       img.url,
+      title:       img.title       ?? '',
+      description: img.description ?? '',
+      order:       img.order       ?? 0,
+      isActive:    img.isActive    ?? true,
+    }))
+  } catch {
+    return []
+  }
 }
 
 /**

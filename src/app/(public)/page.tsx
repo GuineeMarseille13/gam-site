@@ -507,7 +507,7 @@ export default function Home() {
             <Carousel
               items={transformedCarouselItems}
               {...CAROUSEL_CONFIG}
-              className="shadow-2xl rounded-xl overflow-hidden"
+              className="shadow-xl rounded-xl overflow-hidden"
             />
           </div>
         )
