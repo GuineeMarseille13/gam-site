@@ -331,38 +331,69 @@ export default function VolunteersSection() {
 
       <div className="w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-4 items-stretch min-h-[75vh]">
-          {/* Partie gauche - Texte de remerciement amélioré */}
+          {/* Partie gauche */}
           <div
             className={cn(
-              "space-y-10 transition-all duration-1200 ease-out h-full flex flex-col justify-center",
+              "flex flex-col justify-center space-y-8 transition-all duration-[1200ms] ease-out",
               isVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-16"
             )}
           >
-            <div className="space-y-4">
-              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-theme-red/10 via-theme-yellow/10 to-theme-green/10 rounded-full border border-theme-red/20">
-                <span className="text-sm font-medium text-theme-red uppercase tracking-wide">
-                  Nos héros du quotidien
-                </span>
-              </div>
+            {/* Badge */}
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-theme-red/25 bg-gradient-to-r from-theme-red/8 via-theme-yellow/8 to-theme-green/8 px-4 py-1.5">
+              <span className="size-1.5 rounded-full bg-theme-red animate-pulse" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-theme-red">
+                Nos héros du quotidien
+              </span>
+            </div>
 
-              <h5 className="text-2xl lg:text-4xl font-bold text-foreground leading-tight">
+            {/* Titre */}
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold leading-tight text-foreground lg:text-4xl xl:text-5xl">
                 Merci à nos{" "}
                 <span className="bg-gradient-to-r from-theme-red via-theme-yellow to-theme-green bg-clip-text text-transparent">
                   bénévoles extraordinaires
                 </span>
-              </h5>
-
-              <div className="space-y-6 text-lg leading-relaxed">
-                <p>
-                  Votre générosité et votre dévouement transforment des vies
-                </p>
-                <p>
-                  Ensemble, nous prouvons que la solidarité n&apos;a pas de
-                  frontières et que l&apos;humanité triomphe toujours.
-                </p>
+              </h2>
+              <div className="flex items-center gap-2">
+                <div className="h-0.5 w-10 rounded-full bg-gradient-to-r from-theme-red to-theme-yellow" />
+                <div className="h-0.5 w-4 rounded-full bg-theme-green/40" />
               </div>
+            </div>
+
+            {/* Corps */}
+            <div className="space-y-3 text-base leading-relaxed text-muted-foreground">
+              <p>
+                Votre générosité et votre dévouement transforment des vies.
+              </p>
+              <p>
+                Ensemble, nous prouvons que la solidarité n&apos;a pas de
+                frontières et que l&apos;humanité triomphe toujours.
+              </p>
+            </div>
+
+            {/* Aperçu équipe */}
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-3">
+                {volunteers.slice(0, 4).map((v) => (
+                  <Avatar
+                    key={v.id}
+                    className="size-10 border-2 border-background ring-2 ring-white/40 shadow-sm"
+                  >
+                    <AvatarImage src={v.image} alt={v.name} className="object-cover" />
+                    <AvatarFallback className="bg-gradient-to-br from-theme-red to-theme-yellow text-[10px] font-bold text-white">
+                      {v.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+                <div className="flex size-10 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-semibold text-muted-foreground shadow-sm">
+                  +{volunteers.length - 4}
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                et bien d&apos;autres encore
+              </p>
             </div>
           </div>
 
