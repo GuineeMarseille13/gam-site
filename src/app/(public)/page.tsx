@@ -26,6 +26,7 @@ import {
   useVolunteers,
   useFeaturedProducts,
   useVideoTestimonials,
+  useSocialMedias,
 } from "@/app/_hooks/use-home-data";
 import {
   CarouselSkeleton,
@@ -394,6 +395,7 @@ export default function Home() {
   const { data: volunteers = [], isLoading: isLoadingVolunteers } = useVolunteers();
   const { data: featuredProducts = [], isLoading: isLoadingProducts } = useFeaturedProducts();
   const { data: videoTestimonials = [] } = useVideoTestimonials();
+  const { data: socialMedias = [] } = useSocialMedias();
 
   const { add } = useCart();
   const router = useRouter();
@@ -627,7 +629,7 @@ export default function Home() {
         {isInitialLoading ? (
           <GAMSloganSkeleton />
         ) : (
-          <GAMSlogan />
+          <GAMSlogan socialMedias={socialMedias} />
         )}
       </div>
     </div>

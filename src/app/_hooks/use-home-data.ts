@@ -13,6 +13,7 @@ import {
   getVolunteers,
   getFeaturedProducts,
   getVideoTestimonials,
+  getSocialMedias,
   type CarouselItem,
   type Partner,
   type PoleItem,
@@ -22,6 +23,7 @@ import {
   type Volunteer,
   type Product,
   type VideoTestimonial,
+  type SocialMediaItem,
 } from '../_services/home';
 
 /**
@@ -109,6 +111,17 @@ export function useVideoTestimonials() {
     queryKey: ['video-testimonials'],
     queryFn: getVideoTestimonials,
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+/**
+ * Hook pour récupérer les réseaux sociaux (footer + page contact)
+ */
+export function useSocialMedias() {
+  return useQuery<SocialMediaItem[]>({
+    queryKey: ['social-medias'],
+    queryFn: getSocialMedias,
+    staleTime: 10 * 60 * 1000, // 10 min — données stables
   });
 }
 

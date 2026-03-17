@@ -284,6 +284,36 @@ export async function getVideoTestimonials(): Promise<VideoTestimonial[]> {
   }
 }
 
+export interface SocialMediaItem {
+  id: string
+  name: string
+  url: string
+  icon: string | null
+  order: number
+}
+
+/**
+ * Récupère les réseaux sociaux triés par ordre d'affichage.
+ */
+export async function getSocialMedias(): Promise<SocialMediaItem[]> {
+  try {
+    const orderBy = encodeURIComponent(JSON.stringify({ order: 'asc' }))
+    const response = await fetch(`/api/social-medias?orderBy=${orderBy}`, { cache: 'no-store' })
+    if (!response.ok) return []
+    const data = await response.json()
+    const items = Array.isArray(data) ? data : data?.data ?? []
+    return items.map((sm: any) => ({
+      id: sm.id,
+      name: sm.name,
+      url: sm.url,
+      icon: sm.icon ?? null,
+      order: sm.order ?? 0,
+    }))
+  } catch {
+    return []
+  }
+}
+
 /**
  * Récupère les produits en vedette
  */

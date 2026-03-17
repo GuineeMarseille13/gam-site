@@ -35,7 +35,7 @@ export function SocialMediaForm({ action, defaultValues }: SocialMediaFormProps)
             id="icon"
             name="icon"
             defaultValue={defaultValues?.icon ?? ""}
-            placeholder="ex: facebook, instagram, tiktok, linkedin"
+            placeholder="facebook · instagram · tiktok · linkedin · youtube · whatsapp · twitter"
           />
         </div>
       </div>
