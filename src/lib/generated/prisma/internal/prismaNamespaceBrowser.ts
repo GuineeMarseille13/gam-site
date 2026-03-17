@@ -83,6 +83,7 @@ export const ModelName = {
   Donation: 'Donation',
   Address: 'Address',
   Contact: 'Contact',
+  Popup: 'Popup',
   ContactSubmission: 'ContactSubmission',
   Order: 'Order',
   OrderItem: 'OrderItem',
@@ -563,6 +564,27 @@ export const ContactScalarFieldEnum = {
 } as const
 
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+
+export const PopupScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  isActive: 'isActive',
+  badge: 'badge',
+  title: 'title',
+  subtitle: 'subtitle',
+  description: 'description',
+  date: 'date',
+  location: 'location',
+  imageId: 'imageId',
+  ctaLabel: 'ctaLabel',
+  ctaUrl: 'ctaUrl',
+  prospectusIds: 'prospectusIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PopupScalarFieldEnum = (typeof PopupScalarFieldEnum)[keyof typeof PopupScalarFieldEnum]
 
 
 export const ContactSubmissionScalarFieldEnum = {

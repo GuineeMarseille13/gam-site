@@ -71,6 +71,14 @@ export const PaymentStatus = {
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
+export const PopupType = {
+  IMAGE_TEXT: 'IMAGE_TEXT',
+  PROSPECTUS: 'PROSPECTUS'
+} as const
+
+export type PopupType = (typeof PopupType)[keyof typeof PopupType]
+
+
 export const ContactSubmissionStatus = {
   PENDING: 'PENDING',
   READ: 'READ',

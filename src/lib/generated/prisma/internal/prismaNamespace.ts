@@ -416,6 +416,7 @@ export const ModelName = {
   Donation: 'Donation',
   Address: 'Address',
   Contact: 'Contact',
+  Popup: 'Popup',
   ContactSubmission: 'ContactSubmission',
   Order: 'Order',
   OrderItem: 'OrderItem',
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "contactSubmission" | "order" | "orderItem" | "payment" | "paymentHistory"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "contactSubmission" | "order" | "orderItem" | "payment" | "paymentHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2808,6 +2809,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Popup: {
+      payload: Prisma.$PopupPayload<ExtArgs>
+      fields: Prisma.PopupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PopupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PopupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        findFirst: {
+          args: Prisma.PopupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PopupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        findMany: {
+          args: Prisma.PopupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>[]
+        }
+        create: {
+          args: Prisma.PopupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        createMany: {
+          args: Prisma.PopupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PopupCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>[]
+        }
+        delete: {
+          args: Prisma.PopupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        update: {
+          args: Prisma.PopupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        deleteMany: {
+          args: Prisma.PopupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PopupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PopupUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>[]
+        }
+        upsert: {
+          args: Prisma.PopupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PopupPayload>
+        }
+        aggregate: {
+          args: Prisma.PopupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePopup>
+        }
+        groupBy: {
+          args: Prisma.PopupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PopupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PopupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PopupCountAggregateOutputType> | number
+        }
+      }
+    }
     ContactSubmission: {
       payload: Prisma.$ContactSubmissionPayload<ExtArgs>
       fields: Prisma.ContactSubmissionFieldRefs
@@ -3676,6 +3751,27 @@ export const ContactScalarFieldEnum = {
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
 
 
+export const PopupScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  isActive: 'isActive',
+  badge: 'badge',
+  title: 'title',
+  subtitle: 'subtitle',
+  description: 'description',
+  date: 'date',
+  location: 'location',
+  imageId: 'imageId',
+  ctaLabel: 'ctaLabel',
+  ctaUrl: 'ctaUrl',
+  prospectusIds: 'prospectusIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PopupScalarFieldEnum = (typeof PopupScalarFieldEnum)[keyof typeof PopupScalarFieldEnum]
+
+
 export const ContactSubmissionScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
@@ -3902,6 +3998,20 @@ export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'PopupType'
+ */
+export type EnumPopupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PopupType'>
+    
+
+
+/**
+ * Reference to a field of type 'PopupType[]'
+ */
+export type ListEnumPopupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PopupType[]'>
+    
+
+
+/**
  * Reference to a field of type 'ContactSubmissionStatus'
  */
 export type EnumContactSubmissionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactSubmissionStatus'>
@@ -4069,6 +4179,7 @@ export type GlobalOmitConfig = {
   donation?: Prisma.DonationOmit
   address?: Prisma.AddressOmit
   contact?: Prisma.ContactOmit
+  popup?: Prisma.PopupOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit

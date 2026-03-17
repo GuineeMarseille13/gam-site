@@ -3,6 +3,9 @@
     "allow": [
       "Bash(2)",
       "Bash(node -e \":*)"
+    ],
+    "additionalDirectories": [
+      "/Users/sidig/Documents/gam-front/src/app/(bureau)/bureau/popup/[id]"
     ]
   }
 }

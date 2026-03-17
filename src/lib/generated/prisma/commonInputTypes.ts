@@ -304,6 +304,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumPopupTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PopupType | Prisma.EnumPopupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel> | $Enums.PopupType
+}
+
+export type EnumPopupTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PopupType | Prisma.EnumPopupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPopupTypeWithAggregatesFilter<$PrismaModel> | $Enums.PopupType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel>
+}
+
 export type EnumContactSubmissionStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ContactSubmissionStatus | Prisma.EnumContactSubmissionStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ContactSubmissionStatus[] | Prisma.ListEnumContactSubmissionStatusFieldRefInput<$PrismaModel>
@@ -612,6 +629,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPopupTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PopupType | Prisma.EnumPopupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel> | $Enums.PopupType
+}
+
+export type NestedEnumPopupTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PopupType | Prisma.EnumPopupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PopupType[] | Prisma.ListEnumPopupTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPopupTypeWithAggregatesFilter<$PrismaModel> | $Enums.PopupType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPopupTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumContactSubmissionStatusFilter<$PrismaModel = never> = {

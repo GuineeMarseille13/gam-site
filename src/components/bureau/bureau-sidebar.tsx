@@ -23,6 +23,7 @@ import {
   IconHandClick,
   IconVideo,
   IconSlideshow,
+  IconSpeakerphone,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -55,6 +56,7 @@ const navigation = {
     { title: "Commandes", url: "/bureau/commandes", icon: IconShoppingCart },
   ],
   contenu: [
+    { title: "Popup / Annonce", url: "/bureau/popup", icon: IconSpeakerphone },
     { title: "Carousel",   url: "/bureau/carousel",   icon: IconSlideshow },
     { title: "Événements", url: "/bureau/evenements", icon: IconCalendarEvent },
     { title: "Pôles", url: "/bureau/poles", icon: IconLayoutGrid },
