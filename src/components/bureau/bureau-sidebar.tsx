@@ -13,8 +13,6 @@ import {
   IconHelp,
   IconMail,
   IconPackage,
-  IconPhoto,
-  IconSettings,
   IconShoppingCart,
   IconUsers,
   IconBuildingStore,
@@ -71,8 +69,6 @@ const navigation = {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Médias", url: "/bureau/medias", icon: IconPhoto },
-    { title: "Paramètres", url: "/bureau/parametres", icon: IconSettings },
     { title: "Aide", url: "/bureau/aide", icon: IconHelp },
   ],
 }
