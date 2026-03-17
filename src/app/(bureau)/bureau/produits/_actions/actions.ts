@@ -27,9 +27,9 @@ export async function createProduit(
     const imageId = await resolveImageId(formData)
     const price = Math.round(parseFloat(formData.get("price") as string) * 100)
     const stock = parseInt(formData.get("stock") as string) || 0
-    const isActive = formData.get("isActive") === "on"
+    const isActive = formData.get("isActive") === "true"
     const productCategoryId = (formData.get("productCategoryId") as string) || null
-    const discountActive = formData.get("discountActive") === "on"
+    const discountActive = formData.get("discountActive") === "true"
     const discountPercentRaw = formData.get("discountPercent") as string
     const discountPercent = discountActive && discountPercentRaw ? parseInt(discountPercentRaw) : null
 
@@ -59,9 +59,9 @@ export async function updateProduit(
     const imageId = await resolveImageId(formData)
     const price = Math.round(parseFloat(formData.get("price") as string) * 100)
     const stock = parseInt(formData.get("stock") as string) || 0
-    const isActive = formData.get("isActive") === "on"
+    const isActive = formData.get("isActive") === "true"
     const productCategoryId = (formData.get("productCategoryId") as string) || null
-    const discountActive = formData.get("discountActive") === "on"
+    const discountActive = formData.get("discountActive") === "true"
     const discountPercentRaw = formData.get("discountPercent") as string
     const discountPercent = discountActive && discountPercentRaw ? parseInt(discountPercentRaw) : null
 

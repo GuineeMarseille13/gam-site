@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useState } from "react"
+import { useActionState, useRef, useState } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,9 +8,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { SubmitButton } from "@/components/bureau/submit-button"
-import { ImageUploadField } from "@/components/bureau/image-upload-field"
 import { DateTimePicker } from "@/components/bureau/date-time-picker"
+import {
+  IconPhoto, IconUpload, IconX,
+  IconCalendar, IconMapPin, IconEye, IconEyeOff,
+} from "@tabler/icons-react"
 import type { ActionState } from "../_actions/actions"
+
+const CLOUD_NAME = "df3ymbrqe"
+const MAX_MB = 10
+
+function buildThumbUrl(imageId: string) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_800,h_600,c_fill,q_auto,f_auto/${imageId}`
+}
 
 interface EvenementFormProps {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
@@ -29,54 +39,202 @@ export function EvenementForm({ action, defaultValues }: EvenementFormProps) {
   const [state, formAction] = useActionState(action, null)
   const [published, setPublished] = useState(defaultValues?.published ?? false)
 
+  // Image upload state
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [preview,    setPreview]    = useState<string | null>(null)
+  const [existingId, setExistingId] = useState(defaultValues?.imageId ?? "")
+  const [sizeError,  setSizeError]  = useState<string | null>(null)
+
+  const displaySrc = preview ?? (existingId ? buildThumbUrl(existingId) : null)
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > MAX_MB * 1024 * 1024) {
+      setSizeError(`Fichier trop volumineux (${(file.size / 1024 / 1024).toFixed(1)} Mo). Max ${MAX_MB} Mo.`)
+      e.target.value = ""
+      return
+    }
+    setSizeError(null)
+    setPreview(URL.createObjectURL(file))
+    setExistingId("")
+  }
+
+  function handleRemove() {
+    setPreview(null)
+    setExistingId("")
+    if (fileRef.current) fileRef.current.value = ""
+  }
+
   return (
-    <form action={formAction} className="space-y-4 max-w-xl">
+    <form action={formAction} className="max-w-4xl">
       {state?.error && (
-        <p className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
+        <p className="mb-4 rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
           {state.error}
         </p>
       )}
-      <div className="space-y-2">
-        <Label htmlFor="title">Titre *</Label>
-        <Input id="title" name="title" required defaultValue={defaultValues?.title ?? ""} />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea id="description" name="description" rows={3} defaultValue={defaultValues?.description ?? ""} />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <DateTimePicker name="startDate" label="Date de début" defaultValue={defaultValues?.startDate} required />
-        <DateTimePicker name="endDate" label="Date de fin" defaultValue={defaultValues?.endDate} required />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="location">Lieu</Label>
-        <Input id="location" name="location" defaultValue={defaultValues?.location ?? ""} />
-      </div>
-      <ImageUploadField
-        defaultValue={defaultValues?.imageId}
-        label="Image de l'événement"
-      />
 
-      {/* Visibilité */}
-      <div className="flex items-center justify-between rounded-lg border p-3">
-        <div>
-          <p className="text-sm font-medium">Visible sur le site</p>
-          <p className="text-xs text-muted-foreground">
-            {published ? "L'événement est publié et visible par tous." : "L'événement est masqué au public."}
-          </p>
+      <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
+
+        {/* ── Colonne image ─────────────────────────────────────── */}
+        <div className="lg:col-span-2">
+          <div className="sticky top-6 space-y-3">
+            <p className="text-sm font-medium text-foreground">Image de l&apos;événement</p>
+
+            {/* Zone d'upload */}
+            <input
+              ref={fileRef}
+              type="file"
+              name="imageFile"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFile}
+            />
+            <input type="hidden" name="imageId" value={existingId} />
+
+            {sizeError && <p className="text-xs text-destructive">{sizeError}</p>}
+
+            {displaySrc ? (
+              <div className="group relative overflow-hidden rounded-2xl border bg-muted shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={displaySrc}
+                  alt="Aperçu"
+                  className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+                {/* Overlay au hover */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-gray-900 shadow backdrop-blur-sm transition hover:bg-white"
+                  >
+                    <IconUpload className="size-3.5" />
+                    Changer l&apos;image
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemove}
+                    className="inline-flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/80"
+                  >
+                    <IconX className="size-3.5" />
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="group flex aspect-[3/4] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60"
+              >
+                <div className="flex size-14 items-center justify-center rounded-2xl border border-dashed border-current opacity-40 transition-opacity group-hover:opacity-70">
+                  <IconPhoto className="size-7" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-medium">Cliquer pour choisir</p>
+                  <p className="mt-0.5 text-xs opacity-60">JPG, PNG, WebP — max {MAX_MB} Mo</p>
+                </div>
+              </button>
+            )}
+
+            <p className="text-[11px] text-muted-foreground">
+              Format recommandé : portrait 3/4 · min. 800 × 1000 px
+            </p>
+          </div>
         </div>
-        <Switch
-          checked={published}
-          onCheckedChange={setPublished}
-        />
-        <input type="hidden" name="published" value={String(published)} />
-      </div>
 
-      <div className="flex gap-2">
-        <SubmitButton>Enregistrer</SubmitButton>
-        <Button variant="outline" asChild>
-          <Link href="/bureau/evenements">Annuler</Link>
-        </Button>
+        {/* ── Colonne champs ────────────────────────────────────── */}
+        <div className="space-y-5 lg:col-span-3">
+
+          {/* Titre */}
+          <div className="space-y-1.5">
+            <Label htmlFor="title" className="text-sm font-medium">
+              Titre <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="title" name="title" required
+              defaultValue={defaultValues?.title ?? ""}
+              placeholder="Ex : Gala de bienfaisance 2026"
+              className="h-10"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-1.5">
+            <Label htmlFor="description" className="text-sm font-medium">Description</Label>
+            <Textarea
+              id="description" name="description"
+              rows={4}
+              defaultValue={defaultValues?.description ?? ""}
+              placeholder="Décrivez l'événement en quelques lignes…"
+              className="resize-none"
+            />
+          </div>
+
+          {/* Dates */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <IconCalendar className="size-4 text-muted-foreground" />
+              Dates
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <DateTimePicker name="startDate" label="Début" defaultValue={defaultValues?.startDate} required />
+              <DateTimePicker name="endDate"   label="Fin"   defaultValue={defaultValues?.endDate}   required />
+            </div>
+          </div>
+
+          {/* Lieu */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <IconMapPin className="size-4 text-muted-foreground" />
+              Lieu
+            </div>
+            <Input
+              id="location" name="location"
+              defaultValue={defaultValues?.location ?? ""}
+              placeholder="Ex : Salle des fêtes, Paris"
+              className="h-10"
+            />
+          </div>
+
+          {/* Visibilité */}
+          <div className={`flex items-center justify-between gap-4 rounded-xl border p-4 transition-colors ${
+            published ? "border-emerald-200 bg-emerald-50/50" : "border-border bg-muted/20"
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`flex size-9 items-center justify-center rounded-full ${
+                published ? "bg-emerald-100 text-emerald-600" : "bg-muted text-muted-foreground"
+              }`}>
+                {published
+                  ? <IconEye className="size-4" />
+                  : <IconEyeOff className="size-4" />
+                }
+              </div>
+              <div>
+                <p className="text-sm font-medium">
+                  {published ? "Publié" : "Brouillon"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {published
+                    ? "Visible par tous sur le site"
+                    : "Non visible au public pour l'instant"}
+                </p>
+              </div>
+            </div>
+            <Switch checked={published} onCheckedChange={setPublished} />
+            <input type="hidden" name="published" value={String(published)} />
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3 border-t pt-5">
+            <SubmitButton>Enregistrer</SubmitButton>
+            <Button variant="ghost" asChild>
+              <Link href="/bureau/evenements">Annuler</Link>
+            </Button>
+          </div>
+        </div>
+
       </div>
     </form>
   )
