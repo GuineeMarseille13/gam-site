@@ -205,6 +205,11 @@ export type Contact = Prisma.ContactModel
  */
 export type Popup = Prisma.PopupModel
 /**
+ * Model Banner
+ * 
+ */
+export type Banner = Prisma.BannerModel
+/**
  * Model ContactSubmission
  * 
  */

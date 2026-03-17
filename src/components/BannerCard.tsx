@@ -1,15 +1,19 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Marquee } from "@/components/Marquee";
-import { featuredEvent as defaultEvent, type FeaturedEvent } from "@/components/_config/event-promo.config";
+import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "motion/react"
+import { Marquee } from "@/components/Marquee"
+
+export interface BannerData {
+  badge?: string | null
+  title: string
+  date?: string | null
+  location?: string | null
+}
 
 export interface BannerCardProps {
-  /** Événement à afficher. Par défaut : featuredEvent de la config. */
-  event?: FeaturedEvent;
-  /** Seuil en px à partir duquel le bandeau passe en bas. Par défaut : 80. */
-  scrollThreshold?: number;
+  event?: BannerData | null
+  scrollThreshold?: number
 }
 
 function Separator() {
@@ -17,10 +21,10 @@ function Separator() {
     <span className="mx-6 text-white/40 select-none" aria-hidden>
       ✦
     </span>
-  );
+  )
 }
 
-function BannerItem({ event }: { event: FeaturedEvent }) {
+function BannerItem({ event }: { event: BannerData }) {
   return (
     <span className="flex items-center gap-4 text-base font-medium text-white whitespace-nowrap">
       {event.badge && (
@@ -29,28 +33,31 @@ function BannerItem({ event }: { event: FeaturedEvent }) {
         </span>
       )}
       <span className="font-bold text-[15px]">{event.title}</span>
-      <span className="flex items-center gap-1.5 text-white/90">
-        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        {event.date}
-      </span>
-      <span className="flex items-center gap-1.5 text-white/90">
-        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        {event.location}
-      </span>
+      {event.date && (
+        <span className="flex items-center gap-1.5 text-white/90">
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          {event.date}
+        </span>
+      )}
+      {event.location && (
+        <span className="flex items-center gap-1.5 text-white/90">
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {event.location}
+        </span>
+      )}
       <Separator />
     </span>
-  );
+  )
 }
 
-function BannerContent({ event }: { event: FeaturedEvent }) {
+function BannerContent({ event }: { event: BannerData }) {
   return (
     <div className="relative w-full py-2 overflow-hidden bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 shadow-md shadow-amber-400/30">
-      {/* Effet de brillance animé */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -66,7 +73,6 @@ function BannerContent({ event }: { event: FeaturedEvent }) {
         }
       `}</style>
 
-      {/* Dégradés bords */}
       <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-amber-500 to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-lime-500 to-transparent z-10 pointer-events-none" />
 
@@ -79,21 +85,22 @@ function BannerContent({ event }: { event: FeaturedEvent }) {
         <BannerItem event={event} />
       </Marquee>
     </div>
-  );
+  )
 }
 
-export default function BannerCard({ event = defaultEvent, scrollThreshold = 80 }: BannerCardProps) {
-  const [scrolled, setScrolled] = useState(false);
+export default function BannerCard({ event, scrollThreshold = 80 }: BannerCardProps) {
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > scrollThreshold);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > scrollThreshold)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [scrollThreshold])
+
+  if (!event) return null
 
   return (
     <>
-      {/* Position naturelle (en haut, dans le flux) — disparaît au scroll */}
       <AnimatePresence>
         {!scrolled && (
           <motion.div
@@ -107,7 +114,6 @@ export default function BannerCard({ event = defaultEvent, scrollThreshold = 80 
         )}
       </AnimatePresence>
 
-      {/* Position fixe en bas — apparaît au scroll */}
       <AnimatePresence>
         {scrolled && (
           <motion.div
@@ -123,5 +129,5 @@ export default function BannerCard({ event = defaultEvent, scrollThreshold = 80 
         )}
       </AnimatePresence>
     </>
-  );
+  )
 }

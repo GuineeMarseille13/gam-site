@@ -609,6 +609,18 @@ model Popup {
   @@map("popups")
 }
 
+model Banner {
+  id        String   @id @default(cuid())
+  isActive  Boolean  @default(false)
+  badge     String?
+  title     String
+  date      String?
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("banners")
+}
+
 enum ContactSubmissionStatus {
   PENDING
   READ

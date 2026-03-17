@@ -24,6 +24,7 @@ import {
   IconVideo,
   IconSlideshow,
   IconSpeakerphone,
+  IconLayoutNavbar,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -57,6 +58,7 @@ const navigation = {
   ],
   contenu: [
     { title: "Popup / Annonce", url: "/bureau/popup", icon: IconSpeakerphone },
+    { title: "Bandeau", url: "/bureau/bandeau", icon: IconLayoutNavbar },
     { title: "Carousel",   url: "/bureau/carousel",   icon: IconSlideshow },
     { title: "Événements", url: "/bureau/evenements", icon: IconCalendarEvent },
     { title: "Pôles", url: "/bureau/poles", icon: IconLayoutGrid },
