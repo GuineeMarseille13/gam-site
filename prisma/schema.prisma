@@ -584,7 +584,6 @@ enum ContactSubmissionStatus {
   PENDING
   READ
   REPLIED
-  ARCHIVED
 }
 
 model ContactSubmission {

@@ -18,14 +18,14 @@ function buildUrl(imageId: string, transformations = "") {
 
 interface CloudinaryImageProps {
   imageId: string | null | undefined
-  /** Alt text for accessibility */
   alt?: string
-  /** Thumbnail size in px shown in the table cell */
   thumbSize?: number
 }
 
 export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: CloudinaryImageProps) {
   const [open, setOpen] = useState(false)
+  const [thumbError, setThumbError] = useState(false)
+  const [fullError, setFullError] = useState(false)
 
   if (!imageId) {
     return (
@@ -40,6 +40,17 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
 
   const thumbUrl = buildUrl(imageId, `w_${thumbSize * 2},h_${thumbSize * 2},c_fill,q_auto,f_auto`)
   const fullUrl = buildUrl(imageId, "q_auto,f_auto,w_1200")
+
+  const placeholder = (
+    <div
+      className="flex items-center justify-center rounded bg-muted text-muted-foreground"
+      style={{ width: thumbSize, height: thumbSize }}
+    >
+      <IconPhoto className="h-4 w-4" />
+    </div>
+  )
+
+  if (thumbError) return placeholder
 
   return (
     <>
@@ -56,6 +67,8 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
           width={thumbSize}
           height={thumbSize}
           className="h-full w-full object-cover"
+          onError={() => setThumbError(true)}
+          unoptimized
         />
       </button>
 
@@ -63,13 +76,21 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <DialogTitle className="sr-only">{alt}</DialogTitle>
           <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-            <Image
-              src={fullUrl}
-              alt={alt}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 100vw, 800px"
-            />
+            {fullError ? (
+              <div className="flex h-full items-center justify-center text-muted-foreground">
+                <IconPhoto className="h-12 w-12" />
+              </div>
+            ) : (
+              <Image
+                src={fullUrl}
+                alt={alt}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 800px"
+                onError={() => setFullError(true)}
+                unoptimized
+              />
+            )}
           </div>
         </DialogContent>
       </Dialog>

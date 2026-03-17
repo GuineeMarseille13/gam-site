@@ -30,7 +30,7 @@ async function getEventsByYear(): Promise<EventsByYear> {
             {
               id: 1,
               type: "image",
-              url: `https://res.cloudinary.com/df3ymbrqe/image/upload/${event.imageId}`,
+              url: `https://res.cloudinary.com/df3ymbrqe/image/upload/f_auto,q_auto/${event.imageId}`,
               description: event.title,
             },
           ]

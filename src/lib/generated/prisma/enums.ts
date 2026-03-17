@@ -74,8 +74,7 @@ export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 export const ContactSubmissionStatus = {
   PENDING: 'PENDING',
   READ: 'READ',
-  REPLIED: 'REPLIED',
-  ARCHIVED: 'ARCHIVED'
+  REPLIED: 'REPLIED'
 } as const
 
 export type ContactSubmissionStatus = (typeof ContactSubmissionStatus)[keyof typeof ContactSubmissionStatus]
