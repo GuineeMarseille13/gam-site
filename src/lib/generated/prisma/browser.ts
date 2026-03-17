@@ -178,6 +178,11 @@ export type Address = Prisma.AddressModel
  */
 export type Contact = Prisma.ContactModel
 /**
+ * Model ContactSubmission
+ * 
+ */
+export type ContactSubmission = Prisma.ContactSubmissionModel
+/**
  * Model Order
  * 
  */

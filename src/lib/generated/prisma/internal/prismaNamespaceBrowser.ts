@@ -83,6 +83,7 @@ export const ModelName = {
   Donation: 'Donation',
   Address: 'Address',
   Contact: 'Contact',
+  ContactSubmission: 'ContactSubmission',
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
@@ -554,10 +555,30 @@ export const ContactScalarFieldEnum = {
   id: 'id',
   phone: 'phone',
   email: 'email',
-  addressId: 'addressId'
+  address: 'address',
+  city: 'city',
+  zipCode: 'zipCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+
+export const ContactSubmissionScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  subject: 'subject',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
 
 
 export const OrderScalarFieldEnum = {

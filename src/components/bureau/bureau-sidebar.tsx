@@ -11,6 +11,7 @@ import {
   IconHandStop,
   IconHeart,
   IconHelp,
+  IconMail,
   IconPackage,
   IconPhoto,
   IconSettings,
@@ -61,6 +62,7 @@ const navigation = {
     { title: "Produits", url: "/bureau/produits", icon: IconPackage },
     { title: "Témoignages vidéo", url: "/bureau/temoignages-video", icon: IconVideo },
     { title: "Statistiques", url: "/bureau/statistiques", icon: IconChartBar },
+    { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
     { title: "Médias", url: "/bureau/medias", icon: IconPhoto },

@@ -36,3 +36,20 @@ export interface FormFieldConfig {
   rows?: number;
 }
 
+export interface DbContact {
+  id: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  zipCode: string;
+}
+
+export interface DbSocialMedia {
+  id: string;
+  name: string;
+  url: string;
+  icon: string | null;
+  order: number;
+}
+

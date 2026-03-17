@@ -93,9 +93,11 @@ async function main() {
   console.log('📞 Creating contacts...')
   const contact = await prisma.contact.create({
     data: {
-      phone: '07-67-13-39-28',
+      phone: '+33 7 67 13 39 28',
       email: 'guineeamarseille13@gmail.com',
-      addressId: address1.id,
+      address: '2 Boulevard Louis Frangin',
+      city: 'Marseille',
+      zipCode: '13005',
     },
   })
 

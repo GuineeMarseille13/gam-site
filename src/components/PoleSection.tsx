@@ -28,7 +28,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
           const slug = slugify(pole.name);
           const staticMatch = staticPoles.find((s) => s.slug === slug);
           const image = pole.imageId
-            ? `${CLOUDINARY_BASE}/${pole.imageId}`
+            ? `${CLOUDINARY_BASE}/f_auto,q_auto/${pole.imageId}`
             : staticMatch?.image ?? staticPoles[index % staticPoles.length].image;
           return {
             key: pole.id,

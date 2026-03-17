@@ -568,12 +568,38 @@ model Address {
 }
 
 model Contact {
-  id          String   @id @default(cuid())
-  phone       String   // Numéro de téléphone de l'association
-  email       String   // Email de l'association      String   // Email de l'association
-  addressId   String   @unique
+  id        String   @id @default(cuid())
+  phone     String   // Numéro de téléphone de l'association
+  email     String   // Email de l'association
+  address   String   @default("") // Rue et numéro
+  city      String   @default("") // Ville
+  zipCode   String   @default("") // Code postal
 
- @@map("contacts")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("contacts")
+}
+
+enum ContactSubmissionStatus {
+  PENDING
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model ContactSubmission {
+  id        String                  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    ContactSubmissionStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("contact_submissions")
 }
 
 model Order {

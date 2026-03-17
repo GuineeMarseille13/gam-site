@@ -6,13 +6,15 @@ import ContactsHero from "@/components/contacts/ContactsHero";
 import ContactInfo from "./contact-info";
 import ContactForm from "./contact-form";
 import SuccessMessage from "@/components/contacts/SuccessMessage";
+import { DbContact, DbSocialMedia } from "../_types/contacts.types";
 
-export default function ContactsView() {
+interface ContactsViewProps {
+  contact: DbContact | null;
+  socialMedias: DbSocialMedia[];
+}
+
+export default function ContactsView({ contact, socialMedias }: ContactsViewProps) {
   const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-  };
 
   if (submitted) {
     return <SuccessMessage />;
@@ -21,8 +23,8 @@ export default function ContactsView() {
   return (
     <div className={STYLE_CONFIG.container}>
       <ContactsHero />
-      <ContactInfo />
-      <ContactForm onSubmit={handleSubmit} />
+      <ContactInfo contact={contact} socialMedias={socialMedias} />
+      <ContactForm onSubmit={() => setSubmitted(true)} />
     </div>
   );
 }

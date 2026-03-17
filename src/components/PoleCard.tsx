@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 interface PoleCardProps {
   image?: string;
@@ -16,13 +17,14 @@ interface PoleCardProps {
 }
 
 export const PoleCard = ({
-  image,
+  image: imageProp,
   title,
   description,
   slug,
   className,
   index = 0,
 }: PoleCardProps) => {
+  const [imgSrc, setImgSrc] = useState<string | undefined>(imageProp);
   return (
     <div className="pt-8 pb-4 px-4 sm:pt-10 sm:pb-6 sm:px-6 overflow-hidden">
       <Link href={`/poles/${slug}`} className="block">
@@ -130,19 +132,20 @@ export const PoleCard = ({
           >
             {/* Section image avec overlay - hauteur fixe identique pour toutes les images */}
             <div className="relative w-full h-[280px] overflow-hidden">
-              {image ? (
+              {imgSrc ? (
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
                   className="absolute inset-0 w-full h-full"
                 >
                   <Image
-                    src={image}
+                    src={imgSrc}
                     alt={title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover"
                     priority={index < 3}
+                    onError={() => setImgSrc(undefined)}
                   />
                 </motion.div>
               ) : (

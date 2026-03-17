@@ -34,13 +34,15 @@ const ContactForm = memo(function ContactForm({ onSubmit }: ContactFormProps) {
       return;
     }
 
-    // Ici, vous pouvez envoyer le formulaire à votre API
-    // Exemple: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(cleanFormData(formData)) })
-    
-    // Simulation d'envoi
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
+    const res = await fetch("/api/contact-submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cleanFormData(formData)),
+    });
+
     setIsSubmitting(false);
+
+    if (!res.ok) return;
     onSubmit();
   };
 
