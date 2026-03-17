@@ -4,7 +4,8 @@ import { BureauDataPage } from "@/components/bureau/bureau-data-page"
 import { Badge } from "@/components/ui/badge"
 import { ContactSubmissionStatus } from "@/lib/generated/prisma/enums"
 import { SubmissionActions } from "./_components/submission-actions"
-import { IconInbox, IconClock, IconMailCheck } from "@tabler/icons-react"
+import { StatusFilter, type FilterValue } from "./_components/status-filter"
+import { IconInbox } from "@tabler/icons-react"
 
 export const metadata: Metadata = { title: "Messages de contact" }
 
@@ -17,9 +18,9 @@ const STATUS: Record<ContactSubmissionStatus, {
   dot: string
   isPending: boolean
 }> = {
-  PENDING:  { label: "En attente", badge: "bg-amber-100 text-amber-700 border-amber-200",   border: "border-l-amber-400",   dot: "bg-amber-400",   isPending: true  },
-  READ:     { label: "Lu",         badge: "bg-blue-100 text-blue-700 border-blue-200",       border: "border-l-blue-400",    dot: "bg-blue-400",    isPending: false },
-  REPLIED:  { label: "Répondu",    badge: "bg-emerald-100 text-emerald-700 border-emerald-200", border: "border-l-emerald-400", dot: "bg-emerald-400", isPending: false },
+  PENDING:  { label: "En attente", badge: "bg-amber-100 text-amber-700 border-amber-200",       border: "border-l-amber-400",   dot: "bg-amber-400",   isPending: true  },
+  READ:     { label: "Lu",         badge: "bg-blue-100 text-blue-700 border-blue-200",           border: "border-l-blue-400",    dot: "bg-blue-400",    isPending: false },
+  REPLIED:  { label: "Répondu",    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",  border: "border-l-emerald-400", dot: "bg-emerald-400", isPending: false },
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -29,7 +30,7 @@ function getInitials(first: string, last: string) {
 }
 
 function formatDate(date: Date) {
-  const now = new Date()
+  const now  = new Date()
   const diff = now.getTime() - date.getTime()
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
@@ -41,42 +42,39 @@ function formatDate(date: Date) {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export default async function MessagesPage() {
-  const submissions = await prisma.contactSubmission.findMany({
-    orderBy: { createdAt: "desc" },
-  })
+export default async function MessagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>
+}) {
+  const { status: rawStatus } = await searchParams
+  const activeFilter = (
+    rawStatus && Object.keys(STATUS).includes(rawStatus) ? rawStatus : "ALL"
+  ) as FilterValue
 
-  const pendingCount  = submissions.filter((s) => s.status === "PENDING").length
-  const repliedCount  = submissions.filter((s) => s.status === "REPLIED").length
+  // Toutes les soumissions pour les compteurs
+  const all = await prisma.contactSubmission.findMany({ orderBy: { createdAt: "desc" } })
+
+  const counts: Record<FilterValue, number> = {
+    ALL:     all.length,
+    PENDING: all.filter((s) => s.status === "PENDING").length,
+    READ:    all.filter((s) => s.status === "READ").length,
+    REPLIED: all.filter((s) => s.status === "REPLIED").length,
+  }
+
+  // Soumissions filtrées pour l'affichage
+  const submissions = activeFilter === "ALL"
+    ? all
+    : all.filter((s) => s.status === activeFilter)
 
   return (
     <BureauDataPage
       title="Messages de contact"
-      description={`${submissions.length} message${submissions.length !== 1 ? "s" : ""} reçu${submissions.length !== 1 ? "s" : ""}`}
+      description={`${counts.ALL} message${counts.ALL !== 1 ? "s" : ""} reçu${counts.ALL !== 1 ? "s" : ""}`}
     >
-      {/* ── Stats ── */}
-      {submissions.length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm shadow-sm">
-            <IconInbox className="size-4 text-muted-foreground" />
-            <span className="font-medium">{submissions.length}</span>
-            <span className="text-muted-foreground">total</span>
-          </div>
-          {pendingCount > 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm shadow-sm">
-              <IconClock className="size-4 text-amber-600" />
-              <span className="font-medium text-amber-700">{pendingCount}</span>
-              <span className="text-amber-600">en attente</span>
-            </div>
-          )}
-          {repliedCount > 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm shadow-sm">
-              <IconMailCheck className="size-4 text-emerald-600" />
-              <span className="font-medium text-emerald-700">{repliedCount}</span>
-              <span className="text-emerald-600">répondu{repliedCount !== 1 ? "s" : ""}</span>
-            </div>
-          )}
-        </div>
+      {/* ── Filtres ── */}
+      {counts.ALL > 0 && (
+        <StatusFilter counts={counts} current={activeFilter} />
       )}
 
       {/* ── Liste ── */}
@@ -84,12 +82,14 @@ export default async function MessagesPage() {
         {submissions.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-muted-foreground">
             <IconInbox className="size-10 opacity-30" />
-            <p className="text-sm">Aucun message reçu</p>
+            <p className="text-sm">
+              {activeFilter === "ALL" ? "Aucun message reçu" : "Aucun message dans cette catégorie"}
+            </p>
           </div>
         ) : (
           <ul className="divide-y">
             {submissions.map((sub) => {
-              const cfg = STATUS[sub.status]
+              const cfg      = STATUS[sub.status]
               const initials = getInitials(sub.firstName, sub.lastName)
 
               return (
@@ -99,8 +99,10 @@ export default async function MessagesPage() {
                 >
                   {/* Avatar */}
                   <div className="shrink-0 mt-0.5">
-                    <div className={`flex size-9 sm:size-10 items-center justify-center rounded-full text-sm font-semibold text-white ${cfg.isPending ? "bg-amber-500" : "bg-muted-foreground/20 text-muted-foreground"}`}>
-                      {cfg.isPending ? initials : <span className="text-xs font-medium text-muted-foreground">{initials}</span>}
+                    <div className={`flex size-9 sm:size-10 items-center justify-center rounded-full text-sm font-semibold ${cfg.isPending ? "bg-amber-500 text-white" : "bg-muted-foreground/20"}`}>
+                      <span className={cfg.isPending ? "text-white" : "text-xs font-medium text-muted-foreground"}>
+                        {initials}
+                      </span>
                     </div>
                   </div>
 
@@ -109,7 +111,6 @@ export default async function MessagesPage() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
                       {/* Infos expéditeur + sujet */}
                       <div className="min-w-0 flex-1">
-                        {/* Nom — toujours bien visible */}
                         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                           <span className={`text-sm font-semibold ${cfg.isPending ? "text-foreground" : "text-foreground/90"}`}>
                             {sub.firstName} {sub.lastName}
@@ -124,7 +125,7 @@ export default async function MessagesPage() {
                           )}
                         </div>
 
-                        {/* Sujet — info clé */}
+                        {/* Sujet */}
                         <p className={`mt-1 text-sm ${cfg.isPending ? "font-semibold text-foreground" : "font-medium text-foreground/80"}`}>
                           {sub.subject}
                         </p>
