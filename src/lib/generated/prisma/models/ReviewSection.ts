@@ -1090,6 +1090,11 @@ export type ReviewSectionFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` ReviewSections.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ReviewSections.
+   */
   distinct?: Prisma.ReviewSectionScalarFieldEnum | Prisma.ReviewSectionScalarFieldEnum[]
 }
 

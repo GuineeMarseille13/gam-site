@@ -1262,6 +1262,11 @@ export type PartnerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Partners.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Partners.
+   */
   distinct?: Prisma.PartnerScalarFieldEnum | Prisma.PartnerScalarFieldEnum[]
 }
 

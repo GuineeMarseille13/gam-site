@@ -15,7 +15,7 @@ export function useCarousel({
 }: UseCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const next = useCallback(() => {
     setCurrentIndex(prev => {

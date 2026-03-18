@@ -1090,6 +1090,11 @@ export type EventSectionFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Skip the first `n` EventSections.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EventSections.
+   */
   distinct?: Prisma.EventSectionScalarFieldEnum | Prisma.EventSectionScalarFieldEnum[]
 }
 

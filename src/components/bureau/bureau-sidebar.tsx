@@ -23,6 +23,7 @@ import {
   IconSlideshow,
   IconSpeakerphone,
   IconLayoutNavbar,
+  IconShield,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -69,6 +70,7 @@ const navigation = {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
+    { title: "Utilisateurs", url: "/bureau/utilisateurs", icon: IconShield },
     { title: "Aide", url: "/bureau/aide", icon: IconHelp },
   ],
 }
@@ -120,8 +122,18 @@ function NavGroup({
   )
 }
 
-export function BureauSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface BureauSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  currentUser?: {
+    name: string
+    email: string
+    image: string
+  }
+}
+
+export function BureauSidebar({ currentUser, ...props }: BureauSidebarProps) {
   const pathname = usePathname()
+
+  const user = currentUser ?? navigation.user
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -169,7 +181,7 @@ export function BureauSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <NavUser user={navigation.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

@@ -1090,6 +1090,11 @@ export type AboutUsSectionFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` AboutUsSections.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of AboutUsSections.
+   */
   distinct?: Prisma.AboutUsSectionScalarFieldEnum | Prisma.AboutUsSectionScalarFieldEnum[]
 }
 

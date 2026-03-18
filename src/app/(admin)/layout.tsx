@@ -1,4 +1,7 @@
 import type { Metadata } from "next"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+import { auth } from "@/lib/auth"
 import { BureauSidebar } from "@/components/bureau/bureau-sidebar"
 import { BureauHeader } from "@/components/bureau/bureau-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -12,11 +15,21 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function BureauLayout({
+export default async function BureauLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await auth.api.getSession({ headers: await headers() })
+
+  if (!session) {
+    redirect("/connexion")
+  }
+
+  if (session.user.role !== "admin") {
+    redirect("/connexion?error=unauthorized")
+  }
+
   return (
     <SidebarProvider
       style={
@@ -26,7 +39,14 @@ export default function BureauLayout({
         } as React.CSSProperties
       }
     >
-      <BureauSidebar variant="inset" />
+      <BureauSidebar
+        variant="inset"
+        currentUser={{
+          name: session.user.name,
+          email: session.user.email,
+          image: session.user.image ?? "",
+        }}
+      />
       <SidebarInset>
         <BureauHeader />
         <main className="flex flex-1 flex-col">{children}</main>
