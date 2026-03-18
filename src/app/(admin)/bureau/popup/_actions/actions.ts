@@ -5,6 +5,7 @@ import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
+import { requireBureau } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -31,6 +32,7 @@ async function uploadMultiple(formData: FormData): Promise<string[]> {
 // ── Create ────────────────────────────────────────────────────────────────────
 
 export async function createPopup(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  await requireBureau()
   try {
     const type = formData.get("type") as "IMAGE_TEXT" | "PROSPECTUS"
     const isActive = formData.get("isActive") === "true"
@@ -72,6 +74,7 @@ export async function createPopup(_prev: ActionState, formData: FormData): Promi
 // ── Update ────────────────────────────────────────────────────────────────────
 
 export async function updatePopup(id: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
+  await requireBureau()
   try {
     const existing = await prisma.popup.findUnique({ where: { id } })
     if (!existing) return { error: "Popup introuvable" }
@@ -118,6 +121,7 @@ export async function updatePopup(id: string, _prev: ActionState, formData: Form
 // ── Delete ────────────────────────────────────────────────────────────────────
 
 export async function deletePopup(id: string) {
+  await requireBureau()
   const popup = await prisma.popup.findUnique({ where: { id } })
   await prisma.popup.delete({ where: { id } })
   if (popup?.imageId) await deleteImage(popup.imageId).catch(console.error)
@@ -131,6 +135,7 @@ export async function deletePopup(id: string) {
 // ── Toggle ────────────────────────────────────────────────────────────────────
 
 export async function togglePopupActive(id: string, isActive: boolean) {
+  await requireBureau()
   if (isActive) await prisma.popup.updateMany({ data: { isActive: false } })
   await prisma.popup.update({ where: { id }, data: { isActive } })
   revalidatePath("/bureau/popup")

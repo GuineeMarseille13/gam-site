@@ -5,6 +5,7 @@ import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
+import { requireBureau } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -21,6 +22,7 @@ export async function createPartenaire(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const name = formData.get("name") as string
     const description = (formData.get("description") as string) || null
@@ -48,6 +50,7 @@ export async function updatePartenaire(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const name = formData.get("name") as string
     const description = (formData.get("description") as string) || null
@@ -72,6 +75,7 @@ export async function updatePartenaire(
 }
 
 export async function deletePartenaire(id: string) {
+  await requireBureau()
   const partner = await prisma.partner.findUnique({ where: { id }, select: { imageId: true } })
   await prisma.partner.delete({ where: { id } })
   if (partner?.imageId) {

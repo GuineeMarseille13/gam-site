@@ -3,19 +3,12 @@
 import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/lib/auth"
-
-async function requireAdmin() {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || session.user.role !== "admin") {
-    throw new Error("Accès non autorisé")
-  }
-  return session
-}
+import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 
 // ── Lister les utilisateurs ────────────────────────────────────────────────────
 
 export async function listUsers() {
-  await requireAdmin()
+  await requireBureau()
   const result = await auth.api.listUsers({
     query: { limit: 100, sortBy: "createdAt", sortDirection: "desc" },
     headers: await headers(),

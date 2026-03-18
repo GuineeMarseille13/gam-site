@@ -5,6 +5,7 @@ import { uploadVideo } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
+import { requireBureau } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -28,6 +29,7 @@ export async function createVideoTemoignage(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const { url, thumbnail } = await resolveVideoSource(formData)
     const title = (formData.get("title") as string) || null
@@ -62,6 +64,7 @@ export async function updateVideoTemoignage(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const { url, thumbnail } = await resolveVideoSource(formData)
     const title = (formData.get("title") as string) || null
@@ -84,6 +87,7 @@ export async function updateVideoTemoignage(
 }
 
 export async function deleteVideoTemoignage(id: string) {
+  await requireBureau()
   await prisma.video.delete({ where: { id } })
   REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
 }

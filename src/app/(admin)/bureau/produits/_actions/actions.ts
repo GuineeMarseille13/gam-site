@@ -5,6 +5,7 @@ import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
+import { requireBureau } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -21,6 +22,7 @@ export async function createProduit(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const title = formData.get("title") as string
     const description = (formData.get("description") as string) || null
@@ -53,6 +55,7 @@ export async function updateProduit(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  await requireBureau()
   try {
     const title = formData.get("title") as string
     const description = (formData.get("description") as string) || null
@@ -82,6 +85,7 @@ export async function updateProduit(
 }
 
 export async function deleteProduit(id: string) {
+  await requireBureau()
   const product = await prisma.product.findUnique({ where: { id }, select: { imageId: true } })
   await prisma.product.delete({ where: { id } })
   if (product?.imageId) {

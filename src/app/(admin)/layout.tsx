@@ -26,7 +26,8 @@ export default async function BureauLayout({
     redirect("/connexion")
   }
 
-  if (session.user.role !== "admin") {
+  const allowedRoles = ["admin", "bureau"]
+  if (!allowedRoles.includes(session.user.role ?? "")) {
     redirect("/connexion?error=unauthorized")
   }
 

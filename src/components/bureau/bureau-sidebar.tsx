@@ -24,6 +24,7 @@ import {
   IconSpeakerphone,
   IconLayoutNavbar,
   IconShield,
+  IconUserCircle,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -70,7 +71,7 @@ const navigation = {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Utilisateurs", url: "/bureau/utilisateurs", icon: IconShield },
+    { title: "Utilisateurs", url: "/bureau/utilisateurs", icon: IconUserCircle },
     { title: "Aide", url: "/bureau/aide", icon: IconHelp },
   ],
 }

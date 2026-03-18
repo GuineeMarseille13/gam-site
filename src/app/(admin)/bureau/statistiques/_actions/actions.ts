@@ -3,10 +3,12 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { requireBureau } from "@/lib/auth-guard"
 
 const REVALIDATE_PATHS = ["/bureau/statistiques", "/"]
 
 export async function createStatistique(formData: FormData) {
+  await requireBureau()
   const label = (formData.get("label") as string) || null
   const valueRaw = formData.get("value") as string
   const value = valueRaw ? parseInt(valueRaw) : null
@@ -24,6 +26,7 @@ export async function createStatistique(formData: FormData) {
 }
 
 export async function updateStatistique(id: string, formData: FormData) {
+  await requireBureau()
   const label = (formData.get("label") as string) || null
   const valueRaw = formData.get("value") as string
   const value = valueRaw ? parseInt(valueRaw) : null
@@ -42,6 +45,7 @@ export async function updateStatistique(id: string, formData: FormData) {
 }
 
 export async function deleteStatistique(id: string) {
+  await requireBureau()
   await prisma.achievement.delete({ where: { id } })
   REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
 }

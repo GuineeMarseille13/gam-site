@@ -3,8 +3,10 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { requireBureau } from "@/lib/auth-guard"
 
 export async function createBenevole(formData: FormData) {
+  await requireBureau()
   const firstName = formData.get("firstName") as string
   const lastName = formData.get("lastName") as string
   const email = (formData.get("email") as string) || null
@@ -24,6 +26,7 @@ export async function createBenevole(formData: FormData) {
 }
 
 export async function updateBenevole(id: string, formData: FormData) {
+  await requireBureau()
   const isActive = formData.get("isActive") === "on"
 
   const volunteer = await prisma.volunteer.findUnique({ where: { id } })
@@ -49,6 +52,7 @@ export async function updateBenevole(id: string, formData: FormData) {
 }
 
 export async function deleteBenevole(id: string) {
+  await requireBureau()
   await prisma.volunteer.delete({ where: { id } })
   revalidatePath("/bureau/benevoles")
 }

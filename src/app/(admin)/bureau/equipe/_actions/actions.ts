@@ -3,8 +3,10 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { requireBureau } from "@/lib/auth-guard"
 
 export async function createMembreEquipe(formData: FormData) {
+  await requireBureau()
   const firstName = formData.get("firstName") as string
   const lastName = formData.get("lastName") as string
   const email = (formData.get("email") as string) || null
@@ -27,6 +29,7 @@ export async function createMembreEquipe(formData: FormData) {
 }
 
 export async function updateMembreEquipe(id: string, formData: FormData) {
+  await requireBureau()
   const member = await prisma.teamMember.findUnique({ where: { id } })
   if (!member) return
 
@@ -54,6 +57,7 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
 }
 
 export async function deleteMembreEquipe(id: string) {
+  await requireBureau()
   await prisma.teamMember.delete({ where: { id } })
   revalidatePath("/bureau/equipe")
 }

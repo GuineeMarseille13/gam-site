@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { requireBureau } from "@/lib/auth-guard"
 
 const REVALIDATE = ["/bureau/carousel", "/"]
 
@@ -15,6 +16,7 @@ function getPublicId(metadata: unknown): string | null {
 }
 
 export async function createCarouselSlide(formData: FormData) {
+  await requireBureau()
   const file = formData.get("imageFile") as File | null
   if (!file || file.size === 0) throw new Error("Image requise")
 
@@ -50,6 +52,7 @@ export async function createCarouselSlide(formData: FormData) {
 }
 
 export async function updateCarouselSlide(id: string, formData: FormData) {
+  await requireBureau()
   const file = formData.get("imageFile") as File | null
 
   if (file && file.size > 0) {
@@ -93,6 +96,7 @@ export async function updateCarouselSlide(id: string, formData: FormData) {
 }
 
 export async function deleteCarouselSlide(id: string) {
+  await requireBureau()
   const slide     = await prisma.image.findUniqueOrThrow({ where: { id } })
   const publicId  = getPublicId(slide.metadata)
   if (publicId) await deleteImage(publicId)
@@ -101,6 +105,7 @@ export async function deleteCarouselSlide(id: string) {
 }
 
 export async function toggleCarouselSlideActive(id: string, isActive: boolean) {
+  await requireBureau()
   await prisma.image.update({ where: { id }, data: { isActive } })
   REVALIDATE.forEach((p) => revalidatePath(p))
 }

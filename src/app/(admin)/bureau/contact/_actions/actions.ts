@@ -4,12 +4,14 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { ContactSubmissionStatus } from "@/lib/generated/prisma/enums"
+import { requireBureau } from "@/lib/auth-guard"
 
 const REVALIDATE_PATHS = ["/bureau/contact", "/contacts"]
 
 // ── Contact Info ──────────────────────────────────────────────────────────────
 
 export async function upsertContact(formData: FormData) {
+  await requireBureau()
   const phone = (formData.get("phone") as string) || ""
   const email = (formData.get("email") as string) || ""
   const address = (formData.get("address") as string) || ""
@@ -35,6 +37,7 @@ export async function upsertContact(formData: FormData) {
 // ── Social Media ──────────────────────────────────────────────────────────────
 
 export async function createSocialMedia(formData: FormData) {
+  await requireBureau()
   const name = (formData.get("name") as string) || ""
   const url = (formData.get("url") as string) || ""
   const icon = (formData.get("icon") as string) || null
@@ -47,6 +50,7 @@ export async function createSocialMedia(formData: FormData) {
 }
 
 export async function updateSocialMedia(id: string, formData: FormData) {
+  await requireBureau()
   const name = (formData.get("name") as string) || ""
   const url = (formData.get("url") as string) || ""
   const icon = (formData.get("icon") as string) || null
@@ -59,6 +63,7 @@ export async function updateSocialMedia(id: string, formData: FormData) {
 }
 
 export async function deleteSocialMedia(id: string) {
+  await requireBureau()
   await prisma.socialMedia.delete({ where: { id } })
   REVALIDATE_PATHS.forEach((p) => revalidatePath(p))
 }
@@ -66,11 +71,13 @@ export async function deleteSocialMedia(id: string) {
 // ── Contact Submissions ───────────────────────────────────────────────────────
 
 export async function updateSubmissionStatus(id: string, status: ContactSubmissionStatus) {
+  await requireBureau()
   await prisma.contactSubmission.update({ where: { id }, data: { status } })
   revalidatePath("/bureau/contact/messages")
 }
 
 export async function deleteSubmission(id: string) {
+  await requireBureau()
   await prisma.contactSubmission.delete({ where: { id } })
   revalidatePath("/bureau/contact/messages")
 }

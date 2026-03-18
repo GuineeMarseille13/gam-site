@@ -62,7 +62,7 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8 hover:bg-muted" disabled={isPending}>
+          <Button variant="ghost" size="icon" className="size-8 hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
             {isPending ? (
               <IconLoader2 className="size-4 animate-spin" />
             ) : (
