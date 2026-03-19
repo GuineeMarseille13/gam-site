@@ -73,8 +73,6 @@ export interface Volunteer {
   image: string;
   role?: string;
   initials: string;
-  order: number;
-  isActive: boolean;
 }
 
 export interface Product {
@@ -254,14 +252,14 @@ export async function getStatistics(): Promise<Statistic[]> {
 }
 
 /**
- * Récupère les bénévoles actifs
+ * Récupère les bénévoles à afficher sur le site public (showOnSite=true, avec photo)
  */
 export async function getVolunteers(): Promise<Volunteer[]> {
   try {
-    const response = await fetch('/api/volunteers', { cache: 'no-store' });
+    const response = await fetch('/api/volunteers/public', { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    return Array.isArray(data) ? data.filter((v: any) => v.isActive) : [];
+    return Array.isArray(data) ? data : [];
   } catch {
     return [];
   }

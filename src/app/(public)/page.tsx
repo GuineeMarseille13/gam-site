@@ -622,7 +622,7 @@ export default function Home() {
         {isLoadingVolunteers ? (
           <VolunteersSectionSkeleton />
         ) : (
-          <VolunteersSection />
+          <VolunteersSection volunteers={volunteers} />
         )}
         
         {/* Slogan GAM - Remplacé complètement par le skeleton pendant le chargement initial */}

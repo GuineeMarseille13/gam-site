@@ -180,6 +180,92 @@ export async function createBenevole(formData: FormData) {
   }
 }
 
+// ── Modifier un bénévole (table Person) ───────────────────────────────────────
+
+export async function updateBenevole(personId: string, formData: FormData) {
+  await requireAdmin()
+
+  const firstName = formData.get("firstName") as string
+  const lastName  = formData.get("lastName")  as string
+  const email     = formData.get("email")     as string | null
+  const phone     = formData.get("phone")     as string
+
+  const address    = (formData.get("address")  as string | null)?.trim() || null
+  const zipCode    = (formData.get("zipCode")  as string | null)?.trim() || null
+  const city       = (formData.get("city")     as string | null)?.trim() || null
+  const country    = (formData.get("country")  as string | null)?.trim() || "France"
+  const showOnSite = formData.get("showOnSite") !== "false"
+  const imageFile  = formData.get("imageFile") as File | null
+  const removeImage = formData.get("removeImage") === "true"
+
+  if (!firstName || !lastName || !phone) {
+    return { error: "Le prénom, le nom et le téléphone sont requis." }
+  }
+
+  const hasAddress = !!(address && zipCode && city)
+  if ((address || zipCode || city) && !hasAddress) {
+    return { error: "Pour enregistrer l'adresse, renseignez la rue, le code postal et la ville." }
+  }
+
+  try {
+    // Récupérer le bénévole existant pour son adresse actuelle
+    const existing = await prisma.person.findUnique({
+      where: { id: personId },
+      include: { address: true },
+    })
+    if (!existing) return { error: "Bénévole introuvable." }
+
+    // Upload nouvelle photo si fournie
+    let imageUrl: string | null | undefined = undefined
+    if (removeImage) {
+      imageUrl = null
+    } else if (imageFile && imageFile.size > 0) {
+      const result = await uploadImage(imageFile, "gam/persons")
+      imageUrl = result.url
+    }
+
+    // Gestion de l'adresse
+    let addressId: string | null = existing.addressId
+    if (hasAddress) {
+      if (existing.addressId) {
+        await prisma.address.update({
+          where: { id: existing.addressId },
+          data: { address: address!, zipCode: zipCode!, city: city!, country,
+            countryCode: country.toLowerCase() === "france" ? "FR" : country.slice(0, 2).toUpperCase() },
+        })
+      } else {
+        const addressRecord = await prisma.address.create({
+          data: {
+            address: address!, zipCode: zipCode!, city: city!, country, state: "",
+            countryCode: country.toLowerCase() === "france" ? "FR" : country.slice(0, 2).toUpperCase(),
+          },
+        })
+        addressId = addressRecord.id
+      }
+    } else {
+      addressId = null
+    }
+
+    await prisma.person.update({
+      where: { id: personId },
+      data: {
+        firstName,
+        lastName,
+        email:     email || null,
+        phone,
+        showOnSite,
+        addressId,
+        ...(imageUrl !== undefined ? { image: imageUrl } : {}),
+      },
+    })
+
+    revalidatePath("/bureau/utilisateurs")
+    return { success: true }
+  } catch {
+    return { error: "Erreur lors de la mise à jour du bénévole." }
+  }
+}
+
 // ── Supprimer un bénévole (table Person) ──────────────────────────────────────
 
 export async function deleteBenevole(personId: string) {

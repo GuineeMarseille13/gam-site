@@ -235,7 +235,7 @@ export default async function UtilisateursPage({
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-            <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_120px]">
+            <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]">
               <span>Bénévole</span>
               <span className="hidden sm:block">Téléphone</span>
               <span className="hidden sm:block">Email</span>
@@ -248,13 +248,28 @@ export default async function UtilisateursPage({
                 return (
                   <div
                     key={person.id}
-                    className="group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_120px]"
+                    className="group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]"
                   >
                     {/* Avatar + nom */}
                     <div className="flex min-w-0 items-center gap-3.5">
-                      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-100 to-violet-200 text-xs font-bold text-violet-800 ring-2 ring-border/50 dark:from-violet-900/40 dark:to-violet-800/40 dark:text-violet-300">
-                        {initials2}
-                      </div>
+                      {person.image ? (
+                        <div className="relative size-9 shrink-0">
+                          <Avatar className="size-9 ring-2 ring-border/50">
+                            <AvatarImage src={person.image} alt={`${person.firstName} ${person.lastName}`} className="object-cover" />
+                            <AvatarFallback className="bg-gradient-to-br from-violet-100 to-violet-200 text-xs font-bold text-violet-800 dark:from-violet-900/40 dark:to-violet-800/40 dark:text-violet-300">
+                              {initials2}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span
+                            className={`absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-background ${person.showOnSite ? "bg-emerald-400" : "bg-muted-foreground/40"}`}
+                            title={person.showOnSite ? "Visible sur le site" : "Masqué sur le site"}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-100 to-violet-200 text-xs font-bold text-violet-800 ring-2 ring-border/50 dark:from-violet-900/40 dark:to-violet-800/40 dark:text-violet-300">
+                          {initials2}
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-foreground">
                           {person.firstName} {person.lastName}

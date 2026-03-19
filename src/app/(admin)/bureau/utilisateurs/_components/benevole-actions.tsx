@@ -2,6 +2,7 @@
 
 import { useTransition, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { IconDotsVertical, IconTrash, IconLoader2 } from "@tabler/icons-react"
+import { IconDotsVertical, IconTrash, IconLoader2, IconPencil } from "@tabler/icons-react"
 import { deleteBenevole } from "../_actions/actions"
 
 interface BenevoleActionsProps {
@@ -36,10 +37,23 @@ export function BenevoleActions({ personId }: BenevoleActionsProps) {
     })
   }
 
+  const editHref = `/bureau/utilisateurs/benevole/${personId}/modifier`
+
   return (
     <>
-      {/* ── Desktop : bouton inline ───────────────────────────────────────── */}
-      <div className="hidden lg:flex items-center justify-end">
+      {/* ── Desktop : boutons inline ──────────────────────────────────────── */}
+      <div className="hidden lg:flex items-center justify-end gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+        >
+          <Link href={editHref}>
+            <IconPencil className="size-3.5" />
+            Modifier
+          </Link>
+        </Button>
         <Button
           variant="ghost"
           size="sm"
@@ -69,6 +83,12 @@ export function BenevoleActions({ personId }: BenevoleActionsProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href={editHref} className="flex items-center gap-2">
+                <IconPencil className="size-4" />
+                Modifier
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setShowDeleteModal(true)}
               className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
