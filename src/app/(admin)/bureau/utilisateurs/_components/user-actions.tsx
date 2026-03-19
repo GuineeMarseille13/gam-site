@@ -41,11 +41,8 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
 
   function handleBanToggle() {
     startTransition(async () => {
-      if (isBanned) {
-        await unbanUser(userId)
-      } else {
-        await banUser(userId)
-      }
+      if (isBanned) await unbanUser(userId)
+      else await banUser(userId)
       router.refresh()
     })
   }
@@ -60,51 +57,102 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
-            {isPending ? (
-              <IconLoader2 className="size-4 animate-spin" />
-            ) : (
-              <IconDotsVertical className="size-4" />
+      {/* ── Desktop : boutons inline ──────────────────────────────────────── */}
+      <div className="hidden lg:flex items-center justify-end gap-0.5">
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+          disabled={isPending}
+        >
+          <Link href={`/bureau/utilisateurs/${userId}/modifier`}>
+            <IconEdit className="size-3.5" />
+            Modifier
+          </Link>
+        </Button>
+
+        {!isSelf && (
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBanToggle}
+              disabled={isPending}
+              className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              {isPending ? (
+                <IconLoader2 className="size-3.5 animate-spin" />
+              ) : isBanned ? (
+                <IconCircleCheck className="size-3.5 text-emerald-600" />
+              ) : (
+                <IconBan className="size-3.5 text-amber-600" />
+              )}
+              {isBanned ? "Débannir" : "Bannir"}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowDeleteModal(true)}
+              disabled={isPending}
+              className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+            >
+              <IconTrash className="size-3.5" />
+              Supprimer
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* ── Mobile / tablette : dropdown ─────────────────────────────────── */}
+      <div className="flex lg:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
+              {isPending ? (
+                <IconLoader2 className="size-4 animate-spin" />
+              ) : (
+                <IconDotsVertical className="size-4" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem asChild className="focus:bg-muted focus:text-foreground cursor-pointer">
+              <Link href={`/bureau/utilisateurs/${userId}/modifier`}>
+                <IconEdit className="size-4" />
+                Modifier
+              </Link>
+            </DropdownMenuItem>
+
+            {!isSelf && (
+              <>
+                <DropdownMenuItem onClick={handleBanToggle} className="focus:bg-muted focus:text-foreground cursor-pointer">
+                  {isBanned ? (
+                    <><IconCircleCheck className="size-4 text-emerald-600" />Débannir</>
+                  ) : (
+                    <><IconBan className="size-4 text-amber-600" />Bannir</>
+                  )}
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={() => setShowDeleteModal(true)}
+                  className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
+                >
+                  <IconTrash className="size-4" />
+                  Supprimer
+                </DropdownMenuItem>
+              </>
             )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-44">
-          <DropdownMenuItem asChild className="focus:bg-muted focus:text-foreground cursor-pointer">
-            <Link href={`/bureau/utilisateurs/${userId}/modifier`}>
-              <IconEdit className="size-4" />
-              Modifier
-            </Link>
-          </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
-          {!isSelf && (
-            <>
-              <DropdownMenuItem onClick={handleBanToggle} className="focus:bg-muted focus:text-foreground cursor-pointer">
-                {isBanned ? (
-                  <><IconCircleCheck className="size-4 text-emerald-600" />Débannir</>
-                ) : (
-                  <><IconBan className="size-4 text-amber-600" />Bannir</>
-                )}
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem
-                onClick={() => setShowDeleteModal(true)}
-                className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
-              >
-                <IconTrash className="size-4" />
-                Supprimer
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
+      {/* ── Modale de confirmation ────────────────────────────────────────── */}
       <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
         <DialogContent className="max-w-sm gap-0 overflow-hidden p-0">
-          {/* Zone icône */}
           <div className="flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20">
             <div className="flex size-14 items-center justify-center rounded-2xl bg-rose-100 ring-4 ring-rose-100/60 dark:bg-rose-900/40 dark:ring-rose-900/20">
               <IconTrash className="size-6 text-rose-600 dark:text-rose-400" />
@@ -114,14 +162,12 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
             </DialogTitle>
           </div>
 
-          {/* Corps */}
           <div className="px-8 py-5">
             <DialogDescription className="text-center text-sm text-muted-foreground">
               Cette action est <span className="font-medium text-foreground">irréversible</span>. L&apos;utilisateur sera définitivement supprimé et perdra tout accès au dashboard.
             </DialogDescription>
           </div>
 
-          {/* Actions */}
           <DialogFooter className="flex-row gap-2 border-t px-8 py-5 sm:flex-row">
             <Button
               variant="outline"

@@ -15,7 +15,7 @@ import { IconPlus, IconUsers, IconCircleFilled, IconChevronDown, IconUserShield,
 import { listUsers, listBenevoles } from "./_actions/actions"
 import { UserActions } from "./_components/user-actions"
 import { BenevoleActions } from "./_components/benevole-actions"
-import { ROLES } from "./_components/roles"
+
 import { UserFilters } from "./_components/user-filters"
 
 export const metadata: Metadata = { title: "Utilisateurs" }
@@ -142,7 +142,7 @@ export default async function UtilisateursPage({
         <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
 
           {/* En-tête colonnes */}
-          <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto]">
+          <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_240px]">
             <span>Utilisateur</span>
             <span className="hidden sm:block">Rôle</span>
             <span className="hidden sm:block">Statut</span>
@@ -159,7 +159,7 @@ export default async function UtilisateursPage({
               return (
                 <div
                   key={user.id}
-                  className={`group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] ${banned ? "opacity-50" : ""}`}
+                  className={`group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_240px] ${banned ? "opacity-50" : ""}`}
                 >
                   {/* Avatar + nom + email */}
                   <div className="flex min-w-0 items-center gap-3.5">
@@ -235,7 +235,7 @@ export default async function UtilisateursPage({
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-            <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto]">
+            <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_120px]">
               <span>Bénévole</span>
               <span className="hidden sm:block">Téléphone</span>
               <span className="hidden sm:block">Email</span>
@@ -248,7 +248,7 @@ export default async function UtilisateursPage({
                 return (
                   <div
                     key={person.id}
-                    className="group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto]"
+                    className="group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_120px]"
                   >
                     {/* Avatar + nom */}
                     <div className="flex min-w-0 items-center gap-3.5">

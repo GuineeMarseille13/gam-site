@@ -38,27 +38,49 @@ export function BenevoleActions({ personId }: BenevoleActionsProps) {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
-            {isPending ? (
-              <IconLoader2 className="size-4 animate-spin" />
-            ) : (
-              <IconDotsVertical className="size-4" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-44">
-          <DropdownMenuItem
-            onClick={() => setShowDeleteModal(true)}
-            className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
-          >
-            <IconTrash className="size-4" />
-            Supprimer
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* ── Desktop : bouton inline ───────────────────────────────────────── */}
+      <div className="hidden lg:flex items-center justify-end">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowDeleteModal(true)}
+          disabled={isPending}
+          className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+        >
+          {isPending ? (
+            <IconLoader2 className="size-3.5 animate-spin" />
+          ) : (
+            <IconTrash className="size-3.5" />
+          )}
+          Supprimer
+        </Button>
+      </div>
 
+      {/* ── Mobile / tablette : dropdown ─────────────────────────────────── */}
+      <div className="flex lg:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
+              {isPending ? (
+                <IconLoader2 className="size-4 animate-spin" />
+              ) : (
+                <IconDotsVertical className="size-4" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem
+              onClick={() => setShowDeleteModal(true)}
+              className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
+            >
+              <IconTrash className="size-4" />
+              Supprimer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* ── Modale de confirmation ────────────────────────────────────────── */}
       <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
         <DialogContent className="max-w-sm gap-0 overflow-hidden p-0">
           <div className="flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20">
