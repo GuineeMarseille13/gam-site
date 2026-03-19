@@ -8,9 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IconAlertCircle, IconLoader2, IconEye, IconEyeOff } from "@tabler/icons-react"
 import { createUser, updateUser } from "../_actions/actions"
-import { ROLES } from "./roles"
-
-export { ROLES }
+import { DASHBOARD_ROLES } from "./roles"
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 
@@ -125,7 +123,7 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               aria-label={showPassword ? "Masquer" : "Afficher"}
             >
               {showPassword ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
@@ -144,7 +142,7 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
             <SelectValue placeholder="Choisir un rôle" />
           </SelectTrigger>
           <SelectContent position="popper" className="rounded-xl p-2 shadow-lg w-[var(--radix-select-trigger-width)]">
-            {ROLES.map((r) => (
+            {DASHBOARD_ROLES.map((r) => (
               <SelectItem
                 key={r.value}
                 value={r.value}
@@ -168,7 +166,7 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
         <Button
           type="submit"
           disabled={isPending}
-          className="gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm shadow-amber-500/20"
+          className="cursor-pointer gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm shadow-amber-500/20"
         >
           {isPending && <IconLoader2 className="size-4 animate-spin" />}
           {mode === "create" ? "Créer l'utilisateur" : "Enregistrer"}
@@ -178,7 +176,7 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
           variant="ghost"
           onClick={() => router.push("/bureau/utilisateurs")}
           disabled={isPending}
-          className="rounded-xl text-muted-foreground hover:text-foreground"
+          className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
         >
           Annuler
         </Button>

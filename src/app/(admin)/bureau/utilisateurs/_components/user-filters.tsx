@@ -25,6 +25,17 @@ export function UserFilters() {
     router.push(`${pathname}?${params.toString()}`)
   }
 
+  function setRole(value: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set("role", value)
+      if (value === "benevole") params.delete("statut")
+    } else {
+      params.delete("role")
+    }
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   function reset() {
     router.push(pathname)
   }
@@ -34,8 +45,8 @@ export function UserFilters() {
       {/* Filtre rôle */}
       <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
         <button
-          onClick={() => set("role", "")}
-          className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+          onClick={() => setRole("")}
+          className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
             !activeRole
               ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
               : "text-muted-foreground hover:text-foreground"
@@ -46,8 +57,8 @@ export function UserFilters() {
         {ROLES.map((r) => (
           <button
             key={r.value}
-            onClick={() => set("role", activeRole === r.value ? "" : r.value)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+            onClick={() => setRole(activeRole === r.value ? "" : r.value)}
+            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
               activeRole === r.value
                 ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground"
@@ -58,38 +69,40 @@ export function UserFilters() {
         ))}
       </div>
 
-      {/* Filtre statut */}
-      <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
-        <button
-          onClick={() => set("statut", "")}
-          className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-            !activeStatut
-              ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          Tous
-        </button>
-        {STATUTS.map((s) => (
+      {/* Filtre statut — masqué pour les bénévoles (pas de compte d'accès) */}
+      {activeRole !== "benevole" && (
+        <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
           <button
-            key={s.value}
-            onClick={() => set("statut", activeStatut === s.value ? "" : s.value)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-              activeStatut === s.value
+            onClick={() => set("statut", "")}
+            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+              !activeStatut
                 ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {s.label}
+            Tous
           </button>
-        ))}
-      </div>
+          {STATUTS.map((s) => (
+            <button
+              key={s.value}
+              onClick={() => set("statut", activeStatut === s.value ? "" : s.value)}
+              className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                activeStatut === s.value
+                  ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Reset */}
       {hasFilters && (
         <button
           onClick={reset}
-          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <IconX className="size-3.5" />
           Réinitialiser
