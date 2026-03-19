@@ -8,7 +8,7 @@ export default function NouveauPartenairePage() {
     <BureauDataPage title="Nouveau partenaire" description="Ajouter un nouveau partenaire">
       <Card>
         <CardContent className="pt-6">
-          <PartenaireForm action={createPartenaire} />
+          <PartenaireForm action={createPartenaire} submitLabel="Ajouter un partenaire" />
         </CardContent>
       </Card>
     </BureauDataPage>

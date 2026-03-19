@@ -26,10 +26,11 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
               lastName: person.lastName,
               email: person.email,
               phone: person.phone,
+              poste: member.poste,
               description: member.description,
               imageId: member.imageId,
               order: member.order,
-              isActive: member.isActive,
+              showOnSite: member.showOnSite,
             }}
           />
         </CardContent>

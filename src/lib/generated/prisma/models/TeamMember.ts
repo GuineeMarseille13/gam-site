@@ -37,10 +37,11 @@ export type TeamMemberSumAggregateOutputType = {
 export type TeamMemberMinAggregateOutputType = {
   id: string | null
   personId: string | null
+  poste: string | null
   description: string | null
   imageId: string | null
   order: number | null
-  isActive: boolean | null
+  showOnSite: boolean | null
   teamMemberSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,10 +50,11 @@ export type TeamMemberMinAggregateOutputType = {
 export type TeamMemberMaxAggregateOutputType = {
   id: string | null
   personId: string | null
+  poste: string | null
   description: string | null
   imageId: string | null
   order: number | null
-  isActive: boolean | null
+  showOnSite: boolean | null
   teamMemberSectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,10 +63,11 @@ export type TeamMemberMaxAggregateOutputType = {
 export type TeamMemberCountAggregateOutputType = {
   id: number
   personId: number
+  poste: number
   description: number
   imageId: number
   order: number
-  isActive: number
+  showOnSite: number
   teamMemberSectionId: number
   createdAt: number
   updatedAt: number
@@ -83,10 +86,11 @@ export type TeamMemberSumAggregateInputType = {
 export type TeamMemberMinAggregateInputType = {
   id?: true
   personId?: true
+  poste?: true
   description?: true
   imageId?: true
   order?: true
-  isActive?: true
+  showOnSite?: true
   teamMemberSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -95,10 +99,11 @@ export type TeamMemberMinAggregateInputType = {
 export type TeamMemberMaxAggregateInputType = {
   id?: true
   personId?: true
+  poste?: true
   description?: true
   imageId?: true
   order?: true
-  isActive?: true
+  showOnSite?: true
   teamMemberSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -107,10 +112,11 @@ export type TeamMemberMaxAggregateInputType = {
 export type TeamMemberCountAggregateInputType = {
   id?: true
   personId?: true
+  poste?: true
   description?: true
   imageId?: true
   order?: true
-  isActive?: true
+  showOnSite?: true
   teamMemberSectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -206,10 +212,11 @@ export type TeamMemberGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type TeamMemberGroupByOutputType = {
   id: string
   personId: string
+  poste: string | null
   description: string | null
   imageId: string | null
   order: number
-  isActive: boolean
+  showOnSite: boolean
   teamMemberSectionId: string | null
   createdAt: Date
   updatedAt: Date
@@ -241,10 +248,11 @@ export type TeamMemberWhereInput = {
   NOT?: Prisma.TeamMemberWhereInput | Prisma.TeamMemberWhereInput[]
   id?: Prisma.StringFilter<"TeamMember"> | string
   personId?: Prisma.StringFilter<"TeamMember"> | string
+  poste?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   description?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   imageId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   order?: Prisma.IntFilter<"TeamMember"> | number
-  isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
+  showOnSite?: Prisma.BoolFilter<"TeamMember"> | boolean
   teamMemberSectionId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -254,10 +262,11 @@ export type TeamMemberWhereInput = {
 export type TeamMemberOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  poste?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  showOnSite?: Prisma.SortOrder
   teamMemberSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -270,10 +279,11 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TeamMemberWhereInput | Prisma.TeamMemberWhereInput[]
   OR?: Prisma.TeamMemberWhereInput[]
   NOT?: Prisma.TeamMemberWhereInput | Prisma.TeamMemberWhereInput[]
+  poste?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   description?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   imageId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   order?: Prisma.IntFilter<"TeamMember"> | number
-  isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
+  showOnSite?: Prisma.BoolFilter<"TeamMember"> | boolean
   teamMemberSectionId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -283,10 +293,11 @@ export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
 export type TeamMemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  poste?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  showOnSite?: Prisma.SortOrder
   teamMemberSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -303,10 +314,11 @@ export type TeamMemberScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TeamMemberScalarWhereWithAggregatesInput | Prisma.TeamMemberScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TeamMember"> | string
   personId?: Prisma.StringWithAggregatesFilter<"TeamMember"> | string
+  poste?: Prisma.StringNullableWithAggregatesFilter<"TeamMember"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"TeamMember"> | string | null
   imageId?: Prisma.StringNullableWithAggregatesFilter<"TeamMember"> | string | null
   order?: Prisma.IntWithAggregatesFilter<"TeamMember"> | number
-  isActive?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
+  showOnSite?: Prisma.BoolWithAggregatesFilter<"TeamMember"> | boolean
   teamMemberSectionId?: Prisma.StringNullableWithAggregatesFilter<"TeamMember"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
@@ -315,10 +327,11 @@ export type TeamMemberScalarWhereWithAggregatesInput = {
 export type TeamMemberCreateInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberSection?: Prisma.TeamMemberSectionCreateNestedOneWithoutTeamMembersInput
@@ -327,10 +340,11 @@ export type TeamMemberCreateInput = {
 export type TeamMemberUncheckedCreateInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -339,10 +353,11 @@ export type TeamMemberUncheckedCreateInput = {
 export type TeamMemberUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberSection?: Prisma.TeamMemberSectionUpdateOneWithoutTeamMembersNestedInput
@@ -351,10 +366,11 @@ export type TeamMemberUpdateInput = {
 export type TeamMemberUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   teamMemberSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -363,10 +379,11 @@ export type TeamMemberUncheckedUpdateInput = {
 export type TeamMemberCreateManyInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -375,10 +392,11 @@ export type TeamMemberCreateManyInput = {
 export type TeamMemberUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -386,10 +404,11 @@ export type TeamMemberUpdateManyMutationInput = {
 export type TeamMemberUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   teamMemberSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,10 +427,11 @@ export type TeamMemberOrderByRelationAggregateInput = {
 export type TeamMemberCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  poste?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  showOnSite?: Prisma.SortOrder
   teamMemberSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -424,10 +444,11 @@ export type TeamMemberAvgOrderByAggregateInput = {
 export type TeamMemberMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  poste?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  showOnSite?: Prisma.SortOrder
   teamMemberSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -436,10 +457,11 @@ export type TeamMemberMaxOrderByAggregateInput = {
 export type TeamMemberMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   personId?: Prisma.SortOrder
+  poste?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageId?: Prisma.SortOrder
   order?: Prisma.SortOrder
-  isActive?: Prisma.SortOrder
+  showOnSite?: Prisma.SortOrder
   teamMemberSectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -494,10 +516,11 @@ export type TeamMemberUncheckedUpdateManyWithoutTeamMemberSectionNestedInput = {
 export type TeamMemberCreateWithoutTeamMemberSectionInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -505,10 +528,11 @@ export type TeamMemberCreateWithoutTeamMemberSectionInput = {
 export type TeamMemberUncheckedCreateWithoutTeamMemberSectionInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -545,10 +569,11 @@ export type TeamMemberScalarWhereInput = {
   NOT?: Prisma.TeamMemberScalarWhereInput | Prisma.TeamMemberScalarWhereInput[]
   id?: Prisma.StringFilter<"TeamMember"> | string
   personId?: Prisma.StringFilter<"TeamMember"> | string
+  poste?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   description?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   imageId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   order?: Prisma.IntFilter<"TeamMember"> | number
-  isActive?: Prisma.BoolFilter<"TeamMember"> | boolean
+  showOnSite?: Prisma.BoolFilter<"TeamMember"> | boolean
   teamMemberSectionId?: Prisma.StringNullableFilter<"TeamMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TeamMember"> | Date | string
@@ -557,10 +582,11 @@ export type TeamMemberScalarWhereInput = {
 export type TeamMemberCreateManyTeamMemberSectionInput = {
   id?: string
   personId: string
+  poste?: string | null
   description?: string | null
   imageId?: string | null
   order?: number
-  isActive?: boolean
+  showOnSite?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -568,10 +594,11 @@ export type TeamMemberCreateManyTeamMemberSectionInput = {
 export type TeamMemberUpdateWithoutTeamMemberSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -579,10 +606,11 @@ export type TeamMemberUpdateWithoutTeamMemberSectionInput = {
 export type TeamMemberUncheckedUpdateWithoutTeamMemberSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -590,10 +618,11 @@ export type TeamMemberUncheckedUpdateWithoutTeamMemberSectionInput = {
 export type TeamMemberUncheckedUpdateManyWithoutTeamMemberSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   personId?: Prisma.StringFieldUpdateOperationsInput | string
+  poste?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -603,10 +632,11 @@ export type TeamMemberUncheckedUpdateManyWithoutTeamMemberSectionInput = {
 export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   personId?: boolean
+  poste?: boolean
   description?: boolean
   imageId?: boolean
   order?: boolean
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -616,10 +646,11 @@ export type TeamMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   personId?: boolean
+  poste?: boolean
   description?: boolean
   imageId?: boolean
   order?: boolean
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -629,10 +660,11 @@ export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   personId?: boolean
+  poste?: boolean
   description?: boolean
   imageId?: boolean
   order?: boolean
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -642,16 +674,17 @@ export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type TeamMemberSelectScalar = {
   id?: boolean
   personId?: boolean
+  poste?: boolean
   description?: boolean
   imageId?: boolean
   order?: boolean
-  isActive?: boolean
+  showOnSite?: boolean
   teamMemberSectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "personId" | "description" | "imageId" | "order" | "isActive" | "teamMemberSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
+export type TeamMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "personId" | "poste" | "description" | "imageId" | "order" | "showOnSite" | "teamMemberSectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
 export type TeamMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberSection?: boolean | Prisma.TeamMember$teamMemberSectionArgs<ExtArgs>
 }
@@ -670,10 +703,11 @@ export type $TeamMemberPayload<ExtArgs extends runtime.Types.Extensions.Internal
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     personId: string
+    poste: string | null
     description: string | null
     imageId: string | null
     order: number
-    isActive: boolean
+    showOnSite: boolean
     teamMemberSectionId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1103,10 +1137,11 @@ export interface Prisma__TeamMemberClient<T, Null = never, ExtArgs extends runti
 export interface TeamMemberFieldRefs {
   readonly id: Prisma.FieldRef<"TeamMember", 'String'>
   readonly personId: Prisma.FieldRef<"TeamMember", 'String'>
+  readonly poste: Prisma.FieldRef<"TeamMember", 'String'>
   readonly description: Prisma.FieldRef<"TeamMember", 'String'>
   readonly imageId: Prisma.FieldRef<"TeamMember", 'String'>
   readonly order: Prisma.FieldRef<"TeamMember", 'Int'>
-  readonly isActive: Prisma.FieldRef<"TeamMember", 'Boolean'>
+  readonly showOnSite: Prisma.FieldRef<"TeamMember", 'Boolean'>
   readonly teamMemberSectionId: Prisma.FieldRef<"TeamMember", 'String'>
   readonly createdAt: Prisma.FieldRef<"TeamMember", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TeamMember", 'DateTime'>

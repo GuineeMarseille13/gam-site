@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconMapPin } from "@tabler/icons-react"
 import { updateBenevole } from "../_actions/actions"
-import { AvatarUpload } from "./avatar-upload"
+import { AvatarUpload } from "@/components/bureau/avatar-upload"
 
 interface BenevoleEditFormProps {
   person: {

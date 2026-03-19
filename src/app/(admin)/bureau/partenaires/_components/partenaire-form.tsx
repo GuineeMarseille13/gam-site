@@ -20,6 +20,7 @@ function buildThumbUrl(imageId: string) {
 
 interface PartenaireFormProps {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
+  submitLabel?: string
   defaultValues?: {
     name?: string
     description?: string | null
@@ -29,7 +30,7 @@ interface PartenaireFormProps {
   }
 }
 
-export function PartenaireForm({ action, defaultValues }: PartenaireFormProps) {
+export function PartenaireForm({ action, submitLabel = "Enregistrer", defaultValues }: PartenaireFormProps) {
   const [state, formAction] = useActionState(action, null)
   const [published, setPublished] = useState(defaultValues?.published ?? false)
 
@@ -191,7 +192,7 @@ export function PartenaireForm({ action, defaultValues }: PartenaireFormProps) {
           </div>
 
           <div className="flex flex-wrap gap-3 border-t pt-5">
-            <SubmitButton>Enregistrer</SubmitButton>
+            <SubmitButton>{submitLabel}</SubmitButton>
             <Button variant="ghost" asChild>
               <Link href="/bureau/partenaires">Annuler</Link>
             </Button>

@@ -8,7 +8,7 @@ export default function NouveauBenevolePage() {
     <BureauDataPage title="Nouveau bénévole" description="Ajouter un bénévole à l'équipe">
       <Card>
         <CardContent className="pt-6">
-          <BenevoleForm action={createBenevole} />
+          <BenevoleForm action={createBenevole} submitLabel="Ajouter un bénévole" />
         </CardContent>
       </Card>
     </BureauDataPage>

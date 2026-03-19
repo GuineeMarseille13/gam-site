@@ -16,7 +16,7 @@ export default async function ModifierPartenairePage({ params }: { params: Promi
     <BureauDataPage title="Modifier le partenaire" description={partner.name}>
       <Card>
         <CardContent className="pt-6">
-          <PartenaireForm action={action} defaultValues={partner} />
+          <PartenaireForm action={action} submitLabel="Enregistrer les modifications" defaultValues={partner} />
         </CardContent>
       </Card>
     </BureauDataPage>

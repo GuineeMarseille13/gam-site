@@ -10,7 +10,10 @@ export default async function ModifierBenevolePage({ params }: { params: Promise
   const volunteer = await prisma.volunteer.findUnique({ where: { id } })
   if (!volunteer) notFound()
 
-  const person = await prisma.person.findUnique({ where: { id: volunteer.personId } })
+  const person = await prisma.person.findUnique({
+    where: { id: volunteer.personId },
+    include: { address: true },
+  })
   if (!person) notFound()
 
   const action = updateBenevole.bind(null, volunteer.id)
@@ -21,12 +24,18 @@ export default async function ModifierBenevolePage({ params }: { params: Promise
         <CardContent className="pt-6">
           <BenevoleForm
             action={action}
+            submitLabel="Enregistrer les modifications"
             defaultValues={{
               firstName: person.firstName,
               lastName: person.lastName,
               email: person.email,
               phone: person.phone,
-              isActive: volunteer.isActive,
+              showOnSite: person.showOnSite,
+              imageUrl: person.image,
+              address: person.address?.address,
+              zipCode: person.address?.zipCode,
+              city: person.address?.city,
+              country: person.address?.country,
             }}
           />
         </CardContent>

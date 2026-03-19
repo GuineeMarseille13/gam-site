@@ -2,10 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(2)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(find /Users/sidig/Documents/gam-front/src -name *upload* -o -name *cloudinary*)",
+      "Bash(ls -la /Users/sidig/Documents/gam-front/src/app/\\\\\\(public\\\\\\))",
+      "Bash(head -100 /Users/sidig/Documents/gam-front/src/app/\\\\\\(public\\\\\\)/page.tsx)"
     ],
     "additionalDirectories": [
-      "/Users/sidig/Documents/gam-front/src/app/(bureau)/bureau/popup/[id]"
+      "/Users/sidig/Documents/gam-front/src/app/(bureau)/bureau/popup/[id]",
+      "/Users/sidig/Documents/gam-front/src/app/(admin)/bureau/utilisateurs/benevole/[id]"
     ]
   }
 }

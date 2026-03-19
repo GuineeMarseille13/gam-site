@@ -441,10 +441,11 @@ export type TeamMemberSectionScalarFieldEnum = (typeof TeamMemberSectionScalarFi
 export const TeamMemberScalarFieldEnum = {
   id: 'id',
   personId: 'personId',
+  poste: 'poste',
   description: 'description',
   imageId: 'imageId',
   order: 'order',
-  isActive: 'isActive',
+  showOnSite: 'showOnSite',
   teamMemberSectionId: 'teamMemberSectionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

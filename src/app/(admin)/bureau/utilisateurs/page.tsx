@@ -235,10 +235,10 @@ export default async function UtilisateursPage({
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-            <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]">
               <span>Bénévole</span>
               <span className="hidden sm:block">Téléphone</span>
-              <span className="hidden sm:block">Email</span>
+              <span className="hidden lg:block">Email</span>
               <span />
             </div>
 
@@ -248,9 +248,9 @@ export default async function UtilisateursPage({
                 return (
                   <div
                     key={person.id}
-                    className="group grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]"
+                    className="group grid grid-cols-[1fr_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_200px]"
                   >
-                    {/* Avatar + nom */}
+                    {/* Avatar + nom + infos contextuelles */}
                     <div className="flex min-w-0 items-center gap-3.5">
                       {person.image ? (
                         <div className="relative size-9 shrink-0">
@@ -278,17 +278,27 @@ export default async function UtilisateursPage({
                           <IconCircleFilled className="size-1.5 text-violet-500" />
                           Bénévole
                         </span>
+                        {/* Téléphone — mobile uniquement */}
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground sm:hidden">
+                          <IconPhone className="size-3 shrink-0" />{person.phone}
+                        </p>
+                        {/* Email — mobile + sm */}
+                        {person.email && (
+                          <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground lg:hidden">
+                            <IconMail className="size-3 shrink-0" />{person.email}
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    {/* Téléphone */}
+                    {/* Téléphone — sm+ */}
                     <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground">
                       <IconPhone className="size-3.5 shrink-0" />
                       <span className="truncate">{person.phone}</span>
                     </div>
 
-                    {/* Email */}
-                    <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground">
+                    {/* Email — lg+ */}
+                    <div className="hidden lg:flex items-center gap-1.5 text-sm text-muted-foreground">
                       {person.email ? (
                         <><IconMail className="size-3.5 shrink-0" /><span className="truncate">{person.email}</span></>
                       ) : (

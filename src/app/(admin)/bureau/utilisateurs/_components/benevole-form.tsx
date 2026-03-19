@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconMapPin } from "@tabler/icons-react"
 import { createBenevole } from "../_actions/actions"
-import { AvatarUpload } from "./avatar-upload"
+import { AvatarUpload } from "@/components/bureau/avatar-upload"
 
 export function BenevoleForm() {
   const router = useRouter()
