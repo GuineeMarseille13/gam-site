@@ -23,7 +23,6 @@ import {
   IconSlideshow,
   IconSpeakerphone,
   IconLayoutNavbar,
-  IconShield,
   IconUserCircle,
 } from "@tabler/icons-react"
 
@@ -42,7 +41,20 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 
-const navigation = {
+type NavItem = {
+  title: string
+  url: string
+  icon: React.ElementType
+  adminOnly?: boolean
+}
+
+const navigation: {
+  user: { name: string; email: string; avatar: string }
+  main: NavItem[]
+  paiements: NavItem[]
+  contenu: NavItem[]
+  admin: NavItem[]
+} = {
   user: {
     name: "Administrateur",
     email: "admin@gam.fr",
@@ -59,7 +71,7 @@ const navigation = {
   contenu: [
     { title: "Popup / Annonce", url: "/bureau/popup", icon: IconSpeakerphone },
     { title: "Bandeau", url: "/bureau/bandeau", icon: IconLayoutNavbar },
-    { title: "Carousel",   url: "/bureau/carousel",   icon: IconSlideshow },
+    { title: "Carousel", url: "/bureau/carousel", icon: IconSlideshow },
     { title: "Événements", url: "/bureau/evenements", icon: IconCalendarEvent },
     { title: "Pôles", url: "/bureau/poles", icon: IconLayoutGrid },
     { title: "Équipe", url: "/bureau/equipe", icon: IconUsers },
@@ -71,7 +83,7 @@ const navigation = {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Utilisateurs", url: "/bureau/utilisateurs", icon: IconUserCircle },
+    { title: "Utilisateurs", url: "/bureau/utilisateurs", icon: IconUserCircle, adminOnly: true },
     { title: "Aide", url: "/bureau/aide", icon: IconHelp },
   ],
 }
@@ -80,11 +92,17 @@ function NavGroup({
   label,
   items,
   pathname,
+  role,
 }: {
   label?: string
-  items: { title: string; url: string; icon: React.ElementType }[]
+  items: NavItem[]
   pathname: string
+  role?: string
 }) {
+  const visibleItems = items.filter((item) => !item.adminOnly || role === "admin")
+
+  if (visibleItems.length === 0) return null
+
   return (
     <SidebarGroup>
       {label && (
@@ -94,7 +112,7 @@ function NavGroup({
       )}
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => {
+          {visibleItems.map((item) => {
             const isActive =
               item.url === "/bureau"
                 ? pathname === "/bureau"
@@ -129,9 +147,10 @@ interface BureauSidebarProps extends React.ComponentProps<typeof Sidebar> {
     email: string
     image: string
   }
+  role?: string
 }
 
-export function BureauSidebar({ currentUser, ...props }: BureauSidebarProps) {
+export function BureauSidebar({ currentUser, role, ...props }: BureauSidebarProps) {
   const pathname = usePathname()
 
   const user = currentUser ?? navigation.user
@@ -161,13 +180,13 @@ export function BureauSidebar({ currentUser, ...props }: BureauSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavGroup items={navigation.main} pathname={pathname} />
+        <NavGroup items={navigation.main} pathname={pathname} role={role} />
         <SidebarSeparator className="mx-3" />
-        <NavGroup label="Paiements" items={navigation.paiements} pathname={pathname} />
+        <NavGroup label="Paiements" items={navigation.paiements} pathname={pathname} role={role} />
         <SidebarSeparator className="mx-3" />
-        <NavGroup label="Contenu du site" items={navigation.contenu} pathname={pathname} />
+        <NavGroup label="Contenu du site" items={navigation.contenu} pathname={pathname} role={role} />
         <SidebarSeparator className="mx-3" />
-        <NavGroup label="Administration" items={navigation.admin} pathname={pathname} />
+        <NavGroup label="Administration" items={navigation.admin} pathname={pathname} role={role} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
@@ -182,7 +201,7 @@ export function BureauSidebar({ currentUser, ...props }: BureauSidebarProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <NavUser user={user} />
+        <NavUser user={user} role={role} />
       </SidebarFooter>
     </Sidebar>
   )

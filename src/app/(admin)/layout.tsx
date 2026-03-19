@@ -47,6 +47,7 @@ export default async function BureauLayout({
           email: session.user.email,
           image: session.user.image ?? "",
         }}
+        role={session.user.role ?? undefined}
       />
       <SidebarInset>
         <BureauHeader />

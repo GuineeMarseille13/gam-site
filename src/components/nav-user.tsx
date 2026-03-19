@@ -36,8 +36,10 @@ function initials(name: string) {
 
 export function NavUser({
   user,
+  role,
 }: {
   user: { name: string; email: string; avatar?: string; image?: string }
+  role?: string
 }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
@@ -97,14 +99,17 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
 
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem asChild>
-              <a href="/bureau/utilisateurs">
-                <IconUserCircle className="size-4" />
-                Gérer les utilisateurs
-              </a>
-            </DropdownMenuItem>
+            {role === "admin" && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <a href="/bureau/utilisateurs">
+                    <IconUserCircle className="size-4" />
+                    Gérer les utilisateurs
+                  </a>
+                </DropdownMenuItem>
+              </>
+            )}
 
             <DropdownMenuSeparator />
 
