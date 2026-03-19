@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconMapPin } from "@tabler/icons-react"
 import { createBenevole } from "../_actions/actions"
+import { AvatarUpload } from "./avatar-upload"
 
 export function BenevoleForm() {
   const router = useRouter()
@@ -34,6 +35,14 @@ export function BenevoleForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Photo de profil */}
+      <AvatarUpload
+        withVisibilityToggle
+        placeholderClass="from-violet-100 to-violet-200 text-violet-600"
+      />
+
+      <div className="border-t" />
+
       {/* Erreur */}
       {error && (
         <div className="flex items-center gap-2.5 rounded-xl border border-rose-200/60 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800/40 dark:bg-rose-950/30 dark:text-rose-400">

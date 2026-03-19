@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { IconAlertCircle, IconLoader2, IconEye, IconEyeOff } from "@tabler/icons-react"
 import { createUser, updateUser } from "../_actions/actions"
 import { DASHBOARD_ROLES } from "./roles"
+import { AvatarUpload } from "./avatar-upload"
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 
@@ -55,6 +56,14 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Photo de profil */}
+      <AvatarUpload
+        withVisibilityToggle={false}
+        placeholderClass="from-amber-100 to-amber-200 text-amber-600"
+      />
+
+      <div className="border-t" />
+
       {/* Erreur */}
       {error && (
         <div className="flex items-center gap-2.5 rounded-xl border border-rose-200/60 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800/40 dark:bg-rose-950/30 dark:text-rose-400">
@@ -148,9 +157,9 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
                 value={r.value}
                 className="rounded-lg px-3 py-2.5 focus:bg-amber-50 focus:text-amber-900 data-[state=checked]:bg-amber-50 data-[state=checked]:text-amber-900 dark:focus:bg-amber-950/40 dark:focus:text-amber-300"
               >
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-medium">{r.label}</span>
-                  <span className="text-xs text-muted-foreground">{r.description}</span>
+                  <span className="text-[10px] text-muted-foreground">{r.description}</span>
                 </div>
               </SelectItem>
             ))}

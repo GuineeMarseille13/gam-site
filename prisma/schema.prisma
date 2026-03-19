@@ -388,6 +388,8 @@ model Person {
   phone       String   // Numéro de téléphone de la personne
   addressId   String?  // ID de l'adresse de la personne
   roles       Role[]   @default([VOLUNTEER]) // Rôles de la personne
+  image       String?  // Photo de profil (URL Cloudinary)
+  showOnSite  Boolean  @default(true) // Afficher la photo sur le site public
 
   donations Donation[] // Donations de la personne
   memberShips MemberShip[] // Cotisations de la personne

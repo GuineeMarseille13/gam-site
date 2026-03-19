@@ -6,6 +6,7 @@ import { Role } from "@/lib/generated/prisma/client"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
+import { uploadImage } from "@/lib/cloudinary"
 
 // ── Lister les utilisateurs ────────────────────────────────────────────────────
 
@@ -70,9 +71,8 @@ export async function updateUser(formData: FormData) {
   }
 
   try {
-    // Update role via admin API
     await auth.api.setRole({
-      body: { userId, role },
+      body: { userId, role: role as "admin" | "user" },
       headers: await headers(),
     })
     revalidatePath("/bureau/utilisateurs")
@@ -122,10 +122,12 @@ export async function createBenevole(formData: FormData) {
   const email     = formData.get("email")     as string | null
   const phone     = formData.get("phone")     as string
 
-  const address = (formData.get("address") as string | null)?.trim() || null
-  const zipCode = (formData.get("zipCode") as string | null)?.trim() || null
-  const city    = (formData.get("city")    as string | null)?.trim() || null
-  const country = (formData.get("country") as string | null)?.trim() || "France"
+  const address    = (formData.get("address")  as string | null)?.trim() || null
+  const zipCode    = (formData.get("zipCode")  as string | null)?.trim() || null
+  const city       = (formData.get("city")     as string | null)?.trim() || null
+  const country    = (formData.get("country")  as string | null)?.trim() || "France"
+  const showOnSite = formData.get("showOnSite") !== "false"
+  const imageFile  = formData.get("imageFile") as File | null
 
   if (!firstName || !lastName || !phone) {
     return { error: "Le prénom, le nom et le téléphone sont requis." }
@@ -138,6 +140,13 @@ export async function createBenevole(formData: FormData) {
   }
 
   try {
+    // Upload photo si fournie
+    let imageUrl: string | null = null
+    if (imageFile && imageFile.size > 0) {
+      const result = await uploadImage(imageFile, "gam/persons")
+      imageUrl = result.url
+    }
+
     const addressRecord = hasAddress
       ? await prisma.address.create({
           data: {
@@ -155,10 +164,12 @@ export async function createBenevole(formData: FormData) {
       data: {
         firstName,
         lastName,
-        email:     email || null,
+        email:      email || null,
         phone,
-        roles:     ["VOLUNTEER"],
-        addressId: addressRecord?.id ?? null,
+        roles:      ["VOLUNTEER"],
+        addressId:  addressRecord?.id ?? null,
+        image:      imageUrl,
+        showOnSite,
       },
     })
 
