@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { BureauDataPage } from "@/components/bureau/bureau-data-page"
 import { Card, CardContent } from "@/components/ui/card"
 import { prisma } from "@/lib/prisma"
-import { BenevoleEditForm } from "../../../_components/benevole-edit-form"
+import { BenevoleForm } from "../../../_components/benevole-form"
 
 export const metadata: Metadata = { title: "Modifier le bénévole" }
 
@@ -24,24 +24,25 @@ export default async function ModifierBenevolePage({
   return (
     <BureauDataPage
       title="Modifier le bénévole"
-      description={`Modifier les informations de ${person.firstName} ${person.lastName}`}
+      description={`${person.firstName} ${person.lastName}`}
     >
-      <Card className="max-w-lg">
+      <Card>
         <CardContent className="pt-6">
-          <BenevoleEditForm
-            person={{
-              id: person.id,
-              firstName: person.firstName,
-              lastName: person.lastName,
-              email: person.email,
-              phone: person.phone,
-              image: person.image,
+          <BenevoleForm
+            mode="edit"
+            defaultValues={{
+              id:         person.id,
+              firstName:  person.firstName,
+              lastName:   person.lastName,
+              phone:      person.phone,
+              email:      person.email,
+              imageUrl:   person.image,
               showOnSite: person.showOnSite,
-              address: person.address
+              address:    person.address
                 ? {
                     address: person.address.address,
                     zipCode: person.address.zipCode,
-                    city: person.address.city,
+                    city:    person.address.city,
                     country: person.address.country,
                   }
                 : null,

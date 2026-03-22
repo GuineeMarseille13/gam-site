@@ -11,9 +11,9 @@ export default function NouveauBenevolePage() {
       title="Nouveau bénévole"
       description="Ajoutez un bénévole dans la base de contacts de l'association"
     >
-      <Card className="max-w-lg">
+      <Card>
         <CardContent className="pt-6">
-          <BenevoleForm />
+          <BenevoleForm mode="create" />
         </CardContent>
       </Card>
     </BureauDataPage>
