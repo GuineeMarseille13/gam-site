@@ -66,7 +66,7 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
           className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
           disabled={isPending}
         >
-          <Link href={`/bureau/utilisateurs/${userId}/modifier`}>
+          <Link href={`/bureau/membres/${userId}/modifier`}>
             <IconEdit className="size-3.5" />
             Modifier
           </Link>
@@ -119,7 +119,7 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem asChild className="focus:bg-muted focus:text-foreground cursor-pointer">
-              <Link href={`/bureau/utilisateurs/${userId}/modifier`}>
+              <Link href={`/bureau/membres/${userId}/modifier`}>
                 <IconEdit className="size-4" />
                 Modifier
               </Link>

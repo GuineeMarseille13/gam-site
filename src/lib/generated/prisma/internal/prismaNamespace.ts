@@ -3949,9 +3949,11 @@ export const PersonScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   addressId: 'addressId',
+  userId: 'userId',
   roles: 'roles',
   image: 'image',
   showOnSite: 'showOnSite',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

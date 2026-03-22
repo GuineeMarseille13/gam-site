@@ -37,7 +37,7 @@ export function BenevoleActions({ personId }: BenevoleActionsProps) {
     })
   }
 
-  const editHref = `/bureau/utilisateurs/benevole/${personId}/modifier`
+  const editHref = `/bureau/membres/benevole/${personId}/modifier`
 
   return (
     <>

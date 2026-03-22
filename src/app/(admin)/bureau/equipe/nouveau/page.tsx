@@ -5,10 +5,10 @@ import { EquipeForm } from "../_components/equipe-form"
 
 export default function NouveauMembrePage() {
   return (
-    <BureauDataPage title="Nouveau membre" description="Ajouter un membre à l'équipe">
+    <BureauDataPage title="Nouveau membre" description="Créez un compte bureau et ajoutez-le à l'équipe">
       <Card>
         <CardContent className="pt-6">
-          <EquipeForm action={createMembreEquipe} />
+          <EquipeForm mode="create" createAction={createMembreEquipe} />
         </CardContent>
       </Card>
     </BureauDataPage>

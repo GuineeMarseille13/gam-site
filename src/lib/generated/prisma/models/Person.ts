@@ -31,8 +31,10 @@ export type PersonMinAggregateOutputType = {
   email: string | null
   phone: string | null
   addressId: string | null
+  userId: string | null
   image: string | null
   showOnSite: boolean | null
+  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,8 +46,10 @@ export type PersonMaxAggregateOutputType = {
   email: string | null
   phone: string | null
   addressId: string | null
+  userId: string | null
   image: string | null
   showOnSite: boolean | null
+  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,9 +61,11 @@ export type PersonCountAggregateOutputType = {
   email: number
   phone: number
   addressId: number
+  userId: number
   roles: number
   image: number
   showOnSite: number
+  description: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -73,8 +79,10 @@ export type PersonMinAggregateInputType = {
   email?: true
   phone?: true
   addressId?: true
+  userId?: true
   image?: true
   showOnSite?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -86,8 +94,10 @@ export type PersonMaxAggregateInputType = {
   email?: true
   phone?: true
   addressId?: true
+  userId?: true
   image?: true
   showOnSite?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -99,9 +109,11 @@ export type PersonCountAggregateInputType = {
   email?: true
   phone?: true
   addressId?: true
+  userId?: true
   roles?: true
   image?: true
   showOnSite?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -186,9 +198,11 @@ export type PersonGroupByOutputType = {
   email: string | null
   phone: string
   addressId: string | null
+  userId: string | null
   roles: $Enums.Role[]
   image: string | null
   showOnSite: boolean
+  description: string | null
   createdAt: Date
   updatedAt: Date
   _count: PersonCountAggregateOutputType | null
@@ -221,9 +235,11 @@ export type PersonWhereInput = {
   email?: Prisma.StringNullableFilter<"Person"> | string | null
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
+  userId?: Prisma.StringNullableFilter<"Person"> | string | null
   roles?: Prisma.EnumRoleNullableListFilter<"Person">
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
+  description?: Prisma.StringNullableFilter<"Person"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Person"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Person"> | Date | string
   donations?: Prisma.DonationListRelationFilter
@@ -241,9 +257,11 @@ export type PersonOrderByWithRelationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   donations?: Prisma.DonationOrderByRelationAggregateInput
@@ -256,6 +274,7 @@ export type PersonOrderByWithRelationInput = {
 
 export type PersonWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId?: string
   AND?: Prisma.PersonWhereInput | Prisma.PersonWhereInput[]
   OR?: Prisma.PersonWhereInput[]
   NOT?: Prisma.PersonWhereInput | Prisma.PersonWhereInput[]
@@ -267,6 +286,7 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   roles?: Prisma.EnumRoleNullableListFilter<"Person">
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
+  description?: Prisma.StringNullableFilter<"Person"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Person"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Person"> | Date | string
   donations?: Prisma.DonationListRelationFilter
@@ -275,7 +295,7 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
-}, "id">
+}, "id" | "userId">
 
 export type PersonOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -284,9 +304,11 @@ export type PersonOrderByWithAggregationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PersonCountOrderByAggregateInput
@@ -304,9 +326,11 @@ export type PersonScalarWhereWithAggregatesInput = {
   email?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   phone?: Prisma.StringWithAggregatesFilter<"Person"> | string
   addressId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   roles?: Prisma.EnumRoleNullableListFilter<"Person">
   image?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolWithAggregatesFilter<"Person"> | boolean
+  description?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Person"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Person"> | Date | string
 }
@@ -317,9 +341,11 @@ export type PersonCreateInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -337,9 +363,11 @@ export type PersonUncheckedCreateInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -355,9 +383,11 @@ export type PersonUpdateInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -375,9 +405,11 @@ export type PersonUncheckedUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -394,9 +426,11 @@ export type PersonCreateManyInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -407,9 +441,11 @@ export type PersonUpdateManyMutationInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -421,9 +457,11 @@ export type PersonUncheckedUpdateManyInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,9 +481,11 @@ export type PersonCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   roles?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -457,8 +497,10 @@ export type PersonMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -470,8 +512,10 @@ export type PersonMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -629,9 +673,11 @@ export type PersonCreateWithoutMemberShipsInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -648,9 +694,11 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -681,9 +729,11 @@ export type PersonUpdateWithoutMemberShipsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -700,9 +750,11 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -717,9 +769,11 @@ export type PersonCreateWithoutDonationsInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
@@ -736,9 +790,11 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
@@ -769,9 +825,11 @@ export type PersonUpdateWithoutDonationsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
@@ -788,9 +846,11 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
@@ -805,9 +865,11 @@ export type PersonCreateWithoutAddressInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -823,9 +885,11 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -871,9 +935,11 @@ export type PersonScalarWhereInput = {
   email?: Prisma.StringNullableFilter<"Person"> | string | null
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
+  userId?: Prisma.StringNullableFilter<"Person"> | string | null
   roles?: Prisma.EnumRoleNullableListFilter<"Person">
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
+  description?: Prisma.StringNullableFilter<"Person"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Person"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Person"> | Date | string
 }
@@ -884,9 +950,11 @@ export type PersonCreateWithoutOrdersInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -903,9 +971,11 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -936,9 +1006,11 @@ export type PersonUpdateWithoutOrdersInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -955,9 +1027,11 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -972,9 +1046,11 @@ export type PersonCreateWithoutPaymentsInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -991,9 +1067,11 @@ export type PersonUncheckedCreateWithoutPaymentsInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -1024,9 +1102,11 @@ export type PersonUpdateWithoutPaymentsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -1043,9 +1123,11 @@ export type PersonUncheckedUpdateWithoutPaymentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -1060,9 +1142,11 @@ export type PersonCreateWithoutPaymentHistoriesInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
@@ -1079,9 +1163,11 @@ export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
   email?: string | null
   phone: string
   addressId?: string | null
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
@@ -1112,9 +1198,11 @@ export type PersonUpdateWithoutPaymentHistoriesInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -1131,9 +1219,11 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -1148,9 +1238,11 @@ export type PersonCreateManyAddressInput = {
   lastName: string
   email?: string | null
   phone: string
+  userId?: string | null
   roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1161,9 +1253,11 @@ export type PersonUpdateWithoutAddressInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
@@ -1179,9 +1273,11 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
@@ -1197,9 +1293,11 @@ export type PersonUncheckedUpdateManyWithoutAddressInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1278,9 +1376,11 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   email?: boolean
   phone?: boolean
   addressId?: boolean
+  userId?: boolean
   roles?: boolean
   image?: boolean
   showOnSite?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
@@ -1299,9 +1399,11 @@ export type PersonSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   email?: boolean
   phone?: boolean
   addressId?: boolean
+  userId?: boolean
   roles?: boolean
   image?: boolean
   showOnSite?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
@@ -1314,9 +1416,11 @@ export type PersonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   email?: boolean
   phone?: boolean
   addressId?: boolean
+  userId?: boolean
   roles?: boolean
   image?: boolean
   showOnSite?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
@@ -1329,14 +1433,16 @@ export type PersonSelectScalar = {
   email?: boolean
   phone?: boolean
   addressId?: boolean
+  userId?: boolean
   roles?: boolean
   image?: boolean
   showOnSite?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "roles" | "image" | "showOnSite" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
+export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "userId" | "roles" | "image" | "showOnSite" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
 export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
@@ -1370,9 +1476,11 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     email: string | null
     phone: string
     addressId: string | null
+    userId: string | null
     roles: $Enums.Role[]
     image: string | null
     showOnSite: boolean
+    description: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["person"]>
@@ -1810,9 +1918,11 @@ export interface PersonFieldRefs {
   readonly email: Prisma.FieldRef<"Person", 'String'>
   readonly phone: Prisma.FieldRef<"Person", 'String'>
   readonly addressId: Prisma.FieldRef<"Person", 'String'>
+  readonly userId: Prisma.FieldRef<"Person", 'String'>
   readonly roles: Prisma.FieldRef<"Person", 'Role[]'>
   readonly image: Prisma.FieldRef<"Person", 'String'>
   readonly showOnSite: Prisma.FieldRef<"Person", 'Boolean'>
+  readonly description: Prisma.FieldRef<"Person", 'String'>
   readonly createdAt: Prisma.FieldRef<"Person", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Person", 'DateTime'>
 }

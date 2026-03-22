@@ -18,7 +18,7 @@ import { BenevoleActions } from "./_components/benevole-actions"
 
 import { UserFilters } from "./_components/user-filters"
 
-export const metadata: Metadata = { title: "Utilisateurs" }
+export const metadata: Metadata = { title: "Membres" }
 
 const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }> = {
   admin:    { label: "Administrateur", dot: "bg-amber-500",   badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
@@ -30,7 +30,7 @@ function initials(name: string) {
   return name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
 }
 
-export default async function UtilisateursPage({
+export default async function MembresPage({
   searchParams,
 }: {
   searchParams: Promise<{ role?: string; statut?: string }>
@@ -59,8 +59,8 @@ export default async function UtilisateursPage({
 
   return (
     <BureauDataPage
-      title="Utilisateurs"
-      description="Gérez les comptes et les accès au dashboard"
+      title="Membres"
+      description="Gérez les comptes, les accès au dashboard et les bénévoles"
       actions={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -72,7 +72,7 @@ export default async function UtilisateursPage({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 rounded-xl p-1.5">
             <DropdownMenuItem asChild className="flex items-start gap-3 rounded-lg px-3 py-2.5 cursor-pointer focus:bg-muted focus:text-foreground">
-              <Link href="/bureau/utilisateurs/nouveau">
+              <Link href="/bureau/membres/nouveau">
                 <IconUserShield className="mt-0.5 size-4 shrink-0 text-amber-600" />
                 <div>
                   <p className="text-sm font-medium">Compte d&apos;accès</p>
@@ -81,7 +81,7 @@ export default async function UtilisateursPage({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="flex items-start gap-3 rounded-lg px-3 py-2.5 cursor-pointer focus:bg-muted focus:text-foreground">
-              <Link href="/bureau/utilisateurs/nouveau-benevole">
+              <Link href="/bureau/membres/nouveau-benevole">
                 <IconHandStop className="mt-0.5 size-4 shrink-0 text-violet-500" />
                 <div>
                   <p className="text-sm font-medium">Bénévole</p>
@@ -132,7 +132,7 @@ export default async function UtilisateursPage({
           </div>
           {allUsers.length === 0 && (
             <Button asChild size="sm" className="cursor-pointer gap-1.5 bg-amber-500 hover:bg-amber-600 text-white">
-              <Link href="/bureau/utilisateurs/nouveau">
+              <Link href="/bureau/membres/nouveau">
                 <IconPlus className="size-4" /> Créer un utilisateur
               </Link>
             </Button>

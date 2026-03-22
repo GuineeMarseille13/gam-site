@@ -23,7 +23,7 @@ import { IconEdit, IconTrash, IconDotsVertical } from "@tabler/icons-react"
 
 interface RowActionsProps {
   editHref: string
-  onDelete: () => Promise<void>
+  onDelete: () => Promise<unknown>
 }
 
 export function RowActions({ editHref, onDelete }: RowActionsProps) {

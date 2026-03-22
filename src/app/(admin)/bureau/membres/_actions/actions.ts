@@ -20,28 +20,137 @@ export async function listUsers() {
 }
 
 // ── Créer un utilisateur ───────────────────────────────────────────────────────
+// Flux : User (Better Auth) → Person
 
 export async function createUser(formData: FormData) {
   await requireAdmin()
 
-  const name = formData.get("name") as string
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const role = formData.get("role") as string
+  const firstName   = formData.get("firstName") as string
+  const lastName    = formData.get("lastName")  as string
+  const email       = formData.get("email")     as string
+  const password    = formData.get("password")  as string
+  const role        = formData.get("role")      as string
+  const phone       = (formData.get("phone")       as string | null)?.trim() || ""
+  const description = (formData.get("description") as string | null)?.trim() || null
+  const showOnSite  = formData.get("showOnSite") !== "false"
+  const imageFile   = formData.get("imageFile") as File | null
 
-  if (!name || !email || !password || !role) {
-    return { error: "Tous les champs sont requis." }
+  if (!firstName || !lastName || !email || !password || !role) {
+    return { error: "Tous les champs obligatoires doivent être remplis." }
+  }
+
+  // 1. Créer le compte User (Better Auth)
+  let createdUserId: string
+  try {
+    const created = await auth.api.createUser({
+      body: { name: `${firstName} ${lastName}`, email, password, role: role as "admin" | "user" },
+      headers: await headers(),
+    })
+    createdUserId = created.user.id
+  } catch {
+    return { error: "Un utilisateur avec cet email existe déjà." }
+  }
+
+  // 2. Créer la Person liée (avec rollback si échec)
+  try {
+    let imageUrl: string | null = null
+    if (imageFile && imageFile.size > 0) {
+      const result = await uploadImage(imageFile, "gam/users")
+      imageUrl = result.url
+    }
+
+    await prisma.person.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        phone: phone || "",
+        userId: createdUserId,
+        image: imageUrl,
+        description,
+        showOnSite,
+      },
+    })
+
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
+  } catch {
+    try {
+      await auth.api.removeUser({ body: { userId: createdUserId }, headers: await headers() })
+    } catch { /* non-bloquant */ }
+    return { error: "Erreur lors de la création de l'utilisateur." }
+  }
+}
+
+// ── Modifier un utilisateur ────────────────────────────────────────────────────
+
+export async function updateUser(formData: FormData) {
+  await requireAdmin()
+
+  const userId    = formData.get("userId")    as string
+  const firstName = formData.get("firstName") as string
+  const lastName  = formData.get("lastName")  as string
+  const role      = formData.get("role")      as string
+  const phone       = (formData.get("phone")       as string | null)?.trim() || ""
+  const description = (formData.get("description") as string | null)?.trim() || null
+  const showOnSite  = formData.get("showOnSite") !== "false"
+  const imageFile   = formData.get("imageFile") as File | null
+
+  if (!userId || !firstName || !lastName || !role) {
+    return { error: "Données invalides." }
   }
 
   try {
-    await auth.api.createUser({
-      body: { name, email, password, role: role as "admin" | "user" },
+    // Mettre à jour le nom + rôle dans Better Auth
+    await auth.api.setRole({
+      body: { userId, role: role as "admin" | "user" },
       headers: await headers(),
     })
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
+    await prisma.user.update({
+      where: { id: userId },
+      data: { name: `${firstName} ${lastName}` },
+    })
+
+    // Mettre à jour (ou créer) la Person liée
+    const existingPerson = await prisma.person.findUnique({ where: { userId } })
+
+    let imageUrl: string | null | undefined = undefined
+    if (imageFile && imageFile.size > 0) {
+      const result = await uploadImage(imageFile, "gam/users")
+      imageUrl = result.url
+    }
+
+    if (existingPerson) {
+      await prisma.person.update({
+        where: { userId },
+        data: {
+          firstName,
+          lastName,
+          phone,
+          description,
+          showOnSite,
+          ...(imageUrl !== undefined ? { image: imageUrl } : {}),
+        },
+      })
+    } else {
+      await prisma.person.create({
+        data: {
+          firstName,
+          lastName,
+          email: (await prisma.user.findUnique({ where: { id: userId } }))?.email ?? "",
+          phone,
+          userId,
+          description,
+          showOnSite,
+          image: imageUrl ?? null,
+        },
+      })
+    }
+
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
   } catch {
-    return { error: "Un utilisateur avec cet email existe déjà." }
+    return { error: "Erreur lors de la mise à jour." }
   }
 }
 
@@ -54,32 +163,7 @@ export async function updateUserRole(userId: string, role: string) {
     body: { userId, role: role as "admin" | "user" },
     headers: await headers(),
   })
-  revalidatePath("/bureau/utilisateurs")
-}
-
-// ── Modifier le nom ────────────────────────────────────────────────────────────
-
-export async function updateUser(formData: FormData) {
-  await requireAdmin()
-
-  const userId = formData.get("userId") as string
-  const name = formData.get("name") as string
-  const role = formData.get("role") as string
-
-  if (!userId || !name || !role) {
-    return { error: "Données invalides." }
-  }
-
-  try {
-    await auth.api.setRole({
-      body: { userId, role: role as "admin" | "user" },
-      headers: await headers(),
-    })
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
-  } catch {
-    return { error: "Erreur lors de la mise à jour." }
-  }
+  revalidatePath("/bureau/membres")
 }
 
 // ── Bannir / débannir ──────────────────────────────────────────────────────────
@@ -90,7 +174,7 @@ export async function banUser(userId: string) {
     body: { userId },
     headers: await headers(),
   })
-  revalidatePath("/bureau/utilisateurs")
+  revalidatePath("/bureau/membres")
 }
 
 export async function unbanUser(userId: string) {
@@ -99,7 +183,30 @@ export async function unbanUser(userId: string) {
     body: { userId },
     headers: await headers(),
   })
-  revalidatePath("/bureau/utilisateurs")
+  revalidatePath("/bureau/membres")
+}
+
+// ── Supprimer un utilisateur ───────────────────────────────────────────────────
+
+export async function deleteUser(userId: string) {
+  const session = await requireAdmin()
+  if (session.user.id === userId) {
+    return { error: "Vous ne pouvez pas supprimer votre propre compte." }
+  }
+
+  try {
+    // Supprimer la Person liée si elle existe
+    await prisma.person.deleteMany({ where: { userId } })
+
+    await auth.api.removeUser({
+      body: { userId },
+      headers: await headers(),
+    })
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
+  } catch {
+    return { error: "Erreur lors de la suppression." }
+  }
 }
 
 // ── Lister les bénévoles (table Person) ───────────────────────────────────────
@@ -133,14 +240,12 @@ export async function createBenevole(formData: FormData) {
     return { error: "Le prénom, le nom et le téléphone sont requis." }
   }
 
-  // Adresse : on la crée uniquement si rue, code postal et ville sont fournis
   const hasAddress = !!(address && zipCode && city)
   if ((address || zipCode || city) && !hasAddress) {
     return { error: "Pour enregistrer l'adresse, renseignez la rue, le code postal et la ville." }
   }
 
   try {
-    // Upload photo si fournie
     let imageUrl: string | null = null
     if (imageFile && imageFile.size > 0) {
       const result = await uploadImage(imageFile, "gam/persons")
@@ -173,8 +278,8 @@ export async function createBenevole(formData: FormData) {
       },
     })
 
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
   } catch {
     return { error: "Erreur lors de la création du bénévole." }
   }
@@ -208,14 +313,12 @@ export async function updateBenevole(personId: string, formData: FormData) {
   }
 
   try {
-    // Récupérer le bénévole existant pour son adresse actuelle
     const existing = await prisma.person.findUnique({
       where: { id: personId },
       include: { address: true },
     })
     if (!existing) return { error: "Bénévole introuvable." }
 
-    // Upload nouvelle photo si fournie
     let imageUrl: string | null | undefined = undefined
     if (removeImage) {
       imageUrl = null
@@ -224,7 +327,6 @@ export async function updateBenevole(personId: string, formData: FormData) {
       imageUrl = result.url
     }
 
-    // Gestion de l'adresse
     let addressId: string | null = existing.addressId
     if (hasAddress) {
       if (existing.addressId) {
@@ -259,8 +361,8 @@ export async function updateBenevole(personId: string, formData: FormData) {
       },
     })
 
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
   } catch {
     return { error: "Erreur lors de la mise à jour du bénévole." }
   }
@@ -272,29 +374,9 @@ export async function deleteBenevole(personId: string) {
   await requireAdmin()
   try {
     await prisma.person.delete({ where: { id: personId } })
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
+    revalidatePath("/bureau/membres")
+    return { success: true as const }
   } catch {
     return { error: "Erreur lors de la suppression du bénévole." }
-  }
-}
-
-// ── Supprimer un utilisateur ───────────────────────────────────────────────────
-
-export async function deleteUser(userId: string) {
-  const session = await requireAdmin()
-  if (session.user.id === userId) {
-    return { error: "Vous ne pouvez pas supprimer votre propre compte." }
-  }
-
-  try {
-    await auth.api.removeUser({
-      body: { userId },
-      headers: await headers(),
-    })
-    revalidatePath("/bureau/utilisateurs")
-    return { success: true }
-  } catch {
-    return { error: "Erreur lors de la suppression." }
   }
 }

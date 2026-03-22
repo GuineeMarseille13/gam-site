@@ -13,24 +13,24 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
   const person = await prisma.person.findUnique({ where: { id: member.personId } })
   if (!person) notFound()
 
-  const action = updateMembreEquipe.bind(null, member.id)
-
   return (
     <BureauDataPage title="Modifier le membre" description={`${person.firstName} ${person.lastName}`}>
       <Card>
         <CardContent className="pt-6">
           <EquipeForm
-            action={action}
+            mode="edit"
+            updateAction={updateMembreEquipe.bind(null, member.id)}
             defaultValues={{
-              firstName: person.firstName,
-              lastName: person.lastName,
-              email: person.email,
-              phone: person.phone,
-              poste: member.poste,
+              firstName:   person.firstName,
+              lastName:    person.lastName,
+              email:       person.email,
+              phone:       person.phone,
+              poste:       member.poste,
               description: member.description,
-              imageId: member.imageId,
-              order: member.order,
-              showOnSite: member.showOnSite,
+              imageId:     member.imageId,
+              order:       member.order,
+              showOnSite:  member.showOnSite,
+              userId:      person.userId,
             }}
           />
         </CardContent>

@@ -11,7 +11,7 @@ export default function NouvelUtilisateurPage() {
       title="Nouveau compte d'accès"
       description="Créez un compte admin ou bureau avec accès au dashboard"
     >
-      <Card className="max-w-lg">
+      <Card>
         <CardContent className="pt-6">
           <UserForm mode="create" />
         </CardContent>

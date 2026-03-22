@@ -8,57 +8,44 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { IconUpload, IconUser, IconX, IconEye, IconEyeOff, IconLoader2, IconAlertCircle, IconShieldCheck } from "@tabler/icons-react"
-import { POSTES } from "./postes"
-
-const CLOUD_NAME = "df3ymbrqe"
-
-function buildThumbUrl(imageId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_400,h_400,c_fill,q_auto,f_auto/${imageId}`
-}
+import { IconUpload, IconUser, IconX, IconEye, IconEyeOff, IconLoader2, IconAlertCircle } from "@tabler/icons-react"
+import { createUser, updateUser } from "../_actions/actions"
+import { DASHBOARD_ROLES } from "./roles"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 type ActionResult = { error: string } | { success: true } | undefined
 
-interface EquipeFormProps {
+interface UserFormProps {
   mode: "create" | "edit"
-  createAction?: (formData: FormData) => Promise<ActionResult>
-  updateAction?: (formData: FormData) => Promise<ActionResult>
   defaultValues?: {
-    firstName?: string
-    lastName?: string
-    email?: string | null
-    phone?: string
-    poste?: string | null
+    userId:       string
+    firstName:    string
+    lastName:     string
+    email:        string
+    role:         string
+    phone?:       string | null
     description?: string | null
-    imageId?: string | null
-    order?: number
-    showOnSite?: boolean
-    /** Présence d'un compte User lié — email readonly en édition */
-    userId?: string | null
+    imageUrl?:    string | null
+    showOnSite?:  boolean
   }
 }
 
 // ── Composant ──────────────────────────────────────────────────────────────────
 
-export function EquipeForm({ mode, createAction, updateAction, defaultValues }: EquipeFormProps) {
+export function UserForm({ mode, defaultValues }: UserFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
   const [showOnSite, setShowOnSite]     = useState(defaultValues?.showOnSite ?? true)
-  const [poste, setPoste]               = useState(defaultValues?.poste ?? "")
-  const [preview, setPreview]           = useState<string | null>(null)
-  const [existingId, setExistingId]     = useState(defaultValues?.imageId ?? "")
+  const [role, setRole]                 = useState(defaultValues?.role ?? "bureau")
+  const [preview, setPreview]           = useState<string | null>(defaultValues?.imageUrl ?? null)
   const [sizeError, setSizeError]       = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
   const fileRef = useRef<HTMLInputElement>(null)
-
-  const MAX_MB    = 10
-  const displaySrc = preview ?? (existingId ? buildThumbUrl(existingId) : null)
-  const hasUser    = !!defaultValues?.userId
+  const MAX_MB  = 10
 
   // ── Handlers image ───────────────────────────────────────────────────────────
 
@@ -72,12 +59,10 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
     }
     setSizeError(null)
     setPreview(URL.createObjectURL(file))
-    setExistingId("")
   }
 
   function handleRemove() {
     setPreview(null)
-    setExistingId("")
     if (fileRef.current) fileRef.current.value = ""
   }
 
@@ -88,15 +73,19 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
     setError(null)
 
     const formData = new FormData(e.currentTarget)
-    const action   = mode === "create" ? createAction : updateAction
+    formData.set("role", role)
 
     startTransition(async () => {
-      const result = await action?.(formData)
+      const result: ActionResult = mode === "create"
+        ? await createUser(formData)
+        : await updateUser(formData)
+
       if (result && "error" in result) {
         setError(result.error)
         return
       }
-      router.push("/bureau/equipe")
+
+      router.push("/bureau/membres")
       router.refresh()
     })
   }
@@ -111,19 +100,18 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
         <div className="lg:col-span-2">
           <div className="sticky top-6 space-y-3">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Photo du membre
+              Photo de profil
             </p>
 
             <input ref={fileRef} type="file" name="imageFile" accept="image/*" className="hidden" onChange={handleFile} />
-            <input type="hidden" name="imageId" value={existingId} />
 
             {sizeError && <p className="text-xs text-destructive">{sizeError}</p>}
 
-            {displaySrc ? (
+            {preview ? (
               <div className="group relative overflow-hidden rounded-2xl border bg-muted shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={displaySrc}
+                  src={preview}
                   alt="Aperçu"
                   className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 />
@@ -178,7 +166,9 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
                     ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400"
                     : "bg-muted text-muted-foreground"
                 }`}>
-                  {showOnSite ? <IconEye className="size-3.5" /> : <IconEyeOff className="size-3.5" />}
+                  {showOnSite
+                    ? <IconEye className="size-3.5" />
+                    : <IconEyeOff className="size-3.5" />}
                 </div>
                 <div>
                   <p className="text-xs font-medium leading-tight">
@@ -192,27 +182,6 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
               <Switch checked={showOnSite} onCheckedChange={setShowOnSite} />
               <input type="hidden" name="showOnSite" value={showOnSite ? "true" : "false"} />
             </div>
-
-            {/* Statut compte dashboard (édition) */}
-            {mode === "edit" && (
-              <div className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-3 ${
-                hasUser
-                  ? "border-violet-200 bg-violet-50/60 dark:border-violet-800/40 dark:bg-violet-950/20"
-                  : "border-border bg-muted/20"
-              }`}>
-                <IconShieldCheck className={`size-4 shrink-0 ${hasUser ? "text-violet-500" : "text-muted-foreground/50"}`} />
-                <div>
-                  <p className="text-xs font-medium leading-tight">
-                    {hasUser ? "Compte dashboard actif" : "Aucun compte dashboard"}
-                  </p>
-                  {hasUser && (
-                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
-                      Géré via &quot;Utilisateurs&quot;
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -227,6 +196,11 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
             </div>
           )}
 
+          {/* userId caché en mode édition */}
+          {mode === "edit" && defaultValues && (
+            <input type="hidden" name="userId" value={defaultValues.userId} />
+          )}
+
           {/* Prénom / Nom */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -234,7 +208,7 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
                 Prénom <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="firstName" name="firstName" required
+                id="firstName" name="firstName" required autoFocus
                 defaultValue={defaultValues?.firstName ?? ""}
                 placeholder="Jean"
                 className="h-10 rounded-xl"
@@ -256,20 +230,18 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
           {/* Email */}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Email {mode === "create" && <span className="text-destructive">*</span>}
+              Email <span className="text-destructive">*</span>
             </Label>
             <Input
               id="email" name="email" type="email"
-              defaultValue={defaultValues?.email ?? ""}
               placeholder="jean@gam.fr"
+              defaultValue={defaultValues?.email ?? ""}
               required={mode === "create"}
-              readOnly={mode === "edit" && hasUser}
-              className={`h-10 rounded-xl ${mode === "edit" && hasUser ? "cursor-not-allowed bg-muted/50 text-muted-foreground" : ""}`}
+              readOnly={mode === "edit"}
+              className={`h-10 rounded-xl ${mode === "edit" ? "cursor-not-allowed bg-muted/50 text-muted-foreground" : ""}`}
             />
-            {mode === "edit" && hasUser && (
-              <p className="text-[11px] text-muted-foreground/70">
-                L&apos;email est lié au compte dashboard. Modifiez-le via &quot;Utilisateurs&quot;.
-              </p>
+            {mode === "edit" && (
+              <p className="text-[11px] text-muted-foreground/70">L&apos;adresse email ne peut pas être modifiée.</p>
             )}
           </div>
 
@@ -300,53 +272,46 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
             </div>
           )}
 
-          {/* Poste */}
+          {/* Rôle */}
           <div className="space-y-1.5">
             <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Poste dans le bureau
+              Rôle <span className="text-destructive">*</span>
             </Label>
-            <Select value={poste} onValueChange={setPoste}>
+            <Select value={role} onValueChange={setRole}>
               <SelectTrigger className="h-10 rounded-xl">
-                <SelectValue placeholder="Sélectionner un poste…" />
+                <SelectValue placeholder="Sélectionner un rôle…" />
               </SelectTrigger>
               <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
-                {POSTES.map((p) => (
+                {DASHBOARD_ROLES.map((r) => (
                   <SelectItem
-                    key={p.value}
-                    value={p.value}
-                    className="rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:bg-rose-50 focus:text-rose-900 data-[state=checked]:bg-rose-50 data-[state=checked]:text-rose-900 dark:focus:bg-rose-950/40 dark:focus:text-rose-300 dark:data-[state=checked]:bg-rose-950/40 dark:data-[state=checked]:text-rose-300"
+                    key={r.value}
+                    value={r.value}
+                    className="rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:bg-amber-50 focus:text-amber-900 data-[state=checked]:bg-amber-50 data-[state=checked]:text-amber-900 dark:focus:bg-amber-950/40 dark:focus:text-amber-300 dark:data-[state=checked]:bg-amber-950/40 dark:data-[state=checked]:text-amber-300"
                   >
-                    {p.label}
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-medium">{r.label}</span>
+                      <span className="text-[10px] text-muted-foreground">{r.description}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {poste && (
-              <button
-                type="button"
-                onClick={() => setPoste("")}
-                className="text-[11px] text-muted-foreground hover:text-destructive transition-colors"
-              >
-                Retirer le poste
-              </button>
-            )}
-            <input type="hidden" name="poste" value={poste} />
           </div>
 
           {/* Téléphone */}
           <div className="space-y-1.5">
             <Label htmlFor="phone" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Téléphone <span className="text-destructive">*</span>
+              Téléphone
             </Label>
             <Input
-              id="phone" name="phone" required
+              id="phone" name="phone"
               defaultValue={defaultValues?.phone ?? ""}
               placeholder="+33 6 00 00 00 00"
               className="h-10 rounded-xl"
             />
           </div>
 
-          {/* Description / Rôle */}
+          {/* Description */}
           <div className="space-y-1.5">
             <Label htmlFor="description" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
               Description / Rôle
@@ -360,32 +325,20 @@ export function EquipeForm({ mode, createAction, updateAction, defaultValues }: 
             />
           </div>
 
-          {/* Ordre d'affichage */}
-          <div className="space-y-1.5">
-            <Label htmlFor="order" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Ordre d&apos;affichage
-            </Label>
-            <Input
-              id="order" name="order" type="number" min="0"
-              defaultValue={defaultValues?.order ?? 0}
-              className="h-10 w-32 rounded-xl"
-            />
-          </div>
-
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-3 border-t pt-5">
             <Button
               type="submit"
               disabled={isPending}
-              className="cursor-pointer gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold shadow-sm shadow-rose-500/20"
+              className="cursor-pointer gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm shadow-amber-500/20"
             >
               {isPending && <IconLoader2 className="size-4 animate-spin" />}
-              {mode === "create" ? "Créer le membre" : "Enregistrer"}
+              {mode === "create" ? "Créer le compte" : "Enregistrer"}
             </Button>
             <Button
               type="button"
               variant="ghost"
-              onClick={() => router.push("/bureau/equipe")}
+              onClick={() => router.push("/bureau/membres")}
               disabled={isPending}
               className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
             >

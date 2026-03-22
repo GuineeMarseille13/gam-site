@@ -384,12 +384,14 @@ model Person {
   id          String   @id @default(cuid())
   firstName   String   // Prénom de la personne
   lastName    String   // Nom de la personne
-  email       String?   // Email de la personne
+  email       String?  // Email de la personne
   phone       String   // Numéro de téléphone de la personne
   addressId   String?  // ID de l'adresse de la personne
+  userId      String?  @unique // Compte dashboard lié (User Better Auth)
   roles       Role[]   @default([VOLUNTEER]) // Rôles de la personne
   image       String?  // Photo de profil (URL Cloudinary)
   showOnSite  Boolean  @default(true) // Afficher la photo sur le site public
+  description String?  // Biographie / description
 
   donations Donation[] // Donations de la personne
   memberShips MemberShip[] // Cotisations de la personne

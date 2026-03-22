@@ -103,9 +103,9 @@ export function NavUser({
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <a href="/bureau/utilisateurs">
+                  <a href="/bureau/membres">
                     <IconUserCircle className="size-4" />
-                    Gérer les utilisateurs
+                    Gérer les membres
                   </a>
                 </DropdownMenuItem>
               </>

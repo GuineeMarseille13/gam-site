@@ -6,28 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconMapPin } from "@tabler/icons-react"
-import { updateBenevole } from "../_actions/actions"
+import { createBenevole } from "../_actions/actions"
 import { AvatarUpload } from "@/components/bureau/avatar-upload"
 
-interface BenevoleEditFormProps {
-  person: {
-    id: string
-    firstName: string
-    lastName: string
-    email: string | null
-    phone: string
-    image: string | null
-    showOnSite: boolean
-    address?: {
-      address: string
-      zipCode: string
-      city: string
-      country: string
-    } | null
-  }
-}
-
-export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
+export function BenevoleForm() {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -39,14 +21,14 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
     const formData = new FormData(e.currentTarget)
 
     startTransition(async () => {
-      const result = await updateBenevole(person.id, formData)
+      const result = await createBenevole(formData)
 
       if (result?.error) {
         setError(result.error)
         return
       }
 
-      router.push("/bureau/utilisateurs")
+      router.push("/bureau/membres")
       router.refresh()
     })
   }
@@ -56,8 +38,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
       {/* Photo de profil */}
       <AvatarUpload
         withVisibilityToggle
-        defaultImageUrl={person.image}
-        defaultShowOnSite={person.showOnSite}
         placeholderClass="from-violet-100 to-violet-200 text-violet-600"
       />
 
@@ -71,7 +51,7 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
         </div>
       )}
 
-      {/* Prénom + Nom */}
+      {/* Prénom + Nom côte à côte */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -81,7 +61,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
             id="firstName"
             name="firstName"
             placeholder="Jean"
-            defaultValue={person.firstName}
             required
             autoFocus
             className="h-10 rounded-xl"
@@ -95,7 +74,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
             id="lastName"
             name="lastName"
             placeholder="Dupont"
-            defaultValue={person.lastName}
             required
             className="h-10 rounded-xl"
           />
@@ -112,13 +90,12 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
           name="phone"
           type="tel"
           placeholder="+33 6 12 34 56 78"
-          defaultValue={person.phone}
           required
           className="h-10 rounded-xl"
         />
       </div>
 
-      {/* Email */}
+      {/* Email (optionnel) */}
       <div className="space-y-2">
         <Label htmlFor="email" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           Email <span className="normal-case font-normal text-muted-foreground/60">(optionnel)</span>
@@ -128,7 +105,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
           name="email"
           type="email"
           placeholder="jean@exemple.fr"
-          defaultValue={person.email ?? ""}
           className="h-10 rounded-xl"
         />
       </div>
@@ -152,12 +128,11 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
           id="address"
           name="address"
           placeholder="12 rue de la Paix"
-          defaultValue={person.address?.address ?? ""}
           className="h-10 rounded-xl"
         />
       </div>
 
-      {/* Code postal + Ville */}
+      {/* Code postal + Ville côte à côte */}
       <div className="grid grid-cols-[2fr_3fr] gap-4">
         <div className="space-y-2">
           <Label htmlFor="zipCode" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -167,7 +142,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
             id="zipCode"
             name="zipCode"
             placeholder="75001"
-            defaultValue={person.address?.zipCode ?? ""}
             className="h-10 rounded-xl"
           />
         </div>
@@ -179,7 +153,6 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
             id="city"
             name="city"
             placeholder="Paris"
-            defaultValue={person.address?.city ?? ""}
             className="h-10 rounded-xl"
           />
         </div>
@@ -194,11 +167,12 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
           id="country"
           name="country"
           placeholder="France"
-          defaultValue={person.address?.country ?? "France"}
+          defaultValue="France"
           className="h-10 rounded-xl"
         />
       </div>
 
+      {/* Séparateur */}
       <div className="border-t" />
 
       {/* Actions */}
@@ -209,12 +183,12 @@ export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
           className="cursor-pointer gap-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold shadow-sm shadow-violet-500/20"
         >
           {isPending && <IconLoader2 className="size-4 animate-spin" />}
-          Enregistrer les modifications
+          Ajouter le bénévole
         </Button>
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push("/bureau/utilisateurs")}
+          onClick={() => router.push("/bureau/membres")}
           disabled={isPending}
           className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
         >

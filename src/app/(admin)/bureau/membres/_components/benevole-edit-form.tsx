@@ -6,10 +6,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconMapPin } from "@tabler/icons-react"
-import { createBenevole } from "../_actions/actions"
+import { updateBenevole } from "../_actions/actions"
 import { AvatarUpload } from "@/components/bureau/avatar-upload"
 
-export function BenevoleForm() {
+interface BenevoleEditFormProps {
+  person: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string | null
+    phone: string
+    image: string | null
+    showOnSite: boolean
+    address?: {
+      address: string
+      zipCode: string
+      city: string
+      country: string
+    } | null
+  }
+}
+
+export function BenevoleEditForm({ person }: BenevoleEditFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -21,14 +39,14 @@ export function BenevoleForm() {
     const formData = new FormData(e.currentTarget)
 
     startTransition(async () => {
-      const result = await createBenevole(formData)
+      const result = await updateBenevole(person.id, formData)
 
       if (result?.error) {
         setError(result.error)
         return
       }
 
-      router.push("/bureau/utilisateurs")
+      router.push("/bureau/membres")
       router.refresh()
     })
   }
@@ -38,6 +56,8 @@ export function BenevoleForm() {
       {/* Photo de profil */}
       <AvatarUpload
         withVisibilityToggle
+        defaultImageUrl={person.image}
+        defaultShowOnSite={person.showOnSite}
         placeholderClass="from-violet-100 to-violet-200 text-violet-600"
       />
 
@@ -51,7 +71,7 @@ export function BenevoleForm() {
         </div>
       )}
 
-      {/* Prénom + Nom côte à côte */}
+      {/* Prénom + Nom */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -61,6 +81,7 @@ export function BenevoleForm() {
             id="firstName"
             name="firstName"
             placeholder="Jean"
+            defaultValue={person.firstName}
             required
             autoFocus
             className="h-10 rounded-xl"
@@ -74,6 +95,7 @@ export function BenevoleForm() {
             id="lastName"
             name="lastName"
             placeholder="Dupont"
+            defaultValue={person.lastName}
             required
             className="h-10 rounded-xl"
           />
@@ -90,12 +112,13 @@ export function BenevoleForm() {
           name="phone"
           type="tel"
           placeholder="+33 6 12 34 56 78"
+          defaultValue={person.phone}
           required
           className="h-10 rounded-xl"
         />
       </div>
 
-      {/* Email (optionnel) */}
+      {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="email" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           Email <span className="normal-case font-normal text-muted-foreground/60">(optionnel)</span>
@@ -105,6 +128,7 @@ export function BenevoleForm() {
           name="email"
           type="email"
           placeholder="jean@exemple.fr"
+          defaultValue={person.email ?? ""}
           className="h-10 rounded-xl"
         />
       </div>
@@ -128,11 +152,12 @@ export function BenevoleForm() {
           id="address"
           name="address"
           placeholder="12 rue de la Paix"
+          defaultValue={person.address?.address ?? ""}
           className="h-10 rounded-xl"
         />
       </div>
 
-      {/* Code postal + Ville côte à côte */}
+      {/* Code postal + Ville */}
       <div className="grid grid-cols-[2fr_3fr] gap-4">
         <div className="space-y-2">
           <Label htmlFor="zipCode" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -142,6 +167,7 @@ export function BenevoleForm() {
             id="zipCode"
             name="zipCode"
             placeholder="75001"
+            defaultValue={person.address?.zipCode ?? ""}
             className="h-10 rounded-xl"
           />
         </div>
@@ -153,6 +179,7 @@ export function BenevoleForm() {
             id="city"
             name="city"
             placeholder="Paris"
+            defaultValue={person.address?.city ?? ""}
             className="h-10 rounded-xl"
           />
         </div>
@@ -167,12 +194,11 @@ export function BenevoleForm() {
           id="country"
           name="country"
           placeholder="France"
-          defaultValue="France"
+          defaultValue={person.address?.country ?? "France"}
           className="h-10 rounded-xl"
         />
       </div>
 
-      {/* Séparateur */}
       <div className="border-t" />
 
       {/* Actions */}
@@ -183,12 +209,12 @@ export function BenevoleForm() {
           className="cursor-pointer gap-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold shadow-sm shadow-violet-500/20"
         >
           {isPending && <IconLoader2 className="size-4 animate-spin" />}
-          Ajouter le bénévole
+          Enregistrer les modifications
         </Button>
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push("/bureau/utilisateurs")}
+          onClick={() => router.push("/bureau/membres")}
           disabled={isPending}
           className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
         >
