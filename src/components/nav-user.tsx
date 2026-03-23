@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useTransition } from "react"
 import {
@@ -98,25 +99,21 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
 
-            {role === "admin" && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <a href="/bureau/membres">
-                    <IconUserCircle className="size-4" />
-                    Gérer les membres
-                  </a>
-                </DropdownMenuItem>
-              </>
-            )}
+            <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-100 focus:text-foreground dark:focus:bg-gray-800">
+              <Link href="/bureau/profil" className="flex items-center gap-2">
+                <IconUserCircle className="size-4" />
+                Mon profil
+              </Link>
+            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
               onClick={handleLogout}
               disabled={isPending}
-              className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
+              className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
             >
               {isPending ? (
                 <IconLoader2 className="size-4 animate-spin" />

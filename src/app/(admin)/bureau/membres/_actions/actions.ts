@@ -23,11 +23,10 @@ export async function listUsers() {
 
 export async function listComptes() {
   await requireBureau()
-  const result = await auth.api.listUsers({
-    query: { limit: 100, sortBy: "createdAt", sortDirection: "desc" },
-    headers: await headers(),
+  const authUsers = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 100,
   })
-  const authUsers = result.users ?? []
   if (authUsers.length === 0) return []
 
   const userIds = authUsers.map((u) => u.id)

@@ -83,7 +83,7 @@ const navigation: {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Membres", url: "/bureau/membres", icon: IconUserCircle, adminOnly: true },
+    { title: "Membres", url: "/bureau/membres", icon: IconUserCircle },
     { title: "Aide", url: "/bureau/aide", icon: IconHelp },
   ],
 }
