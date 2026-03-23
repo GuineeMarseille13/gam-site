@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { BureauDataPage } from "@/components/bureau/bureau-data-page"
 import { Card, CardContent } from "@/components/ui/card"
 import { UserForm } from "../_components/user-form"
+import { createUser } from "../_actions/actions"
 
 export const metadata: Metadata = { title: "Nouvel utilisateur" }
 
@@ -13,7 +14,7 @@ export default function NouvelUtilisateurPage() {
     >
       <Card>
         <CardContent className="pt-6">
-          <UserForm mode="create" />
+          <UserForm mode="create" createAction={createUser} />
         </CardContent>
       </Card>
     </BureauDataPage>

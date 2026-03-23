@@ -448,7 +448,7 @@ model TeamMember {
   description String?  // Description du membre de l'équipe
   imageId     String?  // ID de l'image principale du membre de l'équipe
   order       Int      @default(0) // Ordre d'affichage
-  showOnSite  Boolean  @default(true) // Affiché dans la section "Nos bénévoles" du site
+  showOnSite  Boolean  @default(true) // Affiché dans la section "Notre équipe" du site
   teamMemberSectionId String?  // ID de la section de membre de l'équipe
 
   // Relations

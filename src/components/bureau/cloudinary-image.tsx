@@ -20,9 +20,10 @@ interface CloudinaryImageProps {
   imageId: string | null | undefined
   alt?: string
   thumbSize?: number
+  className?: string
 }
 
-export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: CloudinaryImageProps) {
+export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40, className = "" }: CloudinaryImageProps) {
   const [open, setOpen] = useState(false)
   const [thumbError, setThumbError] = useState(false)
   const [fullError, setFullError] = useState(false)
@@ -30,7 +31,7 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
   if (!imageId) {
     return (
       <div
-        className="flex items-center justify-center rounded bg-muted text-muted-foreground"
+        className={`flex items-center justify-center rounded bg-muted text-muted-foreground ${className}`}
         style={{ width: thumbSize, height: thumbSize }}
       >
         <IconPhoto className="h-4 w-4" />
@@ -43,7 +44,7 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
 
   const placeholder = (
     <div
-      className="flex items-center justify-center rounded bg-muted text-muted-foreground"
+      className={`flex items-center justify-center rounded bg-muted text-muted-foreground ${className}`}
       style={{ width: thumbSize, height: thumbSize }}
     >
       <IconPhoto className="h-4 w-4" />
@@ -57,7 +58,7 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40 }: Clou
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="overflow-hidden rounded border border-border transition-opacity hover:opacity-80"
+        className={`overflow-hidden rounded border border-border transition-opacity hover:opacity-80 ${className}`}
         style={{ width: thumbSize, height: thumbSize }}
         title="Voir l'image"
       >

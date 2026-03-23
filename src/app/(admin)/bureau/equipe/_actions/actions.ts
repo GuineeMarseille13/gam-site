@@ -30,6 +30,7 @@ export async function createMembreEquipe(formData: FormData) {
   const email       = formData.get("email")     as string
   const password    = formData.get("password")  as string
   const phone       = formData.get("phone")     as string
+  const role        = (formData.get("role") as string)?.trim() || "bureau"
   const poste       = (formData.get("poste")       as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
@@ -43,7 +44,7 @@ export async function createMembreEquipe(formData: FormData) {
   let createdUserId: string
   try {
     const created = await auth.api.createUser({
-      body: { name: `${firstName} ${lastName}`, email, password, role: "bureau" as "admin" | "user" },
+      body: { name: `${firstName} ${lastName}`, email, password, role: role as "admin" | "user" },
       headers: await headers(),
     })
     createdUserId = created.user.id
@@ -94,6 +95,7 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
   const firstName   = formData.get("firstName") as string
   const lastName    = formData.get("lastName")  as string
   const phone       = formData.get("phone")     as string
+  const role        = (formData.get("role") as string)?.trim() || null
   const poste       = (formData.get("poste")       as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
@@ -106,12 +108,18 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
   try {
     const imageId = await resolveImageId(formData, member.imageId)
 
-    // Mettre à jour le nom dans le compte User si lié
+    // Mettre à jour le nom + rôle dans le compte User si lié
     if (person.userId) {
       await prisma.user.update({
         where: { id: person.userId },
         data: { name: `${firstName} ${lastName}` },
       })
+      if (role) {
+        await auth.api.setRole({
+          body: { userId: person.userId, role: role as "admin" | "user" },
+          headers: await headers(),
+        })
+      }
     }
 
     await prisma.person.update({
@@ -129,6 +137,38 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
   } catch {
     return { error: "Erreur lors de la mise à jour du membre." }
   }
+}
+
+// ── Changer le mot de passe d'un membre ───────────────────────────────────────
+
+export async function changePasswordEquipe(userId: string, newPassword: string) {
+  await requireAdmin()
+  try {
+    await auth.api.setUserPassword({
+      body: { newPassword, userId },
+      headers: await headers(),
+    })
+    // Révoquer toutes les sessions actives → déconnexion forcée
+    await prisma.session.deleteMany({ where: { userId } })
+    revalidatePath("/bureau/equipe")
+    return { success: true as const }
+  } catch {
+    return { error: "Erreur lors du changement de mot de passe." }
+  }
+}
+
+// ── Bannir / débannir un compte lié ───────────────────────────────────────────
+
+export async function banUserEquipe(userId: string) {
+  await requireAdmin()
+  await auth.api.banUser({ body: { userId }, headers: await headers() })
+  revalidatePath("/bureau/equipe")
+}
+
+export async function unbanUserEquipe(userId: string) {
+  await requireAdmin()
+  await auth.api.unbanUser({ body: { userId }, headers: await headers() })
+  revalidatePath("/bureau/equipe")
 }
 
 // ── Supprimer un membre de l'équipe ────────────────────────────────────────────

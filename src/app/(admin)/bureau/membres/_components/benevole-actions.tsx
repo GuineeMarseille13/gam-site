@@ -7,17 +7,21 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { IconDotsVertical, IconTrash, IconLoader2, IconPencil } from "@tabler/icons-react"
+import { IconDotsVertical, IconEdit, IconLoader2, IconTrash } from "@tabler/icons-react"
 import { deleteBenevole } from "../_actions/actions"
 
 interface BenevoleActionsProps {
@@ -26,72 +30,69 @@ interface BenevoleActionsProps {
 
 export function BenevoleActions({ personId }: BenevoleActionsProps) {
   const [isPending, startTransition] = useTransition()
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [openDelete, setOpenDelete]  = useState(false)
   const router = useRouter()
 
-  function handleDeleteConfirm() {
+  const editHref = `/bureau/membres/benevole/${personId}/modifier`
+
+  function confirmDelete() {
+    setOpenDelete(false)
     startTransition(async () => {
       await deleteBenevole(personId)
-      setShowDeleteModal(false)
       router.refresh()
     })
   }
 
-  const editHref = `/bureau/membres/benevole/${personId}/modifier`
-
   return (
     <>
-      {/* ── Desktop : boutons inline ──────────────────────────────────────── */}
-      <div className="hidden lg:flex items-center justify-end gap-1">
+      {/* ── Boutons inline — lg+ ─────────────────────────────────────────── */}
+      <div className="hidden lg:flex items-center justify-end gap-0.5">
         <Button
-          variant="ghost"
-          size="sm"
-          asChild
-          className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+          variant="ghost" size="sm" asChild
+          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+          disabled={isPending}
         >
           <Link href={editHref}>
-            <IconPencil className="size-3.5" />
+            <IconEdit className="size-3.5" />
             Modifier
           </Link>
         </Button>
         <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowDeleteModal(true)}
+          variant="ghost" size="sm"
+          onClick={() => setOpenDelete(true)}
           disabled={isPending}
-          className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
         >
-          {isPending ? (
-            <IconLoader2 className="size-3.5 animate-spin" />
-          ) : (
-            <IconTrash className="size-3.5" />
-          )}
+          {isPending
+            ? <IconLoader2 className="size-3.5 animate-spin" />
+            : <IconTrash className="size-3.5" />
+          }
           Supprimer
         </Button>
       </div>
 
-      {/* ── Mobile / tablette : dropdown ─────────────────────────────────── */}
+      {/* ── Menu ⋮ — mobile / tablette ──────────────────────────────────── */}
       <div className="flex lg:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
-              {isPending ? (
-                <IconLoader2 className="size-4 animate-spin" />
-              ) : (
-                <IconDotsVertical className="size-4" />
-              )}
+              {isPending
+                ? <IconLoader2 className="size-4 animate-spin" />
+                : <IconDotsVertical className="size-4" />
+              }
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href={editHref} className="flex items-center gap-2">
-                <IconPencil className="size-4" />
+          <DropdownMenuContent align="end" className="w-44 rounded-xl p-1.5">
+            <DropdownMenuItem asChild className="rounded-lg px-3 py-2 cursor-pointer focus:bg-muted focus:text-foreground">
+              <Link href={editHref}>
+                <IconEdit className="size-4 text-muted-foreground" />
                 Modifier
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => setShowDeleteModal(true)}
-              className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 cursor-pointer"
+              onClick={() => setOpenDelete(true)}
+              className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
             >
               <IconTrash className="size-4" />
               Supprimer
@@ -100,47 +101,38 @@ export function BenevoleActions({ personId }: BenevoleActionsProps) {
         </DropdownMenu>
       </div>
 
-      {/* ── Modale de confirmation ────────────────────────────────────────── */}
-      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-        <DialogContent className="max-w-sm gap-0 overflow-hidden p-0">
+      {/* ── Dialogue de confirmation ─────────────────────────────────────── */}
+      <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
+        <AlertDialogContent className="max-w-sm gap-0 overflow-hidden p-0">
           <div className="flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20">
             <div className="flex size-14 items-center justify-center rounded-2xl bg-rose-100 ring-4 ring-rose-100/60 dark:bg-rose-900/40 dark:ring-rose-900/20">
               <IconTrash className="size-6 text-rose-600 dark:text-rose-400" />
             </div>
-            <DialogTitle className="text-base font-semibold text-foreground">
-              Supprimer le bénévole
-            </DialogTitle>
+            <AlertDialogTitle className="text-base font-semibold text-foreground">
+              Supprimer le bénévole ?
+            </AlertDialogTitle>
           </div>
-
-          <div className="px-8 py-5">
-            <DialogDescription className="text-center text-sm text-muted-foreground">
+          <AlertDialogHeader className="px-8 py-5">
+            <AlertDialogDescription className="text-center text-sm text-muted-foreground">
               Cette action est <span className="font-medium text-foreground">irréversible</span>. Le bénévole sera définitivement retiré de la base de contacts.
-            </DialogDescription>
-          </div>
-
-          <DialogFooter className="flex-row gap-2 border-t px-8 py-5 sm:flex-row">
-            <Button
-              variant="outline"
-              className="flex-1 cursor-pointer rounded-xl border-border/60 text-sm font-medium"
-              disabled={isPending}
-              onClick={() => setShowDeleteModal(false)}
-            >
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-2 border-t px-8 py-5">
+            <AlertDialogCancel className="flex-1 cursor-pointer rounded-xl border-border/60 text-sm font-medium">
               Annuler
-            </Button>
-            <Button
-              className="flex-1 cursor-pointer rounded-xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white text-sm font-semibold shadow-sm shadow-rose-600/20 focus-visible:ring-rose-500"
-              disabled={isPending}
-              onClick={handleDeleteConfirm}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="flex-1 cursor-pointer rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold shadow-sm"
             >
-              {isPending ? (
-                <><IconLoader2 className="size-4 animate-spin" />Suppression…</>
-              ) : (
-                <><IconTrash className="size-4" />Supprimer</>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              {isPending
+                ? <><IconLoader2 className="size-4 animate-spin" />Suppression…</>
+                : <><IconTrash className="size-4" />Supprimer</>
+              }
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

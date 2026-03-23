@@ -14,6 +14,8 @@ interface AvatarUploadProps {
   defaultShowOnSite?: boolean
   /** Couleur du fond avatar quand aucune image (classes Tailwind bg gradient) */
   placeholderClass?: string
+  /** Sous-label optionnel pour préciser la section concernée (ex: "Section 'Nos bénévoles'") */
+  visibilitySubLabel?: string
 }
 
 /**
@@ -27,6 +29,7 @@ export function AvatarUpload({
   withVisibilityToggle = false,
   defaultShowOnSite = true,
   placeholderClass = "from-slate-100 to-slate-200 text-slate-500",
+  visibilitySubLabel,
 }: AvatarUploadProps) {
   const [preview, setPreview]         = useState<string | null>(defaultImageUrl ?? null)
   const [showOnSite, setShowOnSite]   = useState(defaultShowOnSite)
@@ -154,12 +157,17 @@ export function AvatarUpload({
             />
             {/* Input caché pour la soumission du formulaire */}
             <input type="hidden" name="showOnSite" value={showOnSite ? "true" : "false"} />
-            <Label
-              htmlFor="showOnSite"
-              className="text-xs text-muted-foreground cursor-pointer select-none"
-            >
-              Afficher sur le site
-            </Label>
+            <div>
+              <Label
+                htmlFor="showOnSite"
+                className="text-xs text-muted-foreground cursor-pointer select-none"
+              >
+                Afficher sur le site
+              </Label>
+              {visibilitySubLabel && (
+                <p className="text-[10px] text-muted-foreground/60 leading-tight">{visibilitySubLabel}</p>
+              )}
+            </div>
           </div>
         )}
       </div>

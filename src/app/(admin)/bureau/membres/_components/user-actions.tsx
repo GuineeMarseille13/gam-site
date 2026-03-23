@@ -26,30 +26,30 @@ import {
   IconCircleCheck,
   IconLoader2,
 } from "@tabler/icons-react"
-import { banUser, unbanUser, deleteUser } from "../_actions/actions"
 
 interface UserActionsProps {
-  userId: string
+  editHref: string
+  onDelete: () => Promise<unknown>
+  onBanToggle: () => Promise<void>
   isBanned: boolean
   isSelf: boolean
 }
 
-export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
+export function UserActions({ editHref, onDelete, onBanToggle, isBanned, isSelf }: UserActionsProps) {
   const [isPending, startTransition] = useTransition()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const router = useRouter()
 
   function handleBanToggle() {
     startTransition(async () => {
-      if (isBanned) await unbanUser(userId)
-      else await banUser(userId)
+      await onBanToggle()
       router.refresh()
     })
   }
 
   function handleDeleteConfirm() {
     startTransition(async () => {
-      await deleteUser(userId)
+      await onDelete()
       setShowDeleteModal(false)
       router.refresh()
     })
@@ -66,7 +66,7 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
           className="cursor-pointer h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
           disabled={isPending}
         >
-          <Link href={`/bureau/membres/${userId}/modifier`}>
+          <Link href={editHref}>
             <IconEdit className="size-3.5" />
             Modifier
           </Link>
@@ -119,7 +119,7 @@ export function UserActions({ userId, isBanned, isSelf }: UserActionsProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem asChild className="focus:bg-muted focus:text-foreground cursor-pointer">
-              <Link href={`/bureau/membres/${userId}/modifier`}>
+              <Link href={editHref}>
                 <IconEdit className="size-4" />
                 Modifier
               </Link>

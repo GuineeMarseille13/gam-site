@@ -35,6 +35,7 @@ export function BenevoleForm({ action, submitLabel = "Enregistrer", defaultValue
         defaultImageUrl={defaultValues?.imageUrl}
         defaultShowOnSite={defaultValues?.showOnSite ?? true}
         placeholderClass="from-violet-100 to-violet-200 text-violet-600"
+        visibilitySubLabel="Section « Nos bénévoles »"
       />
 
       <div className="border-t" />

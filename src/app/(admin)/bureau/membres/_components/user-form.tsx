@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IconUpload, IconUser, IconX, IconEye, IconEyeOff, IconLoader2, IconAlertCircle } from "@tabler/icons-react"
-import { createUser, updateUser } from "../_actions/actions"
 import { DASHBOARD_ROLES } from "./roles"
+import { POSTES } from "../../equipe/_components/postes"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -18,12 +18,14 @@ type ActionResult = { error: string } | { success: true } | undefined
 
 interface UserFormProps {
   mode: "create" | "edit"
+  createAction?: (formData: FormData) => Promise<ActionResult>
+  updateAction?: (formData: FormData) => Promise<ActionResult>
   defaultValues?: {
-    userId:       string
     firstName:    string
     lastName:     string
     email:        string
     role:         string
+    poste?:       string | null
     phone?:       string | null
     description?: string | null
     imageUrl?:    string | null
@@ -33,13 +35,14 @@ interface UserFormProps {
 
 // ── Composant ──────────────────────────────────────────────────────────────────
 
-export function UserForm({ mode, defaultValues }: UserFormProps) {
+export function UserForm({ mode, createAction, updateAction, defaultValues }: UserFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
   const [showOnSite, setShowOnSite]     = useState(defaultValues?.showOnSite ?? true)
   const [role, setRole]                 = useState(defaultValues?.role ?? "bureau")
+  const [poste, setPoste]               = useState(defaultValues?.poste ?? "")
   const [preview, setPreview]           = useState<string | null>(defaultValues?.imageUrl ?? null)
   const [sizeError, setSizeError]       = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -72,21 +75,28 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
     e.preventDefault()
     setError(null)
 
+    if (!poste) {
+      setError("Veuillez sélectionner un poste dans le bureau.")
+      return
+    }
+
     const formData = new FormData(e.currentTarget)
     formData.set("role", role)
+    formData.set("poste", poste)
+    const action = mode === "create" ? createAction : updateAction
 
     startTransition(async () => {
-      const result: ActionResult = mode === "create"
-        ? await createUser(formData)
-        : await updateUser(formData)
-
-      if (result && "error" in result) {
-        setError(result.error)
-        return
+      try {
+        const result = await action?.(formData)
+        if (result && "error" in result) {
+          setError(result.error)
+          return
+        }
+        router.push("/bureau/membres")
+        router.refresh()
+      } catch {
+        setError("Une erreur inattendue s'est produite. Veuillez réessayer.")
       }
-
-      router.push("/bureau/membres")
-      router.refresh()
     })
   }
 
@@ -174,9 +184,6 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
                   <p className="text-xs font-medium leading-tight">
                     {showOnSite ? "Visible sur le site" : "Masqué du site"}
                   </p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
-                    Section &quot;Notre équipe&quot;
-                  </p>
                 </div>
               </div>
               <Switch checked={showOnSite} onCheckedChange={setShowOnSite} />
@@ -194,11 +201,6 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
               <IconAlertCircle className="size-4 shrink-0" />
               {error}
             </div>
-          )}
-
-          {/* userId caché en mode édition */}
-          {mode === "edit" && defaultValues && (
-            <input type="hidden" name="userId" value={defaultValues.userId} />
           )}
 
           {/* Prénom / Nom */}
@@ -272,30 +274,54 @@ export function UserForm({ mode, defaultValues }: UserFormProps) {
             </div>
           )}
 
-          {/* Rôle */}
-          <div className="space-y-1.5">
-            <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Rôle <span className="text-destructive">*</span>
-            </Label>
-            <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="h-10 rounded-xl">
-                <SelectValue placeholder="Sélectionner un rôle…" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
-                {DASHBOARD_ROLES.map((r) => (
-                  <SelectItem
-                    key={r.value}
-                    value={r.value}
-                    className="rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:bg-amber-50 focus:text-amber-900 data-[state=checked]:bg-amber-50 data-[state=checked]:text-amber-900 dark:focus:bg-amber-950/40 dark:focus:text-amber-300 dark:data-[state=checked]:bg-amber-950/40 dark:data-[state=checked]:text-amber-300"
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-medium">{r.label}</span>
-                      <span className="text-[10px] text-muted-foreground">{r.description}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Rôle / Poste */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                Rôle <span className="text-destructive">*</span>
+              </Label>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger className="h-10 rounded-xl">
+                  <SelectValue placeholder="Sélectionner un rôle…" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
+                  {DASHBOARD_ROLES.map((r) => (
+                    <SelectItem
+                      key={r.value}
+                      value={r.value}
+                      className="rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:bg-amber-50 focus:text-amber-900 data-[state=checked]:bg-amber-50 data-[state=checked]:text-amber-900 dark:focus:bg-amber-950/40 dark:focus:text-amber-300 dark:data-[state=checked]:bg-amber-950/40 dark:data-[state=checked]:text-amber-300"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-medium">{r.label}</span>
+                        <span className="text-[10px] text-muted-foreground">{r.description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                Poste dans le bureau <span className="text-destructive">*</span>
+              </Label>
+              <Select value={poste} onValueChange={setPoste} required>
+                <SelectTrigger className="h-10 rounded-xl">
+                  <SelectValue placeholder="Sélectionner un poste…" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
+                  {POSTES.map((p) => (
+                    <SelectItem
+                      key={p.value}
+                      value={p.value}
+                      className="rounded-lg px-3 py-2.5 text-sm cursor-pointer focus:bg-rose-50 focus:text-rose-900 data-[state=checked]:bg-rose-50 data-[state=checked]:text-rose-900 dark:focus:bg-rose-950/40 dark:focus:text-rose-300 dark:data-[state=checked]:bg-rose-950/40 dark:data-[state=checked]:text-rose-300"
+                    >
+                      {p.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Téléphone */}

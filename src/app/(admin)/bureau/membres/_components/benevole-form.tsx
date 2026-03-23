@@ -169,6 +169,9 @@ export function BenevoleForm({ mode, defaultValues }: BenevoleFormProps) {
             <p className="text-[11px] text-muted-foreground">
               Format recommandé&nbsp;: carré · min. 400 × 400 px
             </p>
+            <p className="text-[11px] text-amber-600/80 dark:text-amber-500/70">
+              Une photo est requise pour apparaître sur le site.
+            </p>
 
             {/* Visibilité sur le site */}
             <div className={`flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition-colors ${
@@ -190,8 +193,8 @@ export function BenevoleForm({ mode, defaultValues }: BenevoleFormProps) {
                   <p className="text-xs font-medium leading-tight">
                     {showOnSite ? "Visible sur le site" : "Masqué du site"}
                   </p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
-                    Section &quot;Nos bénévoles&quot;
+                  <p className="text-[10px] text-muted-foreground/70 leading-tight mt-0.5">
+                    Section &ldquo;Nos bénévoles&rdquo;
                   </p>
                 </div>
               </div>
