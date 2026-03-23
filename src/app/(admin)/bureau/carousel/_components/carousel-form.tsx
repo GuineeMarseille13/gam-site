@@ -86,18 +86,18 @@ export function CarouselForm({ slide, action, submitLabel = "Enregistrer" }: Car
             <img src={displaySrc} alt="Aperçu" className="h-full w-full object-cover" />
             <div className="absolute inset-0 flex items-end justify-end gap-2 p-3">
               <button type="button" onClick={() => fileRef.current?.click()}
-                className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs text-white backdrop-blur-sm hover:bg-black/80 transition-colors">
+                className="cursor-pointer inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs text-white backdrop-blur-sm hover:bg-black/80 transition-colors">
                 <IconUpload className="size-3" /> Changer
               </button>
               <button type="button" onClick={handleRemove}
-                className="rounded-full bg-black/60 p-1.5 text-white backdrop-blur-sm hover:bg-black/80 transition-colors">
+                className="cursor-pointer rounded-full bg-black/60 p-1.5 text-white backdrop-blur-sm hover:bg-black/80 transition-colors">
                 <IconX className="size-3.5" />
               </button>
             </div>
           </div>
         ) : (
           <button type="button" onClick={() => fileRef.current?.click()}
-            className="flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/40 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/70"
+            className="cursor-pointer flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/40 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/70"
             style={{ aspectRatio: "16/9" }}>
             <IconPhoto className="size-9 opacity-40" />
             <div className="text-center">

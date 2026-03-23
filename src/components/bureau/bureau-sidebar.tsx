@@ -74,8 +74,6 @@ const navigation: {
     { title: "Carousel", url: "/bureau/carousel", icon: IconSlideshow },
     { title: "Événements", url: "/bureau/evenements", icon: IconCalendarEvent },
     { title: "Pôles", url: "/bureau/poles", icon: IconLayoutGrid },
-    { title: "Équipe", url: "/bureau/equipe", icon: IconUsers, adminOnly: true },
-    { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
     { title: "Partenaires", url: "/bureau/partenaires", icon: IconHandClick },
     { title: "Produits", url: "/bureau/produits", icon: IconPackage },
     { title: "Témoignages vidéo", url: "/bureau/temoignages-video", icon: IconVideo },
@@ -83,8 +81,10 @@ const navigation: {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Membres", url: "/bureau/membres", icon: IconUserCircle },
-    { title: "Aide", url: "/bureau/aide", icon: IconHelp },
+    { title: "Membres",   url: "/bureau/membres",   icon: IconUserCircle },
+    { title: "Équipe",    url: "/bureau/equipe",    icon: IconUsers,    adminOnly: true },
+    { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
+    { title: "Aide",      url: "/bureau/aide",      icon: IconHelp },
   ],
 }
 

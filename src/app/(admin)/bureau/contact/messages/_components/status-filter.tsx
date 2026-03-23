@@ -45,7 +45,7 @@ export function StatusFilter({ counts, current }: StatusFilterProps) {
           <button
             key={value}
             onClick={() => router.push(value === "ALL" ? pathname : `${pathname}?status=${value}`)}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
               isActive
                 ? ACTIVE[value]
                 : "bg-card text-muted-foreground border-border hover:bg-muted/50 hover:text-foreground"

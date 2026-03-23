@@ -53,7 +53,7 @@ export function EventFilter({ counts, current }: EventFilterProps) {
           <button
             key={value}
             onClick={() => router.push(value === "ALL" ? pathname : `${pathname}?filter=${value}`)}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
               isActive
                 ? active
                 : "bg-card text-muted-foreground border-border hover:bg-muted/50 hover:text-foreground"

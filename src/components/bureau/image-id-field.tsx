@@ -49,7 +49,7 @@ export function ImageIdField({ defaultValue, name = "imageId" }: ImageIdFieldPro
               <button
                 type="button"
                 onClick={() => setImageId("")}
-                className="absolute top-1 right-1 rounded-full bg-black/50 p-0.5 text-white hover:bg-black/70"
+                className="absolute top-1 right-1 cursor-pointer rounded-full bg-black/50 p-0.5 text-white hover:bg-black/70"
                 title="Supprimer l'image"
               >
                 <IconX className="h-3 w-3" />

@@ -58,7 +58,7 @@ export function CloudinaryImage({ imageId, alt = "Image", thumbSize = 40, classN
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`overflow-hidden rounded border border-border transition-opacity hover:opacity-80 ${className}`}
+        className={`cursor-pointer overflow-hidden rounded border border-border transition-opacity hover:opacity-80 ${className}`}
         style={{ width: thumbSize, height: thumbSize }}
         title="Voir l'image"
       >

@@ -127,7 +127,7 @@ export function PopupForm({ action, defaultValues, cancelHref = "/bureau/popup" 
             { value: "PROSPECTUS" as const, icon: IconPresentationAnalytics, label: "Prospectus / Flyer", sub: "Une ou plusieurs affiches" },
           ]).map(({ value, icon: Icon, label, sub }) => (
             <button key={value} type="button" onClick={() => setType(value)}
-              className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${
+              className={`cursor-pointer flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${
                 type === value
                   ? "border-primary bg-primary/5 text-primary"
                   : "border-border bg-card text-muted-foreground hover:border-muted-foreground/30"
@@ -162,18 +162,18 @@ export function PopupForm({ action, defaultValues, cancelHref = "/bureau/popup" 
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
                     <button type="button" onClick={() => imgFileRef.current?.click()}
-                      className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-gray-900 shadow backdrop-blur-sm transition hover:bg-white">
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-gray-900 shadow backdrop-blur-sm transition hover:bg-white">
                       <IconUpload className="size-3.5" /> Changer l&apos;image
                     </button>
                     <button type="button" onClick={removeImg}
-                      className="inline-flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/80">
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/80">
                       <IconX className="size-3.5" /> Supprimer
                     </button>
                   </div>
                 </div>
               ) : (
                 <button type="button" onClick={() => imgFileRef.current?.click()}
-                  className="group flex aspect-[3/4] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
+                  className="cursor-pointer group flex aspect-[3/4] w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
                   <div className="flex size-14 items-center justify-center rounded-2xl border border-dashed border-current opacity-40 transition-opacity group-hover:opacity-70">
                     <IconPhoto className="size-7" />
                   </div>
@@ -249,7 +249,7 @@ export function PopupForm({ action, defaultValues, cancelHref = "/bureau/popup" 
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={buildUrl(id)} alt="" className="h-full w-full object-cover" />
                 <button type="button" onClick={() => setKeptIds((p) => p.filter((x) => x !== id))}
-                  className="absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500">
+                  className="cursor-pointer absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500">
                   <IconTrash className="size-3" />
                 </button>
               </div>
@@ -261,14 +261,14 @@ export function PopupForm({ action, defaultValues, cancelHref = "/bureau/popup" 
                 <img src={p.preview} alt="" className="h-full w-full object-cover" />
                 <div className="absolute left-1.5 top-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-white">Nouveau</div>
                 <button type="button" onClick={() => setNewFiles((prev) => prev.filter((_, j) => j !== i))}
-                  className="absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500">
+                  className="cursor-pointer absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500">
                   <IconTrash className="size-3" />
                 </button>
               </div>
             ))}
             {/* Add button */}
             <button type="button" onClick={() => proFileRef.current?.click()}
-              className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
+              className="cursor-pointer flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/60">
               <div className="flex size-9 items-center justify-center rounded-full border border-dashed border-current opacity-50">
                 <IconPlus className="size-4" />
               </div>

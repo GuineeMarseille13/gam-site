@@ -88,7 +88,7 @@ export function ImageUploadField({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="rounded-full bg-black/60 p-1 text-white hover:bg-black/80 transition-colors"
+              className="cursor-pointer rounded-full bg-black/60 p-1 text-white hover:bg-black/80 transition-colors"
               title="Changer l'image"
             >
               <IconUpload className="h-3 w-3" />
@@ -96,7 +96,7 @@ export function ImageUploadField({
             <button
               type="button"
               onClick={handleRemove}
-              className="rounded-full bg-black/60 p-1 text-white hover:bg-black/80 transition-colors"
+              className="cursor-pointer rounded-full bg-black/60 p-1 text-white hover:bg-black/80 transition-colors"
               title="Supprimer l'image"
             >
               <IconX className="h-3 w-3" />
@@ -107,7 +107,7 @@ export function ImageUploadField({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex h-24 w-40 flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-border bg-muted/40 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-muted/70"
+          className="cursor-pointer flex h-24 w-40 flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-border bg-muted/40 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-muted/70"
         >
           <IconPhoto className="h-5 w-5" />
           <span className="text-xs text-center px-2">Choisir une image</span>

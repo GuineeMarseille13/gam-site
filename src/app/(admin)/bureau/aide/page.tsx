@@ -308,7 +308,7 @@ function HelpCard({ item }: { item: HelpItem }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-start gap-4 p-5 text-left"
+        className="flex cursor-pointer items-start gap-4 p-5 text-left"
       >
         <div className={`mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl ${item.iconBg}`}>
           <Icon className={`size-5 ${item.iconColor}`} />
@@ -507,7 +507,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-medium text-foreground hover:bg-muted/40 transition-colors first:rounded-t-2xl last:rounded-b-2xl"
+        className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left text-sm font-medium text-foreground hover:bg-muted/40 transition-colors first:rounded-t-2xl last:rounded-b-2xl"
       >
         {question}
         <IconArrowRight className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-90" : ""}`} />

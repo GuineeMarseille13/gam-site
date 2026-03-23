@@ -106,7 +106,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => step("hours", 1)}
-                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                  className="cursor-pointer p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
                 >
                   <ChevronUpIcon className="h-3.5 w-3.5" />
                 </button>
@@ -128,7 +128,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => step("hours", -1)}
-                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                  className="cursor-pointer p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
                 >
                   <ChevronDownIcon className="h-3.5 w-3.5" />
                 </button>
@@ -141,7 +141,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => step("minutes", 1)}
-                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                  className="cursor-pointer p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
                 >
                   <ChevronUpIcon className="h-3.5 w-3.5" />
                 </button>
@@ -163,7 +163,7 @@ export function DateTimePicker({
                 <button
                   type="button"
                   onClick={() => step("minutes", -1)}
-                  className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                  className="cursor-pointer p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
                 >
                   <ChevronDownIcon className="h-3.5 w-3.5" />
                 </button>
