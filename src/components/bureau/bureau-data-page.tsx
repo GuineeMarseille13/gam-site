@@ -25,7 +25,7 @@ export function BureauDataPage({
   children,
 }: BureauDataPageProps) {
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
+    <div className="flex flex-1 flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 xl:p-10">
       {/* Retour */}
       {backHref && (
         <Link
@@ -40,17 +40,17 @@ export function BureauDataPage({
       {/* En-tête */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
           {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
           )}
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {actions}
           {addHref && (
-            <Button asChild className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white shadow-sm">
+            <Button asChild className="gap-2 rounded-xl px-5 py-2.5 text-base bg-amber-500 hover:bg-amber-600 text-white shadow-md hover:shadow-lg transition-shadow">
               <Link href={addHref}>
-                <IconPlus className="size-4" />
+                <IconPlus className="size-4 sm:size-5" />
                 {addLabel}
               </Link>
             </Button>

@@ -9,30 +9,10 @@ const FILTERS: {
   value:  EventFilterValue
   label:  string
   icon:   React.ElementType
-  active: string
-  badge:  string
 }[] = [
-  {
-    value:  "ALL",
-    label:  "Tous",
-    icon:   IconCalendarEvent,
-    active: "bg-foreground text-background border-foreground",
-    badge:  "bg-white/20 text-background",
-  },
-  {
-    value:  "upcoming",
-    label:  "À venir",
-    icon:   IconCalendarCheck,
-    active: "bg-blue-100 text-blue-700 border-blue-300",
-    badge:  "bg-blue-200/60 text-blue-800",
-  },
-  {
-    value:  "published",
-    label:  "Publiés",
-    icon:   IconEye,
-    active: "bg-emerald-100 text-emerald-700 border-emerald-300",
-    badge:  "bg-emerald-200/60 text-emerald-800",
-  },
+  { value: "ALL", label: "Tous", icon: IconCalendarEvent },
+  { value: "upcoming", label: "À venir", icon: IconCalendarCheck },
+  { value: "published", label: "Publiés", icon: IconEye },
 ]
 
 interface EventFilterProps {
@@ -45,28 +25,26 @@ export function EventFilter({ counts, current }: EventFilterProps) {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {FILTERS.map(({ value, label, icon: Icon, active, badge }) => {
+    <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2 rounded-xl bg-slate-100/80 p-1.5">
+      {FILTERS.map(({ value, label, icon: Icon }) => {
         const isActive = current === value
 
         return (
           <button
             key={value}
             onClick={() => router.push(value === "ALL" ? pathname : `${pathname}?filter=${value}`)}
-            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-              isActive
-                ? active
-                : "bg-card text-muted-foreground border-border hover:bg-muted/50 hover:text-foreground"
-            }`}
-          >
-            <Icon className="size-3.5" />
-            {label}
-            <span className={`min-w-[18px] rounded-full px-1 text-center text-[10px] font-semibold leading-5 ${
-              isActive ? badge : "bg-muted text-muted-foreground"
-            }`}>
-              {counts[value]}
-            </span>
-          </button>
+            className={`cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 py-1.5 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 ${
+                isActive
+                  ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/60"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Icon className="size-4 shrink-0" />
+              <span>{label}</span>
+              <span className={`min-w-[18px] tabular-nums text-right ${isActive ? "font-semibold" : "opacity-75"}`}>
+                {counts[value]}
+              </span>
+            </button>
         )
       })}
     </div>

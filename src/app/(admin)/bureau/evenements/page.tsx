@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deleteEvenement } from "./_actions/actions"
-import { IconCalendarX, IconMapPin, IconEye, IconEyeOff } from "@tabler/icons-react"
+import { IconCalendarX, IconMapPin, IconEye, IconEyeOff, IconPhoto } from "@tabler/icons-react"
 import { EventFilter, type EventFilterValue } from "./_components/event-filter"
 
 export const metadata: Metadata = { title: "Événements" }
@@ -28,20 +28,20 @@ function formatDate(date: Date | null | undefined): string {
 
 const TIME_CFG = {
   upcoming: {
-    border:   "border-l-blue-400",
-    bg:       "bg-blue-50/20",
-    label:    "À venir",
-    badge:    "bg-blue-100 text-blue-700 border-blue-200",
-    dateCls:  "text-blue-600",
-    titleCls: "font-semibold text-foreground",
+    accent:  "border-t-blue-500",
+    card:    "bg-white hover:shadow-lg hover:shadow-blue-500/5 hover:border-blue-200/70",
+    label:  "À venir",
+    badge:  "bg-blue-50 text-blue-700 border-blue-200/50",
+    dateCls: "text-blue-600 font-medium",
+    titleCls: "font-semibold text-slate-900",
   },
   past: {
-    border:   "border-l-gray-200",
-    bg:       "",
-    label:    "Passé",
-    badge:    "bg-gray-100 text-gray-500 border-gray-200",
-    dateCls:  "text-muted-foreground",
-    titleCls: "font-medium text-foreground/80",
+    accent:  "border-t-slate-200",
+    card:    "bg-white hover:shadow-lg hover:border-slate-200/80",
+    label:  "Passé",
+    badge:  "bg-slate-100 text-slate-600 border-slate-200/50",
+    dateCls: "text-slate-500",
+    titleCls: "font-medium text-slate-800",
   },
 }
 
@@ -83,90 +83,105 @@ export default async function EvenementsPage({
       )}
 
       {/* ── Liste ── */}
-      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
+      <div className="space-y-3 sm:space-y-4">
         {evenements.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-muted-foreground">
-            <IconCalendarX className="size-10 opacity-30" />
-            <p className="text-sm">
+          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-16 sm:py-20 text-slate-500">
+            <div className="flex size-14 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200/40">
+              <IconCalendarX className="size-8 text-slate-400" />
+            </div>
+            <p className="text-sm font-medium">
               {activeFilter === "ALL"
                 ? "Aucun événement enregistré"
                 : "Aucun événement dans cette catégorie"}
             </p>
             {activeFilter === "ALL" && (
-              <Link href="/bureau/evenements/nouveau" className="text-sm font-medium text-primary hover:underline">
+              <Link
+                href="/bureau/evenements/nouveau"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
                 Créer le premier événement
               </Link>
             )}
           </div>
         ) : (
-          <ul className="divide-y">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
             {evenements.map((event) => {
               const isUpcoming = event.startDate > now
-              const cfg        = isUpcoming ? TIME_CFG.upcoming : TIME_CFG.past
+              const cfg = isUpcoming ? TIME_CFG.upcoming : TIME_CFG.past
 
               return (
                 <li
                   key={event.id}
-                  className={`group flex gap-3 px-4 py-3.5 border-l-4 transition-colors hover:bg-muted/30 sm:px-6 sm:py-4 ${cfg.border} ${cfg.bg}`}
+                  className={`group flex flex-col rounded-2xl overflow-hidden border border-slate-200/70 border-t-4 shadow-sm transition-all duration-300 ${cfg.card}`}
                 >
-                  {/* Thumbnail */}
-                  <div className="shrink-0 mt-0.5">
-                    <CloudinaryImage imageId={event.imageId} alt={event.title} thumbSize={44} />
+                  {/* Image hero */}
+                  <div className="relative aspect-[4/3] min-h-[140px] shrink-0 overflow-hidden bg-slate-100">
+                    {event.imageId ? (
+                      <CloudinaryImage
+                        imageId={event.imageId}
+                        alt={event.title}
+                        thumbSize={360}
+                        sizeClassName="absolute inset-0 w-full h-full"
+                        imageSizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="rounded-none object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                        <IconPhoto className="size-12" />
+                      </div>
+                    )}
+                    {/* Badges overlay */}
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                      <Badge variant="outline" className={`text-[11px] h-6 px-2.5 font-medium border shadow-sm backdrop-blur-sm ${cfg.badge}`}>
+                        {cfg.label}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className={`text-[11px] h-6 px-2.5 font-medium border shadow-sm backdrop-blur-sm inline-flex items-center gap-1.5 ${
+                          event.published
+                            ? "bg-emerald-50/95 text-emerald-700 border-emerald-200/50"
+                            : "bg-amber-50/95 text-amber-700 border-amber-200/50"
+                        }`}
+                      >
+                        {event.published ? <IconEye className="size-3" /> : <IconEyeOff className="size-3" />}
+                        {event.published ? "Publié" : "Brouillon"}
+                      </Badge>
+                    </div>
                   </div>
 
                   {/* Contenu */}
-                  <div className="min-w-0 flex-1">
-
-                    {/* Ligne 1 : titre + badges */}
-                    <div className="flex items-start justify-between gap-2">
-                      <p className={`text-sm leading-snug truncate ${cfg.titleCls}`}>
+                  <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                    <Link href={`/bureau/evenements/${event.id}/modifier`} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg -m-1 p-1">
+                      <h3 className={`line-clamp-2 text-base sm:text-lg font-semibold leading-snug hover:text-primary transition-colors ${cfg.titleCls}`}>
                         {event.title}
-                      </p>
-                      <div className="flex shrink-0 items-center gap-1">
-                        <Badge variant="outline" className={`text-[10px] h-[18px] px-1.5 border ${cfg.badge}`}>
-                          {cfg.label}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className={`text-[10px] h-[18px] px-1.5 border inline-flex items-center gap-0.5 ${
-                            event.published
-                              ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                              : "bg-amber-100 text-amber-700 border-amber-200"
-                          }`}
-                        >
-                          {event.published
-                            ? <><IconEye className="size-2.5" />Publié</>
-                            : <><IconEyeOff className="size-2.5" />Brouillon</>
-                          }
-                        </Badge>
-                      </div>
-                    </div>
+                      </h3>
+                    </Link>
 
-                    {/* Ligne 2 : description */}
                     {event.description && (
-                      <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                      <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
                         {event.description}
                       </p>
                     )}
 
-                    {/* Ligne 3 : lieu · date + actions */}
-                    <div className="mt-1.5 flex items-center justify-between gap-2">
-                      <div className="flex min-w-0 items-center gap-3">
-                        {event.location && (
-                          <span className="flex items-center gap-1 text-xs text-muted-foreground truncate">
-                            <IconMapPin className="size-3 shrink-0 opacity-60" />
-                            {event.location}
-                          </span>
-                        )}
-                        <span className={`text-xs tabular-nums font-medium shrink-0 ${cfg.dateCls}`}>
-                          {formatDate(event.startDate)}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-auto pt-2 border-t border-slate-100">
+                      {event.location && (
+                        <span className="flex items-center gap-2 text-sm text-slate-500">
+                          <IconMapPin className="size-3.5 shrink-0 opacity-75" />
+                          <span className="truncate">{event.location}</span>
                         </span>
-                      </div>
-                      <RowActions
-                        editHref={`/bureau/evenements/${event.id}/modifier`}
-                        onDelete={deleteEvenement.bind(null, event.id)}
-                      />
+                      )}
+                      <span className={`text-sm tabular-nums font-medium ${cfg.dateCls}`}>
+                        {formatDate(event.startDate)}
+                      </span>
                     </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex justify-end border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:px-5 sm:py-3.5">
+                    <RowActions
+                      editHref={`/bureau/evenements/${event.id}/modifier`}
+                      onDelete={deleteEvenement.bind(null, event.id)}
+                    />
                   </div>
                 </li>
               )
