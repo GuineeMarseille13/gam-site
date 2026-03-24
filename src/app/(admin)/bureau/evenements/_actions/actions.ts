@@ -9,14 +9,23 @@ import { requireBureau } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
-async function resolveImageId(formData: FormData): Promise<string | null> {
-  const file = formData.get("imageFile") as File | null
-  if (file && file.size > 0) {
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+async function uploadFiles(files: File[]): Promise<string[]> {
+  const ids: string[] = []
+  for (const file of files) {
+    if (file.size === 0) continue
     const result = await uploadImage(file, "gam/evenements")
-    return result.publicId
+    ids.push(result.publicId)
   }
-  return (formData.get("imageId") as string) || null
+  return ids
 }
+
+async function deleteCloudinaryImages(imageIds: string[]) {
+  await Promise.allSettled(imageIds.map((id) => deleteImage(id)))
+}
+
+// ── Créer un événement ─────────────────────────────────────────────────────────
 
 export async function createEvenement(
   _prevState: ActionState,
@@ -24,17 +33,34 @@ export async function createEvenement(
 ): Promise<ActionState> {
   await requireBureau()
   try {
-    const title = formData.get("title") as string
+    const title       = formData.get("title")       as string
     const description = (formData.get("description") as string) || null
-    const location = (formData.get("location") as string) || null
-    const imageId = await resolveImageId(formData)
-    const startDate = new Date(formData.get("startDate") as string)
-    const endDate = new Date(formData.get("endDate") as string)
-    const published = formData.get("published") === "true"
+    const location    = (formData.get("location")    as string) || null
+    const startDate   = new Date((formData.get("startDate") as string) || "")
+    const endDate     = new Date((formData.get("endDate")   as string) || "")
+    const published   = formData.get("published") === "true"
 
-    await prisma.event.create({
-      data: { title, description, location, imageId, startDate, endDate, published },
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return { error: "Veuillez sélectionner les dates de début et de fin." }
+    }
+
+    // Uploader les nouvelles images
+    const imageFiles = formData.getAll("imageFiles") as File[]
+    const uploadedIds = await uploadFiles(imageFiles)
+
+    // coverImageId = première image uploadée
+    const coverImageId = uploadedIds[0] ?? null
+
+    const event = await prisma.event.create({
+      data: { title, description, location, imageId: coverImageId, startDate, endDate, published },
     })
+
+    // Sauvegarder les images dans la galerie
+    if (uploadedIds.length > 0) {
+      await prisma.eventImage.createMany({
+        data: uploadedIds.map((imageId, order) => ({ eventId: event.id, imageId, order })),
+      })
+    }
 
     revalidatePath("/bureau/evenements")
     revalidatePath("/evenements")
@@ -46,6 +72,8 @@ export async function createEvenement(
   }
 }
 
+// ── Modifier un événement ──────────────────────────────────────────────────────
+
 export async function updateEvenement(
   id: string,
   _prevState: ActionState,
@@ -53,17 +81,46 @@ export async function updateEvenement(
 ): Promise<ActionState> {
   await requireBureau()
   try {
-    const title = formData.get("title") as string
+    const title       = formData.get("title")       as string
     const description = (formData.get("description") as string) || null
-    const location = (formData.get("location") as string) || null
-    const imageId = await resolveImageId(formData)
-    const startDate = new Date(formData.get("startDate") as string)
-    const endDate = new Date(formData.get("endDate") as string)
-    const published = formData.get("published") === "true"
+    const location    = (formData.get("location")    as string) || null
+    const startDate   = new Date((formData.get("startDate") as string) || "")
+    const endDate     = new Date((formData.get("endDate")   as string) || "")
+    const published   = formData.get("published") === "true"
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return { error: "Veuillez sélectionner les dates de début et de fin." }
+    }
+
+    const keptImageIds = formData.getAll("keptImageIds") as string[]
+    const imageFiles   = formData.getAll("imageFiles")   as File[]
+
+    // Supprimer les images retirées de Cloudinary
+    const existingImages = await prisma.eventImage.findMany({ where: { eventId: id } })
+    const toDelete = existingImages
+      .filter((img) => !keptImageIds.includes(img.imageId))
+      .map((img) => img.imageId)
+    await deleteCloudinaryImages(toDelete)
+
+    // Uploader les nouvelles images
+    const newIds = await uploadFiles(imageFiles)
+
+    // Liste finale dans l'ordre : kept d'abord, nouveaux ensuite
+    const finalIds = [...keptImageIds, ...newIds]
+
+    // Reconstruire la galerie
+    await prisma.eventImage.deleteMany({ where: { eventId: id } })
+    if (finalIds.length > 0) {
+      await prisma.eventImage.createMany({
+        data: finalIds.map((imageId, order) => ({ eventId: id, imageId, order })),
+      })
+    }
+
+    const coverImageId = finalIds[0] ?? null
 
     await prisma.event.update({
       where: { id },
-      data: { title, description, location, imageId, startDate, endDate, published },
+      data: { title, description, location, imageId: coverImageId, startDate, endDate, published },
     })
 
     revalidatePath("/bureau/evenements")
@@ -76,13 +133,29 @@ export async function updateEvenement(
   }
 }
 
+// ── Supprimer un événement ─────────────────────────────────────────────────────
+
 export async function deleteEvenement(id: string) {
   await requireBureau()
-  const event = await prisma.event.findUnique({ where: { id }, select: { imageId: true } })
+
+  const event = await prisma.event.findUnique({
+    where: { id },
+    include: { images: true },
+  })
+
+  // Supprimer l'événement (cascade EventImage)
   await prisma.event.delete({ where: { id } })
-  if (event?.imageId) {
-    await deleteImage(event.imageId).catch(console.error)
-  }
+
+  // Supprimer toutes les images Cloudinary
+  const allIds = [
+    ...(event?.images.map((i) => i.imageId) ?? []),
+    // imageId héritage si pas encore migré vers EventImage
+    ...(event?.imageId && !event.images.some((i) => i.imageId === event.imageId)
+      ? [event.imageId]
+      : []),
+  ]
+  await deleteCloudinaryImages(allIds)
+
   revalidatePath("/bureau/evenements")
   revalidatePath("/evenements")
 }

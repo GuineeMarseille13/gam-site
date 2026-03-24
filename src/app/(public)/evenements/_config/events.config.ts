@@ -60,12 +60,15 @@ export const ANIMATION_CONFIG = {
   },
   eventCard: {
     wrapper: {
-      initial: { opacity: 0, y: 12 },
+      initial: { opacity: 0, y: 16 },
       animate: { opacity: 1, y: 0 },
-      transition: { duration: 0.4 },
-      delayMultiplier: 0.05,
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+      delayMultiplier: 0.06,
     },
-    hover: { y: -4, transition: { duration: 0.2 } },
+    hover: {
+      y: -6,
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+    },
   },
   mediaGallery: {
     slide: {
@@ -93,13 +96,13 @@ export const ANIMATION_CONFIG = {
 export const STYLE_CONFIG = {
   container: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10",
   hero: {
-    wrapper: "text-center mb-8 sm:mb-12",
+    wrapper: "text-center mb-10 sm:mb-14",
     title:
-      "text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3 sm:mb-4",
+      "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-3 sm:mb-4",
     description:
-      "mt-2 sm:mt-3 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4",
+      "mt-2 sm:mt-3 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto px-4",
     divider:
-      "mt-6 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full",
+      "mt-6 h-1 w-20 mx-auto bg-gradient-to-r from-amber-400 to-amber-500 rounded-full",
   },
   stats: {
     grid: "grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-8 sm:mb-12",
@@ -111,31 +114,30 @@ export const STYLE_CONFIG = {
   },
   yearSection: {
     wrapper:
-      "rounded-3xl p-[2px] bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 shadow-xl shadow-amber-100/50",
-    inner:
-      "rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm overflow-hidden",
+      "rounded-2xl sm:rounded-3xl border border-slate-200/50 bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+    inner: "overflow-hidden",
     button:
-      "w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 flex items-center justify-between hover:bg-gradient-to-r hover:from-amber-50/50 hover:via-yellow-50/50 hover:to-lime-50/50 transition-all duration-300 group relative overflow-hidden",
+      "w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 flex items-center justify-between hover:bg-slate-50/80 transition-colors duration-300 group relative overflow-hidden",
     shine:
-      "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out",
+      "absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out",
     indicator:
-      "w-1 h-12 sm:h-16 bg-gradient-to-b from-amber-400 via-yellow-400 to-lime-400 rounded-full shadow-md",
+      "w-1 h-12 sm:h-16 rounded-full bg-gradient-to-b from-amber-400 to-amber-600",
     year:
-      "text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:via-yellow-600 group-hover:to-lime-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300",
-    count: "text-sm sm:text-base text-gray-500 mt-1",
+      "text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight",
+    count: "text-sm text-slate-500 mt-0.5",
     chevron:
-      "w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-amber-500 transition-colors duration-300",
-    content: "px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 space-y-6 sm:space-y-8",
+      "w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-amber-500 transition-colors duration-300",
+    content: "px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 space-y-6 sm:space-y-8 bg-slate-50/30",
   },
   eventCard: {
     wrapper:
-      "group rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-sm p-4 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-300",
+      "group relative rounded-2xl sm:rounded-3xl border border-slate-200/60 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-amber-200/50 transition-all duration-500 ease-out overflow-hidden",
     badge:
-      "inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-md",
-    location: "text-xs sm:text-sm text-gray-500 flex items-center gap-1.5",
+      "inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-amber-900 bg-amber-100/90 rounded-full border border-amber-200/50",
+    location: "text-xs sm:text-sm text-slate-500 flex items-center gap-1.5",
     title:
-      "text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:via-yellow-600 group-hover:to-lime-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300",
-    description: "text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6",
+      "text-xl sm:text-2xl font-bold text-slate-900 mb-2 sm:mb-3 tracking-tight",
+    description: "text-sm sm:text-base text-slate-600 leading-relaxed mb-4 sm:mb-6",
   },
   mediaGallery: {
     container: "space-y-3 sm:space-y-4",

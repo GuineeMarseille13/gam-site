@@ -53,11 +53,12 @@ const handlers = createCrudHandler({
   },
 })
 
-// GET public : retourne uniquement les événements publiés
+// GET public : retourne uniquement les événements publiés (avec galerie d'images)
 export async function GET(_request: NextRequest) {
   const events = await prisma.event.findMany({
     where: { published: true },
     orderBy: { startDate: 'desc' },
+    include: { images: { orderBy: { order: 'asc' } } },
   })
   return NextResponse.json(events)
 }

@@ -18,8 +18,14 @@ import {
 interface DateTimePickerProps {
   name: string
   label: string
-  defaultValue?: Date | null
+  /** Date, ISO string (sérialisé depuis un Server Component), ou null */
+  defaultValue?: Date | string | null
   required?: boolean
+}
+
+function toDate(v: Date | string | null | undefined): Date | undefined {
+  if (v == null) return undefined
+  return v instanceof Date ? v : new Date(v as string)
 }
 
 export function DateTimePicker({
@@ -29,7 +35,7 @@ export function DateTimePicker({
   required,
 }: DateTimePickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(
-    defaultValue ?? undefined
+    () => toDate(defaultValue)
   )
   const [open, setOpen] = React.useState(false)
 
@@ -67,7 +73,7 @@ export function DateTimePicker({
       </Label>
 
       {/* Hidden input — lu par le Server Action */}
-      <input type="hidden" name={name} value={isoValue} />
+      <input type="hidden" name={name} value={isoValue} required={required} />
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>

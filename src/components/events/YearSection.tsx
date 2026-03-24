@@ -84,7 +84,6 @@ const YearSection = memo(function YearSection({
                 <EventCard
                   key={event.id}
                   event={event}
-                  isMobile={isMobile}
                   index={eventIndex}
                 />
               ))}

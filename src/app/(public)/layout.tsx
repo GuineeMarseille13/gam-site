@@ -6,6 +6,7 @@ import EventPromoOverlay from "@/components/EventPromoOverlay"
 import type { PopupData } from "@/components/EventPromoOverlay"
 import FloatingActionButton from "@/components/FloatingActionButton"
 import Header from "@/components/Header"
+import { EventMediaPreviewProvider } from "@/contexts/event-media-preview-context"
 
 async function getActivePopup(): Promise<PopupData | null> {
   const popup = await prisma.popup.findFirst({ where: { isActive: true } })
@@ -46,13 +47,13 @@ export default async function PublicLayout({
   const [popup, banner] = await Promise.all([getActivePopup(), getActiveBanner()])
 
   return (
-    <>
+    <EventMediaPreviewProvider>
       <EventPromoOverlay popup={popup} />
       <BannerCard event={banner} />
       <BackgroundLogo />
       <Header />
       <main className="p-4 pt-2 relative z-10">{children}</main>
       <FloatingActionButton />
-    </>
+    </EventMediaPreviewProvider>
   )
 }

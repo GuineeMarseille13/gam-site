@@ -62,6 +62,7 @@ export const ModelName = {
   Partner: 'Partner',
   EventSection: 'EventSection',
   Event: 'Event',
+  EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
   Review: 'Review',
   ProductSection: 'ProductSection',
@@ -283,6 +284,17 @@ export const EventScalarFieldEnum = {
 } as const
 
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const EventImageScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  imageId: 'imageId',
+  order: 'order',
+  createdAt: 'createdAt'
+} as const
+
+export type EventImageScalarFieldEnum = (typeof EventImageScalarFieldEnum)[keyof typeof EventImageScalarFieldEnum]
 
 
 export const ReviewSectionScalarFieldEnum = {

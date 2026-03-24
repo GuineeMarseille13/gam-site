@@ -552,13 +552,14 @@ export default function Home() {
           events={
             recentEvents.length > 0
               ? recentEvents.map((event, idx) => ({
-                  id: parseInt(event.id) || idx + 1,
+                  id: idx + 1,
                   title: event.title,
                   description: event.description,
                   date: event.date,
                   image: event.image,
                   video: event.video,
                   location: event.location,
+                  media: event.media,
                 }))
               : undefined
           }

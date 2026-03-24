@@ -5,6 +5,14 @@ import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import Image from "next/image";
+import EventMediaPreview from "@/components/events/EventMediaPreview";
+export interface EventMedia {
+  id: number;
+  type: "image" | "video";
+  url: string;
+  description?: string;
+}
+
 export interface Event {
   id: number;
   title: string;
@@ -13,6 +21,8 @@ export interface Event {
   image?: string;
   video?: string;
   location?: string;
+  /** Galerie d'images (prioritaire si présent et non vide) */
+  media?: EventMedia[];
 }
 
 interface EventsSectionProps {
@@ -229,6 +239,45 @@ export default function EventsSection({
   );
 }
 
+/** Affiche la première image, cliquable pour ouvrir la lightbox */
+function EventMediaDisplay({ event }: { event: Event }) {
+  if (event.media && event.media.length > 0) {
+    return (
+      <div className="w-full">
+        <EventMediaPreview media={event.media} className="w-full" />
+      </div>
+    );
+  }
+  return (
+    <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200/40 shadow-[0_1px_3px_rgba(0,0,0,0.04)] group">
+      {event.video ? (
+        <video
+          src={event.video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+      ) : event.image ? (
+        <Image
+          src={event.image}
+          alt={event.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+          width={300}
+          height={200}
+        />
+      ) : (
+        <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
+          <span className="text-4xl">📅</span>
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    </div>
+  );
+}
+
 interface TimelineItemProps {
   event: Event;
   index: number;
@@ -357,18 +406,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                   transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
                   className="flex-shrink-0 w-80 lg:w-96"
                 >
-                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
-                    {event.video ? (
-                      <video src={event.video} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    ) : event.image ? (
-                      <Image src={event.image} alt={event.title} width={300} height={200} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
-                        <span className="text-4xl">📅</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
+                  <EventMediaDisplay event={event} />
                 </motion.div>
               )}
             </div>
@@ -402,18 +440,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                   transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
                   className="flex-shrink-0 w-80 lg:w-96"
                 >
-                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
-                    {event.video ? (
-                      <video src={event.video} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    ) : event.image ? (
-                      <Image src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" width={300} height={200} />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
-                        <span className="text-4xl">📅</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
+                  <EventMediaDisplay event={event} />
                 </motion.div>
               )}
             </div>
@@ -473,32 +500,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
             transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
             className="w-full"
           >
-            <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
-              {event.video ? (
-                <video
-                  src={event.video}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-              ) : event.image ? (
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                  width={300}
-                  height={200}
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
-                  <span className="text-4xl">📅</span>
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
+            <EventMediaDisplay event={event} />
           </motion.div>
         </div>
       )}

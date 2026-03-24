@@ -25,6 +25,13 @@ export interface Partner {
   isActive: boolean;
 }
 
+export interface EventMedia {
+  id: number;
+  type: 'image' | 'video';
+  url: string;
+  description?: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -33,8 +40,11 @@ export interface Event {
   location?: string;
   year: number;
   category?: string;
+  /** Première image (rétro-compat) */
   image?: string;
   video?: string;
+  /** Galerie complète (images + vidéo si présente) */
+  media?: EventMedia[];
 }
 
 export interface Review {
@@ -91,6 +101,47 @@ export interface Product {
 
 
 const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload';
+
+function buildImageUrl(publicId: string) {
+  return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`;
+}
+
+/** Construit le tableau media (images + vidéo) pour un événement */
+function buildEventMedia(
+  images: { imageId: string }[],
+  imageId: string | null,
+  videoId: string | null,
+  title: string
+): EventMedia[] {
+  const result: EventMedia[] = [];
+  let id = 0;
+  if (videoId) {
+    result.push({
+      id: ++id,
+      type: 'video',
+      url: `https://res.cloudinary.com/df3ymbrqe/video/upload/${videoId}`,
+      description: title,
+    });
+  }
+  if (images.length > 0) {
+    images.forEach((img) => {
+      result.push({
+        id: ++id,
+        type: 'image',
+        url: buildImageUrl(img.imageId),
+        description: title,
+      });
+    });
+  } else if (imageId) {
+    result.push({
+      id: ++id,
+      type: 'image',
+      url: buildImageUrl(imageId),
+      description: title,
+    });
+  }
+  return result;
+}
 
 /**
  * Récupère les pôles d'activité
@@ -169,6 +220,7 @@ export async function getRecentEvents(): Promise<Event[]> {
       .slice(0, 5)
       .map((event: any) => {
         const startDate = new Date(event.startDate);
+        const media = buildEventMedia(event.images ?? [], event.imageId, event.videoId, event.title);
         return {
           id: event.id,
           title: event.title,
@@ -181,8 +233,9 @@ export async function getRecentEvents(): Promise<Event[]> {
           location: event.location ?? undefined,
           year: startDate.getFullYear(),
           category: undefined,
-          image: event.imageId ? `${CLOUDINARY_BASE}/${event.imageId}` : undefined,
+          image: media[0]?.type === 'image' ? media[0].url : (event.imageId ? `${CLOUDINARY_BASE}/${event.imageId}` : undefined),
           video: event.videoId ? `${CLOUDINARY_BASE}/${event.videoId}` : undefined,
+          media: media.length > 0 ? media : undefined,
         };
       });
   } catch {

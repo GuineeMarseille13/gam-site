@@ -3,19 +3,18 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import MediaGallery from "./MediaGallery";
+import EventMediaPreview from "./EventMediaPreview";
 import { Event } from "@/types/events";
 import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/(public)/evenements/_config/events.config";
 
 interface EventCardProps {
   event: Event;
-  isMobile: boolean;
+  isMobile?: boolean;
   index: number;
 }
 
 const EventCard = memo(function EventCard({
   event,
-  isMobile,
   index,
 }: EventCardProps) {
   return (
@@ -52,9 +51,9 @@ const EventCard = memo(function EventCard({
         {event.description}
       </p>
 
-      {/* Galerie de médias */}
+      {/* Preview image cliquable → lightbox */}
       {event.media && event.media.length > 0 && (
-        <MediaGallery media={event.media} isMobile={isMobile} />
+        <EventMediaPreview media={event.media} />
       )}
     </motion.div>
   );

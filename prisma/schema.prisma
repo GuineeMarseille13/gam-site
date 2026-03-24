@@ -248,7 +248,7 @@ model Event {
   id          String   @id @default(cuid())
   title        String   // Nom de l'événement
   description String?  // Description de l'événement
-  imageId     String?  // ID de l'image principale de l'événement
+  imageId     String?  // ID de l'image de couverture (première image)
   videoId     String?  // ID de la vidéo principale de l'événement
   startDate   DateTime // Date de début de l'événement
   endDate     DateTime // Date de fin de l'événement
@@ -259,10 +259,23 @@ model Event {
 
   // Relations
   eventSection EventSection? @relation(fields: [eventSectionId], references: [id])
+  images       EventImage[]  // Galerie d'images de l'événement
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   @@map("events")
+}
+
+model EventImage {
+  id      String @id @default(cuid())
+  eventId String
+  imageId String // Cloudinary public ID
+  order   Int    @default(0) // Ordre d'affichage (0 = couverture)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  @@map("event_images")
 }
 
 model ReviewSection {
