@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useCallback, useState, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Carousel from "@/components/carousel";
 import GAMSlogan from "@/components/GAMSlogan";
@@ -13,7 +13,7 @@ import FloatingElementsAnimation from "@/components/FloatingElementsAnimation";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import EventsSection from "@/components/EventsSection";
 import VideoTestimonialsSection from "@/components/VideoTestimonialsSection";
-import { ProductCard } from "@/app/(public)/boutique/_components/product-card";
+import { ProductsCircularCarousel } from "@/components/ProductsCircularCarousel";
 import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";
 import type { Product } from "@/app/(public)/boutique/_schemas/product.schema";
 import {
@@ -55,17 +55,6 @@ const CAROUSEL_CONFIG = {
   showArrows: false,
   enableSwipe: true,
   loop: true,
-} as const;
-
-/**
- * Configuration du carrousel de produits
- */
-const PRODUCTS_CAROUSEL_CONFIG = {
-  autoScrollInterval: 3000, // Intervalle entre chaque défilement automatique (ms)
-  scrollAmount: 0.9, // Pourcentage de la largeur du conteneur à défiler
-  repositionThreshold: 0.5, // Seuil de repositionnement (50% de la largeur visible)
-  catalogDuplications: 3, // Nombre de copies du catalogue pour le scroll infini
-  initializationDelay: 100, // Délai avant l'initialisation du scroll (ms)
 } as const;
 
 /**
@@ -117,264 +106,6 @@ const floatingElements = [
   "🐘",
   "🐓",
 ];
-
-// ============================================================================
-// HOOK PERSONNALISÉ : Gestion du carrousel circulaire infini
-// ============================================================================
-
-/**
- * Hook personnalisé pour gérer le carrousel circulaire infini
- *
- * @param catalog - Liste des produits à afficher
- * @returns Objet contenant les refs, états et fonctions nécessaires au carrousel
- */
-function useInfiniteCarousel(catalog: Product[]) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isScrollingRef = useRef(false);
-  const lastScrollLeftRef = useRef(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  /**
-   * Crée un catalogue dupliqué pour permettre le scroll circulaire infini
-   * Le catalogue est dupliqué plusieurs fois pour créer l'illusion d'un scroll sans fin
-   */
-  const duplicatedCatalog = useMemo(() => {
-    if (catalog.length === 0) return [];
-    return Array(PRODUCTS_CAROUSEL_CONFIG.catalogDuplications)
-      .fill(catalog)
-      .flat();
-  }, [catalog]);
-
-  /**
-   * Calcule la largeur totale d'une série complète de produits
-   * Cette valeur est utilisée pour déterminer où repositionner le scroll
-   *
-   * @returns La largeur totale d'une série complète en pixels, ou 0 si impossible à calculer
-   */
-  const getSingleSetWidth = useCallback(() => {
-    // Vérification SSR
-    if (typeof window === "undefined") return 0;
-
-    const container = scrollRef.current;
-    if (!container || catalog.length === 0) return 0;
-
-    const firstChild = container.firstElementChild as HTMLElement;
-    if (!firstChild) return 0;
-
-    // Calcul de la largeur d'un élément + espacement (gap)
-    const itemWidth = firstChild.offsetWidth;
-    const computedStyle = window.getComputedStyle(container);
-    const gap = parseFloat(computedStyle.gap) || 20;
-
-    return catalog.length * (itemWidth + gap);
-  }, [catalog.length]);
-
-  /**
-   * Repositionne le scroll de manière invisible pour créer l'illusion d'un scroll infini
-   *
-   * @param container - L'élément conteneur du carrousel
-   * @param newScrollLeft - La nouvelle position de scroll
-   */
-  const repositionScroll = useCallback(
-    (container: HTMLDivElement, newScrollLeft: number) => {
-      isScrollingRef.current = true;
-      container.style.scrollBehavior = "auto";
-      container.scrollLeft = newScrollLeft;
-
-      requestAnimationFrame(() => {
-        if (container) {
-          container.style.scrollBehavior = "";
-          isScrollingRef.current = false;
-        }
-      });
-    },
-    []
-  );
-
-  /**
-   * Initialise le scroll à la position du milieu (début de la deuxième série)
-   * Cela permet de pouvoir scroller dans les deux sens sans voir les limites
-   */
-  useEffect(() => {
-    if (!scrollRef.current || catalog.length === 0) return;
-
-    const timeoutId = setTimeout(() => {
-      const singleSetWidth = getSingleSetWidth();
-      if (singleSetWidth > 0 && scrollRef.current) {
-        scrollRef.current.scrollLeft = singleSetWidth;
-        lastScrollLeftRef.current = singleSetWidth;
-      }
-    }, PRODUCTS_CAROUSEL_CONFIG.initializationDelay);
-
-    return () => clearTimeout(timeoutId);
-  }, [catalog.length, getSingleSetWidth]);
-
-  /**
-   * Gère le repositionnement automatique lors du scroll manuel
-   * Repositionne de manière invisible avant d'atteindre les limites
-   */
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container || catalog.length === 0) return;
-
-    const handleScroll = () => {
-      // Ignorer les événements de scroll pendant un repositionnement programmé
-      if (isScrollingRef.current) {
-        lastScrollLeftRef.current = container.scrollLeft;
-        return;
-      }
-
-      const singleSetWidth = getSingleSetWidth();
-      if (singleSetWidth === 0) return;
-
-      const scrollLeft = container.scrollLeft;
-      const scrollDirection =
-        scrollLeft > lastScrollLeftRef.current ? "right" : "left";
-      const containerWidth = container.clientWidth;
-      const threshold =
-        containerWidth * PRODUCTS_CAROUSEL_CONFIG.repositionThreshold;
-
-      // Repositionner avant d'atteindre la fin de la deuxième série
-      if (scrollLeft >= singleSetWidth * 2 - threshold) {
-        const offset = scrollLeft - (singleSetWidth * 2 - threshold);
-        repositionScroll(container, singleSetWidth + offset);
-      }
-      // Repositionner avant d'atteindre le début de la deuxième série (scroll vers la gauche)
-      else if (
-        scrollLeft <= singleSetWidth + threshold &&
-        scrollDirection === "left"
-      ) {
-        const offset = scrollLeft - (singleSetWidth + threshold);
-        repositionScroll(container, singleSetWidth * 2 - threshold + offset);
-      }
-
-      lastScrollLeftRef.current = scrollLeft;
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [catalog.length, getSingleSetWidth, repositionScroll]);
-
-  /**
-   * Fait défiler le carrousel manuellement dans une direction donnée
-   *
-   * @param dir - Direction du défilement ('left' ou 'right')
-   */
-  const scrollBy = useCallback((dir: "left" | "right") => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const amount =
-      container.clientWidth * PRODUCTS_CAROUSEL_CONFIG.scrollAmount;
-    container.scrollBy({
-      left: dir === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  }, []);
-
-  /**
-   * Fait défiler automatiquement le carrousel vers la droite
-   * Gère le repositionnement invisible avant d'atteindre les limites
-   */
-  const autoScroll = useCallback(() => {
-    const container = scrollRef.current;
-    if (!container || isPaused || catalog.length === 0) return;
-
-    const singleSetWidth = getSingleSetWidth();
-    if (singleSetWidth === 0) return;
-
-    const currentScroll = container.scrollLeft;
-    const scrollAmount =
-      container.clientWidth * PRODUCTS_CAROUSEL_CONFIG.scrollAmount;
-    const containerWidth = container.clientWidth;
-    const threshold =
-      containerWidth * PRODUCTS_CAROUSEL_CONFIG.repositionThreshold;
-
-    // Si on approche de la fin, repositionner d'abord de manière invisible
-    if (currentScroll >= singleSetWidth * 2 - threshold) {
-      const offset = currentScroll - (singleSetWidth * 2 - threshold);
-      isScrollingRef.current = true;
-      container.style.scrollBehavior = "auto";
-      container.scrollLeft = singleSetWidth + offset;
-
-      requestAnimationFrame(() => {
-        if (container) {
-          container.style.scrollBehavior = "";
-          // Continuer le scroll après repositionnement
-          requestAnimationFrame(() => {
-            if (container && !isPaused) {
-              container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-              isScrollingRef.current = false;
-            }
-          });
-        }
-      });
-    } else {
-      // Défiler normalement vers la droite
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  }, [isPaused, catalog.length, getSingleSetWidth]);
-
-  /**
-   * Démarre le défilement automatique
-   */
-  useEffect(() => {
-    if (catalog.length === 0) return;
-
-    const startAutoScroll = () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-      }
-      autoScrollIntervalRef.current = setInterval(
-        autoScroll,
-        PRODUCTS_CAROUSEL_CONFIG.autoScrollInterval
-      );
-    };
-
-    startAutoScroll();
-
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-      }
-    };
-  }, [autoScroll, catalog.length]);
-
-  /**
-   * Gère la pause du défilement automatique au survol
-   */
-  const handleMouseEnter = useCallback(() => {
-    setIsPaused(true);
-    if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current);
-      autoScrollIntervalRef.current = null;
-    }
-  }, []);
-
-  /**
-   * Reprend le défilement automatique après le survol
-   */
-  const handleMouseLeave = useCallback(() => {
-    setIsPaused(false);
-    if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current);
-    }
-    autoScrollIntervalRef.current = setInterval(
-      autoScroll,
-      PRODUCTS_CAROUSEL_CONFIG.autoScrollInterval
-    );
-  }, [autoScroll]);
-
-  return {
-    scrollRef,
-    duplicatedCatalog,
-    isPaused,
-    scrollBy,
-    handleMouseEnter,
-    handleMouseLeave,
-  };
-}
 
 // ============================================================================
 // COMPOSANT PRINCIPAL
@@ -477,15 +208,6 @@ export default function Home() {
     router.push(`/boutique?product=${product.id}&openCart=true`);
   }, [add, router]);
 
-  // Utilisation du hook personnalisé pour gérer le carrousel circulaire
-  const {
-    scrollRef,
-    duplicatedCatalog,
-    scrollBy,
-    handleMouseEnter,
-    handleMouseLeave,
-  } = useInfiniteCarousel(transformedProducts);
-
   // Déterminer si on est en mode chargement global
   const isInitialLoading = isLoadingCarousel || isLoadingPartners || isLoadingEvents || 
                            isLoadingReviews || isLoadingProducts || isLoadingStatistics || isLoadingVolunteers;
@@ -571,33 +293,10 @@ export default function Home() {
         <ProductsSectionSkeleton />
       ) : (
         transformedProducts.length > 0 && (
-          <section className="w-full py-10 sm:py-12">
-            <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
-                Nos Produits
-              </h2>
-              <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
-              <p className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4">
-                Découvrez notre sélection d&apos;articles pour soutenir
-                l&apos;association tout en vous faisant plaisir. Chaque achat
-                contribue directement à nos actions locales et solidaires.
-              </p>
-            </div>
-
-            <div className="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
-              <div className={`flex gap-5 sm:gap-6 py-4 ${
-                transformedProducts.length <= 4
-                  ? "justify-center flex-wrap"
-                  : "overflow-x-auto snap-x snap-mandatory scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              }`}>
-                {transformedProducts.map((p) => (
-                  <div key={p.id} className="snap-start shrink-0 w-[340px] self-stretch">
-                    <ProductCard product={p} onAdd={handleOrder} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <ProductsCircularCarousel
+            products={transformedProducts}
+            onAdd={handleOrder}
+          />
         )
       )}
 

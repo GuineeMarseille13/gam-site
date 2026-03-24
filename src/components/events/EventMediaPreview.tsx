@@ -57,7 +57,7 @@ const EventMediaPreview = memo(function EventMediaPreview({
         onClick={handleOpen}
         aria-label={
           hasMultiple
-            ? `Voir les ${media.length} média${media.length > 1 ? "x" : ""} de l'événement`
+            ? `Voir les ${media.length} média${media.length > 1 ? "s" : ""} de l'événement`
             : firstMedia.type === "video"
               ? "Voir la vidéo"
               : "Agrandir l'image"
@@ -99,7 +99,7 @@ const EventMediaPreview = memo(function EventMediaPreview({
           <div className="absolute bottom-3 left-3 right-3 flex justify-center">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-medium text-slate-700 shadow-[0_2px_12px_rgba(0,0,0,0.08)] backdrop-blur-md border border-white/50">
               <span className="size-2 rounded-full bg-emerald-500" />
-              {media.length} média{media.length > 1 ? "x" : ""}
+              {media.length} média{media.length > 1 ? "s" : ""}
             </span>
           </div>
         )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
@@ -9,6 +9,11 @@ import { useCart } from "../_hooks/use-cart";
 import { ProductCard } from "./product-card";
 import { CartDrawer } from "./cart-drawer";
 import type { Product } from "../_schemas/product.schema";
+
+/** Durée de la mise en évidence du produit après redirection (ms) */
+const HIGHLIGHT_DURATION_MS = 4500;
+/** Délai avant le scroll pour laisser le DOM se rendre (ms) */
+const SCROLL_DELAY_MS = 150;
 
 const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
 
@@ -47,48 +52,54 @@ export function BoutiqueView() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null);
+  const urlHandledRef = useRef(false);
 
-  // Handle openCart query parameter - only once on mount
+  // 1) Traitement des paramètres URL (openCart, product) - une seule fois au mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    
+    if (typeof window === "undefined" || urlHandledRef.current) return;
+
     const openCartParam = searchParams.get("openCart");
     const productId = searchParams.get("product");
-    
-    // Si un productId est présent, le mettre en évidence
+
     if (productId) {
       setHighlightedProductId(productId);
-      
-      // Scroller vers le produit après un court délai pour laisser le temps au rendu
-      setTimeout(() => {
-        const element = document.getElementById(`product-${productId}`);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 300);
-      
-      // Retirer la mise en évidence après 5 secondes
-      setTimeout(() => {
-        setHighlightedProductId(null);
-      }, 5000);
     }
-    
-    // Si openCart=true est présent, ouvrir le panier
+
     if (openCartParam === "true") {
       setDrawerOpen(true);
-      // Nettoyer l'URL après avoir ouvert le panier
+      urlHandledRef.current = true;
       const newSearchParams = new URLSearchParams(searchParams.toString());
       newSearchParams.delete("openCart");
-      if (productId) {
-        newSearchParams.delete("product");
-      }
-      const newUrl = newSearchParams.toString() 
+      newSearchParams.delete("product");
+      const newUrl = newSearchParams.toString()
         ? `${window.location.pathname}?${newSearchParams.toString()}`
         : window.location.pathname;
       router.replace(newUrl, { scroll: false });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run once on mount
+  }, [searchParams, router]);
+
+  // 2) Scroll vers le produit et retrait de la mise en évidence - quand le catalogue est chargé
+  useEffect(() => {
+    if (!highlightedProductId || catalog.length === 0) return;
+
+    const productIdStr = String(highlightedProductId);
+    const hasProduct = catalog.some((p) => String(p.id) === productIdStr);
+    if (!hasProduct) return;
+
+    const scrollTimer = window.setTimeout(() => {
+      const element = document.getElementById(`product-${productIdStr}`);
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, SCROLL_DELAY_MS);
+
+    const clearTimer = window.setTimeout(() => {
+      setHighlightedProductId(null);
+    }, HIGHLIGHT_DURATION_MS);
+
+    return () => {
+      window.clearTimeout(scrollTimer);
+      window.clearTimeout(clearTimer);
+    };
+  }, [highlightedProductId, catalog]);
 
   // Open drawer if URL hash is #panier (e.g., from mobile header button)
   useEffect(() => {
@@ -166,11 +177,11 @@ export function BoutiqueView() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {catalog.map((p) => (
-          <ProductCard 
-            key={p.id} 
-            product={p} 
+          <ProductCard
+            key={p.id}
+            product={p}
             onAdd={(prod) => add({ product: prod, quantity: 1 })}
-            isHighlighted={highlightedProductId === p.id}
+            isHighlighted={highlightedProductId != null && String(p.id) === String(highlightedProductId)}
           />
         ))}
       </div>
