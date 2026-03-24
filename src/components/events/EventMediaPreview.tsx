@@ -53,23 +53,35 @@ const EventMediaPreview = memo(function EventMediaPreview({
       {/* Preview : première image, cliquable → lightbox */}
       <button
         type="button"
-        className={`group relative block w-full overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200/40 bg-slate-100 text-left cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-slate-300/50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${ASPECT_MAP[aspectRatio]} ${className}`}
+        className={`group relative block w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/50 bg-slate-50/80 text-left cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] hover:scale-[1.01] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${ASPECT_MAP[aspectRatio]} ${className}`}
         onClick={handleOpen}
         aria-label={
           hasMultiple
-            ? `Voir les ${media.length} photos de l'événement`
-            : "Agrandir l'image"
+            ? `Voir les ${media.length} média${media.length > 1 ? "x" : ""} de l'événement`
+            : firstMedia.type === "video"
+              ? "Voir la vidéo"
+              : "Agrandir l'image"
         }
       >
         {firstMedia.type === "video" ? (
-          <video
-            src={firstMedia.url}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-            muted
-            loop
-            playsInline
-            poster=""
-          />
+          "embedUrl" in firstMedia && firstMedia.embedUrl ? (
+            /* YouTube/Vimeo : preview = miniature */
+            <img
+              src={firstMedia.url}
+              alt={firstMedia.description || "Vidéo de l'événement"}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              loading="lazy"
+            />
+          ) : (
+            <video
+              src={firstMedia.url}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              muted
+              loop
+              playsInline
+              poster=""
+            />
+          )
         ) : (
           <img
             src={firstMedia.url}
@@ -80,22 +92,22 @@ const EventMediaPreview = memo(function EventMediaPreview({
         )}
 
         {/* Overlay dégradé au survol */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         {/* Badge galerie (si plusieurs) */}
         {hasMultiple && (
           <div className="absolute bottom-3 left-3 right-3 flex justify-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-slate-800 shadow-lg ring-1 ring-slate-200/50 backdrop-blur-sm">
-              <span className="size-1.5 rounded-full bg-amber-500" />
-              {media.length} photo{media.length > 1 ? "s" : ""}
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-medium text-slate-700 shadow-[0_2px_12px_rgba(0,0,0,0.08)] backdrop-blur-md border border-white/50">
+              <span className="size-2 rounded-full bg-emerald-500" />
+              {media.length} média{media.length > 1 ? "x" : ""}
             </span>
           </div>
         )}
 
         {/* CTA au survol */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none">
-          <span className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-xl ring-1 ring-slate-200/50">
-            <ZoomIn className="size-4 text-slate-600" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
+          <span className="flex items-center gap-2.5 rounded-2xl bg-white/95 px-5 py-3 text-sm font-medium text-slate-800 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl border border-white/80 group-hover:scale-105 transition-transform duration-300">
+            <ZoomIn className="size-4.5 text-slate-600" strokeWidth={2} />
             {hasMultiple ? "Voir la galerie" : "Agrandir"}
           </span>
         </div>
@@ -186,18 +198,24 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
 
   if (!currentMedia) return null;
 
+  const isVideoEmbed = currentMedia.type === "video" && "embedUrl" in currentMedia && currentMedia.embedUrl;
+  const isVideoDirect = currentMedia.type === "video" && !isVideoEmbed;
+
   const slideVariants = {
     enter: (d: number) => ({
-      x: d > 0 ? 80 : -80,
+      x: d > 0 ? 48 : -48,
       opacity: 0,
+      scale: 0.98,
     }),
     center: {
       x: 0,
       opacity: 1,
+      scale: 1,
     },
     exit: (d: number) => ({
-      x: d < 0 ? 80 : -80,
+      x: d < 0 ? 48 : -48,
       opacity: 0,
+      scale: 0.98,
     }),
   };
 
@@ -206,18 +224,18 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Galerie d'images de l'événement"
+      aria-label="Galerie de l'événement"
     >
-      {/* Arrière-plan : image floutée dynamique + overlay sombre (effet style Photos/Spotify) */}
+      {/* Arrière-plan : bokeh subtil + overlay élégant */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
-        {currentMedia.type === "image" && (
+        {(currentMedia.type === "image" || (currentMedia.type === "video" && currentMedia.url)) && (
           <div
-            className="absolute inset-0 -m-[20%] scale-[1.8] blur-[60px] opacity-35"
+            className="absolute inset-0 -m-[25%] scale-[1.4] blur-[80px] opacity-40 saturate-150"
             aria-hidden
           >
             <img
@@ -228,25 +246,27 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
             />
           </div>
         )}
-        <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-transparent to-slate-950/80" />
+        <div className="absolute inset-0 bg-neutral-950/80 backdrop-blur-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/50 via-transparent to-neutral-950/70" />
       </div>
 
-      {/* Header flottant (glassmorphism) */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex shrink-0 items-center justify-between px-3 py-3 sm:px-6 sm:py-4 pointer-events-none">
-        <div className="pointer-events-auto rounded-full bg-black/20 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-xl border border-white/10">
-          {currentIndex + 1} <span className="text-white/50">/ {media.length}</span>
+      {/* Header flottant — design épuré */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex shrink-0 items-center justify-between px-4 py-4 sm:px-6 sm:py-5 pointer-events-none">
+        <div className="pointer-events-auto flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 text-sm font-medium text-white/95 backdrop-blur-xl border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.2)]">
+          <span className="tabular-nums">{currentIndex + 1}</span>
+          <span className="text-white/40 font-normal">/</span>
+          <span className="text-white/70">{media.length}</span>
         </div>
         <button
           onClick={onClose}
-          className="pointer-events-auto flex size-10 sm:size-11 cursor-pointer items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-xl border border-white/10 transition-all duration-200 hover:bg-black/30 hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
+          className="pointer-events-auto flex size-10 sm:size-11 cursor-pointer items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-xl border border-white/10 transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
           aria-label="Fermer la galerie"
         >
-          <X className="size-5 sm:size-6" />
+          <X className="size-5 sm:size-6" strokeWidth={2} />
         </button>
       </div>
 
-      {/* Zone principale : image + flèches — clic sur le fond ferme */}
+      {/* Zone principale : image/vidéo + flèches — clic sur le fond ferme */}
       <div className="relative flex flex-1 min-h-0 w-full items-center justify-center pt-14 sm:pt-16 px-3 pb-2 sm:px-6 md:px-16">
         <div className="relative w-full max-w-4xl">
           <AnimatePresence mode="wait" custom={direction}>
@@ -258,23 +278,38 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.15 },
+                x: { type: "spring", stiffness: 400, damping: 35 },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
               }}
-              className="relative max-h-[50vh] sm:max-h-[58vh] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-white/[0.02] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_25px_80px_-12px_rgba(0,0,0,0.6)] touch-pan-y"
+              className={`group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl ring-1 ring-white/10 bg-black/30 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_32px_64px_-12px_rgba(0,0,0,0.5)] touch-pan-y ${
+                isVideoEmbed || isVideoDirect
+                  ? "aspect-video max-h-[70vh] sm:max-h-[75vh]"
+                  : "max-h-[50vh] sm:max-h-[58vh]"
+              }`}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onClick={(e) => e.stopPropagation()}
             >
               {currentMedia.type === "video" ? (
-                <video
-                  src={currentMedia.url}
-                  className="h-full w-full object-contain"
-                  controls
-                  autoPlay
-                  muted
-                  playsInline
-                />
+                isVideoEmbed ? (
+                  <iframe
+                    src={`${currentMedia.embedUrl}?autoplay=1&mute=1`}
+                    title="Vidéo intégrée"
+                    className="absolute inset-0 h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={currentMedia.url}
+                    className="h-full w-full object-contain"
+                    controls
+                    autoPlay
+                    muted
+                    playsInline
+                  />
+                )
               ) : (
                 <img
                   src={currentMedia.url}
@@ -284,33 +319,31 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
                 />
               )}
 
-              {/* Flèches intégrées sur l'image (position moderne type galerie) */}
+              {/* Flèches de navigation — style minimal */}
               {media.length > 1 && (
                 <>
-                  {/* Zone cliquable gauche — prev (toujours visible mobile, au survol desktop) */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       prevMedia();
                     }}
-                    className="absolute left-0 top-0 bottom-0 z-10 w-14 sm:w-16 md:w-20 flex items-center justify-start pl-2 sm:pl-3 cursor-pointer group/prev bg-gradient-to-r from-black/50 via-black/20 to-transparent md:opacity-60 md:hover:opacity-100 transition-opacity duration-200 focus:outline-none focus:opacity-100 touch-manipulation"
-                    aria-label="Image précédente"
+                    className="absolute left-0 top-0 bottom-0 z-10 w-16 sm:w-20 md:w-24 flex items-center justify-start pl-2 sm:pl-3 cursor-pointer group/prev bg-gradient-to-r from-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:opacity-100 touch-manipulation"
+                    aria-label="Média précédent"
                   >
-                    <span className="flex size-9 sm:size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md border border-white/20 transition-all duration-200 group-hover/prev:bg-white/25 group-hover/prev:scale-105 active:scale-95">
-                      <ChevronLeft className="size-5" strokeWidth={2.5} />
+                    <span className="flex size-10 sm:size-11 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-xl border border-white/20 shadow-lg transition-all duration-300 group-hover/prev:bg-white/25 group-hover/prev:scale-110 active:scale-95">
+                      <ChevronLeft className="size-5 sm:size-6" strokeWidth={2} />
                     </span>
                   </button>
-                  {/* Zone cliquable droite — next */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       nextMedia();
                     }}
-                    className="absolute right-0 top-0 bottom-0 z-10 w-14 sm:w-16 md:w-20 flex items-center justify-end pr-2 sm:pr-3 cursor-pointer group/next bg-gradient-to-l from-black/50 via-black/20 to-transparent md:opacity-60 md:hover:opacity-100 transition-opacity duration-200 focus:outline-none focus:opacity-100 touch-manipulation"
-                    aria-label="Image suivante"
+                    className="absolute right-0 top-0 bottom-0 z-10 w-16 sm:w-20 md:w-24 flex items-center justify-end pr-2 sm:pr-3 cursor-pointer group/next bg-gradient-to-l from-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:opacity-100 touch-manipulation"
+                    aria-label="Média suivant"
                   >
-                    <span className="flex size-9 sm:size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md border border-white/20 transition-all duration-200 group-hover/next:bg-white/25 group-hover/next:scale-105 active:scale-95">
-                      <ChevronRight className="size-5" strokeWidth={2.5} />
+                    <span className="flex size-10 sm:size-11 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-xl border border-white/20 shadow-lg transition-all duration-300 group-hover/next:bg-white/25 group-hover/next:scale-110 active:scale-95">
+                      <ChevronRight className="size-5 sm:size-6" strokeWidth={2} />
                     </span>
                   </button>
                 </>
@@ -320,14 +353,14 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
         </div>
       </div>
 
-      {/* Barre des miniatures (glassmorphism moderne) */}
+      {/* Barre des miniatures — design épuré */}
       {media.length > 1 && (
         <div
           ref={thumbnailListRef}
           onClick={(e) => e.stopPropagation()}
-          className="flex shrink-0 overflow-x-auto overflow-y-hidden py-4 sm:py-5 px-4 sm:px-6 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]"
+          className="flex shrink-0 overflow-x-auto overflow-y-hidden py-5 sm:py-6 px-4 sm:px-6 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]"
         >
-          <div className="mx-auto flex w-fit max-w-full justify-center gap-2 sm:gap-3">
+          <div className="mx-auto flex w-fit max-w-full justify-center gap-3 sm:gap-4">
             {media.map((m, i) => {
               const isActive = i === currentIndex;
               return (
@@ -339,22 +372,31 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
                     e.stopPropagation();
                     goToMedia(i);
                   }}
-                  className={`relative flex size-14 sm:size-[72px] shrink-0 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-slate-950 ${
+                  className={`relative flex size-16 sm:size-[76px] shrink-0 overflow-hidden rounded-xl sm:rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-neutral-950 ${
                     isActive
-                      ? "border-amber-400 shadow-[0_0_0_2px_rgba(251,191,36,0.3)] scale-105 opacity-100"
-                      : "border-white/15 hover:border-white/30 opacity-80 hover:opacity-100"
+                      ? "ring-2 ring-white ring-offset-2 ring-offset-neutral-950 scale-105 shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+                      : "ring-2 ring-white/20 hover:ring-white/40 opacity-75 hover:opacity-100"
                   }`}
-                  aria-label={`Voir image ${i + 1}`}
+                  aria-label={`Voir média ${i + 1}`}
                   aria-current={isActive ? "true" : undefined}
                 >
                   {m.type === "video" ? (
-                    <video
-                      src={m.url}
-                      className="h-full w-full object-cover"
-                      muted
-                      playsInline
-                      preload="metadata"
-                    />
+                    "embedUrl" in m && m.embedUrl ? (
+                      <img
+                        src={m.url}
+                        alt={m.description || `Miniature ${i + 1}`}
+                        className="h-full w-full object-cover"
+                        loading="eager"
+                      />
+                    ) : (
+                      <video
+                        src={m.url}
+                        className="h-full w-full object-cover"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    )
                   ) : (
                     <img
                       src={m.url}
@@ -372,7 +414,7 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
 
       {/* Description optionnelle */}
       {currentMedia.description && (
-        <p className="shrink-0 px-4 pb-4 sm:pb-6 text-center text-sm text-white/70 max-w-2xl mx-auto">
+        <p className="shrink-0 px-4 pb-5 sm:pb-6 text-center text-sm text-white/60 max-w-2xl mx-auto font-light">
           {currentMedia.description}
         </p>
       )}

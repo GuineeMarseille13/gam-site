@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import EventMediaPreview from "./EventMediaPreview";
+import MediaGallery from "./MediaGallery";
 import { Event } from "@/types/events";
 import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/(public)/evenements/_config/events.config";
 
@@ -15,6 +15,7 @@ interface EventCardProps {
 
 const EventCard = memo(function EventCard({
   event,
+  isMobile = false,
   index,
 }: EventCardProps) {
   return (
@@ -51,9 +52,9 @@ const EventCard = memo(function EventCard({
         {event.description}
       </p>
 
-      {/* Preview image cliquable → lightbox */}
+      {/* Galerie : image actuelle en grand + autres en miniatures */}
       {event.media && event.media.length > 0 && (
-        <EventMediaPreview media={event.media} />
+        <MediaGallery media={event.media} isMobile={isMobile} galleryId={String(event.id)} />
       )}
     </motion.div>
   );

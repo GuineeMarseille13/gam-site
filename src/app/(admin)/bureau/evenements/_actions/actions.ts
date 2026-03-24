@@ -62,6 +62,15 @@ export async function createEvenement(
       })
     }
 
+    // Sauvegarder les liens vidéo
+    const videoUrls = formData.getAll("videoUrls") as string[]
+    const validVideoUrls = videoUrls.filter((url) => typeof url === "string" && url.trim().length > 0)
+    if (validVideoUrls.length > 0) {
+      await prisma.eventVideo.createMany({
+        data: validVideoUrls.map((url, order) => ({ eventId: event.id, url: url.trim(), order })),
+      })
+    }
+
     revalidatePath("/bureau/evenements")
     revalidatePath("/evenements")
     redirect("/bureau/evenements")
@@ -117,6 +126,16 @@ export async function updateEvenement(
     }
 
     const coverImageId = finalIds[0] ?? null
+
+    // Mise à jour des liens vidéo
+    const videoUrls = formData.getAll("videoUrls") as string[]
+    const validVideoUrls = videoUrls.filter((url) => typeof url === "string" && url.trim().length > 0)
+    await prisma.eventVideo.deleteMany({ where: { eventId: id } })
+    if (validVideoUrls.length > 0) {
+      await prisma.eventVideo.createMany({
+        data: validVideoUrls.map((url, order) => ({ eventId: id, url: url.trim(), order })),
+      })
+    }
 
     await prisma.event.update({
       where: { id },

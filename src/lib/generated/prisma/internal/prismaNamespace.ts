@@ -395,6 +395,7 @@ export const ModelName = {
   Partner: 'Partner',
   EventSection: 'EventSection',
   Event: 'Event',
+  EventVideo: 'EventVideo',
   EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
   Review: 'Review',
@@ -443,7 +444,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1258,6 +1259,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EventCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EventCountAggregateOutputType> | number
+        }
+      }
+    }
+    EventVideo: {
+      payload: Prisma.$EventVideoPayload<ExtArgs>
+      fields: Prisma.EventVideoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventVideoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventVideoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        findFirst: {
+          args: Prisma.EventVideoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventVideoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        findMany: {
+          args: Prisma.EventVideoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>[]
+        }
+        create: {
+          args: Prisma.EventVideoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        createMany: {
+          args: Prisma.EventVideoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventVideoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>[]
+        }
+        delete: {
+          args: Prisma.EventVideoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        update: {
+          args: Prisma.EventVideoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventVideoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventVideoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventVideoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventVideoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventVideoPayload>
+        }
+        aggregate: {
+          args: Prisma.EventVideoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventVideo>
+        }
+        groupBy: {
+          args: Prisma.EventVideoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventVideoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventVideoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventVideoCountAggregateOutputType> | number
         }
       }
     }
@@ -3915,6 +3990,17 @@ export const EventScalarFieldEnum = {
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
+export const EventVideoScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  url: 'url',
+  order: 'order',
+  createdAt: 'createdAt'
+} as const
+
+export type EventVideoScalarFieldEnum = (typeof EventVideoScalarFieldEnum)[keyof typeof EventVideoScalarFieldEnum]
+
+
 export const EventImageScalarFieldEnum = {
   id: 'id',
   eventId: 'eventId',
@@ -4700,6 +4786,7 @@ export type GlobalOmitConfig = {
   partner?: Prisma.PartnerOmit
   eventSection?: Prisma.EventSectionOmit
   event?: Prisma.EventOmit
+  eventVideo?: Prisma.EventVideoOmit
   eventImage?: Prisma.EventImageOmit
   reviewSection?: Prisma.ReviewSectionOmit
   review?: Prisma.ReviewOmit

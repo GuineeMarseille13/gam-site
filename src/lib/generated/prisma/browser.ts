@@ -73,6 +73,11 @@ export type EventSection = Prisma.EventSectionModel
  */
 export type Event = Prisma.EventModel
 /**
+ * Model EventVideo
+ * 
+ */
+export type EventVideo = Prisma.EventVideoModel
+/**
  * Model EventImage
  * 
  */

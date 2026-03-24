@@ -66,8 +66,8 @@ export const ANIMATION_CONFIG = {
       delayMultiplier: 0.06,
     },
     hover: {
-      y: -6,
-      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+      y: -2,
+      transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
     },
   },
   mediaGallery: {
@@ -127,11 +127,11 @@ export const STYLE_CONFIG = {
     count: "text-sm text-slate-500 mt-0.5",
     chevron:
       "w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-amber-500 transition-colors duration-300",
-    content: "px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 space-y-6 sm:space-y-8 bg-slate-50/30",
+    content: "px-4 sm:px-6 md:px-8 pt-5 sm:pt-6 pb-6 sm:pb-8 space-y-6 sm:space-y-8 bg-slate-50/30",
   },
   eventCard: {
     wrapper:
-      "group relative rounded-2xl sm:rounded-3xl border border-slate-200/60 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-amber-200/50 transition-all duration-500 ease-out overflow-hidden",
+      "group relative rounded-2xl sm:rounded-3xl border border-slate-200/60 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:border-amber-200/50 transition-all duration-300 ease-out overflow-hidden",
     badge:
       "inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-amber-900 bg-amber-100/90 rounded-full border border-amber-200/50",
     location: "text-xs sm:text-sm text-slate-500 flex items-center gap-1.5",
@@ -140,15 +140,15 @@ export const STYLE_CONFIG = {
     description: "text-sm sm:text-base text-slate-600 leading-relaxed mb-4 sm:mb-6",
   },
   mediaGallery: {
-    container: "space-y-3 sm:space-y-4",
+    container: "space-y-3 sm:space-y-4 mt-1",
     mediaWrapper:
       "relative aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-gray-100 group shadow-lg",
     overlay:
       "absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end p-3 sm:p-4",
     navButton:
       "absolute top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-md shadow-xl flex items-center justify-center hover:bg-white transition-all duration-300 opacity-0 group-hover:opacity-100 z-10 border border-gray-200",
-    navButtonLeft: "left-2 sm:left-4",
-    navButtonRight: "right-2 sm:right-4",
+    navButtonLeft: "left-3 sm:left-5",
+    navButtonRight: "right-3 sm:right-5",
     indicator:
       "absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/20",
     thumbnails: "flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide",

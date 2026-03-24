@@ -85,6 +85,7 @@ const YearSection = memo(function YearSection({
                   key={event.id}
                   event={event}
                   index={eventIndex}
+                  isMobile={isMobile}
                 />
               ))}
             </motion.div>

@@ -2,6 +2,8 @@
  * Services pour récupérer les données de la page d'accueil
  */
 
+import { parseVideoUrl } from '@/lib/video-urls'
+
 export interface CarouselItem {
   id: string;
   image: string;
@@ -30,6 +32,7 @@ export interface EventMedia {
   type: 'image' | 'video';
   url: string;
   description?: string;
+  embedUrl?: string;
 }
 
 export interface Event {
@@ -106,15 +109,34 @@ function buildImageUrl(publicId: string) {
   return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`;
 }
 
-/** Construit le tableau media (images + vidéo) pour un événement */
+/** Construit le tableau media (images + vidéos YouTube/Vimeo + vidéo Cloudinary) pour un événement */
 function buildEventMedia(
   images: { imageId: string }[],
+  videos: { url: string }[] | undefined,
   imageId: string | null,
   videoId: string | null,
   title: string
 ): EventMedia[] {
   const result: EventMedia[] = [];
   let id = 0;
+
+  // Vidéos externes (YouTube, Vimeo)
+  if (videos?.length) {
+    for (const v of videos) {
+      const parsed = parseVideoUrl(v.url);
+      if (parsed) {
+        result.push({
+          id: ++id,
+          type: 'video',
+          url: parsed.thumbnailUrl,
+          embedUrl: parsed.embedUrl,
+          description: title,
+        });
+      }
+    }
+  }
+
+  // Vidéo Cloudinary (legacy)
   if (videoId) {
     result.push({
       id: ++id,
@@ -123,6 +145,7 @@ function buildEventMedia(
       description: title,
     });
   }
+
   if (images.length > 0) {
     images.forEach((img) => {
       result.push({
@@ -220,7 +243,7 @@ export async function getRecentEvents(): Promise<Event[]> {
       .slice(0, 5)
       .map((event: any) => {
         const startDate = new Date(event.startDate);
-        const media = buildEventMedia(event.images ?? [], event.imageId, event.videoId, event.title);
+        const media = buildEventMedia(event.images ?? [], event.videos ?? [], event.imageId, event.videoId, event.title);
         return {
           id: event.id,
           title: event.title,

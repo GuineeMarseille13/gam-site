@@ -9,12 +9,15 @@ import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/(public)/eveneme
 
 interface MediaGalleryProps {
   media: EventMedia[];
-  isMobile: boolean;
+  isMobile?: boolean;
+  /** ID unique pour les animations de layout (évite les conflits avec plusieurs galeries) */
+  galleryId?: string;
 }
 
 const MediaGallery = memo(function MediaGallery({
   media,
-  isMobile,
+  isMobile = false,
+  galleryId = "gallery",
 }: MediaGalleryProps) {
   const {
     currentIndex,
@@ -66,14 +69,24 @@ const MediaGallery = memo(function MediaGallery({
             className="absolute inset-0"
           >
             {currentMedia.type === "video" ? (
-              <video
-                src={currentMedia.url}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              />
+              "embedUrl" in currentMedia && currentMedia.embedUrl ? (
+                <iframe
+                  src={`${currentMedia.embedUrl}?autoplay=1&mute=1`}
+                  title="Vidéo intégrée"
+                  className="absolute inset-0 h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  src={currentMedia.url}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              )
             ) : (
               <img
                 src={currentMedia.url}
@@ -152,11 +165,21 @@ const MediaGallery = memo(function MediaGallery({
               aria-label={MESSAGES.media.view(index + 1)}
             >
               {item.type === "video" ? (
-                <video
-                  src={item.url}
-                  className="w-full h-full object-cover"
-                  muted
-                />
+                "embedUrl" in item && item.embedUrl ? (
+                  <img
+                    src={item.url}
+                    alt={item.description || `Vidéo ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <video
+                    src={item.url}
+                    className="w-full h-full object-cover"
+                    muted
+                    preload="metadata"
+                  />
+                )
               ) : (
                 <img
                   src={item.url}
@@ -167,7 +190,7 @@ const MediaGallery = memo(function MediaGallery({
               )}
               {index === currentIndex && (
                 <motion.div
-                  layoutId="activeThumbnail"
+                  layoutId={`activeThumbnail-${galleryId}`}
                   className="absolute inset-0 bg-amber-500/30 border-2 border-amber-500 rounded-lg sm:rounded-xl"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />

@@ -10,7 +10,10 @@ export default async function ModifierEvenementPage({ params }: { params: Promis
 
   const event = await prisma.event.findUnique({
     where: { id },
-    include: { images: { orderBy: { order: "asc" } } },
+    include: {
+      images: { orderBy: { order: "asc" } },
+      videos: { orderBy: { order: "asc" } },
+    },
   })
   if (!event) notFound()
 
@@ -19,12 +22,14 @@ export default async function ModifierEvenementPage({ params }: { params: Promis
     ? event.images.map((i) => i.imageId)
     : (event.imageId ? [event.imageId] : [])
 
+  const videoUrls = event.videos.map((v) => v.url)
+
   const action = updateEvenement.bind(null, event.id)
 
   return (
     <BureauDataPage title="Modifier l'événement" description={event.title}>
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="rounded-2xl border-border/60 shadow-sm">
+        <CardContent className="px-6 pt-6 pb-8 sm:px-8 sm:pt-8 sm:pb-10">
           <EvenementForm
             action={action}
             defaultValues={{
@@ -35,6 +40,7 @@ export default async function ModifierEvenementPage({ params }: { params: Promis
               endDate:     event.endDate,
               published:   event.published,
               imageIds,
+              videoUrls,
             }}
           />
         </CardContent>

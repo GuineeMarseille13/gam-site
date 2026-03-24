@@ -3,6 +3,8 @@ export interface EventMedia {
   type: "image" | "video";
   url: string;
   description?: string;
+  /** URL d'embed pour YouTube/Vimeo (iframe) ; si absent, url est utilisée comme source directe */
+  embedUrl?: string;
 }
 
 export interface Event {

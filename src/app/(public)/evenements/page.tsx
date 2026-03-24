@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { EventsClient } from "./_components/events-client"
 import type { EventsByYear } from "@/types/events"
+import { parseVideoUrl } from "@/lib/video-urls"
 
 const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload"
 
@@ -8,38 +9,60 @@ function buildImageUrl(publicId: string) {
   return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`
 }
 
-/** Construit le tableau media à partir de EventImage ou imageId (rétro-compat) */
+/** Construit le tableau media à partir de EventImage, EventVideo et imageId (rétro-compat) */
 function buildEventMedia(
   images: { imageId: string }[],
+  videos: { url: string }[],
   imageId: string | null,
   title: string
 ) {
-  if (images.length > 0) {
-    return images.map((img, index) => ({
-      id: index + 1,
-      type: "image" as const,
-      url: buildImageUrl(img.imageId),
-      description: title,
-    }))
-  }
-  if (imageId) {
-    return [
-      {
-        id: 1,
-        type: "image" as const,
-        url: buildImageUrl(imageId),
+  const result: Array<{ id: number; type: "image" | "video"; url: string; description?: string; embedUrl?: string }> = []
+  let id = 0
+
+  // Vidéos (YouTube, Vimeo) en premier
+  for (const v of videos) {
+    const parsed = parseVideoUrl(v.url)
+    if (parsed) {
+      result.push({
+        id: ++id,
+        type: "video",
+        url: parsed.thumbnailUrl,
+        embedUrl: parsed.embedUrl,
         description: title,
-      },
-    ]
+      })
+    }
   }
-  return []
+
+  // Images
+  if (images.length > 0) {
+    for (const img of images) {
+      result.push({
+        id: ++id,
+        type: "image",
+        url: buildImageUrl(img.imageId),
+        description: title,
+      })
+    }
+  } else if (imageId) {
+    result.push({
+      id: ++id,
+      type: "image",
+      url: buildImageUrl(imageId),
+      description: title,
+    })
+  }
+
+  return result
 }
 
 async function getEventsByYear(): Promise<EventsByYear> {
   const events = await prisma.event.findMany({
     where: { published: true },
     orderBy: { startDate: "desc" },
-    include: { images: { orderBy: { order: "asc" } } },
+    include: {
+      images: { orderBy: { order: "asc" } },
+      videos: { orderBy: { order: "asc" } },
+    },
   })
 
   const result: EventsByYear = {}
@@ -59,7 +82,7 @@ async function getEventsByYear(): Promise<EventsByYear> {
         year: "numeric",
       }).format(event.startDate),
       location: event.location ?? undefined,
-      media: buildEventMedia(event.images, event.imageId, event.title),
+      media: buildEventMedia(event.images, event.videos, event.imageId, event.title),
     })
   }
 

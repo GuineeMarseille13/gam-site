@@ -15,8 +15,8 @@ export default function NouvelEvenementPage() {
   const { startDate, endDate } = getDefaultDates()
   return (
     <BureauDataPage title="Nouvel événement" description="Créer un nouvel événement">
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="rounded-2xl border-border/60 shadow-sm">
+        <CardContent className="px-6 pt-6 pb-8 sm:px-8 sm:pt-8 sm:pb-10">
           <EvenementForm
             action={createEvenement}
             defaultValues={{ startDate, endDate }}
