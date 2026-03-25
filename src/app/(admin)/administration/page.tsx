@@ -7,6 +7,7 @@ import {
   IconChartBar,
   IconUserCircle,
   IconArrowRight,
+  IconUserPlus,
 } from "@tabler/icons-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,7 @@ export const metadata: Metadata = { title: "Vue d'ensemble" }
 export default async function AdministrationHomePage() {
   const session = await auth.api.getSession({ headers: await headers() })
   const firstName = session?.user.name?.split(/\s+/)[0] ?? ""
+  const isAdmin = session?.user.role === "admin"
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -29,6 +31,32 @@ export default async function AdministrationHomePage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card className="border-border/60 border-sky-200/60 bg-sky-50/30 shadow-sm dark:border-sky-900/40 dark:bg-sky-950/20">
+          <CardHeader className="pb-2">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/15">
+              <IconUserPlus className="size-5 text-sky-600" />
+            </div>
+            <CardTitle className="text-lg">Accès administration</CardTitle>
+            <CardDescription>
+              Lister les comptes rôle Administration, modifier ou créer un accès
+              {isAdmin ? " (création réservée aux administrateurs)" : "."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2 sm:flex-row">
+            <Button asChild className="w-full gap-2 bg-sky-600 text-white hover:bg-sky-700 sm:flex-1">
+              <Link href="/administration/acces">
+                Gérer les accès
+                <IconArrowRight className="size-4" />
+              </Link>
+            </Button>
+            {isAdmin && (
+              <Button asChild variant="outline" className="w-full border-sky-300/60 sm:flex-1 dark:border-sky-800">
+                <Link href="/administration/nouveau-compte">Nouveau compte</Link>
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-border/60 shadow-sm">
           <CardHeader className="pb-2">
             <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">

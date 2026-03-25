@@ -10,6 +10,7 @@ import {
   IconHandStop,
   IconBuildingStore,
   IconBriefcase,
+  IconUsers,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -29,6 +30,7 @@ type NavItem = {
   title: string
   url: string
   icon: React.ElementType
+  adminOnly?: boolean
 }
 
 const BASE = "/administration"
@@ -37,14 +39,21 @@ const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
   { title: "Statistiques", url: `${BASE}/statistiques`, icon: IconChartBar },
+  {
+    title: "Accès administration",
+    url: `${BASE}/acces`,
+    icon: IconUsers,
+  },
 ]
 
-function NavMain({ pathname }: { pathname: string }) {
+function NavMain({ pathname, role }: { pathname: string; role?: string }) {
+  const items = mainNav.filter((item) => !item.adminOnly || role === "admin")
+
   return (
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
-          {mainNav.map((item) => {
+          {items.map((item) => {
             const isActive =
               item.url === BASE ? pathname === BASE : pathname.startsWith(item.url)
             return (
@@ -111,7 +120,7 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavMain pathname={pathname} />
+        <NavMain pathname={pathname} role={role} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">

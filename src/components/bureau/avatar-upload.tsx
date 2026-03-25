@@ -1,19 +1,28 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+import { lazy, Suspense, useRef, useState } from "react"
 import { IconCamera, IconX } from "@tabler/icons-react"
+
+const AvatarUploadSiteVisibility = lazy(async () => {
+  const m = await import("./avatar-upload-site-visibility")
+  return { default: m.AvatarUploadSiteVisibility }
+})
 
 interface AvatarUploadProps {
   /** URL d'image existante (mode édition) */
   defaultImageUrl?: string | null
+  /** Classes Tailwind pour la taille du cercle (ex. size-32 sm:size-36). Défaut : size-24 */
+  sizeClass?: string
   /** Afficher le toggle "Afficher sur le site" */
   withVisibilityToggle?: boolean
   /** Valeur initiale du toggle */
   defaultShowOnSite?: boolean
   /** Couleur du fond avatar quand aucune image (classes Tailwind bg gradient) */
   placeholderClass?: string
+  /** Classes appliquées pendant le glisser-déposer (fichier au-dessus de la zone) */
+  dragActiveClassName?: string
+  /** Masque le bloc texte à droite (formats, glisser-déposer) — utile si le parent affiche déjà le titre */
+  hideSideText?: boolean
   /** Sous-label optionnel pour préciser la section concernée (ex: "Section 'Nos bénévoles'") */
   visibilitySubLabel?: string
 }
@@ -26,9 +35,12 @@ interface AvatarUploadProps {
  */
 export function AvatarUpload({
   defaultImageUrl,
+  sizeClass = "size-24",
   withVisibilityToggle = false,
   defaultShowOnSite = true,
   placeholderClass = "from-slate-100 to-slate-200 text-slate-500",
+  hideSideText = false,
+  dragActiveClassName = "ring-violet-500 ring-offset-2 scale-105",
   visibilitySubLabel,
 }: AvatarUploadProps) {
   const [preview, setPreview]         = useState<string | null>(defaultImageUrl ?? null)
@@ -73,7 +85,13 @@ export function AvatarUpload({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+    <div
+      className={
+        hideSideText
+          ? "flex flex-col items-center gap-3"
+          : "flex flex-col sm:flex-row items-center sm:items-start gap-5"
+      }
+    >
       {/* ── Zone avatar ───────────────────────────────────────────────────── */}
       <div className="relative shrink-0 group">
         <input
@@ -93,10 +111,11 @@ export function AvatarUpload({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={[
-            "relative size-24 rounded-full overflow-hidden cursor-pointer",
+            "relative rounded-full overflow-hidden cursor-pointer",
+            sizeClass,
             "ring-2 transition-all duration-200",
             isDragging
-              ? "ring-violet-500 ring-offset-2 scale-105"
+              ? dragActiveClassName
               : "ring-border/60 hover:ring-border",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           ].join(" ")}
@@ -133,6 +152,7 @@ export function AvatarUpload({
       </div>
 
       {/* ── Infos + toggle ────────────────────────────────────────────────── */}
+      {!hideSideText && (
       <div className="flex flex-col justify-center gap-3 text-center sm:text-left">
         <div>
           <p className="text-sm font-semibold text-foreground">Photo de profil</p>
@@ -147,30 +167,21 @@ export function AvatarUpload({
           )}
         </div>
 
-        {/* Toggle visibilité */}
         {withVisibilityToggle && (
-          <div className="flex items-center gap-2.5">
-            <Switch
-              id="showOnSite"
-              checked={showOnSite}
+          <Suspense fallback={null}>
+            <AvatarUploadSiteVisibility
+              showOnSite={showOnSite}
               onCheckedChange={setShowOnSite}
+              visibilitySubLabel={visibilitySubLabel}
             />
-            {/* Input caché pour la soumission du formulaire */}
-            <input type="hidden" name="showOnSite" value={showOnSite ? "true" : "false"} />
-            <div>
-              <Label
-                htmlFor="showOnSite"
-                className="text-xs text-muted-foreground cursor-pointer select-none"
-              >
-                Afficher sur le site
-              </Label>
-              {visibilitySubLabel && (
-                <p className="text-[10px] text-muted-foreground/60 leading-tight">{visibilitySubLabel}</p>
-              )}
-            </div>
-          </div>
+          </Suspense>
         )}
       </div>
+      )}
+
+      {hideSideText && sizeError && (
+        <p className="text-xs text-rose-600 font-medium text-center">{sizeError}</p>
+      )}
     </div>
   )
 }
