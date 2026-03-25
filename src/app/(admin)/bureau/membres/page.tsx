@@ -11,8 +11,9 @@ import { UserFilters } from "./_components/user-filters"
 export const metadata: Metadata = { title: "Membres" }
 
 const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }> = {
-  admin:  { label: "Administrateur", dot: "bg-amber-500",  badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
-  bureau: { label: "Bureau",         dot: "bg-blue-500",   badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40" },
+  admin:           { label: "Administrateur", dot: "bg-amber-500", badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
+  bureau:          { label: "Bureau",          dot: "bg-blue-500",  badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40" },
+  administration:  { label: "Administration",  dot: "bg-sky-500",   badge: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:ring-sky-800/40" },
 }
 
 function initials(name: string) {
@@ -61,6 +62,7 @@ export default async function MembresPage({
             { label: "Total comptes",   count: allComptes.length },
             { label: "Administrateurs", count: allComptes.filter((u) => u.role === "admin").length },
             { label: "Bureau",          count: allComptes.filter((u) => u.role === "bureau").length },
+            { label: "Administration",  count: allComptes.filter((u) => u.role === "administration").length },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border bg-card px-4 py-3">
               <p className="text-xs text-muted-foreground">{stat.label}</p>

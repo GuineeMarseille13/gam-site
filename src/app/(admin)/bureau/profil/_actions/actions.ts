@@ -5,12 +5,12 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { uploadImage } from "@/lib/cloudinary"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireAdministrationDashboard } from "@/lib/auth-guard"
 
 // ── Mettre à jour le profil ────────────────────────────────────────────────────
 
 export async function updateProfil(formData: FormData) {
-  const session = await requireBureau()
+  const session = await requireAdministrationDashboard()
   const userId = session.user.id
 
   const firstName   = (formData.get("firstName") as string)?.trim()
@@ -68,7 +68,9 @@ export async function updateProfil(formData: FormData) {
     }
 
     revalidatePath("/bureau/profil")
+    revalidatePath("/administration/profil")
     revalidatePath("/bureau")
+    revalidatePath("/administration")
     return { success: true as const }
   } catch {
     return { error: "Erreur lors de la mise à jour du profil." }
@@ -78,7 +80,7 @@ export async function updateProfil(formData: FormData) {
 // ── Changer son propre mot de passe ────────────────────────────────────────────
 
 export async function changeOwnPassword(currentPassword: string, newPassword: string) {
-  await requireBureau()
+  await requireAdministrationDashboard()
   try {
     await auth.api.changePassword({
       body: { currentPassword, newPassword, revokeOtherSessions: true },

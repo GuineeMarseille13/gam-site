@@ -8,9 +8,13 @@ import { SubmitButton } from "@/components/bureau/submit-button"
 import { AvatarUpload } from "@/components/bureau/avatar-upload"
 import { IconMapPin } from "@tabler/icons-react"
 
+type DashboardBase = "/bureau" | "/administration"
+
 interface BenevoleFormProps {
   action: (formData: FormData) => Promise<void>
   submitLabel?: string
+  /** Préfixe du dashboard pour annulation et redirection serveur */
+  dashboardBase?: DashboardBase
   defaultValues?: {
     firstName?: string
     lastName?: string
@@ -25,9 +29,17 @@ interface BenevoleFormProps {
   }
 }
 
-export function BenevoleForm({ action, submitLabel = "Enregistrer", defaultValues }: BenevoleFormProps) {
+export function BenevoleForm({
+  action,
+  submitLabel = "Enregistrer",
+  dashboardBase = "/bureau",
+  defaultValues,
+}: BenevoleFormProps) {
+  const cancelHref = `${dashboardBase}/benevoles`
+
   return (
     <form action={action} className="space-y-6 max-w-xl">
+      <input type="hidden" name="dashboardBase" value={dashboardBase} />
 
       {/* Photo de profil */}
       <AvatarUpload
@@ -158,7 +170,7 @@ export function BenevoleForm({ action, submitLabel = "Enregistrer", defaultValue
       <div className="flex flex-wrap gap-3">
         <SubmitButton>{submitLabel}</SubmitButton>
         <Button variant="ghost" asChild>
-          <Link href="/bureau/benevoles">Annuler</Link>
+          <Link href={cancelHref}>Annuler</Link>
         </Button>
       </div>
 

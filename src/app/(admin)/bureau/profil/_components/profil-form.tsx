@@ -24,8 +24,9 @@ import { getPosteLabel } from "../../equipe/_components/postes"
 // ── Styles ─────────────────────────────────────────────────────────────────────
 
 const ROLE_BADGE: Record<string, { label: string; dot: string; badge: string }> = {
-  admin:  { label: "Administrateur", dot: "text-amber-500", badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
-  bureau: { label: "Bureau",         dot: "text-blue-500",  badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40" },
+  admin:          { label: "Administrateur", dot: "text-amber-500", badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
+  bureau:         { label: "Bureau",         dot: "text-blue-500",  badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40" },
+  administration: { label: "Administration", dot: "text-sky-500",  badge: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:ring-sky-800/40" },
 }
 
 // ── Types ──────────────────────────────────────────────────────────────────────

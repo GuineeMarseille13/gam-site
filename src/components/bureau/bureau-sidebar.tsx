@@ -191,6 +191,16 @@ export function BureauSidebar({ currentUser, role, ...props }: BureauSidebarProp
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
         <SidebarMenu>
+          {(role === "admin" || role === "bureau") && (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/administration" className="text-muted-foreground hover:text-foreground">
+                  <IconLayoutGrid className="size-4" />
+                  <span>Espace Administration</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/" target="_blank" className="text-muted-foreground hover:text-foreground">

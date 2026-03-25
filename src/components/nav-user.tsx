@@ -38,9 +38,14 @@ function initials(name: string) {
 export function NavUser({
   user,
   role,
+  profileHref = "/bureau/profil",
+  afterLogoutHref = "/connexion",
 }: {
   user: { name: string; email: string; avatar?: string; image?: string }
   role?: string
+  profileHref?: string
+  /** Page de connexion après déconnexion (Bureau vs Administration) */
+  afterLogoutHref?: string
 }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
@@ -51,7 +56,7 @@ export function NavUser({
   function handleLogout() {
     startTransition(async () => {
       await signOut()
-      router.push("/connexion")
+      router.push(afterLogoutHref)
       router.refresh()
     })
   }
@@ -102,7 +107,7 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-100 focus:text-foreground dark:focus:bg-gray-800">
-              <Link href="/bureau/profil" className="flex items-center gap-2">
+              <Link href={profileHref} className="flex items-center gap-2">
                 <IconUserCircle className="size-4" />
                 Mon profil
               </Link>

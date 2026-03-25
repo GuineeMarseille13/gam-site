@@ -16,6 +16,7 @@ import {
 
 const segmentLabels: Record<string, string> = {
   bureau: "Bureau",
+  administration: "Administration",
   adhesions: "Adhésions",
   dons: "Dons",
   commandes: "Commandes",
@@ -29,6 +30,7 @@ const segmentLabels: Record<string, string> = {
   medias: "Médias",
   parametres: "Paramètres",
   aide: "Aide",
+  profil: "Profil",
   nouveau: "Nouveau",
   modifier: "Modifier",
 }

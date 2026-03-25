@@ -4,7 +4,20 @@ import { prisma } from "@/lib/prisma"
 import { uploadImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireAdministrationDashboard } from "@/lib/auth-guard"
+
+const BENEVOLES_LIST_PATHS = ["/bureau/benevoles", "/administration/benevoles"] as const
+
+function revalidateBenevolesLists() {
+  for (const p of BENEVOLES_LIST_PATHS) {
+    revalidatePath(p)
+  }
+}
+
+function benevolesListPathFromForm(formData: FormData): (typeof BENEVOLES_LIST_PATHS)[number] {
+  const base = (formData.get("dashboardBase") as string | null)?.trim()
+  return base === "/administration" ? "/administration/benevoles" : "/bureau/benevoles"
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +37,7 @@ function countryCode(country: string) {
 // ── Créer ──────────────────────────────────────────────────────────────────────
 
 export async function createBenevole(formData: FormData) {
-  await requireBureau()
+  await requireAdministrationDashboard()
 
   const firstName  = formData.get("firstName") as string
   const lastName   = formData.get("lastName")  as string
@@ -63,14 +76,14 @@ export async function createBenevole(formData: FormData) {
     data: { personId: person.id },
   })
 
-  revalidatePath("/bureau/benevoles")
-  redirect("/bureau/benevoles")
+  revalidateBenevolesLists()
+  redirect(benevolesListPathFromForm(formData))
 }
 
 // ── Modifier ───────────────────────────────────────────────────────────────────
 
 export async function updateBenevole(id: string, formData: FormData) {
-  await requireBureau()
+  await requireAdministrationDashboard()
 
   const volunteer = await prisma.volunteer.findUnique({ where: { id } })
   if (!volunteer) return
@@ -127,14 +140,14 @@ export async function updateBenevole(id: string, formData: FormData) {
   })
 
 
-  revalidatePath("/bureau/benevoles")
-  redirect("/bureau/benevoles")
+  revalidateBenevolesLists()
+  redirect(benevolesListPathFromForm(formData))
 }
 
 // ── Supprimer ──────────────────────────────────────────────────────────────────
 
 export async function deleteBenevole(id: string) {
-  await requireBureau()
+  await requireAdministrationDashboard()
   await prisma.volunteer.delete({ where: { id } })
-  revalidatePath("/bureau/benevoles")
+  revalidateBenevolesLists()
 }

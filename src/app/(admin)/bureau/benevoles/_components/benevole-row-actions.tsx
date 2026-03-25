@@ -61,20 +61,27 @@ interface Person {
   address:    Address | null
 }
 
+type DashboardBase = "/bureau" | "/administration"
+
 interface BenevoleRowActionsProps {
   volunteerId: string
   person:      Person | null
+  basePath?:   DashboardBase
 }
 
 // ── Composant ──────────────────────────────────────────────────────────────────
 
-export function BenevoleRowActions({ volunteerId, person }: BenevoleRowActionsProps) {
+export function BenevoleRowActions({
+  volunteerId,
+  person,
+  basePath = "/bureau",
+}: BenevoleRowActionsProps) {
   const [openSheet, setOpenSheet]   = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
-  const editHref = `/bureau/benevoles/${volunteerId}/modifier`
+  const editHref = `${basePath}/benevoles/${volunteerId}/modifier`
 
   const ini = person
     ? `${person.firstName[0]}${person.lastName[0]}`.toUpperCase()

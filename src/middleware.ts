@@ -6,9 +6,12 @@ export function middleware(request: NextRequest) {
 
   if (!sessionCookie) {
     const url = request.nextUrl.clone()
-    const redirect = request.nextUrl.pathname
-    url.pathname = "/connexion"
-    url.searchParams.set("redirect", redirect)
+    const redirectPath = request.nextUrl.pathname
+    const loginPath = redirectPath.startsWith("/administration")
+      ? "/connexion-administration"
+      : "/connexion"
+    url.pathname = loginPath
+    url.searchParams.set("redirect", redirectPath)
     return NextResponse.redirect(url)
   }
 
@@ -16,5 +19,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/bureau/:path*"],
+  matcher: ["/bureau/:path*", "/administration/:path*"],
 }
