@@ -673,6 +673,25 @@ model ContactSubmission {
   @@map("contact_submissions")
 }
 
+/// Liste de présence à la permanence administrative (remplace l’ancien Google Form).
+model PermanenceAdminPresenceVolunteer {
+  id                  String   @id @default(cuid())
+  permanenceDate      DateTime @db.Date
+  memberFullName      String
+  hours               Decimal  @db.Decimal(5, 2)
+  comment             String?
+  submittedByUserId   String?
+
+  user User? @relation(fields: [submittedByUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([permanenceDate])
+  @@index([submittedByUserId])
+  @@map("permanence_admin_presence_volunteers")
+}
+
 model Order {
   id          String   @id @default(cuid())
   orderNumber String   // Numéro de la commande
@@ -763,8 +782,9 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  sessions      Session[]
-  accounts      Account[]
+  sessions                           Session[]
+  accounts                           Account[]
+  permanenceAdminPresenceVolunteers  PermanenceAdminPresenceVolunteer[]
 
   @@map("user")
 }

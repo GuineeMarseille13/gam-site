@@ -88,6 +88,7 @@ export const ModelName = {
   Popup: 'Popup',
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
+  PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
@@ -649,6 +650,20 @@ export const ContactSubmissionScalarFieldEnum = {
 } as const
 
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
+
+
+export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
+  id: 'id',
+  permanenceDate: 'permanenceDate',
+  memberFullName: 'memberFullName',
+  hours: 'hours',
+  comment: 'comment',
+  submittedByUserId: 'submittedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermanenceAdminPresenceVolunteerScalarFieldEnum = (typeof PermanenceAdminPresenceVolunteerScalarFieldEnum)[keyof typeof PermanenceAdminPresenceVolunteerScalarFieldEnum]
 
 
 export const OrderScalarFieldEnum = {

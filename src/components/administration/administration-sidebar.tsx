@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   IconChartBar,
+  IconCalendarCheck,
   IconDashboard,
   IconExternalLink,
   IconHandStop,
@@ -37,6 +38,7 @@ const BASE = "/administration"
 
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
+  { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
   { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
   { title: "Statistiques", url: `${BASE}/statistiques`, icon: IconChartBar },
   {

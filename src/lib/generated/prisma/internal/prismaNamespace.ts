@@ -421,6 +421,7 @@ export const ModelName = {
   Popup: 'Popup',
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
+  PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
@@ -444,7 +445,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3186,6 +3187,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PermanenceAdminPresenceVolunteer: {
+      payload: Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>
+      fields: Prisma.PermanenceAdminPresenceVolunteerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PermanenceAdminPresenceVolunteerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PermanenceAdminPresenceVolunteerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        findFirst: {
+          args: Prisma.PermanenceAdminPresenceVolunteerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PermanenceAdminPresenceVolunteerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        findMany: {
+          args: Prisma.PermanenceAdminPresenceVolunteerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>[]
+        }
+        create: {
+          args: Prisma.PermanenceAdminPresenceVolunteerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        createMany: {
+          args: Prisma.PermanenceAdminPresenceVolunteerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PermanenceAdminPresenceVolunteerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>[]
+        }
+        delete: {
+          args: Prisma.PermanenceAdminPresenceVolunteerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        update: {
+          args: Prisma.PermanenceAdminPresenceVolunteerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        deleteMany: {
+          args: Prisma.PermanenceAdminPresenceVolunteerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PermanenceAdminPresenceVolunteerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PermanenceAdminPresenceVolunteerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>[]
+        }
+        upsert: {
+          args: Prisma.PermanenceAdminPresenceVolunteerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PermanenceAdminPresenceVolunteerPayload>
+        }
+        aggregate: {
+          args: Prisma.PermanenceAdminPresenceVolunteerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePermanenceAdminPresenceVolunteer>
+        }
+        groupBy: {
+          args: Prisma.PermanenceAdminPresenceVolunteerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PermanenceAdminPresenceVolunteerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PermanenceAdminPresenceVolunteerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PermanenceAdminPresenceVolunteerCountAggregateOutputType> | number
+        }
+      }
+    }
     Order: {
       payload: Prisma.$OrderPayload<ExtArgs>
       fields: Prisma.OrderFieldRefs
@@ -4354,6 +4429,20 @@ export const ContactSubmissionScalarFieldEnum = {
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
 
 
+export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
+  id: 'id',
+  permanenceDate: 'permanenceDate',
+  memberFullName: 'memberFullName',
+  hours: 'hours',
+  comment: 'comment',
+  submittedByUserId: 'submittedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermanenceAdminPresenceVolunteerScalarFieldEnum = (typeof PermanenceAdminPresenceVolunteerScalarFieldEnum)[keyof typeof PermanenceAdminPresenceVolunteerScalarFieldEnum]
+
+
 export const OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
@@ -4654,6 +4743,20 @@ export type ListEnumContactSubmissionStatusFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'PaymentStatus'
  */
 export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
@@ -4812,6 +4915,7 @@ export type GlobalOmitConfig = {
   popup?: Prisma.PopupOmit
   banner?: Prisma.BannerOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
+  permanenceAdminPresenceVolunteer?: Prisma.PermanenceAdminPresenceVolunteerOmit
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit
   payment?: Prisma.PaymentOmit

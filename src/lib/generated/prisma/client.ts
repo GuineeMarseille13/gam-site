@@ -227,6 +227,11 @@ export type Banner = Prisma.BannerModel
  */
 export type ContactSubmission = Prisma.ContactSubmissionModel
 /**
+ * Model PermanenceAdminPresenceVolunteer
+ * Liste de présence à la permanence administrative (remplace l’ancien Google Form).
+ */
+export type PermanenceAdminPresenceVolunteer = Prisma.PermanenceAdminPresenceVolunteerModel
+/**
  * Model Order
  * 
  */

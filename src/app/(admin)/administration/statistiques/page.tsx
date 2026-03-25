@@ -1,26 +1,37 @@
 import type { Metadata } from "next"
 import { BureauDataPage } from "@/components/bureau/bureau-data-page"
-import { IconChartBar } from "@tabler/icons-react"
+import { permanenceStatsYearParamSchema } from "../_schemas/permanence-hours-annual-stats.schema"
+import { getPermanenceAnnualHoursByVolunteer } from "../_services/get-permanence-annual-hours-by-volunteer"
+import { PermanenceAnnualHoursStatsSection } from "./_components/permanence-annual-hours-stats-section"
 
-export const metadata: Metadata = { title: "Statistiques" }
+export const metadata: Metadata = {
+  title: "Statistiques",
+  description: "Indicateurs du dashboard administration — permanence ADM et autres",
+}
 
-export default function AdministrationStatistiquesPage() {
+function firstParam(v: string | string[] | undefined): string | undefined {
+  if (v == null) return undefined
+  return Array.isArray(v) ? v[0] : v
+}
+
+export default async function AdministrationStatistiquesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ annee?: string | string[] }>
+}) {
+  const sp = await searchParams
+  const rawYear = firstParam(sp.annee)
+  const parsedYear = permanenceStatsYearParamSchema.safeParse(rawYear)
+  const year = parsedYear.success ? parsedYear.data : new Date().getFullYear()
+
+  const rows = await getPermanenceAnnualHoursByVolunteer(year)
+
   return (
     <BureauDataPage
       title="Statistiques"
-      description="Indicateurs et tableaux de bord — contenu à venir"
+      description="Indicateurs issus des saisies du dashboard administration (permanence ADM, etc.)."
     >
-      <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed bg-muted/15 px-6 py-20 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-sky-500/10">
-          <IconChartBar className="size-7 text-sky-600" />
-        </div>
-        <div className="max-w-md space-y-2">
-          <p className="text-sm font-semibold text-foreground">Page en construction</p>
-          <p className="text-sm text-muted-foreground">
-            Les statistiques seront affichées ici lorsque les indicateurs auront été définis.
-          </p>
-        </div>
-      </div>
+      <PermanenceAnnualHoursStatsSection year={year} rows={rows} />
     </BureauDataPage>
   )
 }
