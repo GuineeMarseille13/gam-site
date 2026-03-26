@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 const segmentLabels: Record<string, string> = {
   bureau: "Bureau",
@@ -73,6 +74,10 @@ export function BureauHeader() {
             })}
           </BreadcrumbList>
         </Breadcrumb>
+
+        <div className="ml-auto flex shrink-0 items-center pl-2">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   )

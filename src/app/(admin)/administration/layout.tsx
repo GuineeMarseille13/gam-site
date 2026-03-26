@@ -2,10 +2,16 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
+import {
+  ADMINISTRATION_DASHBOARD_DATA_ATTR,
+  administrationDashboardCanvasClassName,
+  administrationDashboardProviderClassName,
+} from "@/config/administration-dashboard-theme"
 import { isAdministrationDashboardRole } from "@/lib/dashboard-roles"
 import { AdministrationSidebar } from "@/components/administration/administration-sidebar"
 import { BureauHeader } from "@/components/bureau/bureau-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: {
@@ -33,6 +39,8 @@ export default async function AdministrationShellLayout({
 
   return (
     <SidebarProvider
+      {...ADMINISTRATION_DASHBOARD_DATA_ATTR}
+      className={cn(administrationDashboardProviderClassName)}
       style={
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -49,7 +57,7 @@ export default async function AdministrationShellLayout({
         }}
         role={role || undefined}
       />
-      <SidebarInset>
+      <SidebarInset className={administrationDashboardCanvasClassName}>
         <BureauHeader />
         <main className="flex flex-1 flex-col">{children}</main>
       </SidebarInset>

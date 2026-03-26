@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* next-themes : classe `dark` sur <html> — inclut la racine pour les utilitaires dark: */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -258,8 +259,9 @@
   --secondary: #60a5fa; /* bleu plus doux */
   --secondary-foreground: #1a1a1a;
 
-  --accent: #4ade80; /* vert plus doux */
-  --accent-foreground: #1a1a1a;
+/* Survols neutres (ghost, outline, menus, focus) — éviter le vert (#4ade80) peu lisible */
+  --accent: #64748b;
+  --accent-foreground: #f8fafc;
 
   --muted: #262626;
   --muted-foreground: #a3a3a3;
@@ -304,6 +306,61 @@
 
   --theme-white: #f8f9fa;
   --theme-white-dark: #e5e7eb;
+}
+
+/* Dashboard Administration — palette sémantique (data-dashboard="administration") */
+[data-dashboard="administration"] {
+  /* Surfaces */
+  --admin-dashboard-canvas: #f8fafc;
+  --admin-card-border: rgb(14 165 233 / 0.14);
+  --admin-muted: rgb(14 165 233 / 0.06);
+
+  /* Primaire — CTA plein */
+  --admin-primary: #0ea5e9;
+  --admin-primary-foreground: #ffffff;
+  --admin-primary-hover: #0284c7;
+  --admin-primary-active: #0369a1;
+  --admin-primary-shadow: rgb(14 165 233 / 0.2);
+  --admin-primary-shadow-hover: rgb(2 132 199 / 0.28);
+  --admin-primary-ring: rgb(14 165 233 / 0.35);
+
+  /* Secondaire — contour / actions légères */
+  --admin-secondary-border: rgb(14 165 233 / 0.38);
+  --admin-secondary-bg: var(--card);
+  --admin-secondary-foreground: #0c4a6e;
+  --admin-secondary-hover-bg: rgb(240 249 255);
+  --admin-secondary-hover-border: rgb(14 165 233 / 0.55);
+  --admin-secondary-hover-foreground: #082f49;
+  --admin-secondary-active-bg: rgb(224 242 254);
+
+  /* Pastilles icônes */
+  --admin-icon-badge-bg: rgb(14 165 233 / 0.12);
+  --admin-icon-badge-fg: #0369a1;
+}
+
+.dark [data-dashboard="administration"] {
+  --admin-dashboard-canvas: #0c1117;
+  --admin-card-border: rgb(56 189 248 / 0.22);
+  --admin-muted: rgb(56 189 248 / 0.08);
+
+  --admin-primary: #0284c7;
+  --admin-primary-foreground: #ffffff;
+  --admin-primary-hover: #0ea5e9;
+  --admin-primary-active: #38bdf8;
+  --admin-primary-shadow: rgb(2 132 199 / 0.35);
+  --admin-primary-shadow-hover: rgb(14 165 233 / 0.32);
+  --admin-primary-ring: rgb(56 189 248 / 0.45);
+
+  --admin-secondary-border: rgb(56 189 248 / 0.35);
+  --admin-secondary-bg: var(--card);
+  --admin-secondary-foreground: #e0f2fe;
+  --admin-secondary-hover-bg: rgb(8 47 73 / 0.45);
+  --admin-secondary-hover-border: rgb(56 189 248 / 0.55);
+  --admin-secondary-hover-foreground: #f0f9ff;
+  --admin-secondary-active-bg: rgb(12 74 110 / 0.5);
+
+  --admin-icon-badge-bg: rgb(56 189 248 / 0.14);
+  --admin-icon-badge-fg: #7dd3fc;
 }
 
 @layer base {

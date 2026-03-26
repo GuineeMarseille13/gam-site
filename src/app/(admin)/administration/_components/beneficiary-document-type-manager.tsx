@@ -170,10 +170,10 @@ export function BeneficiaryDocumentTypeManager({
             <TableRow>
               <TableHead className="min-w-[100px]">Code</TableHead>
               <TableHead className="min-w-[180px]">Libellé</TableHead>
-              <TableHead className="w-24 text-right">Ordre</TableHead>
+              <TableHead className="w-24 text-left">Ordre</TableHead>
               <TableHead className="min-w-[100px]">Précision</TableHead>
               <TableHead className="w-24">Actif</TableHead>
-              <TableHead className="w-24 text-right">Fiches</TableHead>
+              <TableHead className="w-24 text-right">Demandes</TableHead>
               <TableHead className="w-32 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -184,7 +184,7 @@ export function BeneficiaryDocumentTypeManager({
                 <TableRow key={r.id}>
                   <TableCell className="align-top font-mono text-xs break-all">{r.code}</TableCell>
                   <TableCell className="align-top font-medium break-words">{r.label}</TableCell>
-                  <TableCell className="align-top text-right tabular-nums">{r.sortOrder}</TableCell>
+                  <TableCell className="align-top text-left tabular-nums">{r.sortOrder}</TableCell>
                   <TableCell className="align-top text-sm text-muted-foreground">
                     {requiresOtherDetailLabel(r.requiresOtherDetail)}
                   </TableCell>
@@ -288,7 +288,7 @@ export function BeneficiaryDocumentTypeManager({
               {formError}
             </p>
           )}
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
               Annuler
             </Button>

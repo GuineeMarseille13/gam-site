@@ -176,10 +176,10 @@ export function BeneficiaryDemandTypeManager({
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-[180px]">Libellé</TableHead>
-              <TableHead className="w-24 text-right">Ordre</TableHead>
+              <TableHead className="w-24 text-left">Ordre</TableHead>
               <TableHead className="min-w-[120px]">Précision</TableHead>
               <TableHead className="w-24">Actif</TableHead>
-              <TableHead className="w-24 text-right">Fiches</TableHead>
+              <TableHead className="w-24 text-right">Demandes</TableHead>
               <TableHead className="w-32 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -187,7 +187,7 @@ export function BeneficiaryDemandTypeManager({
             {initialRows.map((r) => (
               <TableRow key={r.id}>
                 <TableCell className="align-top font-medium break-words">{r.label}</TableCell>
-                <TableCell className="align-top text-right tabular-nums">{r.sortOrder}</TableCell>
+                <TableCell className="align-top text-left tabular-nums">{r.sortOrder}</TableCell>
                 <TableCell className="align-top text-sm text-muted-foreground">
                   {r.requiresDetail ? "Oui" : "Non"}
                 </TableCell>
@@ -287,7 +287,7 @@ export function BeneficiaryDemandTypeManager({
               {formError}
             </p>
           )}
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
               Annuler
             </Button>

@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { ShoppingCart } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";
 import { CART_TOGGLE_EVENT } from "@/app/(public)/boutique/_services/cart-storage";
 
@@ -52,7 +53,9 @@ export default function HeaderNavigation() {
       {!isMobile && (
         <nav className="bg-gray-50 dark:bg-gray-900 py-4 bg-white/10 backdrop-blur-md">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <ul className="flex flex-wrap justify-center gap-2 md:gap-4">
+            <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:gap-4">
+              <div className="hidden min-h-0 md:flex md:flex-1" aria-hidden />
+              <ul className="flex flex-wrap justify-center gap-2 md:gap-4 md:flex-[2]">
               {!isHome && (
                 <motion.li
                   initial={{ opacity: 0, y: -10 }}
@@ -90,6 +93,10 @@ export default function HeaderNavigation() {
                 </motion.li>
               ))}
             </ul>
+              <div className="flex justify-center md:flex-1 md:justify-end">
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
         </nav>
       )}
@@ -98,10 +105,7 @@ export default function HeaderNavigation() {
       {isMobile && (
         <div className="bg-gray-50/50 dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className={cn(
-              "flex items-center",
-              currentPath === "/boutique" ? "justify-between" : "justify-center"
-            )}>
+            <div className="flex w-full items-center justify-between gap-2">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -117,30 +121,34 @@ export default function HeaderNavigation() {
                   <span>{currentPageInfo.label}</span>
                 </span>
               </motion.div>
-              {currentPath === "/boutique" && (
-                <button
-                  onClick={() => {
-                    try {
-                      window.dispatchEvent(new CustomEvent(CART_TOGGLE_EVENT));
-                    } catch {}
-                  }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0f172a] text-white shadow-sm hover:opacity-95 cursor-pointer"
-                  aria-label="Ouvrir le panier"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Panier</span>
-                  <motion.span
-                    key={totalQuantity}
-                    initial={{ scale: 0.9, opacity: 0.8 }}
-                    animate={{ scale: [1, 1.2, 1], opacity: 1 }}
-                    transition={{ duration: 0.35 }}
-                    aria-live="polite"
-                    className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-theme-red to-theme-yellow text-white text-[10px] font-extrabold shadow"
+              <div className="flex shrink-0 items-center gap-1">
+                {currentPath === "/boutique" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        window.dispatchEvent(new CustomEvent(CART_TOGGLE_EVENT));
+                      } catch {}
+                    }}
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#0f172a] px-3 py-1.5 text-white shadow-sm hover:opacity-95 dark:bg-slate-800"
+                    aria-label="Ouvrir le panier"
                   >
-                    {totalQuantity}
-                  </motion.span>
-                </button>
-              )}
+                    <ShoppingCart className="h-4 w-4" />
+                    <span className="text-sm font-semibold">Panier</span>
+                    <motion.span
+                      key={totalQuantity}
+                      initial={{ scale: 0.9, opacity: 0.8 }}
+                      animate={{ scale: [1, 1.2, 1], opacity: 1 }}
+                      transition={{ duration: 0.35 }}
+                      aria-live="polite"
+                      className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-theme-red to-theme-yellow text-[10px] font-extrabold text-white shadow"
+                    >
+                      {totalQuantity}
+                    </motion.span>
+                  </button>
+                )}
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>

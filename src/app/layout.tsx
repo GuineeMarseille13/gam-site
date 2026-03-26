@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
-import { QueryProvider } from "@/providers/QueryProvider"
+import { AppProviders } from "@/providers/app-providers"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GAM - Gestion Association Moderne",
   description: "Application de gestion pour votre association",
+  /** Scrollbars / UI natives : suivent le thème (next-themes + `dark`). */
+  other: {
+    "color-scheme": "light dark",
+  },
 }
 
 export default function RootLayout({
@@ -24,11 +28,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )
