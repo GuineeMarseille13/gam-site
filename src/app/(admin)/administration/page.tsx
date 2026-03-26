@@ -96,9 +96,10 @@ export default async function AdministrationHomePage() {
             <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/15">
               <IconClipboardList className="size-5 text-sky-600" />
             </div>
-            <CardTitle className="text-lg">Suivi demandeurs</CardTitle>
+            <CardTitle className="text-lg">Demande bénéficiaire</CardTitle>
             <CardDescription>
-              Fiches demandeurs à la permanence (types de demande, identité) — ex-Google Form suivi.
+              Enregistrement des demandes à la permanence administrative (types de demande, identité)
+              — ex-Google Form suivi.
             </CardDescription>
           </CardHeader>
           <CardContent>

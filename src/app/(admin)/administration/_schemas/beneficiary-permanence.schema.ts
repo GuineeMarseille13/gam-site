@@ -195,7 +195,7 @@ export const beneficiaryPermanenceStep4Schema = z
 export type BeneficiaryPermanenceStep4Input = z.infer<typeof beneficiaryPermanenceStep4Schema>
 
 /**
- * Schéma d’envoi complet — suivi permanence.
+ * Schéma d’envoi complet — Demande bénéficiaire (permanence administrative).
  */
 export function buildSubmitBeneficiaryPermanenceSchema(
   demandTypes: readonly DemandTypeOptionForValidation[],

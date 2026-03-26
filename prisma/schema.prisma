@@ -689,7 +689,7 @@ model BeneficiaryDemandType {
   @@map("beneficiary_demand_types")
 }
 
-/// Fiche demandeur / suivi permanence administrative (ex-Google Form suivi).
+/// Fiche Demande bénéficiaire / permanence administrative (ex-Google Form suivi).
 model Beneficiary {
   id               String   @id @default(cuid())
   permanenceDate   DateTime @db.Date

@@ -26,7 +26,7 @@ function requestSummary(row: BeneficiaryPermanenceRow): string {
 }
 
 /**
- * Historique récent des fiches suivi permanence (même source que le formulaire).
+ * Historique récent des fiches Demande bénéficiaire (même source que le formulaire).
  */
 export function BeneficiarySuiviRecentTable({ rows }: BeneficiarySuiviRecentTableProps) {
   if (rows.length === 0) {
@@ -77,7 +77,7 @@ export function BeneficiarySuiviRecentTable({ rows }: BeneficiarySuiviRecentTabl
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-[110px]">Date perm.</TableHead>
-              <TableHead className="min-w-[140px]">Demandeur</TableHead>
+              <TableHead className="min-w-[140px]">Bénéficiaire</TableHead>
               <TableHead className="min-w-[200px]">Types de demande</TableHead>
               <TableHead className="min-w-[120px]">Contact</TableHead>
               <TableHead className="min-w-[100px]">Statut</TableHead>

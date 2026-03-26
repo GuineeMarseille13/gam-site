@@ -8,7 +8,7 @@ export type ActiveBeneficiaryDemandType = {
 }
 
 /**
- * Types de demande actifs pour le formulaire de suivi (ordre d’affichage).
+ * Types de demande actifs pour le formulaire Demande bénéficiaire (ordre d’affichage).
  */
 export async function getActiveBeneficiaryDemandTypes(): Promise<ActiveBeneficiaryDemandType[]> {
   await requireAdministrationDashboard()

@@ -48,7 +48,7 @@ interface BeneficiaryDemandTypeManagerProps {
 }
 
 /**
- * Gestion des libellés « type de demande » pour le suivi permanence.
+ * Gestion des libellés « type de demande » pour la Demande bénéficiaire.
  */
 export function BeneficiaryDemandTypeManager({
   className,
@@ -140,7 +140,8 @@ export function BeneficiaryDemandTypeManager({
     <div className={cn("min-w-0 space-y-4", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted-foreground">
-          Les types actifs apparaissent dans le formulaire de suivi. « Précision obligatoire » affiche
+          Les types actifs apparaissent dans le formulaire Demande bénéficiaire. « Précision obligatoire »
+          affiche
           un champ texte supplémentaire (ex. « Autre »).
         </p>
         <Button
@@ -227,7 +228,8 @@ export function BeneficiaryDemandTypeManager({
           <DialogHeader>
             <DialogTitle>{editing ? "Modifier le type" : "Nouveau type"}</DialogTitle>
             <DialogDescription>
-              Libellé affiché dans le formulaire de suivi. L&apos;ordre détermine la liste déroulante.
+              Libellé affiché dans le formulaire Demande bénéficiaire. L&apos;ordre détermine la liste
+              déroulante.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-2">

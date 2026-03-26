@@ -12,7 +12,7 @@ export type SubmitBeneficiaryPermanenceResult =
   | { success: false; error: string; fieldErrors?: Record<string, string[]> }
 
 /**
- * Enregistre une fiche demandeur / suivi permanence administrative.
+ * Enregistre une fiche Demande bénéficiaire (permanence administrative).
  */
 export async function submitBeneficiaryPermanence(
   raw: unknown,

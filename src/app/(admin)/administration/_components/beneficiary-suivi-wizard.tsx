@@ -65,7 +65,7 @@ interface BeneficiarySuiviWizardProps {
 }
 
 /**
- * Assistant multi-étapes : suivi permanence administrative (aligné formulaire Google Form).
+ * Assistant multi-étapes : Demande bénéficiaire / permanence administrative (aligné Google Form).
  */
 export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySuiviWizardProps) {
   const router = useRouter()
@@ -970,7 +970,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
               </span>
             </p>
             <p className="break-words">
-              <span className="text-muted-foreground">Demandeur : </span>
+              <span className="text-muted-foreground">Bénéficiaire : </span>
               <span className="font-medium">
                 {firstName.trim()} {lastName.trim()}
               </span>

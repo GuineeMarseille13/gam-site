@@ -13,6 +13,7 @@ import {
   IconBuildingStore,
   IconBriefcase,
   IconList,
+  IconListDetails,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -38,11 +39,13 @@ type NavItem = {
 
 const BASE = "/administration"
 const SUIVI_PERMANENCE = `${BASE}/suivi-permanence`
+const SUIVI_DEMANDE = `${BASE}/suivi-demande`
 
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
-  { title: "Suivi demandeurs", url: SUIVI_PERMANENCE, icon: IconClipboardList },
+  { title: "Demande bénéficiaire", url: SUIVI_PERMANENCE, icon: IconClipboardList },
+  { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
   {
     title: "Types de demande",
     url: `${SUIVI_PERMANENCE}/types-de-demande`,
@@ -70,7 +73,9 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
                 ? pathname === BASE
                 : item.url === SUIVI_PERMANENCE
                   ? pathname === SUIVI_PERMANENCE
-                  : pathname.startsWith(item.url)
+                  : item.url === SUIVI_DEMANDE
+                    ? pathname === SUIVI_DEMANDE || pathname.startsWith(`${SUIVI_DEMANDE}/`)
+                    : pathname.startsWith(item.url)
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>

@@ -7,8 +7,9 @@ import { getBeneficiaryDemandTypesAdmin } from "../../_services/get-beneficiary-
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Types de demande — suivi permanence",
-  description: "Configurer les libellés proposés dans le formulaire de suivi des demandeurs.",
+  title: "Types de demande — demande bénéficiaire",
+  description:
+    "Configurer les libellés proposés dans le formulaire Demande bénéficiaire (permanence administrative).",
 }
 
 export default async function TypesDeDemandePage() {
@@ -22,8 +23,8 @@ export default async function TypesDeDemandePage() {
             Types de demande
           </h1>
           <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-            Définissez les libellés du menu « Type de demande » du suivi permanence. Vous pouvez
-            exiger une précision (texte libre) pour certains cas.
+            Définissez les libellés du menu « Type de demande » du formulaire Demande bénéficiaire.
+            Vous pouvez exiger une précision (texte libre) pour certains cas.
           </p>
         </div>
         <Button
@@ -33,7 +34,7 @@ export default async function TypesDeDemandePage() {
         >
           <Link href="/administration/suivi-permanence">
             <IconArrowLeft className="size-4" aria-hidden />
-            Retour au suivi
+            Retour à la demande bénéficiaire
           </Link>
         </Button>
       </div>

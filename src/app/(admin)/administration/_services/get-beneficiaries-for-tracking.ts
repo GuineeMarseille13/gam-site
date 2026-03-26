@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
 import {
-  beneficiaryPermanenceRowSchema,
-  type BeneficiaryPermanenceRow,
-} from "../_schemas/beneficiary-permanence.schema"
+  beneficiaryTrackingListRowSchema,
+  type BeneficiaryTrackingListRow,
+} from "../_schemas/beneficiary-tracking.schema"
 import { REQUEST_STATUS_LABELS, type RequestStatusValue } from "../_schemas/beneficiary-suivi-config"
 
-const TAKE = 25
+const TAKE = 500
 
 function statusLabel(value: string | null): string | null {
   if (!value) return null
@@ -17,9 +17,9 @@ function statusLabel(value: string | null): string | null {
 }
 
 /**
- * Dernières fiches Demande bénéficiaire (permanence administrative) enregistrées sur le dashboard.
+ * Liste des fiches pour la page Suivi demande (tri récent en premier).
  */
-export async function getRecentBeneficiaries(): Promise<BeneficiaryPermanenceRow[]> {
+export async function getBeneficiariesForTracking(): Promise<BeneficiaryTrackingListRow[]> {
   await requireAdministrationDashboard()
 
   const rows = await prisma.beneficiary.findMany({
@@ -34,17 +34,14 @@ export async function getRecentBeneficiaries(): Promise<BeneficiaryPermanenceRow
   })
 
   return rows.map((r) =>
-    beneficiaryPermanenceRowSchema.parse({
+    beneficiaryTrackingListRowSchema.parse({
       id: r.id,
       permanenceDate: r.permanenceDate.toISOString().slice(0, 10),
       demandTypeLabels: r.demandTypes.map((d) => d.label),
-      requestDetail: r.requestDetail,
       firstName: r.firstName,
       lastName: r.lastName,
       phone: r.phone,
-      email: r.email,
-      notes: r.notes,
-      birthDate: r.birthDate ? r.birthDate.toISOString().slice(0, 10) : null,
+      requestStatus: r.requestStatus,
       requestStatusLabel: statusLabel(r.requestStatus),
       assignedResponsibleName: r.assignedResponsibleName,
       createdAt: r.createdAt.toISOString(),

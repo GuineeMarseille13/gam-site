@@ -10,9 +10,9 @@ import { getActiveBeneficiaryDemandTypes } from "../_services/get-beneficiary-de
 import { getRecentBeneficiaries } from "../_services/get-recent-beneficiaries"
 
 export const metadata: Metadata = {
-  title: "Suivi permanence — demandeurs",
+  title: "Demande bénéficiaire — permanence administrative",
   description:
-    "Enregistrement des demandes reçues à la permanence administrative (ex-Google Form suivi).",
+    "Enregistrement des demandes bénéficiaires à la permanence administrative (ex-Google Form suivi).",
 }
 
 export default async function SuiviPermanencePage() {
@@ -25,8 +25,11 @@ export default async function SuiviPermanencePage() {
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          Suivi permanence administrative
+          Demande bénéficiaire
         </h1>
+        <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+          Permanence administrative — saisie et suivi des dossiers reçus à l’accueil.
+        </p>
         <Button
           asChild
           variant="outline"

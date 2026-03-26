@@ -1,5 +1,5 @@
 /**
- * Valeurs stockées en base pour le suivi permanence (cohérentes avec l’ancien Google Form).
+ * Valeurs stockées en base pour la Demande bénéficiaire (cohérentes avec l’ancien Google Form).
  */
 export const BENEFICIARY_DOCUMENT_KEYS = [
   "BIRTH_CERT_BIOMETRIC",
