@@ -6,12 +6,8 @@ import {
   beneficiaryTrackingSectionClassName,
   beneficiaryTrackingSectionTitleClassName,
 } from "./beneficiary-suivi-form-classes"
-import {
-  formatDocumentLabelsForDetail,
-  paymentLabel,
-} from "../_schemas/beneficiary-tracking.schema"
+import { paymentLabel } from "../_schemas/beneficiary-tracking.schema"
 import type { BeneficiaryTrackingDetail } from "../_schemas/beneficiary-tracking.schema"
-import type { BeneficiaryDocumentKey } from "../_schemas/beneficiary-suivi-config"
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
@@ -37,12 +33,7 @@ export function BeneficiaryTrackingDetailView({ detail }: BeneficiaryTrackingDet
     detail.birthDate &&
     format(parseISO(`${detail.birthDate}T12:00:00.000Z`), "d MMMM yyyy", { locale: fr })
   const docLine =
-    detail.documentKeys.length === 0
-      ? "—"
-      : formatDocumentLabelsForDetail(
-          detail.documentKeys as BeneficiaryDocumentKey[],
-          detail.documentOtherDetail,
-        ).join(" · ")
+    detail.documentLabelLines.length === 0 ? "—" : detail.documentLabelLines.join(" · ")
   const payLine = paymentLabel(detail.paymentResponsible)
   const payExtra =
     detail.paymentResponsible === "OTHER" && detail.paymentOtherDetail?.trim()

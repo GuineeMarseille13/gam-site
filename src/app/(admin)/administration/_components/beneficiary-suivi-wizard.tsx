@@ -24,14 +24,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { BeneficiaryDemandTypeMultiSelect } from "./beneficiary-demand-type-multi-select"
 import {
   BeneficiaryRequiredMark,
+  beneficiarySuiviDateTriggerClassName,
+  beneficiarySuiviTriggerPlaceholderClassName,
   beneficiarySuiviInputClassName,
+  beneficiarySuiviPrimaryButtonClassName,
   beneficiarySuiviSelectTriggerClassName,
   beneficiarySuiviTextareaClassName,
+  beneficiaryTrackingGhostNavClassName,
 } from "./beneficiary-suivi-form-classes"
 import { BeneficiarySuiviDocumentChecks } from "./beneficiary-suivi-document-checks"
 import { submitBeneficiaryPermanence } from "../_actions/submit-beneficiary-permanence"
+import type { ActiveBeneficiaryDocumentType } from "../_services/get-active-beneficiary-document-types"
 import {
-  beneficiaryPermanenceStep3Schema,
+  buildBeneficiaryPermanenceStep3Schema,
   beneficiaryPermanenceStep4Schema,
   buildBeneficiaryPermanenceStep2Schema,
   buildSubmitBeneficiaryPermanenceSchema,
@@ -39,12 +44,10 @@ import {
   type DemandTypeOptionForValidation,
 } from "../_schemas/beneficiary-permanence.schema"
 import {
-  BENEFICIARY_DOCUMENT_LABELS,
   PAYMENT_RESPONSIBLE_LABELS,
   PAYMENT_RESPONSIBLE_VALUES,
   REQUEST_STATUS_LABELS,
   REQUEST_STATUS_VALUES,
-  type BeneficiaryDocumentKey,
 } from "../_schemas/beneficiary-suivi-config"
 
 const STEPS = 5
@@ -62,12 +65,17 @@ export type BeneficiaryDemandTypeOption = DemandTypeOptionForValidation & {
 interface BeneficiarySuiviWizardProps {
   className?: string
   demandTypes: BeneficiaryDemandTypeOption[]
+  documentTypes: ActiveBeneficiaryDocumentType[]
 }
 
 /**
  * Assistant multi-étapes : Demande bénéficiaire / permanence administrative (aligné Google Form).
  */
-export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySuiviWizardProps) {
+export function BeneficiarySuiviWizard({
+  className,
+  demandTypes,
+  documentTypes,
+}: BeneficiarySuiviWizardProps) {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [pending, startTransition] = useTransition()
@@ -80,14 +88,25 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
     [demandTypes],
   )
 
+  const documentValidationSet = useMemo(
+    () =>
+      documentTypes.map((d) => ({ code: d.code, requiresOtherDetail: d.requiresOtherDetail })),
+    [documentTypes],
+  )
+
   const step2Schema = useMemo(
     () => buildBeneficiaryPermanenceStep2Schema(validationSet),
     [validationSet],
   )
 
+  const step3Schema = useMemo(
+    () => buildBeneficiaryPermanenceStep3Schema(documentValidationSet),
+    [documentValidationSet],
+  )
+
   const submitSchema = useMemo(
-    () => buildSubmitBeneficiaryPermanenceSchema(validationSet),
-    [validationSet],
+    () => buildSubmitBeneficiaryPermanenceSchema(validationSet, documentValidationSet),
+    [validationSet, documentValidationSet],
   )
 
   const defaultTypeId = demandTypes[0]?.id ?? ""
@@ -98,7 +117,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
   )
   const [requestDetail, setRequestDetail] = useState("")
 
-  const [documentKeys, setDocumentKeys] = useState<BeneficiaryDocumentKey[]>([])
+  const [documentKeys, setDocumentKeys] = useState<string[]>([])
   const [documentOtherDetail, setDocumentOtherDetail] = useState("")
   const [requestStatus, setRequestStatus] = useState<(typeof REQUEST_STATUS_VALUES)[number]>(
     "PENDING_DOCUMENTS",
@@ -135,11 +154,19 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
     })
   }, [demandTypes])
 
+  const needsDocFreeText = useMemo(
+    () =>
+      documentKeys.some(
+        (code) => documentTypes.find((d) => d.code === code)?.requiresOtherDetail ?? false,
+      ),
+    [documentKeys, documentTypes],
+  )
+
   useEffect(() => {
-    if (!documentKeys.includes("OTHER")) {
+    if (!needsDocFreeText) {
       setDocumentOtherDetail("")
     }
-  }, [documentKeys])
+  }, [needsDocFreeText])
 
   const ymd = permanenceDate ? toYmd(permanenceDate) : ""
   const birthYmd = birthDate ? toYmd(birthDate) : ""
@@ -154,6 +181,22 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
     const set = new Set(requestTypeIds)
     return demandTypes.filter((d) => set.has(d.id)).map((d) => d.label)
   }, [demandTypes, requestTypeIds])
+
+  const documentSummaryLine = useMemo(() => {
+    if (documentKeys.length === 0) {
+      return "—"
+    }
+    const detail = documentOtherDetail.trim()
+    return documentKeys
+      .map((code) => {
+        const opt = documentTypes.find((d) => d.code === code)
+        if (opt?.requiresOtherDetail && detail) {
+          return `${opt.label} (${detail})`
+        }
+        return opt?.label ?? code
+      })
+      .join(" · ")
+  }, [documentKeys, documentTypes, documentOtherDetail])
 
   const resetForm = useCallback(() => {
     setPermanenceDate(undefined)
@@ -205,7 +248,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
       }
     }
     if (step === 3) {
-      const p = beneficiaryPermanenceStep3Schema.safeParse({
+      const p = step3Schema.safeParse({
         documentKeys,
         documentOtherDetail:
           documentOtherDetail.trim() === "" ? undefined : documentOtherDetail,
@@ -272,6 +315,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
     requestTypeIds,
     requestDetail,
     step2Schema,
+    step3Schema,
     documentKeys,
     documentOtherDetail,
     requestStatus,
@@ -397,14 +441,17 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
       >
         <p className="font-medium">Aucun type de demande actif</p>
         <p className="mt-2 text-muted-foreground">
-          Ajoutez au moins un libellé dans la configuration des types pour pouvoir enregistrer une
+          Ajoutez au moins un type de demande actif dans les paramètres pour pouvoir enregistrer une
           fiche.
         </p>
         <Button
           asChild
-          className="mt-4 h-11 w-full max-w-sm bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10"
+          className={cn(
+            "mt-4 h-11 w-full max-w-sm sm:h-10",
+            beneficiarySuiviPrimaryButtonClassName,
+          )}
         >
-          <Link href="/administration/suivi-permanence/types-de-demande">Configurer les types</Link>
+          <Link href="/administration/demande-beneficiaire/configuration">Configurer les paramètres</Link>
         </Button>
       </div>
     )
@@ -430,7 +477,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
         <Button
           type="button"
           onClick={() => setDone(false)}
-          className="mt-2 h-11 w-full max-w-sm bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10"
+          className={cn("mt-2 h-11 w-full max-w-sm sm:h-10", beneficiarySuiviPrimaryButtonClassName)}
         >
           Nouvelle saisie
         </Button>
@@ -464,8 +511,8 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
                 type="button"
                 variant="outline"
                 className={cn(
-                  "h-auto min-h-11 w-full max-w-full justify-start border-sky-200/80 px-3 py-2.5 text-left text-sm font-normal shadow-sm transition-[color,box-shadow,background-color,border-color] hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-950 data-[state=open]:border-sky-500 data-[state=open]:bg-sky-50/80 sm:max-w-md sm:text-base dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100 dark:data-[state=open]:border-sky-400 dark:data-[state=open]:bg-sky-950/50",
-                  !permanenceDate && "text-muted-foreground",
+                  beneficiarySuiviDateTriggerClassName,
+                  !permanenceDate && beneficiarySuiviTriggerPlaceholderClassName,
                 )}
               >
                 <CalendarIcon className="mr-2 size-4 shrink-0" aria-hidden />
@@ -547,8 +594,16 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
       {step === 3 && (
         <div className="flex flex-col gap-6">
           <BeneficiarySuiviDocumentChecks
+            items={documentTypes}
             value={documentKeys}
-            onChange={setDocumentKeys}
+            onChange={(keys) => {
+              setDocumentKeys(keys)
+              setFieldErrors((prev) => {
+                const next = { ...prev }
+                delete next.documentKeys
+                return next
+              })
+            }}
             otherDetail={documentOtherDetail}
             onOtherDetailChange={(v) => {
               setDocumentOtherDetail(v)
@@ -559,6 +614,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
               })
             }}
             otherDetailError={fieldErrors.documentOtherDetail}
+            documentsError={fieldErrors.documentKeys}
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -724,8 +780,8 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
                   type="button"
                   variant="outline"
                   className={cn(
-                    "h-auto min-h-11 w-full max-w-full justify-start border-sky-200/80 px-3 py-2.5 text-left text-sm font-normal shadow-sm transition-[color,box-shadow,background-color,border-color] hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-950 data-[state=open]:border-sky-500 data-[state=open]:bg-sky-50/80 sm:max-w-md dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100 dark:data-[state=open]:border-sky-400 dark:data-[state=open]:bg-sky-950/50",
-                    !birthDate && "text-muted-foreground",
+                    beneficiarySuiviDateTriggerClassName,
+                    !birthDate && beneficiarySuiviTriggerPlaceholderClassName,
                   )}
                 >
                   <CalendarIcon className="mr-2 size-4 shrink-0" aria-hidden />
@@ -940,17 +996,7 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
             </p>
             <p className="break-words">
               <span className="text-muted-foreground">Documents : </span>
-              <span className="font-medium">
-                {documentKeys.length === 0
-                  ? "—"
-                  : documentKeys
-                      .map((k) =>
-                        k === "OTHER" && documentOtherDetail.trim()
-                          ? `Autre (${documentOtherDetail.trim()})`
-                          : BENEFICIARY_DOCUMENT_LABELS[k],
-                      )
-                      .join(" · ")}
-              </span>
+              <span className="font-medium">{documentSummaryLine}</span>
             </p>
             <p className="break-words">
               <span className="text-muted-foreground">Statut : </span>
@@ -1029,7 +1075,10 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
           variant="ghost"
           onClick={handleBack}
           disabled={step === 1 || pending}
-          className="h-11 w-full max-w-full gap-1 transition-colors hover:bg-sky-100/90 hover:text-sky-900 sm:h-10 sm:w-auto dark:hover:bg-sky-950/50 dark:hover:text-sky-100"
+          className={cn(
+            "h-11 w-full max-w-full gap-1 sm:h-10 sm:w-auto",
+            beneficiaryTrackingGhostNavClassName,
+          )}
         >
           <ChevronLeft className="size-4" aria-hidden />
           Retour
@@ -1039,7 +1088,10 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
             type="button"
             onClick={handleNext}
             disabled={pending}
-            className="h-11 w-full max-w-full gap-1 bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10 sm:w-auto"
+            className={cn(
+              "h-11 w-full max-w-full gap-1 sm:h-10 sm:w-auto",
+              beneficiarySuiviPrimaryButtonClassName,
+            )}
           >
             Suivant
             <ChevronRight className="size-4" aria-hidden />
@@ -1049,7 +1101,10 @@ export function BeneficiarySuiviWizard({ className, demandTypes }: BeneficiarySu
             type="button"
             onClick={handleSubmit}
             disabled={pending}
-            className="h-11 w-full max-w-full gap-2 bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10 sm:min-w-[140px] sm:w-auto"
+            className={cn(
+              "h-11 w-full max-w-full gap-2 sm:h-10 sm:min-w-[140px] sm:w-auto",
+              beneficiarySuiviPrimaryButtonClassName,
+            )}
           >
             {pending && <Loader2 className="size-4 animate-spin" aria-hidden />}
             Enregistrer
@@ -1076,8 +1131,10 @@ function StepIndicator({ current, labels }: { current: number; labels: readonly 
               <span
                 className={cn(
                   "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-                  done && "bg-sky-600 text-white",
-                  active && !done && "bg-sky-100 text-sky-800 ring-2 ring-sky-500 dark:bg-sky-950 dark:text-sky-100",
+                  done && "bg-sky-600 text-white shadow-sm shadow-sky-600/12",
+                  active &&
+                    !done &&
+                    "bg-sky-100 text-sky-900 ring-2 ring-sky-400/45 dark:bg-sky-900/55 dark:text-sky-50 dark:ring-sky-500/35",
                   !active && !done && "bg-muted text-muted-foreground",
                 )}
                 aria-current={active ? "step" : undefined}

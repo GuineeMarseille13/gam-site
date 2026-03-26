@@ -422,6 +422,7 @@ export const ModelName = {
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
   BeneficiaryDemandType: 'BeneficiaryDemandType',
+  BeneficiaryDocumentType: 'BeneficiaryDocumentType',
   Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
@@ -447,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3263,6 +3264,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BeneficiaryDocumentType: {
+      payload: Prisma.$BeneficiaryDocumentTypePayload<ExtArgs>
+      fields: Prisma.BeneficiaryDocumentTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BeneficiaryDocumentTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BeneficiaryDocumentTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        findFirst: {
+          args: Prisma.BeneficiaryDocumentTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BeneficiaryDocumentTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        findMany: {
+          args: Prisma.BeneficiaryDocumentTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>[]
+        }
+        create: {
+          args: Prisma.BeneficiaryDocumentTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        createMany: {
+          args: Prisma.BeneficiaryDocumentTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BeneficiaryDocumentTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>[]
+        }
+        delete: {
+          args: Prisma.BeneficiaryDocumentTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        update: {
+          args: Prisma.BeneficiaryDocumentTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.BeneficiaryDocumentTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BeneficiaryDocumentTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BeneficiaryDocumentTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.BeneficiaryDocumentTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDocumentTypePayload>
+        }
+        aggregate: {
+          args: Prisma.BeneficiaryDocumentTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBeneficiaryDocumentType>
+        }
+        groupBy: {
+          args: Prisma.BeneficiaryDocumentTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryDocumentTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BeneficiaryDocumentTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryDocumentTypeCountAggregateOutputType> | number
+        }
+      }
+    }
     Beneficiary: {
       payload: Prisma.$BeneficiaryPayload<ExtArgs>
       fields: Prisma.BeneficiaryFieldRefs
@@ -4592,6 +4667,20 @@ export const BeneficiaryDemandTypeScalarFieldEnum = {
 export type BeneficiaryDemandTypeScalarFieldEnum = (typeof BeneficiaryDemandTypeScalarFieldEnum)[keyof typeof BeneficiaryDemandTypeScalarFieldEnum]
 
 
+export const BeneficiaryDocumentTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  label: 'label',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  requiresOtherDetail: 'requiresOtherDetail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryDocumentTypeScalarFieldEnum = (typeof BeneficiaryDocumentTypeScalarFieldEnum)[keyof typeof BeneficiaryDocumentTypeScalarFieldEnum]
+
+
 export const BeneficiaryScalarFieldEnum = {
   id: 'id',
   permanenceDate: 'permanenceDate',
@@ -5112,6 +5201,7 @@ export type GlobalOmitConfig = {
   banner?: Prisma.BannerOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
   beneficiaryDemandType?: Prisma.BeneficiaryDemandTypeOmit
+  beneficiaryDocumentType?: Prisma.BeneficiaryDocumentTypeOmit
   beneficiary?: Prisma.BeneficiaryOmit
   permanenceAdminPresenceVolunteer?: Prisma.PermanenceAdminPresenceVolunteerOmit
   order?: Prisma.OrderOmit

@@ -5,10 +5,12 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
 import {
-  createBeneficiaryDemandTypeSchema,
-  deleteBeneficiaryDemandTypeSchema,
-  updateBeneficiaryDemandTypeSchema,
-} from "../_schemas/beneficiary-demand-type.schema"
+  createBeneficiaryDocumentTypeSchema,
+  deleteBeneficiaryDocumentTypeSchema,
+  updateBeneficiaryDocumentTypeSchema,
+} from "../_schemas/beneficiary-document-type.schema"
+import { countBeneficiariesWithDocumentCode } from "../_services/count-beneficiaries-with-document-code"
+import { generateBeneficiaryDocumentTypeCode } from "../_services/generate-beneficiary-document-type-code"
 
 const CONFIG_PATH = "/administration/demande-beneficiaire/configuration"
 
@@ -17,16 +19,18 @@ type ActionResult<T = void> =
   | { success: false; error: string; fieldErrors?: Record<string, string[]> }
 
 /**
- * Crée un type de demande (libellé, ordre, précision obligatoire).
+ * Crée un type de document (code technique dérivé du libellé).
  */
-export async function createBeneficiaryDemandTypeAction(raw: unknown): Promise<ActionResult<{ id: string }>> {
+export async function createBeneficiaryDocumentTypeAction(
+  raw: unknown,
+): Promise<ActionResult<{ id: string }>> {
   try {
     await requireAdministrationDashboard()
   } catch {
     return { success: false, error: "Session requise." }
   }
 
-  const parsed = createBeneficiaryDemandTypeSchema.safeParse(raw)
+  const parsed = createBeneficiaryDocumentTypeSchema.safeParse(raw)
   if (!parsed.success) {
     return {
       success: false,
@@ -35,19 +39,21 @@ export async function createBeneficiaryDemandTypeAction(raw: unknown): Promise<A
     }
   }
 
-  const { label, sortOrder, requiresDetail, isActive } = parsed.data
+  const { label, sortOrder, requiresOtherDetail, isActive } = parsed.data
 
-  const maxRow = await prisma.beneficiaryDemandType.aggregate({
+  const maxRow = await prisma.beneficiaryDocumentType.aggregate({
     _max: { sortOrder: true },
   })
   const nextOrder = (maxRow._max.sortOrder ?? -1) + 1
 
   try {
-    const created = await prisma.beneficiaryDemandType.create({
+    const code = await generateBeneficiaryDocumentTypeCode(label)
+    const created = await prisma.beneficiaryDocumentType.create({
       data: {
+        code,
         label,
         sortOrder: sortOrder ?? nextOrder,
-        requiresDetail: requiresDetail ?? false,
+        requiresOtherDetail: requiresOtherDetail ?? false,
         isActive: isActive ?? true,
       },
       select: { id: true },
@@ -57,22 +63,22 @@ export async function createBeneficiaryDemandTypeAction(raw: unknown): Promise<A
     revalidatePath("/administration/suivi-demande")
     return { success: true, data: { id: created.id } }
   } catch (err) {
-    console.error("[createBeneficiaryDemandTypeAction]", err)
+    console.error("[createBeneficiaryDocumentTypeAction]", err)
     return { success: false, error: "Création impossible." }
   }
 }
 
 /**
- * Met à jour un type de demande.
+ * Met à jour un type de document (le code technique ne change pas).
  */
-export async function updateBeneficiaryDemandTypeAction(raw: unknown): Promise<ActionResult> {
+export async function updateBeneficiaryDocumentTypeAction(raw: unknown): Promise<ActionResult> {
   try {
     await requireAdministrationDashboard()
   } catch {
     return { success: false, error: "Session requise." }
   }
 
-  const parsed = updateBeneficiaryDemandTypeSchema.safeParse(raw)
+  const parsed = updateBeneficiaryDocumentTypeSchema.safeParse(raw)
   if (!parsed.success) {
     return {
       success: false,
@@ -84,12 +90,12 @@ export async function updateBeneficiaryDemandTypeAction(raw: unknown): Promise<A
   const d = parsed.data
 
   try {
-    await prisma.beneficiaryDemandType.update({
+    await prisma.beneficiaryDocumentType.update({
       where: { id: d.id },
       data: {
         label: d.label,
         sortOrder: d.sortOrder,
-        requiresDetail: d.requiresDetail,
+        requiresOtherDetail: d.requiresOtherDetail,
         isActive: d.isActive,
       },
     })
@@ -98,44 +104,56 @@ export async function updateBeneficiaryDemandTypeAction(raw: unknown): Promise<A
     revalidatePath("/administration/suivi-demande")
     return { success: true }
   } catch (err) {
-    console.error("[updateBeneficiaryDemandTypeAction]", err)
+    console.error("[updateBeneficiaryDocumentTypeAction]", err)
     return { success: false, error: "Mise à jour impossible." }
   }
 }
 
 /**
- * Supprime un type seulement s’il n’est référencé par aucune fiche.
+ * Supprime un type sans fiche liée (le code `OTHER` est protégé).
  */
-export async function deleteBeneficiaryDemandTypeAction(raw: unknown): Promise<ActionResult> {
+export async function deleteBeneficiaryDocumentTypeAction(raw: unknown): Promise<ActionResult> {
   try {
     await requireAdministrationDashboard()
   } catch {
     return { success: false, error: "Session requise." }
   }
 
-  const parsed = deleteBeneficiaryDemandTypeSchema.safeParse(raw)
+  const parsed = deleteBeneficiaryDocumentTypeSchema.safeParse(raw)
   if (!parsed.success) {
     return { success: false, error: "Identifiant invalide." }
   }
 
-  const count = await prisma.beneficiary.count({
-    where: { demandTypes: { some: { id: parsed.data.id } } },
+  const row = await prisma.beneficiaryDocumentType.findUnique({
+    where: { id: parsed.data.id },
+    select: { code: true },
   })
+  if (!row) {
+    return { success: false, error: "Type introuvable." }
+  }
+  if (row.code === "OTHER") {
+    return {
+      success: false,
+      error: "Le type « Autre » ne peut pas être supprimé.",
+    }
+  }
+
+  const count = await countBeneficiariesWithDocumentCode(row.code)
   if (count > 0) {
     return {
       success: false,
-      error: `Ce type est utilisé par ${count} fiche(s). Désactivez-le plutôt que le supprimer.`,
+      error: `Ce document est coché sur ${count} fiche(s). Désactivez-le plutôt que le supprimer.`,
     }
   }
 
   try {
-    await prisma.beneficiaryDemandType.delete({ where: { id: parsed.data.id } })
+    await prisma.beneficiaryDocumentType.delete({ where: { id: parsed.data.id } })
     revalidatePath("/administration/demande-beneficiaire")
     revalidatePath(CONFIG_PATH)
     revalidatePath("/administration/suivi-demande")
     return { success: true }
   } catch (err) {
-    console.error("[deleteBeneficiaryDemandTypeAction]", err)
+    console.error("[deleteBeneficiaryDocumentTypeAction]", err)
     return { success: false, error: "Suppression impossible." }
   }
 }

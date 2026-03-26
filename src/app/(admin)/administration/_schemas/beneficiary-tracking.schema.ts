@@ -1,12 +1,9 @@
 import { z } from "zod"
 
 import {
-  BENEFICIARY_DOCUMENT_KEYS,
-  BENEFICIARY_DOCUMENT_LABELS,
   PAYMENT_RESPONSIBLE_LABELS,
   REQUEST_STATUS_LABELS,
   REQUEST_STATUS_VALUES,
-  type BeneficiaryDocumentKey,
   type PaymentResponsibleValue,
   type RequestStatusValue,
 } from "./beneficiary-suivi-config"
@@ -20,10 +17,6 @@ export const beneficiaryTrackingParamsSchema = z
   .strict()
 
 export type BeneficiaryTrackingParams = z.infer<typeof beneficiaryTrackingParamsSchema>
-
-const documentKeyEnum = z.enum(
-  BENEFICIARY_DOCUMENT_KEYS as unknown as [string, ...string[]],
-)
 
 /**
  * Mise à jour du statut de demande (suivi).
@@ -90,7 +83,8 @@ export const beneficiaryTrackingDetailSchema = z
     hasGmailPassword: z.boolean(),
     ekadiLogin: z.string().nullable(),
     hasEkadiPassword: z.boolean(),
-    documentKeys: z.array(documentKeyEnum),
+    documentKeys: z.array(z.string()),
+    documentLabelLines: z.array(z.string()),
     documentOtherDetail: z.string().nullable(),
     requestStatus: z
       .enum(REQUEST_STATUS_VALUES as unknown as [RequestStatusValue, ...RequestStatusValue[]])
@@ -105,18 +99,6 @@ export const beneficiaryTrackingDetailSchema = z
   .strict()
 
 export type BeneficiaryTrackingDetail = z.infer<typeof beneficiaryTrackingDetailSchema>
-
-export function formatDocumentLabelsForDetail(
-  keys: readonly BeneficiaryDocumentKey[],
-  documentOtherDetail: string | null,
-): string[] {
-  return keys.map((k) => {
-    if (k === "OTHER" && documentOtherDetail?.trim()) {
-      return `Autre (${documentOtherDetail.trim()})`
-    }
-    return BENEFICIARY_DOCUMENT_LABELS[k]
-  })
-}
 
 export function paymentLabel(value: string | null): string {
   if (!value) return "—"

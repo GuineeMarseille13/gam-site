@@ -89,6 +89,7 @@ export const ModelName = {
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
   BeneficiaryDemandType: 'BeneficiaryDemandType',
+  BeneficiaryDocumentType: 'BeneficiaryDocumentType',
   Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
@@ -665,6 +666,20 @@ export const BeneficiaryDemandTypeScalarFieldEnum = {
 } as const
 
 export type BeneficiaryDemandTypeScalarFieldEnum = (typeof BeneficiaryDemandTypeScalarFieldEnum)[keyof typeof BeneficiaryDemandTypeScalarFieldEnum]
+
+
+export const BeneficiaryDocumentTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  label: 'label',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  requiresOtherDetail: 'requiresOtherDetail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryDocumentTypeScalarFieldEnum = (typeof BeneficiaryDocumentTypeScalarFieldEnum)[keyof typeof BeneficiaryDocumentTypeScalarFieldEnum]
 
 
 export const BeneficiaryScalarFieldEnum = {

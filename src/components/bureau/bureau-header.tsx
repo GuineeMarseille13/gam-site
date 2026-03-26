@@ -31,6 +31,8 @@ const segmentLabels: Record<string, string> = {
   parametres: "Paramètres",
   aide: "Aide",
   profil: "Profil",
+  "demande-beneficiaire": "Demande bénéficiaire",
+  configuration: "Paramètres demande",
   "nouveau-compte": "Nouvel accès",
   acces: "Accès",
   nouveau: "Nouveau",

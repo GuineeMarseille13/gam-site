@@ -24,19 +24,31 @@ export async function submitBeneficiaryPermanence(
     return { success: false, error: "Session requise." }
   }
 
-  const activeTypes = await prisma.beneficiaryDemandType.findMany({
-    where: { isActive: true },
-    select: { id: true, requiresDetail: true },
-  })
+  const [activeTypes, activeDocTypes] = await Promise.all([
+    prisma.beneficiaryDemandType.findMany({
+      where: { isActive: true },
+      select: { id: true, requiresDetail: true },
+    }),
+    prisma.beneficiaryDocumentType.findMany({
+      where: { isActive: true },
+      select: { code: true, requiresOtherDetail: true },
+    }),
+  ])
 
   if (activeTypes.length === 0) {
     return {
       success: false,
-      error: "Aucun type de demande actif. Configurez-en au moins un dans Types de demande.",
+      error:
+        "Aucun type de demande actif. Configurez-en au moins un dans Paramètres de la demande bénéficiaire.",
     }
   }
 
-  const schema = buildSubmitBeneficiaryPermanenceSchema(activeTypes)
+  const docValidation = activeDocTypes.map((row) => ({
+    code: row.code,
+    requiresOtherDetail: row.requiresOtherDetail,
+  }))
+
+  const schema = buildSubmitBeneficiaryPermanenceSchema(activeTypes, docValidation)
   const parsed = schema.safeParse(raw)
   if (!parsed.success) {
     return {
@@ -58,14 +70,25 @@ export async function submitBeneficiaryPermanence(
     return { success: false, error: "Un ou plusieurs types de demande sont invalides ou désactivés." }
   }
 
+  const docCodes = new Set(activeDocTypes.map((t) => t.code))
+  if (d.documentKeys.some((k) => !docCodes.has(k))) {
+    return {
+      success: false,
+      error: "Un ou plusieurs documents fournis sont invalides ou désactivés. Rafraîchissez la page.",
+    }
+  }
+
   const detailTrimmed = d.requestDetail?.trim()
   const requestDetail =
     detailTrimmed && detailTrimmed.length > 0 ? detailTrimmed : null
 
   const documentsProvided = d.documentKeys as unknown as Prisma.InputJsonValue
-  const documentOtherDetail = d.documentKeys.includes("OTHER")
-    ? (d.documentOtherDetail?.trim() ?? null)
-    : null
+
+  const needsDocOtherDetail = d.documentKeys.some((code) =>
+    activeDocTypes.some((t) => t.code === code && t.requiresOtherDetail),
+  )
+  const documentOtherDetail = needsDocOtherDetail ? (d.documentOtherDetail?.trim() ?? null) : null
+
   const paymentOtherDetail =
     d.paymentResponsible === "OTHER" ? (d.paymentOtherDetail?.trim() ?? null) : null
 
@@ -100,7 +123,8 @@ export async function submitBeneficiaryPermanence(
       },
     })
     revalidatePath("/administration")
-    revalidatePath("/administration/suivi-permanence")
+    revalidatePath("/administration/demande-beneficiaire")
+    revalidatePath("/administration/suivi-demande")
     return { success: true }
   } catch (err) {
     console.error("[submitBeneficiaryPermanence]", err)

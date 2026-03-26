@@ -52,7 +52,7 @@ export async function updateBeneficiaryRequestStatus(
     })
     revalidatePath("/administration/suivi-demande")
     revalidatePath(`/administration/suivi-demande/${id}`)
-    revalidatePath("/administration/suivi-permanence")
+    revalidatePath("/administration/demande-beneficiaire")
     revalidatePath("/administration")
     return { success: true }
   } catch (err) {

@@ -689,6 +689,22 @@ model BeneficiaryDemandType {
   @@map("beneficiary_demand_types")
 }
 
+/// Type de document fourni configurable (code stable dans le JSON de la fiche).
+model BeneficiaryDocumentType {
+  id                  String   @id @default(cuid())
+  /// Clé stockée dans `beneficiaries.documentsProvided` (tableau JSON).
+  code                String   @unique
+  label               String
+  sortOrder           Int      @default(0)
+  isActive            Boolean  @default(true)
+  /// Si coché : précision texte obligatoire pour ce document (ex. « Autre »).
+  requiresOtherDetail Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("beneficiary_document_types")
+}
+
 /// Fiche Demande bénéficiaire / permanence administrative (ex-Google Form suivi).
 model Beneficiary {
   id               String   @id @default(cuid())
@@ -712,7 +728,7 @@ model Beneficiary {
   gmailPassword          String?
   ekadiLogin             String?
   ekadiPassword          String?
-  /// Liste de clés (voir beneficiary-suivi-config).
+  /// Tableau JSON de codes `BeneficiaryDocumentType.code`.
   documentsProvided      Json?
   /// Précision si « Autre » document est coché.
   documentOtherDetail    String?

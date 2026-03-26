@@ -1,10 +1,6 @@
 import { z } from "zod"
 
-import {
-  BENEFICIARY_DOCUMENT_KEYS,
-  PAYMENT_RESPONSIBLE_VALUES,
-  REQUEST_STATUS_VALUES,
-} from "./beneficiary-suivi-config"
+import { PAYMENT_RESPONSIBLE_VALUES, REQUEST_STATUS_VALUES } from "./beneficiary-suivi-config"
 
 const dateYmd = z
   .string()
@@ -35,10 +31,6 @@ const requiredPhone = z
       .regex(/^[\d\s+()./-]+$/, "Caractères invalides pour un téléphone."),
   )
 
-const docKeySchema = z.enum(
-  BENEFICIARY_DOCUMENT_KEYS as unknown as [string, ...string[]],
-)
-
 const paymentEnum = z.enum(
   PAYMENT_RESPONSIBLE_VALUES as unknown as [string, ...string[]],
 )
@@ -52,63 +44,88 @@ export type DemandTypeOptionForValidation = {
   readonly requiresDetail: boolean
 }
 
+export type DocumentTypeOptionForValidation = {
+  readonly code: string
+  readonly requiresOtherDetail: boolean
+}
+
 function uniqueStrings(ids: string[]): string[] {
   return [...new Set(ids)]
 }
 
-/**
- * Étape 3 — dossier : documents, statut, commentaire, responsable, paiement.
- */
-export const beneficiaryPermanenceStep3Schema = z
-  .object({
-    documentKeys: z.array(docKeySchema),
-    documentOtherDetail: optionalTrimmed.pipe(
-      z.union([z.undefined(), z.string().min(1).max(500)]).optional(),
-    ),
-    requestStatus: requestStatusEnum,
-    statusComment: z
-      .string()
-      .max(4000)
-      .optional()
-      .transform((s) => {
-        const t = s?.trim()
-        return t === "" || t === undefined ? undefined : t
-      }),
-    assignedResponsibleName: z
-      .string()
-      .min(2, "Indiquez le responsable en charge.")
-      .max(120)
-      .transform((s) => s.trim()),
-    paymentResponsible: paymentEnum,
-    paymentOtherDetail: optionalTrimmed.pipe(
-      z.union([z.undefined(), z.string().min(1).max(200)]).optional(),
-    ),
-  })
-  .strict()
-  .superRefine((data, ctx) => {
-    if (data.documentKeys.includes("OTHER")) {
-      const t = data.documentOtherDetail?.trim()
-      if (!t || t.length < 2) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Précisez le document « Autre ».",
-          path: ["documentOtherDetail"],
-        })
-      }
-    }
-    if (data.paymentResponsible === "OTHER") {
-      const t = data.paymentOtherDetail?.trim()
-      if (!t || t.length < 2) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Précisez le paiement (autre).",
-          path: ["paymentOtherDetail"],
-        })
-      }
-    }
-  })
+function documentKeySchemaForCodes(codes: readonly string[]) {
+  if (codes.length === 0) {
+    return z.never()
+  }
+  return z.enum([codes[0]!, ...codes.slice(1)] as [string, ...string[]])
+}
 
-export type BeneficiaryPermanenceStep3Input = z.infer<typeof beneficiaryPermanenceStep3Schema>
+/**
+ * Étape 3 — dossier : documents, statut, commentaire, responsable, paiement (codes documents dynamiques).
+ */
+export function buildBeneficiaryPermanenceStep3Schema(
+  documentTypes: readonly DocumentTypeOptionForValidation[],
+) {
+  const codes = documentTypes.map((d) => d.code)
+  const detailCodes = new Set(
+    documentTypes.filter((d) => d.requiresOtherDetail).map((d) => d.code),
+  )
+  const docKeySchema = documentKeySchemaForCodes(codes)
+
+  return z
+    .object({
+      documentKeys: z.array(docKeySchema),
+      documentOtherDetail: optionalTrimmed.pipe(
+        z.union([z.undefined(), z.string().min(1).max(500)]).optional(),
+      ),
+      requestStatus: requestStatusEnum,
+      statusComment: z
+        .string()
+        .max(4000)
+        .optional()
+        .transform((s) => {
+          const t = s?.trim()
+          return t === "" || t === undefined ? undefined : t
+        }),
+      assignedResponsibleName: z
+        .string()
+        .min(2, "Indiquez le responsable en charge.")
+        .max(120)
+        .transform((s) => s.trim()),
+      paymentResponsible: paymentEnum,
+      paymentOtherDetail: optionalTrimmed.pipe(
+        z.union([z.undefined(), z.string().min(1).max(200)]).optional(),
+      ),
+    })
+    .strict()
+    .superRefine((data, ctx) => {
+      const needsDocDetail = data.documentKeys.some((k) => detailCodes.has(k))
+      if (needsDocDetail) {
+        const t = data.documentOtherDetail?.trim()
+        if (!t || t.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Précisez le document (champ obligatoire).",
+            path: ["documentOtherDetail"],
+          })
+        }
+      }
+      if (data.paymentResponsible === "OTHER") {
+        const t = data.paymentOtherDetail?.trim()
+        if (!t || t.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Précisez le paiement (autre).",
+            path: ["paymentOtherDetail"],
+          })
+        }
+      }
+    })
+}
+
+export type BeneficiaryPermanenceStep3Input = z.infer<
+  ReturnType<typeof buildBeneficiaryPermanenceStep3Schema>
+>
 
 /**
  * Étape 4 — identité, naissance, contact, comptes (données sensibles côté serveur uniquement).
@@ -199,13 +216,14 @@ export type BeneficiaryPermanenceStep4Input = z.infer<typeof beneficiaryPermanen
  */
 export function buildSubmitBeneficiaryPermanenceSchema(
   demandTypes: readonly DemandTypeOptionForValidation[],
+  documentTypes: readonly DocumentTypeOptionForValidation[],
 ) {
   const validIds = new Set(demandTypes.map((d) => d.id))
   const detailRequired = new Set(
     demandTypes.filter((d) => d.requiresDetail).map((d) => d.id),
   )
 
-  return beneficiaryPermanenceStep3Schema
+  return buildBeneficiaryPermanenceStep3Schema(documentTypes)
     .merge(beneficiaryPermanenceStep4Schema)
     .extend({
       permanenceDate: dateYmd,

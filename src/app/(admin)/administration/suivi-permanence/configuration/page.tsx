@@ -1,8 +1,8 @@
 import { permanentRedirect } from "next/navigation"
 
 /**
- * Ancienne URL : redirection permanente vers la page de paramètres unifiée.
+ * Ancienne URL : redirection vers la route renommée.
  */
-export default function TypesDeDemandeLegacyRedirect() {
+export default function SuiviPermanenceConfigurationLegacyRedirect() {
   permanentRedirect("/administration/demande-beneficiaire/configuration")
 }

@@ -208,8 +208,13 @@ export type ContactSubmission = Prisma.ContactSubmissionModel
  */
 export type BeneficiaryDemandType = Prisma.BeneficiaryDemandTypeModel
 /**
+ * Model BeneficiaryDocumentType
+ * Type de document fourni configurable (code stable dans le JSON de la fiche).
+ */
+export type BeneficiaryDocumentType = Prisma.BeneficiaryDocumentTypeModel
+/**
  * Model Beneficiary
- * Fiche demandeur / suivi permanence administrative (ex-Google Form suivi).
+ * Fiche Demande bénéficiaire / permanence administrative (ex-Google Form suivi).
  */
 export type Beneficiary = Prisma.BeneficiaryModel
 /**

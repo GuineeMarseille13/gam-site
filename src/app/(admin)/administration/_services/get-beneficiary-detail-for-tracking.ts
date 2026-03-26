@@ -4,22 +4,13 @@ import {
   beneficiaryTrackingDetailSchema,
   type BeneficiaryTrackingDetail,
 } from "../_schemas/beneficiary-tracking.schema"
-import {
-  BENEFICIARY_DOCUMENT_KEYS,
-  REQUEST_STATUS_VALUES,
-  type BeneficiaryDocumentKey,
-} from "../_schemas/beneficiary-suivi-config"
+import { REQUEST_STATUS_VALUES } from "../_schemas/beneficiary-suivi-config"
 
-function parseDocumentKeys(json: unknown): BeneficiaryDocumentKey[] {
-  const parsed = Array.isArray(json) ? json : []
-  const out: BeneficiaryDocumentKey[] = []
-  for (const item of parsed) {
-    if (typeof item !== "string") continue
-    if (BENEFICIARY_DOCUMENT_KEYS.includes(item as BeneficiaryDocumentKey)) {
-      out.push(item as BeneficiaryDocumentKey)
-    }
+function parseDocumentKeys(json: unknown): string[] {
+  if (!Array.isArray(json)) {
+    return []
   }
-  return out
+  return json.filter((x): x is string => typeof x === "string")
 }
 
 function normalizeRequestStatus(value: string | null): BeneficiaryTrackingDetail["requestStatus"] {
@@ -30,6 +21,24 @@ function normalizeRequestStatus(value: string | null): BeneficiaryTrackingDetail
   return null
 }
 
+function buildDocumentLabelLines(params: {
+  readonly documentKeys: string[]
+  readonly documentOtherDetail: string | null
+  readonly typeByCode: ReadonlyMap<
+    string,
+    { readonly label: string; readonly requiresOtherDetail: boolean }
+  >
+}): string[] {
+  const detail = params.documentOtherDetail?.trim()
+  return params.documentKeys.map((code) => {
+    const t = params.typeByCode.get(code)
+    if (t?.requiresOtherDetail && detail) {
+      return `${t.label} (${detail})`
+    }
+    return t?.label ?? code
+  })
+}
+
 /**
  * Détail d’une fiche pour Suivi demande (administration).
  */
@@ -37,6 +46,16 @@ export async function getBeneficiaryDetailForTracking(
   id: string,
 ): Promise<BeneficiaryTrackingDetail | null> {
   await requireAdministrationDashboard()
+
+  const docTypes = await prisma.beneficiaryDocumentType.findMany({
+    select: { code: true, label: true, requiresOtherDetail: true },
+  })
+  const typeByCode = new Map(
+    docTypes.map((t) => [
+      t.code,
+      { label: t.label, requiresOtherDetail: t.requiresOtherDetail },
+    ]),
+  )
 
   const r = await prisma.beneficiary.findUnique({
     where: { id },
@@ -51,6 +70,11 @@ export async function getBeneficiaryDetailForTracking(
   if (!r) return null
 
   const documentKeys = parseDocumentKeys(r.documentsProvided)
+  const documentLabelLines = buildDocumentLabelLines({
+    documentKeys,
+    documentOtherDetail: r.documentOtherDetail,
+    typeByCode,
+  })
 
   return beneficiaryTrackingDetailSchema.parse({
     id: r.id,
@@ -72,6 +96,7 @@ export async function getBeneficiaryDetailForTracking(
     ekadiLogin: r.ekadiLogin,
     hasEkadiPassword: Boolean(r.ekadiPassword && r.ekadiPassword.length > 0),
     documentKeys,
+    documentLabelLines,
     documentOtherDetail: r.documentOtherDetail,
     requestStatus: normalizeRequestStatus(r.requestStatus),
     statusComment: r.statusComment,

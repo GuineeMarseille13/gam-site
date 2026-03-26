@@ -35,7 +35,7 @@ export default async function SuiviDemandePage() {
           size="sm"
           className={cn(beneficiaryTrackingOutlineButtonClassName, "h-10 w-full shrink-0 sm:w-auto")}
         >
-          <Link href="/administration/suivi-permanence">
+          <Link href="/administration/demande-beneficiaire">
             <IconArrowLeft className="size-4" aria-hidden />
             Nouvelle fiche
           </Link>

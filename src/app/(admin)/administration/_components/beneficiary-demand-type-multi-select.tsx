@@ -4,6 +4,13 @@ import { useCallback, useId, useMemo, useState } from "react"
 import { ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import {
+  beneficiarySuiviCheckboxClassName,
+  beneficiarySuiviMultiSelectTriggerClassName,
+  beneficiarySuiviPopoverListItemClassName,
+  beneficiarySuiviPopoverListItemSelectedClassName,
+  beneficiarySuiviTriggerPlaceholderClassName,
+} from "./beneficiary-suivi-form-classes"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -79,12 +86,16 @@ export function BeneficiaryDemandTypeMultiSelect({
             aria-invalid={error ? true : undefined}
             aria-expanded={open}
             className={cn(
-              "h-auto min-h-11 w-full max-w-full justify-between gap-2 border-sky-200/80 bg-background px-3 py-2.5 text-left text-sm font-normal shadow-sm transition-[color,box-shadow,background-color,border-color] hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-950 data-[state=open]:border-sky-500 data-[state=open]:bg-sky-50/80 dark:border-sky-800/60 dark:bg-background dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100 dark:data-[state=open]:border-sky-400 dark:data-[state=open]:bg-sky-950/50 sm:max-w-xl",
+              beneficiarySuiviMultiSelectTriggerClassName,
+              orderedSelected.length === 0 && beneficiarySuiviTriggerPlaceholderClassName,
               error && "border-destructive",
             )}
           >
             <span className="line-clamp-2 min-w-0 flex-1 break-words text-left">{triggerText}</span>
-            <ChevronDown className="size-4 shrink-0 opacity-60" aria-hidden />
+            <ChevronDown
+              className="size-4 shrink-0 text-sky-700 opacity-90 dark:text-sky-300"
+              aria-hidden
+            />
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -104,8 +115,9 @@ export function BeneficiaryDemandTypeMultiSelect({
                 <label
                   key={d.id}
                   className={cn(
-                    "flex cursor-pointer items-start gap-3 rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-sky-50 dark:hover:bg-sky-950/50",
-                    checked && "bg-sky-50/80 dark:bg-sky-950/40",
+                    "flex cursor-pointer items-start gap-3 px-2 py-2.5 text-sm",
+                    beneficiarySuiviPopoverListItemClassName,
+                    checked && beneficiarySuiviPopoverListItemSelectedClassName,
                   )}
                 >
                   <Checkbox
@@ -113,7 +125,7 @@ export function BeneficiaryDemandTypeMultiSelect({
                     onCheckedChange={() => {
                       toggle(d.id)
                     }}
-                    className="mt-0.5 border-sky-300 data-[state=checked]:border-sky-600 data-[state=checked]:bg-sky-600 dark:data-[state=checked]:bg-sky-500"
+                    className={beneficiarySuiviCheckboxClassName}
                     aria-label={d.label}
                   />
                   <span className="min-w-0 flex-1 leading-snug break-words">{d.label}</span>

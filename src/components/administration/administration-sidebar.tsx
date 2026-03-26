@@ -38,17 +38,18 @@ type NavItem = {
 }
 
 const BASE = "/administration"
-const SUIVI_PERMANENCE = `${BASE}/suivi-permanence`
+const DEMANDE_BENEFICIAIRE = `${BASE}/demande-beneficiaire`
+const DEMANDE_BENEFICIAIRE_CONFIG = `${DEMANDE_BENEFICIAIRE}/configuration`
 const SUIVI_DEMANDE = `${BASE}/suivi-demande`
 
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
-  { title: "Demande bénéficiaire", url: SUIVI_PERMANENCE, icon: IconClipboardList },
+  { title: "Demande bénéficiaire", url: DEMANDE_BENEFICIAIRE, icon: IconClipboardList },
   { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
   {
-    title: "Types de demande",
-    url: `${SUIVI_PERMANENCE}/types-de-demande`,
+    title: "Paramètres demande",
+    url: DEMANDE_BENEFICIAIRE_CONFIG,
     icon: IconList,
   },
   { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
@@ -71,11 +72,14 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
             const isActive =
               item.url === BASE
                 ? pathname === BASE
-                : item.url === SUIVI_PERMANENCE
-                  ? pathname === SUIVI_PERMANENCE
-                  : item.url === SUIVI_DEMANDE
-                    ? pathname === SUIVI_DEMANDE || pathname.startsWith(`${SUIVI_DEMANDE}/`)
-                    : pathname.startsWith(item.url)
+                : item.url === DEMANDE_BENEFICIAIRE
+                  ? pathname === DEMANDE_BENEFICIAIRE
+                  : item.url === DEMANDE_BENEFICIAIRE_CONFIG
+                    ? pathname === DEMANDE_BENEFICIAIRE_CONFIG ||
+                      pathname.startsWith(`${DEMANDE_BENEFICIAIRE_CONFIG}/`)
+                    : item.url === SUIVI_DEMANDE
+                      ? pathname === SUIVI_DEMANDE || pathname.startsWith(`${SUIVI_DEMANDE}/`)
+                      : pathname.startsWith(item.url)
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>

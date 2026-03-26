@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import { cn } from "@/lib/utils"
 import {
   IconHandStop,
   IconChartBar,
@@ -15,6 +16,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = { title: "Vue d'ensemble" }
+
+/** CTA plein des cartes — plus clair que `secondary` (#2563eb), survol progressif. */
+const administrationHomePrimaryCtaClassName = cn(
+  "bg-sky-500 text-white shadow-sm shadow-sky-500/18",
+  "transition-[background-color,box-shadow]",
+  "hover:bg-sky-600 hover:shadow-md hover:shadow-sky-600/22",
+  "active:bg-sky-700",
+  "dark:bg-sky-600 dark:shadow-sky-950/35",
+  "dark:hover:bg-sky-500 dark:hover:shadow-md dark:hover:shadow-sky-500/25",
+)
+
+/** CTA contour — bordure sky, hover lisible sans gris trop neutre. */
+const administrationHomeOutlineCtaClassName = cn(
+  "border-sky-200/90 bg-background text-sky-900 shadow-xs",
+  "transition-[color,box-shadow,background-color,border-color]",
+  "hover:border-sky-400/90 hover:bg-sky-50 hover:text-sky-950",
+  "active:bg-sky-100/80",
+  "dark:border-sky-700 dark:bg-card dark:text-sky-100",
+  "dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-50",
+)
 
 export default async function AdministrationHomePage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -33,10 +54,10 @@ export default async function AdministrationHomePage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border-border/60 border-sky-200/60 bg-sky-50/30 shadow-sm dark:border-sky-900/40 dark:bg-sky-950/20">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/15">
-              <IconUserPlus className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconUserPlus className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Accès administration</CardTitle>
             <CardDescription>
@@ -47,18 +68,19 @@ export default async function AdministrationHomePage() {
           <CardContent className="flex flex-col gap-2 sm:flex-row">
             <Button
               asChild
-              className="w-full gap-2 bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 active:bg-sky-800 sm:flex-1"
+              variant="secondary"
+              className={cn("w-full gap-2 sm:flex-1", administrationHomePrimaryCtaClassName)}
             >
               <Link href="/administration/acces">
                 Gérer les accès
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
             {isAdmin && (
               <Button
                 asChild
                 variant="outline"
-                className="w-full border-sky-300/60 text-sky-900 transition-colors hover:border-sky-500 hover:bg-sky-50 hover:text-sky-950 sm:flex-1 dark:border-sky-800 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/50 dark:hover:text-sky-50"
+                className={cn("w-full sm:flex-1", administrationHomeOutlineCtaClassName)}
               >
                 <Link href="/administration/nouveau-compte">Nouveau compte</Link>
               </Button>
@@ -66,10 +88,10 @@ export default async function AdministrationHomePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 border-sky-200/40 bg-sky-50/20 shadow-sm dark:border-sky-900/35 dark:bg-sky-950/15">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/15">
-              <IconCalendarCheck className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconCalendarCheck className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Permanence administrative</CardTitle>
             <CardDescription>
@@ -81,20 +103,20 @@ export default async function AdministrationHomePage() {
             <Button
               asChild
               variant="secondary"
-              className="w-full gap-2 text-sky-900 transition-colors hover:bg-sky-200/70 hover:text-sky-950 dark:text-sky-100 dark:hover:bg-sky-900/55 dark:hover:text-sky-50"
+              className={cn("w-full gap-2", administrationHomePrimaryCtaClassName)}
             >
               <Link href="/administration/permanence-administrative">
                 Enregistrer une présence
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 border-sky-200/40 bg-sky-50/20 shadow-sm dark:border-sky-900/35 dark:bg-sky-950/15">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/15">
-              <IconClipboardList className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconClipboardList className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Demande bénéficiaire</CardTitle>
             <CardDescription>
@@ -106,20 +128,20 @@ export default async function AdministrationHomePage() {
             <Button
               asChild
               variant="secondary"
-              className="w-full gap-2 text-sky-900 transition-colors hover:bg-sky-200/70 hover:text-sky-950 dark:text-sky-100 dark:hover:bg-sky-900/55 dark:hover:text-sky-50"
+              className={cn("w-full gap-2", administrationHomePrimaryCtaClassName)}
             >
-              <Link href="/administration/suivi-permanence">
+              <Link href="/administration/demande-beneficiaire">
                 Nouvelle fiche
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">
-              <IconHandStop className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconHandStop className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Bénévoles</CardTitle>
             <CardDescription>
@@ -130,20 +152,20 @@ export default async function AdministrationHomePage() {
             <Button
               asChild
               variant="secondary"
-              className="w-full gap-2 text-sky-900 transition-colors hover:bg-sky-200/70 hover:text-sky-950 dark:text-sky-100 dark:hover:bg-sky-900/55 dark:hover:text-sky-50"
+              className={cn("w-full gap-2", administrationHomePrimaryCtaClassName)}
             >
               <Link href="/administration/benevoles">
                 Ouvrir la liste
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">
-              <IconChartBar className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconChartBar className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Statistiques</CardTitle>
             <CardDescription>
@@ -154,20 +176,20 @@ export default async function AdministrationHomePage() {
             <Button
               asChild
               variant="outline"
-              className="w-full gap-2 border-sky-200/80 text-sky-900 transition-colors hover:border-sky-500 hover:bg-sky-50 hover:text-sky-950 dark:border-sky-800 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/50 dark:hover:text-sky-50"
+              className={cn("w-full gap-2", administrationHomeOutlineCtaClassName)}
             >
               <Link href="/administration/statistiques">
                 Voir la page
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm sm:col-span-2 lg:col-span-1">
+        <Card className="border-border/60 bg-card shadow-sm sm:col-span-2 lg:col-span-1">
           <CardHeader className="pb-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">
-              <IconUserCircle className="size-5 text-sky-600" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/12 text-sky-600 dark:bg-sky-400/15 dark:text-sky-400">
+              <IconUserCircle className="size-5" aria-hidden />
             </div>
             <CardTitle className="text-lg">Profil</CardTitle>
             <CardDescription>
@@ -178,11 +200,11 @@ export default async function AdministrationHomePage() {
             <Button
               asChild
               variant="outline"
-              className="w-full gap-2 border-sky-200/80 text-sky-900 transition-colors hover:border-sky-500 hover:bg-sky-50 hover:text-sky-950 dark:border-sky-800 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/50 dark:hover:text-sky-50"
+              className={cn("w-full gap-2", administrationHomeOutlineCtaClassName)}
             >
               <Link href="/administration/profil">
                 Mon profil
-                <IconArrowRight className="size-4" />
+                <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>
           </CardContent>
