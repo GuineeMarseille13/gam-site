@@ -25,6 +25,8 @@ interface AvatarUploadProps {
   hideSideText?: boolean
   /** Sous-label optionnel pour préciser la section concernée (ex: "Section 'Nos bénévoles'") */
   visibilitySubLabel?: string
+  /** Aligné sur le thème Administration (sky) pour switch + cohérence visuelle */
+  administrationChrome?: boolean
 }
 
 /**
@@ -42,6 +44,7 @@ export function AvatarUpload({
   hideSideText = false,
   dragActiveClassName = "ring-violet-500 ring-offset-2 scale-105",
   visibilitySubLabel,
+  administrationChrome = false,
 }: AvatarUploadProps) {
   const [preview, setPreview]         = useState<string | null>(defaultImageUrl ?? null)
   const [showOnSite, setShowOnSite]   = useState(defaultShowOnSite)
@@ -173,6 +176,7 @@ export function AvatarUpload({
               showOnSite={showOnSite}
               onCheckedChange={setShowOnSite}
               visibilitySubLabel={visibilitySubLabel}
+              administrationChrome={administrationChrome}
             />
           </Suspense>
         )}

@@ -39,6 +39,8 @@ import {
   IconPhone,
   IconTrash,
 } from "@tabler/icons-react"
+import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
+import { cn } from "@/lib/utils"
 import { deleteBenevole } from "../_actions/actions"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -63,10 +65,14 @@ interface Person {
 
 type DashboardBase = "/bureau" | "/administration"
 
+type BenevoleDashboardChrome = "bureau" | "administration"
+
 interface BenevoleRowActionsProps {
   volunteerId: string
-  person:      Person | null
-  basePath?:   DashboardBase
+  person: Person | null
+  basePath?: DashboardBase
+  /** Palette visuelle : alignée sur le shell Bureau (ambre) ou Administration (sky). */
+  dashboard?: BenevoleDashboardChrome
 }
 
 // ── Composant ──────────────────────────────────────────────────────────────────
@@ -75,7 +81,9 @@ export function BenevoleRowActions({
   volunteerId,
   person,
   basePath = "/bureau",
+  dashboard = "bureau",
 }: BenevoleRowActionsProps) {
+  const isAdministration = dashboard === "administration"
   const [openSheet, setOpenSheet]   = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -102,16 +110,27 @@ export function BenevoleRowActions({
       {/* ── Boutons inline — lg+ ─────────────────────────────────────────── */}
       <div className="hidden lg:flex items-center justify-end gap-0.5">
         <Button
-          variant="ghost" size="sm"
+          variant="ghost"
+          size="sm"
           onClick={() => setOpenSheet(true)}
-          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+          className={cn(
+            "h-8 cursor-pointer gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground",
+            isAdministration &&
+              "hover:bg-sky-100/80 dark:hover:bg-sky-950/45",
+          )}
         >
           <IconEye className="size-3.5" />
           Détails
         </Button>
         <Button
-          variant="ghost" size="sm" asChild
-          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
+          variant="ghost"
+          size="sm"
+          asChild
+          className={cn(
+            "h-8 cursor-pointer gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground",
+            isAdministration &&
+              "hover:bg-sky-100/80 dark:hover:bg-sky-950/45",
+          )}
           disabled={isPending}
         >
           <Link href={editHref}>
@@ -185,8 +204,22 @@ export function BenevoleRowActions({
               {/* ── Hero ── */}
               <div className="relative flex flex-col items-center gap-4 overflow-hidden px-8 pb-8 pt-12">
                 {/* Fond décoratif */}
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-50 via-amber-50/40 to-background dark:from-amber-950/20 dark:via-amber-950/10 dark:to-background" />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 size-64 rounded-full bg-amber-100/60 blur-3xl dark:bg-amber-900/20" />
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-gradient-to-b to-background",
+                    isAdministration
+                      ? "from-sky-50/90 via-sky-50/35 dark:from-sky-950/30 dark:via-sky-950/12"
+                      : "from-amber-50 via-amber-50/40 dark:from-amber-950/20 dark:via-amber-950/10",
+                  )}
+                />
+                <div
+                  className={cn(
+                    "absolute top-0 left-1/2 size-64 -translate-x-1/2 rounded-full blur-3xl",
+                    isAdministration
+                      ? "bg-sky-200/50 dark:bg-sky-800/25"
+                      : "bg-amber-100/60 dark:bg-amber-900/20",
+                  )}
+                />
 
                 {/* Avatar */}
                 <div className="relative z-10">
@@ -197,7 +230,14 @@ export function BenevoleRowActions({
                     </AvatarFallback>
                   </Avatar>
                   <span
-                    className={`absolute bottom-2 right-2 size-4 rounded-full ring-2 ring-background shadow-sm ${person.showOnSite ? "bg-emerald-400" : "bg-muted-foreground/40"}`}
+                    className={cn(
+                      "absolute bottom-2 right-2 size-4 rounded-full ring-2 ring-background shadow-sm",
+                      person.showOnSite
+                        ? isAdministration
+                          ? "bg-sky-400"
+                          : "bg-emerald-400"
+                        : "bg-muted-foreground/40",
+                    )}
                     title={person.showOnSite ? "Visible sur le site" : "Masqué du site"}
                   />
                 </div>
@@ -212,11 +252,16 @@ export function BenevoleRowActions({
 
                 {/* Badge visibilité */}
                 <div className="relative z-10">
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
-                    person.showOnSite
-                      ? "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:ring-emerald-800/40"
-                      : "bg-muted text-muted-foreground ring-border"
-                  }`}>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset",
+                      person.showOnSite
+                        ? isAdministration
+                          ? "bg-sky-100 text-sky-900 ring-sky-200/80 dark:bg-sky-950/50 dark:text-sky-200 dark:ring-sky-700/50"
+                          : "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:ring-emerald-800/40"
+                        : "bg-muted text-muted-foreground ring-border",
+                    )}
+                  >
                     {person.showOnSite ? <IconEye className="size-3" /> : <IconEyeOff className="size-3" />}
                     {person.showOnSite ? "Visible sur le site" : "Masqué du site"}
                   </span>
@@ -283,7 +328,15 @@ export function BenevoleRowActions({
                 </div>
 
                 {/* CTA */}
-                <Button asChild className="w-full cursor-pointer gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm shadow-amber-500/20 h-11">
+                <Button
+                  asChild
+                  className={cn(
+                    "h-11 w-full cursor-pointer gap-2 rounded-xl font-semibold",
+                    isAdministration
+                      ? administrationPrimaryButtonClassName
+                      : "bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600",
+                  )}
+                >
                   <Link href={editHref}>
                     <IconEdit className="size-4" />
                     Modifier le profil

@@ -1,6 +1,10 @@
 import Link from "next/link"
+import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { IconPlus, IconArrowLeft } from "@tabler/icons-react"
+
+export type BureauDataPageDashboard = "bureau" | "administration"
 
 interface BureauDataPageProps {
   title: string
@@ -12,6 +16,8 @@ interface BureauDataPageProps {
   addLabel?: string
   /** Slot libre pour des actions custom dans l'en-tête */
   actions?: React.ReactNode
+  /** Palette du shell : Administration (sky) vs Bureau (ambre) */
+  dashboard?: BureauDataPageDashboard
   children: React.ReactNode
 }
 
@@ -22,6 +28,7 @@ export function BureauDataPage({
   addHref,
   addLabel = "Nouveau",
   actions,
+  dashboard = "bureau",
   children,
 }: BureauDataPageProps) {
   return (
@@ -48,7 +55,15 @@ export function BureauDataPage({
         <div className="flex shrink-0 items-center gap-2">
           {actions}
           {addHref && (
-            <Button asChild className="gap-2 rounded-xl px-5 py-2.5 text-base bg-amber-500 hover:bg-amber-600 text-white shadow-md hover:shadow-lg transition-shadow">
+            <Button
+              asChild
+              className={cn(
+                "gap-2 rounded-xl px-5 py-2.5 text-base",
+                dashboard === "administration"
+                  ? administrationPrimaryButtonClassName
+                  : "bg-amber-500 text-white shadow-md transition-shadow hover:bg-amber-600 hover:shadow-lg",
+              )}
+            >
               <Link href={addHref}>
                 <IconPlus className="size-4 sm:size-5" />
                 {addLabel}

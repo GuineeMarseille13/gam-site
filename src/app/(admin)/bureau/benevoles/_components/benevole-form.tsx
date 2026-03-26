@@ -1,6 +1,8 @@
 "use client"
 
 import Link from "next/link"
+import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
+import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -36,6 +38,7 @@ export function BenevoleForm({
   defaultValues,
 }: BenevoleFormProps) {
   const cancelHref = `${dashboardBase}/benevoles`
+  const isAdministration = dashboardBase === "/administration"
 
   return (
     <form action={action} className="space-y-6 max-w-xl">
@@ -46,7 +49,12 @@ export function BenevoleForm({
         withVisibilityToggle
         defaultImageUrl={defaultValues?.imageUrl}
         defaultShowOnSite={defaultValues?.showOnSite ?? true}
-        placeholderClass="from-violet-100 to-violet-200 text-violet-600"
+        administrationChrome={isAdministration}
+        placeholderClass={
+          isAdministration
+            ? "from-sky-100 to-sky-200 text-sky-700 dark:from-sky-900/55 dark:to-sky-800/40 dark:text-sky-200"
+            : "from-violet-100 to-violet-200 text-violet-600"
+        }
         visibilitySubLabel="Section « Nos bénévoles »"
       />
 
@@ -166,10 +174,21 @@ export function BenevoleForm({
         />
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-3">
-        <SubmitButton>{submitLabel}</SubmitButton>
-        <Button variant="ghost" asChild>
+      {/* Actions — même hauteur que les champs (h-10), largeur confortable */}
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <SubmitButton
+          className={cn(
+            "h-10 min-h-10 rounded-xl px-5 text-sm font-semibold sm:px-6",
+            isAdministration ? administrationPrimaryButtonClassName : null,
+          )}
+        >
+          {submitLabel}
+        </SubmitButton>
+        <Button
+          variant="ghost"
+          asChild
+          className="h-10 min-h-10 rounded-xl px-4 text-sm font-medium sm:px-5"
+        >
           <Link href={cancelHref}>Annuler</Link>
         </Button>
       </div>
