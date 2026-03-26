@@ -17,12 +17,11 @@ export default async function ModifierUtilisateurPage({
   const user   = await prisma.user.findUnique({ where: { id } })
   if (!user) notFound()
 
-  // Récupérer la Person liée pour firstName / lastName / phone / poste
-  const person = await prisma.person.findUnique({ where: { userId: id } })
-  const teamMember = person
-    ? await prisma.teamMember.findUnique({ where: { personId: person.id } })
-    : null
-
+  // Récupérer la Person liée (rôle GAM = Person.role)
+  const person = await prisma.person.findUnique({
+    where: { userId: id },
+    include: { role: true },
+  })
   // Fallback : décomposer user.name si aucune Person n'existe encore
   const nameParts = user.name.split(" ")
   const firstName = person?.firstName ?? (nameParts.slice(0, -1).join(" ") || user.name)
@@ -43,7 +42,7 @@ export default async function ModifierUtilisateurPage({
               lastName,
               email:       user.email,
               role:        user.role ?? "bureau",
-              poste:       teamMember?.poste ?? null,
+              associationRoleCode: person?.role?.code ?? "",
               phone:       person?.phone ?? null,
               description: person?.description ?? null,
               showOnSite:  person?.showOnSite ?? true,

@@ -17,7 +17,7 @@ const createPersonSchema = z.object({
   email: z.string().email('Invalid email').optional().nullable(),
   phone: z.string().min(1, 'Phone is required'),
   addressId: z.string().optional().nullable(),
-  roles: z.array(z.string()).default(['VOLUNTEER']),
+  roleCode: z.string().optional().nullable(),
 })
 
 // Schéma de validation pour la mise à jour
@@ -27,12 +27,20 @@ const handlers = createCrudHandler({
   modelName: 'Person',
   validateCreate: (data) => createPersonSchema.parse(data),
   validateUpdate: (data) => updatePersonSchema.parse(data),
-  beforeCreate: async (data) => {
-    // Vérifier l'unicité de l'email si fourni
-    if (data.email) {
-      // Cette vérification pourrait être faite dans un hook ou middleware
+  beforeCreate: async (data: z.infer<typeof createPersonSchema>) => {
+    const { roleCode, ...rest } = data
+    const code = roleCode ?? 'VOLUNTEER'
+    return {
+      ...rest,
+      role: { connect: { code } },
     }
-    return data
+  },
+  beforeUpdate: async (data: z.infer<typeof updatePersonSchema>) => {
+    const { roleCode, ...rest } = data
+    if (roleCode) {
+      return { ...rest, role: { connect: { code: roleCode } } }
+    }
+    return rest
   },
 })
 

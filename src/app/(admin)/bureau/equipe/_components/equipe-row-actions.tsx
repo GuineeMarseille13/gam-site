@@ -42,7 +42,6 @@ import {
   IconPhoto,
   IconTrash,
 } from "@tabler/icons-react"
-import { getPosteLabel } from "./postes"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -57,7 +56,7 @@ interface EquipeRowActionsProps {
   memberId:         string
   editHref:         string
   imageId:          string | null | undefined
-  poste:            string | null
+  associationRoleLabel: string | null
   role:             string | null
   description:      string | null
   order:            number
@@ -94,7 +93,7 @@ const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }>
 export function EquipeRowActions({
   editHref,
   imageId,
-  poste,
+  associationRoleLabel,
   role,
   description,
   order,
@@ -110,7 +109,7 @@ export function EquipeRowActions({
   const [isPending, startTransition] = useTransition()
 
   const fullName = person ? `${person.firstName} ${person.lastName}` : "—"
-  const posteLabel = getPosteLabel(poste)
+  const roleGamLabel = associationRoleLabel
   const roleStyle  = role ? ROLE_STYLES[role] : null
 
   function handleBan() {
@@ -274,8 +273,8 @@ export function EquipeRowActions({
               {/* Identité */}
               <div className="relative z-10 text-center space-y-1">
                 <p className="text-2xl font-bold tracking-tight text-foreground">{fullName}</p>
-                {posteLabel && (
-                  <p className="text-sm font-medium text-muted-foreground">{posteLabel}</p>
+                {roleGamLabel && (
+                  <p className="text-sm font-medium text-muted-foreground">{roleGamLabel}</p>
                 )}
               </div>
 

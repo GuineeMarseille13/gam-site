@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 import { Check, Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -18,10 +19,31 @@ const OPTIONS = [
   { value: "system" as const, label: "Système", Icon: Monitor },
 ]
 
+const toggleButtonVariants = cva(
+  "inline-flex shrink-0 items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "size-9",
+        dashboard:
+          "size-9 rounded-full border border-border/60 bg-muted/40 shadow-sm hover:bg-muted/60 dark:border-border/50 dark:bg-muted/30 dark:hover:bg-muted/45",
+      },
+    },
+    defaultVariants: {
+      variant: "dashboard",
+    },
+  },
+)
+
+export interface ThemeToggleProps extends VariantProps<typeof toggleButtonVariants> {
+  className?: string
+}
+
 /**
- * Sélecteur de thème (clair / sombre / système), sans flash SSR.
+ * Sélecteur de thème pour les espaces Bureau et Administration uniquement
+ * (hors de ces routes, le thème reste clair — voir `ThemeProvider`).
  */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({ className, variant }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -35,9 +57,9 @@ export function ThemeToggle({ className }: { className?: string }) {
         type="button"
         variant="ghost"
         size="icon"
-        className={cn("size-9 shrink-0", className)}
+        className={cn(toggleButtonVariants({ variant }), className)}
         disabled
-        aria-label="Thème, chargement…"
+        aria-label="Thème du tableau de bord, chargement…"
       >
         <Sun className="size-4 opacity-35" aria-hidden />
       </Button>
@@ -51,8 +73,8 @@ export function ThemeToggle({ className }: { className?: string }) {
           type="button"
           variant="ghost"
           size="icon"
-          className={cn("size-9 shrink-0", className)}
-          aria-label="Choisir le thème d’affichage"
+          className={cn(toggleButtonVariants({ variant }), className)}
+          aria-label="Choisir l’affichage clair ou sombre du tableau de bord"
         >
           <span className="relative flex size-4 items-center justify-center">
             <Sun
@@ -66,7 +88,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[10.5rem]">
+      <DropdownMenuContent align="end" className="min-w-[11rem]">
         {OPTIONS.map(({ value, label, Icon }) => (
           <DropdownMenuItem
             key={value}

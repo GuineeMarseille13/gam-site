@@ -2,9 +2,9 @@
 
 import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
-import { Role } from "@/lib/generated/prisma/client"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { getRoleIdByCode } from "@/lib/association-role-helpers"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
 
@@ -19,7 +19,7 @@ export async function listUsers() {
   return result.users ?? []
 }
 
-// ── Lister les comptes avec poste ─────────────────────────────────────────────
+// ── Lister les comptes avec rôle association (Person.role) ───────────────────
 
 export async function listComptes() {
   await requireBureau()
@@ -32,6 +32,7 @@ export async function listComptes() {
   const userIds = authUsers.map((u) => u.id)
   const persons = await prisma.person.findMany({
     where: { userId: { in: userIds } },
+    include: { role: true },
   })
   const personIds = persons.map((p) => p.id)
   const teamMembers = personIds.length > 0
@@ -45,7 +46,7 @@ export async function listComptes() {
       ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_80,h_80,c_fill,q_auto,f_auto/${tm.imageId}`
       : null
     const image = person?.image ?? imageFromTeamMember ?? u.image ?? null
-    return { ...u, poste: tm?.poste ?? null, image }
+    return { ...u, associationRoleLabel: person?.role?.labelFr ?? null, image }
   })
 }
 
@@ -62,14 +63,19 @@ export async function createUser(formData: FormData) {
   const email       = formData.get("email")     as string
   const password    = formData.get("password")  as string
   const role        = (formData.get("role") as string)?.trim()
-  const poste       = (formData.get("poste") as string | null)?.trim() || null
+  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
   const phone       = (formData.get("phone") as string | null)?.trim() || ""
   const description = (formData.get("description") as string | null)?.trim() || null
   const showOnSite  = formData.get("showOnSite") !== "false"
   const imageFile   = formData.get("imageFile") as File | null
 
-  if (!firstName || !lastName || !email || !password || !role || !poste) {
+  if (!firstName || !lastName || !email || !password || !role || !associationRoleCode) {
     return { error: "Tous les champs obligatoires doivent être remplis." }
+  }
+
+  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
+  if (!associationRoleId) {
+    return { error: "Rôle association invalide." }
   }
 
   // 1. Créer le compte User (Better Auth)
@@ -103,11 +109,12 @@ export async function createUser(formData: FormData) {
         image: imageUrl,
         description,
         showOnSite,
+        roleId: associationRoleId,
       },
     })
 
     await prisma.teamMember.create({
-      data: { personId: person.id, poste },
+      data: { personId: person.id },
     })
 
     revalidatePath("/bureau/membres")
@@ -132,14 +139,19 @@ export async function updateUser(userId: string, formData: FormData) {
   const firstName   = formData.get("firstName") as string
   const lastName    = formData.get("lastName")  as string
   const role        = (formData.get("role") as string)?.trim()
-  const poste       = (formData.get("poste") as string | null)?.trim() || null
+  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
   const phone       = (formData.get("phone") as string | null)?.trim() || ""
   const description = (formData.get("description") as string | null)?.trim() || null
   const showOnSite  = formData.get("showOnSite") !== "false"
   const imageFile   = formData.get("imageFile") as File | null
 
-  if (!userId || !firstName || !lastName || !role || !poste) {
+  if (!userId || !firstName || !lastName || !role || !associationRoleCode) {
     return { error: "Tous les champs obligatoires doivent être remplis." }
+  }
+
+  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
+  if (!associationRoleId) {
+    return { error: "Rôle association invalide." }
   }
 
   try {
@@ -172,6 +184,7 @@ export async function updateUser(userId: string, formData: FormData) {
           phone,
           description,
           showOnSite,
+          roleId: associationRoleId,
           ...(imageUrl !== undefined ? { image: imageUrl } : {}),
         },
       })
@@ -188,17 +201,17 @@ export async function updateUser(userId: string, formData: FormData) {
           description,
           showOnSite,
           image: imageUrl ?? null,
+          roleId: associationRoleId,
         },
       })
       personId = newPerson.id
     }
 
-    // 3. Mettre à jour le poste dans TeamMember (upsert car peut déjà exister)
-    await prisma.teamMember.upsert({
-      where: { personId },
-      update: { poste },
-      create: { personId, poste },
-    })
+    // 3. Ligne TeamMember si compte bureau (rôle métier = Person.role)
+    const existingTm = await prisma.teamMember.findUnique({ where: { personId } })
+    if (!existingTm) {
+      await prisma.teamMember.create({ data: { personId } })
+    }
 
     revalidatePath("/bureau/membres")
     revalidatePath("/bureau/equipe")
@@ -276,9 +289,12 @@ export async function listBenevoles() {
     .findMany({ select: { personId: true } })
     .then((tms) => tms.map((tm) => tm.personId))
 
+  const volunteerRoleId = await getRoleIdByCode(prisma, "VOLUNTEER")
+  if (!volunteerRoleId) return []
+
   return prisma.person.findMany({
     where: {
-      roles: { has: Role.VOLUNTEER },
+      roleId: volunteerRoleId,
       NOT: { id: { in: teamMemberPersonIds } },
     },
     orderBy: { createdAt: "desc" },
@@ -331,13 +347,18 @@ export async function createBenevole(formData: FormData) {
         })
       : null
 
+    const volunteerRoleId = await getRoleIdByCode(prisma, "VOLUNTEER")
+    if (!volunteerRoleId) {
+      return { error: "Configuration des rôles incomplète (VOLUNTEER manquant)." }
+    }
+
     await prisma.person.create({
       data: {
         firstName,
         lastName,
         email:      email || null,
         phone,
-        roles:      ["VOLUNTEER"],
+        roleId:     volunteerRoleId,
         addressId:  addressRecord?.id ?? null,
         image:      imageUrl,
         showOnSite,

@@ -33,7 +33,7 @@ interface EquipeFormProps {
     email?:       string | null
     phone?:       string
     role?:        string | null
-    poste?:       string | null
+    associationRoleCode?: string | null
     description?: string | null
     imageId?:     string | null
     order?:       number
@@ -52,7 +52,9 @@ export function EquipeForm({ mode, createAction, updateAction, changePasswordAct
 
   const [showOnSite, setShowOnSite]     = useState(defaultValues?.showOnSite ?? true)
   const [role, setRole]                 = useState(defaultValues?.role ?? "bureau")
-  const [poste, setPoste]               = useState(defaultValues?.poste ?? "")
+  const [associationRoleCode, setAssociationRoleCode] = useState(
+    defaultValues?.associationRoleCode ?? "",
+  )
   const [preview, setPreview]           = useState<string | null>(null)
   const [existingId, setExistingId]     = useState(defaultValues?.imageId ?? "")
   const [sizeError, setSizeError]       = useState<string | null>(null)
@@ -92,7 +94,7 @@ export function EquipeForm({ mode, createAction, updateAction, changePasswordAct
 
     const formData = new FormData(e.currentTarget)
     formData.set("role", role)
-    formData.set("poste", poste)
+    formData.set("associationRoleCode", associationRoleCode)
     const action = mode === "create" ? createAction : updateAction
 
     startTransition(async () => {
@@ -361,11 +363,11 @@ export function EquipeForm({ mode, createAction, updateAction, changePasswordAct
 
             <div className="space-y-1.5">
               <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Poste dans le bureau
+                Rôle dans le bureau <span className="text-destructive">*</span>
               </Label>
-              <Select value={poste} onValueChange={setPoste}>
+              <Select value={associationRoleCode} onValueChange={setAssociationRoleCode}>
                 <SelectTrigger className="h-10 rounded-xl">
-                  <SelectValue placeholder="Sélectionner un poste…" />
+                  <SelectValue placeholder="Sélectionner un rôle…" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
                   {POSTES.map((p) => (
@@ -379,15 +381,6 @@ export function EquipeForm({ mode, createAction, updateAction, changePasswordAct
                   ))}
                 </SelectContent>
               </Select>
-              {poste && (
-                <button
-                  type="button"
-                  onClick={() => setPoste("")}
-                  className="text-[11px] text-muted-foreground hover:text-destructive transition-colors"
-                >
-                  Retirer le poste
-                </button>
-              )}
             </div>
           </div>
 

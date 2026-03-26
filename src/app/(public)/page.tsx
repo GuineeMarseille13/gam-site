@@ -121,7 +121,9 @@ export default function Home() {
   const { data: partnersData = [], isLoading: isLoadingPartners } = usePartners();
   const { data: polesData = [], isLoading: isLoadingPoles } = usePoles();
   const { data: recentEvents = [], isLoading: isLoadingEvents } = useRecentEvents();
-  const { data: reviews = [], isLoading: isLoadingReviews } = useReviews();
+  const { data: reviews = [], isLoading: isLoadingReviews } = useReviews({
+    include: { role: true },
+  });
   const { data: statistics = [], isLoading: isLoadingStatistics } = useStatistics();
   const { data: volunteers = [], isLoading: isLoadingVolunteers } = useVolunteers();
   const { data: featuredProducts = [], isLoading: isLoadingProducts } = useFeaturedProducts();

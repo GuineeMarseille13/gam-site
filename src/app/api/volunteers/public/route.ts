@@ -10,8 +10,7 @@
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { Role } from '@/lib/generated/prisma/client'
-import { getPosteLabel } from '@/app/(admin)/bureau/equipe/_components/postes'
+import { getRoleIdByCode } from '@/lib/association-role-helpers'
 
 const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload'
 
@@ -28,7 +27,7 @@ export async function GET() {
     // ── 1. Membres de l'équipe bureau (showOnSite=true + imageId) ─────────────
     const teamMembers = await prisma.teamMember.findMany({
       where: { showOnSite: true, imageId: { not: null } },
-      select: { id: true, personId: true, imageId: true, poste: true },
+      select: { id: true, personId: true, imageId: true },
       orderBy: { order: 'asc' },
     })
 
@@ -36,7 +35,7 @@ export async function GET() {
 
     const teamPersons = await prisma.person.findMany({
       where: { id: { in: teamPersonIds } },
-      select: { id: true, firstName: true, lastName: true },
+      select: { id: true, firstName: true, lastName: true, role: { select: { labelFr: true } } },
     })
     const teamPersonsById = Object.fromEntries(teamPersons.map((p) => [p.id, p]))
 
@@ -48,7 +47,7 @@ export async function GET() {
           id: m.id,
           name: `${person.firstName} ${person.lastName}`,
           image: buildAvatarUrl(m.imageId!),
-          role: getPosteLabel(m.poste) || 'Membre du bureau',
+          role: person.role?.labelFr ?? 'Membre du bureau',
           initials: initials(person.firstName, person.lastName),
         }
       })
@@ -57,16 +56,20 @@ export async function GET() {
     // Exclure les personnes déjà présentes via TeamMember pour éviter les doublons
     const teamPersonIdSet = new Set(teamPersonIds)
 
-    const volunteerPersons = await prisma.person.findMany({
-      where: {
-        roles: { has: Role.VOLUNTEER },
-        showOnSite: true,
-        image: { not: null },
-        id: { notIn: [...teamPersonIdSet] },
-      },
-      select: { id: true, firstName: true, lastName: true, image: true },
-      orderBy: { createdAt: 'asc' },
-    })
+    const volunteerRoleId = await getRoleIdByCode(prisma, 'VOLUNTEER')
+
+    const volunteerPersons = volunteerRoleId
+      ? await prisma.person.findMany({
+          where: {
+            roleId: volunteerRoleId,
+            showOnSite: true,
+            image: { not: null },
+            id: { notIn: [...teamPersonIdSet] },
+          },
+          select: { id: true, firstName: true, lastName: true, image: true },
+          orderBy: { createdAt: 'asc' },
+        })
+      : []
 
     const volunteerResults = volunteerPersons.map((p) => ({
       id: p.id,

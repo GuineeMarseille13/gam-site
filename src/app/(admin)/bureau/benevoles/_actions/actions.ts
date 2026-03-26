@@ -5,6 +5,7 @@ import { uploadImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
+import { getRoleIdByCode } from "@/lib/association-role-helpers"
 
 const BENEVOLES_LIST_PATHS = ["/bureau/benevoles", "/administration/benevoles"] as const
 
@@ -62,10 +63,15 @@ export async function createBenevole(formData: FormData) {
       })
     : null
 
+  const volunteerRoleId = await getRoleIdByCode(prisma, "VOLUNTEER")
+  if (!volunteerRoleId) {
+    throw new Error("Rôle VOLUNTEER introuvable en base (exécuter le seed des rôles).")
+  }
+
   const person = await prisma.person.create({
     data: {
       firstName, lastName, email, phone,
-      roles: ["VOLUNTEER"],
+      roleId: volunteerRoleId,
       image: imageUrl,
       showOnSite,
       addressId: addressRecord?.id ?? null,

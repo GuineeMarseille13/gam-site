@@ -112,6 +112,11 @@ export type EventImage = Prisma.EventImageModel
  */
 export type ReviewSection = Prisma.ReviewSectionModel
 /**
+ * Model Role
+ * Rôles métier association (bureau, bénévoles, avis). Référence stable par `code`.
+ */
+export type Role = Prisma.RoleModel
+/**
  * Model Review
  * 
  */

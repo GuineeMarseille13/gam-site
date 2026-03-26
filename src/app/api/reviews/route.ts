@@ -10,11 +10,11 @@
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
-// Schéma de validation pour la création
+// Schéma de validation pour la création (roleCode = code métier Role, ex. MEMBER)
 const createReviewSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  role: z.string().min(1, 'Role is required'),
+  roleCode: z.string().min(1, 'roleCode is required'),
   body: z.string().min(1, 'Body is required'),
   avatarUrl: z.string().url('Invalid URL').optional().nullable(),
   country: z.string().optional().nullable(),
@@ -23,6 +23,7 @@ const createReviewSchema = z.object({
   isActive: z.boolean().default(true),
   isVerified: z.boolean().default(false),
   reviewSectionId: z.string().optional().nullable(),
+  publishedAt: z.coerce.date().optional().nullable(),
 })
 
 // Schéma de validation pour la mise à jour
@@ -32,12 +33,22 @@ const handlers = createCrudHandler({
   modelName: 'Review',
   validateCreate: (data) => createReviewSchema.parse(data),
   validateUpdate: (data) => updateReviewSchema.parse(data),
-  beforeCreate: async (data) => {
-    // Publier automatiquement si vérifié
-    if (data.isVerified && !data.publishedAt) {
-      data.publishedAt = new Date()
+  beforeCreate: async (data: z.infer<typeof createReviewSchema>) => {
+    const { roleCode, ...rest } = data
+    const publishedAt =
+      rest.isVerified && rest.publishedAt == null ? new Date() : rest.publishedAt
+    return {
+      ...rest,
+      publishedAt,
+      role: { connect: { code: roleCode } },
     }
-    return data
+  },
+  beforeUpdate: async (data: z.infer<typeof updateReviewSchema>) => {
+    const { roleCode, ...rest } = data
+    if (roleCode) {
+      return { ...rest, role: { connect: { code: roleCode } } }
+    }
+    return rest
   },
 })
 

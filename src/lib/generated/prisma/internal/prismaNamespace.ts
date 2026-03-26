@@ -398,6 +398,7 @@ export const ModelName = {
   EventVideo: 'EventVideo',
   EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
+  Role: 'Role',
   Review: 'Review',
   ProductSection: 'ProductSection',
   Product: 'Product',
@@ -448,7 +449,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1485,6 +1486,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ReviewSectionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ReviewSectionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Role: {
+      payload: Prisma.$RolePayload<ExtArgs>
+      fields: Prisma.RoleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        findFirst: {
+          args: Prisma.RoleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        findMany: {
+          args: Prisma.RoleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>[]
+        }
+        create: {
+          args: Prisma.RoleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        createMany: {
+          args: Prisma.RoleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>[]
+        }
+        delete: {
+          args: Prisma.RoleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        update: {
+          args: Prisma.RoleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        deleteMany: {
+          args: Prisma.RoleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>[]
+        }
+        upsert: {
+          args: Prisma.RoleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePayload>
+        }
+        aggregate: {
+          args: Prisma.RoleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRole>
+        }
+        groupBy: {
+          args: Prisma.RoleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleCountAggregateOutputType> | number
         }
       }
     }
@@ -4323,11 +4398,25 @@ export const ReviewSectionScalarFieldEnum = {
 export type ReviewSectionScalarFieldEnum = (typeof ReviewSectionScalarFieldEnum)[keyof typeof ReviewSectionScalarFieldEnum]
 
 
+export const RoleScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  labelFr: 'labelFr',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
 export const ReviewScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  role: 'role',
+  roleId: 'roleId',
   body: 'body',
   avatarUrl: 'avatarUrl',
   country: 'country',
@@ -4422,7 +4511,7 @@ export const PersonScalarFieldEnum = {
   phone: 'phone',
   addressId: 'addressId',
   userId: 'userId',
-  roles: 'roles',
+  roleId: 'roleId',
   image: 'image',
   showOnSite: 'showOnSite',
   description: 'description',
@@ -4470,7 +4559,6 @@ export type TeamMemberSectionScalarFieldEnum = (typeof TeamMemberSectionScalarFi
 export const TeamMemberScalarFieldEnum = {
   id: 'id',
   personId: 'personId',
-  poste: 'poste',
   description: 'description',
   imageId: 'imageId',
   order: 'order',
@@ -4986,20 +5074,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Role'
- */
-export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
-    
-
-
-/**
- * Reference to a field of type 'Role[]'
- */
-export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
-    
-
-
-/**
  * Reference to a field of type 'PopupType'
  */
 export type EnumPopupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PopupType'>
@@ -5177,6 +5251,7 @@ export type GlobalOmitConfig = {
   eventVideo?: Prisma.EventVideoOmit
   eventImage?: Prisma.EventImageOmit
   reviewSection?: Prisma.ReviewSectionOmit
+  role?: Prisma.RoleOmit
   review?: Prisma.ReviewOmit
   productSection?: Prisma.ProductSectionOmit
   product?: Prisma.ProductOmit

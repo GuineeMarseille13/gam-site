@@ -5,7 +5,6 @@ import { BureauDataPage } from "@/components/bureau/bureau-data-page"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { IconUsers, IconCircleFilled, IconHandStop, IconPhone, IconMail, IconBriefcase } from "@tabler/icons-react"
 import { listComptes, listBenevoles } from "./_actions/actions"
-import { getPosteLabel } from "../equipe/_components/postes"
 import { UserFilters } from "./_components/user-filters"
 
 export const metadata: Metadata = { title: "Membres" }
@@ -97,7 +96,7 @@ export default async function MembresPage({
             <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr]">
               <span>Utilisateur</span>
               <span className="hidden sm:block">Rôle</span>
-              <span className="hidden lg:block">Poste</span>
+              <span className="hidden lg:block">Rôle GAM</span>
             </div>
 
             {/* Lignes */}
@@ -106,6 +105,7 @@ export default async function MembresPage({
                 const isSelf  = session?.user.id === user.id
                 const style   = roleStyle(user.role)
                 const banned  = (user as { banned?: boolean }).banned === true
+                const roleGam = (user as { associationRoleLabel?: string | null }).associationRoleLabel ?? null
 
                 return (
                   <div
@@ -137,10 +137,10 @@ export default async function MembresPage({
                         </div>
                         <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                         {/* Poste — mobile */}
-                        {user.poste && (
+                        {roleGam && (
                           <p className="mt-0.5 flex items-center gap-1 truncate text-[10px] text-muted-foreground sm:hidden">
                             <IconBriefcase className="size-3 shrink-0" />
-                            {getPosteLabel(user.poste)}
+                            {roleGam}
                           </p>
                         )}
                       </div>
@@ -153,20 +153,20 @@ export default async function MembresPage({
                         {style.label}
                       </span>
                       {/* Poste — sm uniquement */}
-                      {user.poste && (
+                      {roleGam && (
                         <p className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground lg:hidden">
                           <IconBriefcase className="size-3 shrink-0" />
-                          {getPosteLabel(user.poste)}
+                          {roleGam}
                         </p>
                       )}
                     </div>
 
                     {/* Colonne 3 — Poste (lg+) */}
                     <div className="hidden lg:block">
-                      {user.poste ? (
+                      {roleGam ? (
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
                           <IconBriefcase className="size-3 shrink-0" />
-                          {getPosteLabel(user.poste)}
+                          {roleGam}
                         </span>
                       ) : (
                         <span className="text-xs text-muted-foreground/40">—</span>

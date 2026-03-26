@@ -43,22 +43,6 @@ export const Section = {
 export type Section = (typeof Section)[keyof typeof Section]
 
 
-export const Role = {
-  PRESIDENT: 'PRESIDENT',
-  VICE_PRESIDENT: 'VICE_PRESIDENT',
-  SECRETARY: 'SECRETARY',
-  ASSISTANT_SECRETARY: 'ASSISTANT_SECRETARY',
-  TREASURER: 'TREASURER',
-  ASSISTANT_TREASURER: 'ASSISTANT_TREASURER',
-  VOLUNTEER: 'VOLUNTEER',
-  MEMBER: 'MEMBER',
-  AMBASSADOR: 'AMBASSADOR',
-  OTHER: 'OTHER'
-} as const
-
-export type Role = (typeof Role)[keyof typeof Role]
-
-
 export const PaymentStatus = {
   PENDING: 'PENDING',
   PAID: 'PAID',

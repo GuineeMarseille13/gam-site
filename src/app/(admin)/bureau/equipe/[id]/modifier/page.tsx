@@ -10,7 +10,10 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
   const member = await prisma.teamMember.findUnique({ where: { id } })
   if (!member) notFound()
 
-  const person = await prisma.person.findUnique({ where: { id: member.personId } })
+  const person = await prisma.person.findUnique({
+    where: { id: member.personId },
+    include: { role: true },
+  })
   if (!person) notFound()
 
   const linkedUser = person.userId
@@ -30,7 +33,7 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
               lastName:    person.lastName,
               email:       person.email,
               phone:       person.phone,
-              poste:       member.poste,
+              associationRoleCode: person.role?.code ?? "",
               role:        linkedUser?.role ?? "bureau",
               description: member.description,
               imageId:     member.imageId,

@@ -19,8 +19,6 @@ import {
   IconCircleFilled,
   IconBriefcase,
 } from "@tabler/icons-react"
-import { getPosteLabel } from "../../equipe/_components/postes"
-
 // ── Styles ─────────────────────────────────────────────────────────────────────
 
 const ROLE_BADGE: Record<string, { label: string; dot: string; badge: string }> = {
@@ -142,7 +140,7 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
   }
 
   const roleInfo   = ROLE_BADGE[defaultValues.role ?? ""]
-  const posteLabel = getPosteLabel(defaultValues.poste ?? null)
+  const posteLabel = defaultValues.poste?.trim() ?? ""
 
   // ── Rendu ─────────────────────────────────────────────────────────────────────
 

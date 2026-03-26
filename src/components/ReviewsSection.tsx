@@ -3,20 +3,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
-interface Review {
-  id: string;
-  name: string;
-  role: string;
-  body: string;
-  img?: string;
-  country: string;
-  rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
-  isPublished: boolean;
-  isFeatured: boolean;
+/** Avis API / Prisma (firstName + lastName, rôle via relation Role.labelFr). */
+interface ApiReviewLike {
+  id?: string
+  firstName?: string
+  lastName?: string
+  name?: string
+  body?: string
+  img?: string
+  avatarUrl?: string | null
+  country?: string | null
+  role?: string | { labelFr: string }
+  rating?: number | "ONE" | "TWO" | "THREE" | "FOUR" | "FIVE"
 }
 
 interface ReviewsSectionProps {
-  reviews?: Review[];
+  reviews?: ApiReviewLike[]
 }
 
 // Données par défaut des témoignages pour l'association GAM
@@ -156,18 +158,39 @@ function TestimonialCard({
   );
 }
 
+function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
+  const name =
+    review.name?.trim() ||
+    [review.firstName, review.lastName].filter(Boolean).join(" ").trim() ||
+    "Anonyme"
+  const roleLabel =
+    typeof review.role === "object" && review.role !== null && "labelFr" in review.role
+      ? review.role.labelFr
+      : typeof review.role === "string"
+        ? review.role
+        : ""
+  const img = review.img ?? review.avatarUrl ?? undefined
+  const ratingNum =
+    typeof review.rating === "number"
+      ? review.rating
+      : review.rating
+        ? ratingToNumber(review.rating)
+        : 5
+  return {
+    id: review.id || `review-${idx}`,
+    name,
+    role: roleLabel,
+    body: review.body ?? "",
+    img,
+    country: review.country ?? "",
+    rating: ratingNum,
+  }
+}
+
 const ReviewsSection = ({ reviews }: ReviewsSectionProps) => {
   // Transformer les reviews de l'API en format attendu par le composant
   const testimonials = reviews && reviews.length > 0
-    ? reviews.map((review, idx) => ({
-        id: review.id || `review-${idx}`,
-        name: review.name,
-        role: review.role,
-        body: review.body,
-        img: review.img,
-        country: review.country,
-        rating: ratingToNumber(review.rating),
-      }))
+    ? reviews.map((review, idx) => mapApiReviewToCard(review, idx))
     : defaultTestimonials.map((review, idx) => ({
         id: `default-review-${idx}`,
         ...review,

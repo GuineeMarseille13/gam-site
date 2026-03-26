@@ -8,6 +8,7 @@
 import { PrismaClient, Section, Page } from '../src/lib/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import 'dotenv/config'
+import { upsertAssociationRoles } from '../src/lib/seed-association-roles'
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -60,6 +61,9 @@ async function main() {
   await prisma.aboutUsSection.deleteMany()
 
   console.log('✅ Database cleaned')
+
+  await upsertAssociationRoles(prisma)
+  console.log('✅ Association roles (table Role)')
 
   // ============================================
   // 1. ADDRESSES
@@ -626,6 +630,19 @@ async function main() {
   // 14. PERSONS
   // ============================================
   console.log('👥 Creating persons...')
+
+  const rid = async (code: string) =>
+    (await prisma.role.findUniqueOrThrow({ where: { code } })).id
+
+  const R = {
+    PRESIDENT: await rid('PRESIDENT'),
+    VICE_PRESIDENT: await rid('VICE_PRESIDENT'),
+    SECRETARY: await rid('SECRETARY'),
+    TREASURER: await rid('TREASURER'),
+    MEMBER: await rid('MEMBER'),
+    VOLUNTEER: await rid('VOLUNTEER'),
+  }
+
   const persons = await Promise.all([
     prisma.person.create({
       data: {
@@ -634,7 +651,7 @@ async function main() {
         email: 'moussa.camara@gam-marseille.fr',
         phone: '06-12-34-56-78',
         addressId: address1.id,
-        roles: ['PRESIDENT'],
+        roleId: R.PRESIDENT,
       },
     }),
     prisma.person.create({
@@ -644,7 +661,7 @@ async function main() {
         email: 'guillaume.madec@gam-marseille.fr',
         phone: '06-23-45-67-89',
         addressId: address1.id,
-        roles: ['VICE_PRESIDENT'],
+        roleId: R.VICE_PRESIDENT,
       },
     }),
     prisma.person.create({
@@ -654,7 +671,7 @@ async function main() {
         email: 'ibrahim.bah@gam-marseille.fr',
         phone: '06-34-56-78-90',
         addressId: address1.id,
-        roles: ['VICE_PRESIDENT'],
+        roleId: R.VICE_PRESIDENT,
       },
     }),
     prisma.person.create({
@@ -664,7 +681,7 @@ async function main() {
         email: 'michelle.dao@gam-marseille.fr',
         phone: '06-45-67-89-01',
         addressId: address1.id,
-        roles: ['SECRETARY'],
+        roleId: R.SECRETARY,
       },
     }),
     prisma.person.create({
@@ -674,7 +691,7 @@ async function main() {
         email: 'mamadou.diallo@gam-marseille.fr',
         phone: '06-56-78-90-12',
         addressId: address1.id,
-        roles: ['SECRETARY'],
+        roleId: R.SECRETARY,
       },
     }),
     prisma.person.create({
@@ -684,7 +701,7 @@ async function main() {
         email: 'julie.delaby@gam-marseille.fr',
         phone: '06-67-89-01-23',
         addressId: address1.id,
-        roles: ['TREASURER'],
+        roleId: R.TREASURER,
       },
     }),
     prisma.person.create({
@@ -694,7 +711,7 @@ async function main() {
         email: 'aminata.fofana@gam-marseille.fr',
         phone: '06-78-90-12-34',
         addressId: address1.id,
-        roles: ['TREASURER'],
+        roleId: R.TREASURER,
       },
     }),
     prisma.person.create({
@@ -704,7 +721,7 @@ async function main() {
         email: 'fatoumata.diallo@example.com',
         phone: '06-89-01-23-45',
         addressId: address2.id,
-        roles: ['MEMBER'],
+        roleId: R.MEMBER,
       },
     }),
     prisma.person.create({
@@ -714,7 +731,7 @@ async function main() {
         email: 'amadou.camara@example.com',
         phone: '06-90-12-34-56',
         addressId: address2.id,
-        roles: ['VOLUNTEER'],
+        roleId: R.VOLUNTEER,
       },
     }),
     prisma.person.create({
@@ -724,7 +741,7 @@ async function main() {
         email: 'aissatou.bah@example.com',
         phone: '06-01-23-45-67',
         addressId: address2.id,
-        roles: ['MEMBER'],
+        roleId: R.MEMBER,
       },
     }),
   ])
@@ -739,7 +756,7 @@ async function main() {
         personId: persons[0].id, // Moussa CAMARA
         description: 'Président et Fondateur de l\'association',
         order: 1,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
         imageId: images[0].id,
       },
@@ -749,7 +766,7 @@ async function main() {
         personId: persons[1].id, // Guillaume MADEC
         description: '1er vice-président',
         order: 2,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -758,7 +775,7 @@ async function main() {
         personId: persons[2].id, // Ibrahim BAH
         description: '2e vice-président',
         order: 3,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -767,7 +784,7 @@ async function main() {
         personId: persons[3].id, // Michelle DAO
         description: 'Secrétaire',
         order: 4,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -776,7 +793,7 @@ async function main() {
         personId: persons[4].id, // Mamadou Alpha DIALLO
         description: 'Secrétaire adjoint',
         order: 5,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -785,7 +802,7 @@ async function main() {
         personId: persons[5].id, // Julie DELABY
         description: 'Trésorière',
         order: 6,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -794,7 +811,7 @@ async function main() {
         personId: persons[6].id, // Aminata FOFANA
         description: 'Trésorière adjointe',
         order: 7,
-        isActive: true,
+        showOnSite: true,
         teamMemberSectionId: teamMemberSection.id,
       },
     }),
@@ -830,7 +847,7 @@ async function main() {
       data: {
         firstName: 'Fatoumata',
         lastName: 'Diallo',
-        role: 'MEMBER',
+        roleId: R.MEMBER,
         body: 'L\'association GAM m\'a permis de rencontrer une communauté chaleureuse et de participer à des actions solidaires qui ont du sens. Une expérience enrichissante !',
         avatarUrl: 'https://randomuser.me/api/portraits/women/32.jpg',
         country: '🇬🇳 Guinée',
@@ -846,7 +863,7 @@ async function main() {
       data: {
         firstName: 'Amadou',
         lastName: 'Camara',
-        role: 'VOLUNTEER',
+        roleId: R.VOLUNTEER,
         body: 'Je suis fier de faire partie de cette association qui œuvre pour le développement culturel et social. Les événements organisés sont toujours de qualité.',
         avatarUrl: 'https://randomuser.me/api/portraits/men/51.jpg',
         country: '🇬🇳 Guinée',
@@ -862,7 +879,7 @@ async function main() {
       data: {
         firstName: 'Aissatou',
         lastName: 'Bah',
-        role: 'MEMBER',
+        roleId: R.MEMBER,
         body: 'Grâce à GAM, j\'ai découvert ma culture sous un nouveau jour. Les activités sont variées et accessibles à tous. Je recommande vivement !',
         avatarUrl: 'https://randomuser.me/api/portraits/women/68.jpg',
         country: '🇫🇷 France',
@@ -878,7 +895,7 @@ async function main() {
       data: {
         firstName: 'Moussa',
         lastName: 'Traoré',
-        role: 'MEMBER',
+        roleId: R.MEMBER,
         body: 'Une association transparente et efficace. Je vois concrètement l\'impact de mes dons dans les actions menées. Continuez ainsi !',
         avatarUrl: 'https://randomuser.me/api/portraits/men/33.jpg',
         country: '🇬🇳 Guinée',

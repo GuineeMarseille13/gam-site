@@ -25,7 +25,7 @@ interface UserFormProps {
     lastName:     string
     email:        string
     role:         string
-    poste?:       string | null
+    associationRoleCode?: string | null
     phone?:       string | null
     description?: string | null
     imageUrl?:    string | null
@@ -42,7 +42,9 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
 
   const [showOnSite, setShowOnSite]     = useState(defaultValues?.showOnSite ?? true)
   const [role, setRole]                 = useState(defaultValues?.role ?? "bureau")
-  const [poste, setPoste]               = useState(defaultValues?.poste ?? "")
+  const [associationRoleCode, setAssociationRoleCode] = useState(
+    defaultValues?.associationRoleCode ?? "",
+  )
   const [preview, setPreview]           = useState<string | null>(defaultValues?.imageUrl ?? null)
   const [sizeError, setSizeError]       = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -75,14 +77,14 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
     e.preventDefault()
     setError(null)
 
-    if (!poste) {
-      setError("Veuillez sélectionner un poste dans le bureau.")
+    if (!associationRoleCode) {
+      setError("Veuillez sélectionner un rôle dans le bureau.")
       return
     }
 
     const formData = new FormData(e.currentTarget)
     formData.set("role", role)
-    formData.set("poste", poste)
+    formData.set("associationRoleCode", associationRoleCode)
     const action = mode === "create" ? createAction : updateAction
 
     startTransition(async () => {
@@ -303,11 +305,11 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
 
             <div className="space-y-1.5">
               <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Poste dans le bureau <span className="text-destructive">*</span>
+                Rôle dans le bureau <span className="text-destructive">*</span>
               </Label>
-              <Select value={poste} onValueChange={setPoste} required>
+              <Select value={associationRoleCode} onValueChange={setAssociationRoleCode} required>
                 <SelectTrigger className="h-10 rounded-xl">
-                  <SelectValue placeholder="Sélectionner un poste…" />
+                  <SelectValue placeholder="Sélectionner un rôle…" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
                   {POSTES.map((p) => (

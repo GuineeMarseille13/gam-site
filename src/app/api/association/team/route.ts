@@ -24,7 +24,12 @@ export async function GET() {
     // Récupérer les Person liées aux TeamMember
     const teamPersons = await prisma.person.findMany({
       where: { id: { in: [...teamPersonIds] } },
-      select: { id: true, firstName: true, lastName: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        role: { select: { labelFr: true } },
+      },
     })
     const teamPersonsById = Object.fromEntries(teamPersons.map((p) => [p.id, p]))
 
@@ -35,7 +40,7 @@ export async function GET() {
         return {
           id:    m.id,
           name:  `${person.firstName} ${person.lastName}`,
-          role:  m.poste ?? "Membre du bureau",
+          role:  person.role?.labelFr ?? "Membre du bureau",
           image: m.imageId ? `${CLOUDINARY_BASE}/${m.imageId}` : "",
           order: m.order,
         }
@@ -51,6 +56,7 @@ export async function GET() {
       select: {
         id: true, firstName: true, lastName: true,
         image: true, description: true,
+        role: { select: { labelFr: true } },
       },
       orderBy: { createdAt: "asc" },
     })
@@ -58,7 +64,7 @@ export async function GET() {
     const bureauResults = bureauPersons.map((p, i) => ({
       id:    p.id,
       name:  `${p.firstName} ${p.lastName}`,
-      role:  p.description ?? "Membre du bureau",
+      role:  p.role?.labelFr ?? p.description ?? "Membre du bureau",
       image: p.image ?? "",
       order: 100 + i,  // Après les membres explicitement ordonnés via Équipe
     }))

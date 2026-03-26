@@ -6,7 +6,6 @@ import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deleteMembreEquipe, banUserEquipe, unbanUserEquipe } from "./_actions/actions"
 import { EquipeFilters } from "./_components/equipe-filters"
 import { EquipeRowActions } from "./_components/equipe-row-actions"
-import { getPosteLabel } from "./_components/postes"
 
 export const metadata: Metadata = { title: "Équipe" }
 
@@ -37,12 +36,11 @@ function RoleBadge({ role }: { role: string | null }) {
   )
 }
 
-function PosteBadge({ poste }: { poste: string | null }) {
-  const label = getPosteLabel(poste)
-  if (!label) return <span className="text-xs text-muted-foreground/40">—</span>
+function AssociationRoleBadge({ labelFr }: { labelFr: string | null }) {
+  if (!labelFr) return <span className="text-xs text-muted-foreground/40">—</span>
   return (
     <span className="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
-      {label}
+      {labelFr}
     </span>
   )
 }
@@ -54,7 +52,10 @@ async function getEquipe() {
   if (members.length === 0) return []
 
   const personIds = members.map((m) => m.personId)
-  const persons   = await prisma.person.findMany({ where: { id: { in: personIds } } })
+  const persons   = await prisma.person.findMany({
+    where: { id: { in: personIds } },
+    include: { role: true },
+  })
 
   const userIds = persons.flatMap((p) => (p.userId ? [p.userId] : []))
   const users   = userIds.length > 0
@@ -67,12 +68,15 @@ async function getEquipe() {
   return members.map((m) => {
     const person = personsById[m.personId] ?? null
     const user   = person?.userId ? (usersById[person.userId] ?? null) : null
+    const associationRoleLabel = person?.role?.labelFr ?? null
+
     return {
       ...m,
       person,
       userId: person?.userId ?? null,
       role:   user?.role ?? null,
       banned: (user as { banned?: boolean } | null)?.banned ?? false,
+      associationRoleLabel,
     }
   })
 }
@@ -131,11 +135,11 @@ export default async function EquipePage({
 
           {/* ── En-tête
                mobile : [Membre | •]
-               sm     : [Membre | Poste | Rôle | •]
-               lg     : [Membre | Poste | Rôle | Description | Ordre | Actions]  ── */}
+               sm     : [Membre | Rôle GAM | Accès | •]
+               lg     : [Membre | Rôle GAM | Accès | Description | Ordre | Actions]  ── */}
           <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_2fr_240px]">
             <span>Membre</span>
-            <span className="hidden sm:block">Poste</span>
+            <span className="hidden sm:block">Rôle GAM</span>
             <span className="hidden sm:block">Rôle</span>
             <span className="hidden lg:block">Description</span>
             <span className="hidden lg:block text-right">Actions</span>
@@ -174,9 +178,9 @@ export default async function EquipePage({
                         <RoleBadge role={m.role} />
                       </div>
                       {/* Poste — mobile uniquement */}
-                      {m.poste && (
+                      {m.associationRoleLabel && (
                         <div className="mt-0.5 sm:hidden">
-                          <PosteBadge poste={m.poste} />
+                          <AssociationRoleBadge labelFr={m.associationRoleLabel} />
                         </div>
                       )}
                       {/* Description — mobile + sm */}
@@ -188,9 +192,9 @@ export default async function EquipePage({
                     </div>
                   </div>
 
-                  {/* Colonne 2 — Poste (sm+) */}
+                  {/* Colonne 2 — Rôle GAM (sm+) */}
                   <div className="hidden sm:block">
-                    <PosteBadge poste={m.poste} />
+                    <AssociationRoleBadge labelFr={m.associationRoleLabel} />
                   </div>
 
                   {/* Colonne 3 — Rôle (sm+) */}
@@ -208,7 +212,7 @@ export default async function EquipePage({
                     memberId={m.id}
                     editHref={`/bureau/equipe/${m.id}/modifier`}
                     imageId={m.imageId}
-                    poste={m.poste}
+                    associationRoleLabel={m.associationRoleLabel}
                     role={m.role}
                     description={m.description}
                     order={m.order}

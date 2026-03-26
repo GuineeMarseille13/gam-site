@@ -65,6 +65,7 @@ export const ModelName = {
   EventVideo: 'EventVideo',
   EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
+  Role: 'Role',
   Review: 'Review',
   ProductSection: 'ProductSection',
   Product: 'Product',
@@ -324,11 +325,25 @@ export const ReviewSectionScalarFieldEnum = {
 export type ReviewSectionScalarFieldEnum = (typeof ReviewSectionScalarFieldEnum)[keyof typeof ReviewSectionScalarFieldEnum]
 
 
+export const RoleScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  labelFr: 'labelFr',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
 export const ReviewScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  role: 'role',
+  roleId: 'roleId',
   body: 'body',
   avatarUrl: 'avatarUrl',
   country: 'country',
@@ -423,7 +438,7 @@ export const PersonScalarFieldEnum = {
   phone: 'phone',
   addressId: 'addressId',
   userId: 'userId',
-  roles: 'roles',
+  roleId: 'roleId',
   image: 'image',
   showOnSite: 'showOnSite',
   description: 'description',
@@ -471,7 +486,6 @@ export type TeamMemberSectionScalarFieldEnum = (typeof TeamMemberSectionScalarFi
 export const TeamMemberScalarFieldEnum = {
   id: 'id',
   personId: 'personId',
-  poste: 'poste',
   description: 'description',
   imageId: 'imageId',
   order: 'order',

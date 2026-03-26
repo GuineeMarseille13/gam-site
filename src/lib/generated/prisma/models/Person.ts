@@ -32,6 +32,7 @@ export type PersonMinAggregateOutputType = {
   phone: string | null
   addressId: string | null
   userId: string | null
+  roleId: string | null
   image: string | null
   showOnSite: boolean | null
   description: string | null
@@ -47,6 +48,7 @@ export type PersonMaxAggregateOutputType = {
   phone: string | null
   addressId: string | null
   userId: string | null
+  roleId: string | null
   image: string | null
   showOnSite: boolean | null
   description: string | null
@@ -62,7 +64,7 @@ export type PersonCountAggregateOutputType = {
   phone: number
   addressId: number
   userId: number
-  roles: number
+  roleId: number
   image: number
   showOnSite: number
   description: number
@@ -80,6 +82,7 @@ export type PersonMinAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
+  roleId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -95,6 +98,7 @@ export type PersonMaxAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
+  roleId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -110,7 +114,7 @@ export type PersonCountAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
-  roles?: true
+  roleId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -199,7 +203,7 @@ export type PersonGroupByOutputType = {
   phone: string
   addressId: string | null
   userId: string | null
-  roles: $Enums.Role[]
+  roleId: string | null
   image: string | null
   showOnSite: boolean
   description: string | null
@@ -236,7 +240,7 @@ export type PersonWhereInput = {
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
   userId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roles?: Prisma.EnumRoleNullableListFilter<"Person">
+  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
   description?: Prisma.StringNullableFilter<"Person"> | string | null
@@ -248,6 +252,8 @@ export type PersonWhereInput = {
   payments?: Prisma.PaymentListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
+  role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
+  teamMember?: Prisma.XOR<Prisma.TeamMemberNullableScalarRelationFilter, Prisma.TeamMemberWhereInput> | null
 }
 
 export type PersonOrderByWithRelationInput = {
@@ -258,7 +264,7 @@ export type PersonOrderByWithRelationInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  roles?: Prisma.SortOrder
+  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -270,6 +276,8 @@ export type PersonOrderByWithRelationInput = {
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   address?: Prisma.AddressOrderByWithRelationInput
   paymentHistories?: Prisma.PaymentHistoryOrderByRelationAggregateInput
+  role?: Prisma.RoleOrderByWithRelationInput
+  teamMember?: Prisma.TeamMemberOrderByWithRelationInput
 }
 
 export type PersonWhereUniqueInput = Prisma.AtLeast<{
@@ -283,7 +291,7 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringNullableFilter<"Person"> | string | null
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roles?: Prisma.EnumRoleNullableListFilter<"Person">
+  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
   description?: Prisma.StringNullableFilter<"Person"> | string | null
@@ -295,6 +303,8 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
+  role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
+  teamMember?: Prisma.XOR<Prisma.TeamMemberNullableScalarRelationFilter, Prisma.TeamMemberWhereInput> | null
 }, "id" | "userId">
 
 export type PersonOrderByWithAggregationInput = {
@@ -305,7 +315,7 @@ export type PersonOrderByWithAggregationInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  roles?: Prisma.SortOrder
+  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -327,7 +337,7 @@ export type PersonScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringWithAggregatesFilter<"Person"> | string
   addressId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
-  roles?: Prisma.EnumRoleNullableListFilter<"Person">
+  roleId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolWithAggregatesFilter<"Person"> | boolean
   description?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
@@ -342,7 +352,6 @@ export type PersonCreateInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -354,6 +363,8 @@ export type PersonCreateInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateInput = {
@@ -364,7 +375,7 @@ export type PersonUncheckedCreateInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -375,6 +386,7 @@ export type PersonUncheckedCreateInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUpdateInput = {
@@ -384,7 +396,6 @@ export type PersonUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -396,6 +407,8 @@ export type PersonUpdateInput = {
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateInput = {
@@ -406,7 +419,7 @@ export type PersonUncheckedUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -417,6 +430,7 @@ export type PersonUncheckedUpdateInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonCreateManyInput = {
@@ -427,7 +441,7 @@ export type PersonCreateManyInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -442,7 +456,6 @@ export type PersonUpdateManyMutationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -458,7 +471,7 @@ export type PersonUncheckedUpdateManyInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -466,12 +479,14 @@ export type PersonUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type EnumRoleNullableListFilter<$PrismaModel = never> = {
-  equals?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel> | null
-  has?: $Enums.Role | Prisma.EnumRoleFieldRefInput<$PrismaModel> | null
-  hasEvery?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel>
-  hasSome?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
+export type PersonListRelationFilter = {
+  every?: Prisma.PersonWhereInput
+  some?: Prisma.PersonWhereInput
+  none?: Prisma.PersonWhereInput
+}
+
+export type PersonOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type PersonCountOrderByAggregateInput = {
@@ -482,7 +497,7 @@ export type PersonCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  roles?: Prisma.SortOrder
+  roleId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -498,6 +513,7 @@ export type PersonMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  roleId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -513,6 +529,7 @@ export type PersonMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  roleId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -520,33 +537,70 @@ export type PersonMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type PersonNullableScalarRelationFilter = {
-  is?: Prisma.PersonWhereInput | null
-  isNot?: Prisma.PersonWhereInput | null
-}
-
-export type PersonListRelationFilter = {
-  every?: Prisma.PersonWhereInput
-  some?: Prisma.PersonWhereInput
-  none?: Prisma.PersonWhereInput
-}
-
-export type PersonOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type PersonScalarRelationFilter = {
   is?: Prisma.PersonWhereInput
   isNot?: Prisma.PersonWhereInput
 }
 
-export type PersonCreaterolesInput = {
-  set: $Enums.Role[]
+export type PersonNullableScalarRelationFilter = {
+  is?: Prisma.PersonWhereInput | null
+  isNot?: Prisma.PersonWhereInput | null
 }
 
-export type PersonUpdaterolesInput = {
-  set?: $Enums.Role[]
-  push?: $Enums.Role | $Enums.Role[]
+export type PersonCreateNestedManyWithoutRoleInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
+  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+  connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+}
+
+export type PersonUncheckedCreateNestedManyWithoutRoleInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
+  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+  connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+}
+
+export type PersonUpdateManyWithoutRoleNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
+  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput | Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput[]
+  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+  set?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  disconnect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  delete?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  update?: Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput | Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput[]
+  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutRoleInput | Prisma.PersonUpdateManyWithWhereWithoutRoleInput[]
+  deleteMany?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
+}
+
+export type PersonUncheckedUpdateManyWithoutRoleNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
+  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput | Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput[]
+  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+  set?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  disconnect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  delete?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
+  update?: Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput | Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput[]
+  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutRoleInput | Prisma.PersonUpdateManyWithWhereWithoutRoleInput[]
+  deleteMany?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
+}
+
+export type PersonCreateNestedOneWithoutTeamMemberInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutTeamMemberInput, Prisma.PersonUncheckedCreateWithoutTeamMemberInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutTeamMemberInput
+  connect?: Prisma.PersonWhereUniqueInput
+}
+
+export type PersonUpdateOneRequiredWithoutTeamMemberNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutTeamMemberInput, Prisma.PersonUncheckedCreateWithoutTeamMemberInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutTeamMemberInput
+  upsert?: Prisma.PersonUpsertWithoutTeamMemberInput
+  connect?: Prisma.PersonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutTeamMemberInput, Prisma.PersonUpdateWithoutTeamMemberInput>, Prisma.PersonUncheckedUpdateWithoutTeamMemberInput>
 }
 
 export type PersonCreateNestedOneWithoutMemberShipsInput = {
@@ -667,6 +721,193 @@ export type PersonUpdateOneWithoutPaymentHistoriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutPaymentHistoriesInput, Prisma.PersonUpdateWithoutPaymentHistoriesInput>, Prisma.PersonUncheckedUpdateWithoutPaymentHistoriesInput>
 }
 
+export type PersonCreateWithoutRoleInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
+}
+
+export type PersonUncheckedCreateWithoutRoleInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutRoleInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput>
+}
+
+export type PersonCreateManyRoleInputEnvelope = {
+  data: Prisma.PersonCreateManyRoleInput | Prisma.PersonCreateManyRoleInput[]
+  skipDuplicates?: boolean
+}
+
+export type PersonUpsertWithWhereUniqueWithoutRoleInput = {
+  where: Prisma.PersonWhereUniqueInput
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutRoleInput, Prisma.PersonUncheckedUpdateWithoutRoleInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput>
+}
+
+export type PersonUpdateWithWhereUniqueWithoutRoleInput = {
+  where: Prisma.PersonWhereUniqueInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutRoleInput, Prisma.PersonUncheckedUpdateWithoutRoleInput>
+}
+
+export type PersonUpdateManyWithWhereWithoutRoleInput = {
+  where: Prisma.PersonScalarWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateManyMutationInput, Prisma.PersonUncheckedUpdateManyWithoutRoleInput>
+}
+
+export type PersonScalarWhereInput = {
+  AND?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
+  OR?: Prisma.PersonScalarWhereInput[]
+  NOT?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
+  id?: Prisma.StringFilter<"Person"> | string
+  firstName?: Prisma.StringFilter<"Person"> | string
+  lastName?: Prisma.StringFilter<"Person"> | string
+  email?: Prisma.StringNullableFilter<"Person"> | string | null
+  phone?: Prisma.StringFilter<"Person"> | string
+  addressId?: Prisma.StringNullableFilter<"Person"> | string | null
+  userId?: Prisma.StringNullableFilter<"Person"> | string | null
+  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
+  image?: Prisma.StringNullableFilter<"Person"> | string | null
+  showOnSite?: Prisma.BoolFilter<"Person"> | boolean
+  description?: Prisma.StringNullableFilter<"Person"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Person"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Person"> | Date | string
+}
+
+export type PersonCreateWithoutTeamMemberInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+}
+
+export type PersonUncheckedCreateWithoutTeamMemberInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  userId?: string | null
+  roleId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutTeamMemberInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutTeamMemberInput, Prisma.PersonUncheckedCreateWithoutTeamMemberInput>
+}
+
+export type PersonUpsertWithoutTeamMemberInput = {
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutTeamMemberInput, Prisma.PersonUncheckedUpdateWithoutTeamMemberInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutTeamMemberInput, Prisma.PersonUncheckedCreateWithoutTeamMemberInput>
+  where?: Prisma.PersonWhereInput
+}
+
+export type PersonUpdateToOneWithWhereWithoutTeamMemberInput = {
+  where?: Prisma.PersonWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutTeamMemberInput, Prisma.PersonUncheckedUpdateWithoutTeamMemberInput>
+}
+
+export type PersonUpdateWithoutTeamMemberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutTeamMemberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+}
+
 export type PersonCreateWithoutMemberShipsInput = {
   id?: string
   firstName: string
@@ -674,7 +915,6 @@ export type PersonCreateWithoutMemberShipsInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -685,6 +925,8 @@ export type PersonCreateWithoutMemberShipsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutMemberShipsInput = {
@@ -695,7 +937,7 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -705,6 +947,7 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutMemberShipsInput = {
@@ -730,7 +973,6 @@ export type PersonUpdateWithoutMemberShipsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -741,6 +983,8 @@ export type PersonUpdateWithoutMemberShipsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutMemberShipsInput = {
@@ -751,7 +995,7 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -761,6 +1005,7 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutDonationsInput = {
@@ -770,7 +1015,6 @@ export type PersonCreateWithoutDonationsInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -781,6 +1025,8 @@ export type PersonCreateWithoutDonationsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutDonationsInput = {
@@ -791,7 +1037,7 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -801,6 +1047,7 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutDonationsInput = {
@@ -826,7 +1073,6 @@ export type PersonUpdateWithoutDonationsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -837,6 +1083,8 @@ export type PersonUpdateWithoutDonationsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutDonationsInput = {
@@ -847,7 +1095,7 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -857,6 +1105,7 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutAddressInput = {
@@ -866,7 +1115,6 @@ export type PersonCreateWithoutAddressInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -877,6 +1125,8 @@ export type PersonCreateWithoutAddressInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutAddressInput = {
@@ -886,7 +1136,7 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -897,6 +1147,7 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutAddressInput = {
@@ -925,25 +1176,6 @@ export type PersonUpdateManyWithWhereWithoutAddressInput = {
   data: Prisma.XOR<Prisma.PersonUpdateManyMutationInput, Prisma.PersonUncheckedUpdateManyWithoutAddressInput>
 }
 
-export type PersonScalarWhereInput = {
-  AND?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
-  OR?: Prisma.PersonScalarWhereInput[]
-  NOT?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
-  id?: Prisma.StringFilter<"Person"> | string
-  firstName?: Prisma.StringFilter<"Person"> | string
-  lastName?: Prisma.StringFilter<"Person"> | string
-  email?: Prisma.StringNullableFilter<"Person"> | string | null
-  phone?: Prisma.StringFilter<"Person"> | string
-  addressId?: Prisma.StringNullableFilter<"Person"> | string | null
-  userId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roles?: Prisma.EnumRoleNullableListFilter<"Person">
-  image?: Prisma.StringNullableFilter<"Person"> | string | null
-  showOnSite?: Prisma.BoolFilter<"Person"> | boolean
-  description?: Prisma.StringNullableFilter<"Person"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Person"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Person"> | Date | string
-}
-
 export type PersonCreateWithoutOrdersInput = {
   id?: string
   firstName: string
@@ -951,7 +1183,6 @@ export type PersonCreateWithoutOrdersInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -962,6 +1193,8 @@ export type PersonCreateWithoutOrdersInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutOrdersInput = {
@@ -972,7 +1205,7 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -982,6 +1215,7 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutOrdersInput = {
@@ -1007,7 +1241,6 @@ export type PersonUpdateWithoutOrdersInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1018,6 +1251,8 @@ export type PersonUpdateWithoutOrdersInput = {
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutOrdersInput = {
@@ -1028,7 +1263,7 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1038,6 +1273,7 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutPaymentsInput = {
@@ -1047,7 +1283,6 @@ export type PersonCreateWithoutPaymentsInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1058,6 +1293,8 @@ export type PersonCreateWithoutPaymentsInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutPaymentsInput = {
@@ -1068,7 +1305,7 @@ export type PersonUncheckedCreateWithoutPaymentsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1078,6 +1315,7 @@ export type PersonUncheckedCreateWithoutPaymentsInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutPaymentsInput = {
@@ -1103,7 +1341,6 @@ export type PersonUpdateWithoutPaymentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1114,6 +1351,8 @@ export type PersonUpdateWithoutPaymentsInput = {
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutPaymentsInput = {
@@ -1124,7 +1363,7 @@ export type PersonUncheckedUpdateWithoutPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1134,6 +1373,7 @@ export type PersonUncheckedUpdateWithoutPaymentsInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonCreateWithoutPaymentHistoriesInput = {
@@ -1143,7 +1383,6 @@ export type PersonCreateWithoutPaymentHistoriesInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1154,6 +1393,8 @@ export type PersonCreateWithoutPaymentHistoriesInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
 export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
@@ -1164,7 +1405,7 @@ export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1174,6 +1415,7 @@ export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
 export type PersonCreateOrConnectWithoutPaymentHistoriesInput = {
@@ -1199,7 +1441,6 @@ export type PersonUpdateWithoutPaymentHistoriesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1210,6 +1451,8 @@ export type PersonUpdateWithoutPaymentHistoriesInput = {
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
@@ -1220,7 +1463,7 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1230,6 +1473,79 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonCreateManyRoleInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PersonUpdateWithoutRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateManyWithoutRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PersonCreateManyAddressInput = {
@@ -1239,7 +1555,7 @@ export type PersonCreateManyAddressInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roles?: Prisma.PersonCreaterolesInput | $Enums.Role[]
+  roleId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1254,7 +1570,6 @@ export type PersonUpdateWithoutAddressInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1265,6 +1580,8 @@ export type PersonUpdateWithoutAddressInput = {
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutAddressInput = {
@@ -1274,7 +1591,7 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1285,6 +1602,7 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
 export type PersonUncheckedUpdateManyWithoutAddressInput = {
@@ -1294,7 +1612,7 @@ export type PersonUncheckedUpdateManyWithoutAddressInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roles?: Prisma.PersonUpdaterolesInput | $Enums.Role[]
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1377,7 +1695,7 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roles?: boolean
+  roleId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
@@ -1389,6 +1707,8 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  teamMember?: boolean | Prisma.Person$teamMemberArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
@@ -1400,13 +1720,14 @@ export type PersonSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roles?: boolean
+  roleId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
 export type PersonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1417,13 +1738,14 @@ export type PersonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roles?: boolean
+  roleId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
 export type PersonSelectScalar = {
@@ -1434,7 +1756,7 @@ export type PersonSelectScalar = {
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roles?: boolean
+  roleId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
@@ -1442,7 +1764,7 @@ export type PersonSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "userId" | "roles" | "image" | "showOnSite" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
+export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "userId" | "roleId" | "image" | "showOnSite" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
 export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
@@ -1450,13 +1772,17 @@ export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  teamMember?: boolean | Prisma.Person$teamMemberArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PersonIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
 }
 export type PersonIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
+  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
 }
 
 export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1468,6 +1794,8 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     address: Prisma.$AddressPayload<ExtArgs> | null
     paymentHistories: Prisma.$PaymentHistoryPayload<ExtArgs>[]
+    role: Prisma.$RolePayload<ExtArgs> | null
+    teamMember: Prisma.$TeamMemberPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1477,7 +1805,7 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     phone: string
     addressId: string | null
     userId: string | null
-    roles: $Enums.Role[]
+    roleId: string | null
     image: string | null
     showOnSite: boolean
     description: string | null
@@ -1883,6 +2211,8 @@ export interface Prisma__PersonClient<T, Null = never, ExtArgs extends runtime.T
   payments<T extends Prisma.Person$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   address<T extends Prisma.Person$addressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$addressArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   paymentHistories<T extends Prisma.Person$paymentHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  role<T extends Prisma.Person$roleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$roleArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  teamMember<T extends Prisma.Person$teamMemberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$teamMemberArgs<ExtArgs>>): Prisma.Prisma__TeamMemberClient<runtime.Types.Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1919,7 +2249,7 @@ export interface PersonFieldRefs {
   readonly phone: Prisma.FieldRef<"Person", 'String'>
   readonly addressId: Prisma.FieldRef<"Person", 'String'>
   readonly userId: Prisma.FieldRef<"Person", 'String'>
-  readonly roles: Prisma.FieldRef<"Person", 'Role[]'>
+  readonly roleId: Prisma.FieldRef<"Person", 'String'>
   readonly image: Prisma.FieldRef<"Person", 'String'>
   readonly showOnSite: Prisma.FieldRef<"Person", 'Boolean'>
   readonly description: Prisma.FieldRef<"Person", 'String'>
@@ -2462,6 +2792,44 @@ export type Person$paymentHistoriesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.PaymentHistoryScalarFieldEnum | Prisma.PaymentHistoryScalarFieldEnum[]
+}
+
+/**
+ * Person.role
+ */
+export type Person$roleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Role
+   */
+  select?: Prisma.RoleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Role
+   */
+  omit?: Prisma.RoleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoleInclude<ExtArgs> | null
+  where?: Prisma.RoleWhereInput
+}
+
+/**
+ * Person.teamMember
+ */
+export type Person$teamMemberArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TeamMember
+   */
+  select?: Prisma.TeamMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TeamMember
+   */
+  omit?: Prisma.TeamMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamMemberInclude<ExtArgs> | null
+  where?: Prisma.TeamMemberWhereInput
 }
 
 /**

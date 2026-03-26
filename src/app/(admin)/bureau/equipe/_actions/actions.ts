@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { uploadImage } from "@/lib/cloudinary"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
+import { getRoleIdByCode } from "@/lib/association-role-helpers"
 
 // ── Helper image ───────────────────────────────────────────────────────────────
 
@@ -31,13 +32,22 @@ export async function createMembreEquipe(formData: FormData) {
   const password    = formData.get("password")  as string
   const phone       = formData.get("phone")     as string
   const role        = (formData.get("role") as string)?.trim() || "bureau"
-  const poste       = (formData.get("poste")       as string | null)?.trim() || null
+  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
   const showOnSite  = formData.get("showOnSite") !== "false"
 
   if (!firstName || !lastName || !email || !password || !phone) {
     return { error: "Tous les champs obligatoires doivent être remplis." }
+  }
+
+  if (!associationRoleCode) {
+    return { error: "Veuillez sélectionner un rôle dans le bureau." }
+  }
+
+  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
+  if (!associationRoleId) {
+    return { error: "Rôle association invalide." }
   }
 
   // 1. Créer le compte utilisateur (Better Auth)
@@ -63,11 +73,12 @@ export async function createMembreEquipe(formData: FormData) {
         email,
         phone,
         userId: createdUserId,
+        roleId: associationRoleId,
       },
     })
 
     await prisma.teamMember.create({
-      data: { personId: person.id, poste, description, imageId, order, showOnSite },
+      data: { personId: person.id, description, imageId, order, showOnSite },
     })
 
     revalidatePath("/bureau/equipe")
@@ -96,13 +107,22 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
   const lastName    = formData.get("lastName")  as string
   const phone       = formData.get("phone")     as string
   const role        = (formData.get("role") as string)?.trim() || null
-  const poste       = (formData.get("poste")       as string | null)?.trim() || null
+  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
   const showOnSite  = formData.get("showOnSite") !== "false"
 
   if (!firstName || !lastName || !phone) {
     return { error: "Le prénom, le nom et le téléphone sont requis." }
+  }
+
+  if (!associationRoleCode) {
+    return { error: "Veuillez sélectionner un rôle dans le bureau." }
+  }
+
+  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
+  if (!associationRoleId) {
+    return { error: "Rôle association invalide." }
   }
 
   try {
@@ -124,12 +144,12 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
 
     await prisma.person.update({
       where: { id: member.personId },
-      data: { firstName, lastName, phone },
+      data: { firstName, lastName, phone, roleId: associationRoleId },
     })
 
     await prisma.teamMember.update({
       where: { id },
-      data: { poste, description, imageId, order, showOnSite },
+      data: { description, imageId, order, showOnSite },
     })
 
     revalidatePath("/bureau/equipe")
