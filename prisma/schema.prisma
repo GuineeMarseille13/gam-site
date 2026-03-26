@@ -673,6 +673,66 @@ model ContactSubmission {
   @@map("contact_submissions")
 }
 
+/// Type de demande configurable (libellé, ordre, précision optionnelle obligatoire).
+model BeneficiaryDemandType {
+  id             String   @id @default(cuid())
+  label          String
+  sortOrder      Int      @default(0)
+  isActive       Boolean  @default(true)
+  /// Si vrai, le formulaire de suivi exige un champ « précision » (ex. « Autre »).
+  requiresDetail Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  beneficiaries Beneficiary[]
+
+  @@map("beneficiary_demand_types")
+}
+
+/// Fiche demandeur / suivi permanence administrative (ex-Google Form suivi).
+model Beneficiary {
+  id               String   @id @default(cuid())
+  permanenceDate   DateTime @db.Date
+  /// Un ou plusieurs types de demande (sélection multiple au formulaire).
+  demandTypes      BeneficiaryDemandType[]
+  /// Texte libre si au moins un type exige une précision (`requiresDetail`).
+  requestDetail    String?
+  firstName        String
+  lastName         String
+  phone            String?
+  email            String?
+  notes            String?
+  /// Données sensibles (mots de passe) : accès base restreint, pas d’exposition côté public.
+  birthDate              DateTime? @db.Date
+  birthCountry           String?
+  birthMunicipality      String?
+  fatherName             String?
+  motherName             String?
+  gmailAccount           String?
+  gmailPassword          String?
+  ekadiLogin             String?
+  ekadiPassword          String?
+  /// Liste de clés (voir beneficiary-suivi-config).
+  documentsProvided      Json?
+  /// Précision si « Autre » document est coché.
+  documentOtherDetail    String?
+  requestStatus          String?
+  statusComment          String?
+  assignedResponsibleName String?
+  paymentResponsible     String?
+  paymentOtherDetail     String?
+  submittedByUserId String?
+
+  user User? @relation(fields: [submittedByUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([permanenceDate])
+  @@index([submittedByUserId])
+  @@map("beneficiaries")
+}
+
 /// Liste de présence à la permanence administrative (remplace l’ancien Google Form).
 model PermanenceAdminPresenceVolunteer {
   id                  String   @id @default(cuid())
@@ -785,6 +845,7 @@ model User {
   sessions                           Session[]
   accounts                           Account[]
   permanenceAdminPresenceVolunteers  PermanenceAdminPresenceVolunteer[]
+  beneficiaries                      Beneficiary[]
 
   @@map("user")
 }

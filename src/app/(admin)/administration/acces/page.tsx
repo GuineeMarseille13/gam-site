@@ -29,7 +29,7 @@ export default async function AdministrationAccesPage() {
         isAdmin ? (
           <Button
             asChild
-            className="gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-base text-white shadow-md transition-shadow hover:bg-sky-700 hover:shadow-lg"
+            className="gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-base text-white shadow-md shadow-sky-600/25 transition-colors hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/35"
           >
             <Link href="/administration/nouveau-compte">
               <IconPlus className="size-4 sm:size-5" />

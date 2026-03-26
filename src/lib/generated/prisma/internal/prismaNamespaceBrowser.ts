@@ -88,6 +88,8 @@ export const ModelName = {
   Popup: 'Popup',
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
+  BeneficiaryDemandType: 'BeneficiaryDemandType',
+  Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
   OrderItem: 'OrderItem',
@@ -650,6 +652,52 @@ export const ContactSubmissionScalarFieldEnum = {
 } as const
 
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
+
+
+export const BeneficiaryDemandTypeScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  requiresDetail: 'requiresDetail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryDemandTypeScalarFieldEnum = (typeof BeneficiaryDemandTypeScalarFieldEnum)[keyof typeof BeneficiaryDemandTypeScalarFieldEnum]
+
+
+export const BeneficiaryScalarFieldEnum = {
+  id: 'id',
+  permanenceDate: 'permanenceDate',
+  requestDetail: 'requestDetail',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  notes: 'notes',
+  birthDate: 'birthDate',
+  birthCountry: 'birthCountry',
+  birthMunicipality: 'birthMunicipality',
+  fatherName: 'fatherName',
+  motherName: 'motherName',
+  gmailAccount: 'gmailAccount',
+  gmailPassword: 'gmailPassword',
+  ekadiLogin: 'ekadiLogin',
+  ekadiPassword: 'ekadiPassword',
+  documentsProvided: 'documentsProvided',
+  documentOtherDetail: 'documentOtherDetail',
+  requestStatus: 'requestStatus',
+  statusComment: 'statusComment',
+  assignedResponsibleName: 'assignedResponsibleName',
+  paymentResponsible: 'paymentResponsible',
+  paymentOtherDetail: 'paymentOtherDetail',
+  submittedByUserId: 'submittedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryScalarFieldEnum = (typeof BeneficiaryScalarFieldEnum)[keyof typeof BeneficiaryScalarFieldEnum]
 
 
 export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {

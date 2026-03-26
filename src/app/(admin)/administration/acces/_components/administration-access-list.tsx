@@ -116,7 +116,7 @@ export function AdministrationAccessList({
             return (
               <li
                 key={row.userId}
-                className="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-4 transition-colors hover:bg-muted/15 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+                className="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-4 transition-colors hover:bg-sky-50/70 dark:hover:bg-sky-950/40 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <Avatar className="size-10 shrink-0 ring-2 ring-border/40">
@@ -158,7 +158,12 @@ export function AdministrationAccessList({
                 <div className="flex justify-end gap-1">
                   {isAdmin && (
                     <>
-                      <Button variant="ghost" size="icon" className="size-9 shrink-0" asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-9 shrink-0 transition-colors hover:bg-sky-100/90 hover:text-sky-800 dark:hover:bg-sky-950/50 dark:hover:text-sky-200"
+                        asChild
+                      >
                         <Link
                           href={`/administration/acces/${row.userId}/modifier`}
                           aria-label={`Modifier ${displayName}`}

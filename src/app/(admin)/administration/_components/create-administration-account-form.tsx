@@ -286,7 +286,7 @@ export function AdministrationCreateAccountForm({
                     <button
                       type="button"
                       onClick={() => setShowPwd((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-sky-100/90 hover:text-sky-800 dark:hover:bg-sky-950/50 dark:hover:text-sky-300"
                       aria-label={showPwd ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                     >
                       {showPwd ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
@@ -313,7 +313,7 @@ export function AdministrationCreateAccountForm({
                     <button
                       type="button"
                       onClick={() => setShowPwd2((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-sky-100/90 hover:text-sky-800 dark:hover:bg-sky-950/50 dark:hover:text-sky-300"
                       aria-label={showPwd2 ? "Masquer" : "Afficher"}
                     >
                       {showPwd2 ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
@@ -330,7 +330,7 @@ export function AdministrationCreateAccountForm({
               <Button
                 type="submit"
                 disabled={isPending}
-                className="min-w-[160px] rounded-xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition-all hover:bg-sky-700 hover:shadow-lg"
+                className="min-w-[160px] rounded-xl bg-sky-600 text-white shadow-md shadow-sky-600/25 transition-colors hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/35"
               >
                 {isPending ? (
                   <>

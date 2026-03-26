@@ -6,11 +6,13 @@ import { usePathname } from "next/navigation"
 import {
   IconChartBar,
   IconCalendarCheck,
+  IconClipboardList,
   IconDashboard,
   IconExternalLink,
   IconHandStop,
   IconBuildingStore,
   IconBriefcase,
+  IconList,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -35,10 +37,17 @@ type NavItem = {
 }
 
 const BASE = "/administration"
+const SUIVI_PERMANENCE = `${BASE}/suivi-permanence`
 
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
+  { title: "Suivi demandeurs", url: SUIVI_PERMANENCE, icon: IconClipboardList },
+  {
+    title: "Types de demande",
+    url: `${SUIVI_PERMANENCE}/types-de-demande`,
+    icon: IconList,
+  },
   { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
   { title: "Statistiques", url: `${BASE}/statistiques`, icon: IconChartBar },
   {
@@ -57,7 +66,11 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
         <SidebarMenu>
           {items.map((item) => {
             const isActive =
-              item.url === BASE ? pathname === BASE : pathname.startsWith(item.url)
+              item.url === BASE
+                ? pathname === BASE
+                : item.url === SUIVI_PERMANENCE
+                  ? pathname === SUIVI_PERMANENCE
+                  : pathname.startsWith(item.url)
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
@@ -66,10 +79,18 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
                       className={
                         isActive
                           ? "text-sky-600"
-                          : "text-muted-foreground group-hover/item:text-foreground"
+                          : "text-muted-foreground transition-colors group-hover/item:text-sky-700 dark:group-hover/item:text-sky-300"
                       }
                     />
-                    <span>{item.title}</span>
+                    <span
+                      className={
+                        isActive
+                          ? ""
+                          : "transition-colors group-hover/item:text-sky-900 dark:group-hover/item:text-sky-100"
+                      }
+                    >
+                      {item.title}
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -107,8 +128,8 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
               size="lg"
               className="data-[slot=sidebar-menu-button]:p-2!"
             >
-              <Link href={BASE}>
-                <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 shadow-sm text-white font-black text-base leading-none select-none">
+                <Link href={BASE}>
+                <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 shadow-sm text-white font-black text-base leading-none select-none transition-[transform,box-shadow] hover:shadow-md hover:shadow-sky-600/30 hover:brightness-105">
                   G
                 </div>
                 <div className="flex flex-col leading-tight">
@@ -130,7 +151,10 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
           {(role === "admin" || role === "bureau") && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="/bureau" className="text-muted-foreground hover:text-foreground">
+                <Link
+                  href="/bureau"
+                  className="text-muted-foreground transition-colors hover:text-sky-700 dark:hover:text-sky-300"
+                >
                   <IconBriefcase className="size-4" />
                   <span>Bureau administratif</span>
                 </Link>
@@ -139,7 +163,11 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
           )}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/" target="_blank" className="text-muted-foreground hover:text-foreground">
+              <Link
+                href="/"
+                target="_blank"
+                className="text-muted-foreground transition-colors hover:text-sky-700 dark:hover:text-sky-300"
+              >
                 <IconBuildingStore className="size-4" />
                 <span>Voir le site public</span>
                 <IconExternalLink className="ml-auto size-3 opacity-50" />

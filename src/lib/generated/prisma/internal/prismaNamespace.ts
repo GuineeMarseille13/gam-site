@@ -421,6 +421,8 @@ export const ModelName = {
   Popup: 'Popup',
   Banner: 'Banner',
   ContactSubmission: 'ContactSubmission',
+  BeneficiaryDemandType: 'BeneficiaryDemandType',
+  Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
   Order: 'Order',
   OrderItem: 'OrderItem',
@@ -445,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3187,6 +3189,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BeneficiaryDemandType: {
+      payload: Prisma.$BeneficiaryDemandTypePayload<ExtArgs>
+      fields: Prisma.BeneficiaryDemandTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BeneficiaryDemandTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BeneficiaryDemandTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        findFirst: {
+          args: Prisma.BeneficiaryDemandTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BeneficiaryDemandTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        findMany: {
+          args: Prisma.BeneficiaryDemandTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>[]
+        }
+        create: {
+          args: Prisma.BeneficiaryDemandTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        createMany: {
+          args: Prisma.BeneficiaryDemandTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BeneficiaryDemandTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>[]
+        }
+        delete: {
+          args: Prisma.BeneficiaryDemandTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        update: {
+          args: Prisma.BeneficiaryDemandTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.BeneficiaryDemandTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BeneficiaryDemandTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BeneficiaryDemandTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.BeneficiaryDemandTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryDemandTypePayload>
+        }
+        aggregate: {
+          args: Prisma.BeneficiaryDemandTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBeneficiaryDemandType>
+        }
+        groupBy: {
+          args: Prisma.BeneficiaryDemandTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryDemandTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BeneficiaryDemandTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryDemandTypeCountAggregateOutputType> | number
+        }
+      }
+    }
+    Beneficiary: {
+      payload: Prisma.$BeneficiaryPayload<ExtArgs>
+      fields: Prisma.BeneficiaryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BeneficiaryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BeneficiaryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        findFirst: {
+          args: Prisma.BeneficiaryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BeneficiaryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        findMany: {
+          args: Prisma.BeneficiaryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>[]
+        }
+        create: {
+          args: Prisma.BeneficiaryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        createMany: {
+          args: Prisma.BeneficiaryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BeneficiaryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>[]
+        }
+        delete: {
+          args: Prisma.BeneficiaryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        update: {
+          args: Prisma.BeneficiaryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        deleteMany: {
+          args: Prisma.BeneficiaryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BeneficiaryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BeneficiaryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>[]
+        }
+        upsert: {
+          args: Prisma.BeneficiaryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BeneficiaryPayload>
+        }
+        aggregate: {
+          args: Prisma.BeneficiaryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBeneficiary>
+        }
+        groupBy: {
+          args: Prisma.BeneficiaryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BeneficiaryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BeneficiaryCountAggregateOutputType> | number
+        }
+      }
+    }
     PermanenceAdminPresenceVolunteer: {
       payload: Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>
       fields: Prisma.PermanenceAdminPresenceVolunteerFieldRefs
@@ -4429,6 +4579,52 @@ export const ContactSubmissionScalarFieldEnum = {
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
 
 
+export const BeneficiaryDemandTypeScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  requiresDetail: 'requiresDetail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryDemandTypeScalarFieldEnum = (typeof BeneficiaryDemandTypeScalarFieldEnum)[keyof typeof BeneficiaryDemandTypeScalarFieldEnum]
+
+
+export const BeneficiaryScalarFieldEnum = {
+  id: 'id',
+  permanenceDate: 'permanenceDate',
+  requestDetail: 'requestDetail',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  notes: 'notes',
+  birthDate: 'birthDate',
+  birthCountry: 'birthCountry',
+  birthMunicipality: 'birthMunicipality',
+  fatherName: 'fatherName',
+  motherName: 'motherName',
+  gmailAccount: 'gmailAccount',
+  gmailPassword: 'gmailPassword',
+  ekadiLogin: 'ekadiLogin',
+  ekadiPassword: 'ekadiPassword',
+  documentsProvided: 'documentsProvided',
+  documentOtherDetail: 'documentOtherDetail',
+  requestStatus: 'requestStatus',
+  statusComment: 'statusComment',
+  assignedResponsibleName: 'assignedResponsibleName',
+  paymentResponsible: 'paymentResponsible',
+  paymentOtherDetail: 'paymentOtherDetail',
+  submittedByUserId: 'submittedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BeneficiaryScalarFieldEnum = (typeof BeneficiaryScalarFieldEnum)[keyof typeof BeneficiaryScalarFieldEnum]
+
+
 export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
   id: 'id',
   permanenceDate: 'permanenceDate',
@@ -4915,6 +5111,8 @@ export type GlobalOmitConfig = {
   popup?: Prisma.PopupOmit
   banner?: Prisma.BannerOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
+  beneficiaryDemandType?: Prisma.BeneficiaryDemandTypeOmit
+  beneficiary?: Prisma.BeneficiaryOmit
   permanenceAdminPresenceVolunteer?: Prisma.PermanenceAdminPresenceVolunteerOmit
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit

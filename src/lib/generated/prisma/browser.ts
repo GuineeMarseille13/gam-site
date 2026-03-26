@@ -203,6 +203,16 @@ export type Banner = Prisma.BannerModel
  */
 export type ContactSubmission = Prisma.ContactSubmissionModel
 /**
+ * Model BeneficiaryDemandType
+ * Type de demande configurable (libellé, ordre, précision optionnelle obligatoire).
+ */
+export type BeneficiaryDemandType = Prisma.BeneficiaryDemandTypeModel
+/**
+ * Model Beneficiary
+ * Fiche demandeur / suivi permanence administrative (ex-Google Form suivi).
+ */
+export type Beneficiary = Prisma.BeneficiaryModel
+/**
  * Model PermanenceAdminPresenceVolunteer
  * Liste de présence à la permanence administrative (remplace l’ancien Google Form).
  */

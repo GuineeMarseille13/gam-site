@@ -111,7 +111,7 @@ export function PermanenceAnnualHoursResults({ year, rows }: PermanenceAnnualHou
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-11 w-full gap-2 border-sky-200/80 bg-background hover:border-sky-400 hover:bg-sky-50 hover:text-foreground sm:h-9 dark:border-sky-800/70 dark:hover:border-sky-500 dark:hover:bg-sky-950/55 dark:hover:text-sky-50"
+                  className="h-11 w-full gap-2 border-sky-200/80 bg-background text-sky-900 transition-colors hover:border-sky-400 hover:bg-sky-50 hover:text-sky-950 sm:h-9 dark:border-sky-800/70 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/55 dark:hover:text-sky-50"
                   onClick={() => openDetail(row.memberFullName)}
                 >
                   <Eye className="size-4 shrink-0" aria-hidden />
@@ -163,7 +163,7 @@ export function PermanenceAnnualHoursResults({ year, rows }: PermanenceAnnualHou
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="gap-1.5 border-sky-200/80 bg-background hover:border-sky-400 hover:bg-sky-50 hover:text-foreground dark:border-sky-800/70 dark:hover:border-sky-500 dark:hover:bg-sky-950/55 dark:hover:text-sky-50"
+                    className="gap-1.5 border-sky-200/80 bg-background text-sky-900 transition-colors hover:border-sky-400 hover:bg-sky-50 hover:text-sky-950 dark:border-sky-800/70 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/55 dark:hover:text-sky-50"
                     onClick={() => openDetail(row.memberFullName)}
                   >
                     <Eye className="size-4" aria-hidden />

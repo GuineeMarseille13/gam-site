@@ -160,7 +160,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
         <Button
           type="button"
           onClick={() => setDone(false)}
-          className="mt-2 h-11 w-full max-w-sm bg-sky-600 text-white hover:bg-sky-700 sm:h-10"
+          className="mt-2 h-11 w-full max-w-sm bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10"
         >
           Nouvelle saisie
         </Button>
@@ -191,7 +191,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
                 type="button"
                 variant="outline"
                 className={cn(
-                  "h-auto min-h-11 w-full max-w-full justify-start border-sky-200/80 px-3 py-2.5 text-left text-sm font-normal hover:border-sky-400 hover:bg-sky-50/90 hover:text-foreground sm:max-w-md sm:text-base dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45",
+                  "h-auto min-h-11 w-full max-w-full justify-start border-sky-200/80 px-3 py-2.5 text-left text-sm font-normal transition-colors hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-900 sm:max-w-md sm:text-base dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100",
                   !permanenceDate && "text-muted-foreground",
                 )}
               >
@@ -230,7 +230,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
           <Select value={memberFullName} onValueChange={setMemberFullName}>
             <SelectTrigger
               id="adm-perm-member"
-              className="h-11 w-full max-w-full border-sky-200/80 hover:border-sky-400 hover:bg-sky-50/90 dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 sm:max-w-md"
+              className="h-11 w-full max-w-full border-sky-200/80 transition-colors hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-900 dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100 sm:max-w-md"
             >
               <SelectValue placeholder="Choisir dans la liste" />
             </SelectTrigger>
@@ -260,8 +260,8 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
                 className={cn(
                   "h-11 min-h-11 w-full max-w-full sm:h-9 sm:min-h-0 sm:w-auto",
                   hoursPreset === "two"
-                    ? "bg-sky-600 text-white hover:bg-sky-700"
-                    : "border-sky-200/80 hover:border-sky-400 hover:bg-sky-50/90 dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45",
+                    ? "bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30"
+                    : "border-sky-200/80 text-sky-900 transition-colors hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-950 dark:border-sky-800/60 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-50",
                 )}
                 onClick={() => {
                   setHoursPreset("two")
@@ -277,8 +277,8 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
                 className={cn(
                   "h-11 min-h-11 w-full max-w-full sm:h-9 sm:min-h-0 sm:w-auto",
                   hoursPreset === "custom"
-                    ? "bg-sky-600 text-white hover:bg-sky-700"
-                    : "border-sky-200/80 hover:border-sky-400 hover:bg-sky-50/90 dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45",
+                    ? "bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30"
+                    : "border-sky-200/80 text-sky-900 transition-colors hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-950 dark:border-sky-800/60 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-50",
                 )}
                 onClick={() => {
                   setHoursPreset("custom")
@@ -350,7 +350,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
           variant="ghost"
           onClick={handleBack}
           disabled={step === 1 || pending}
-          className="h-11 w-full max-w-full gap-1 hover:bg-sky-100/90 hover:text-foreground sm:h-10 sm:w-auto dark:hover:bg-sky-950/40"
+          className="h-11 w-full max-w-full gap-1 transition-colors hover:bg-sky-100/90 hover:text-sky-900 sm:h-10 sm:w-auto dark:hover:bg-sky-950/50 dark:hover:text-sky-100"
         >
           <ChevronLeft className="size-4" aria-hidden />
           Retour
@@ -360,7 +360,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
             type="button"
             onClick={handleNext}
             disabled={pending}
-            className="h-11 w-full max-w-full gap-1 bg-sky-600 text-white hover:bg-sky-700 sm:h-10 sm:w-auto"
+            className="h-11 w-full max-w-full gap-1 bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10 sm:w-auto"
           >
             Suivant
             <ChevronRight className="size-4" aria-hidden />
@@ -370,7 +370,7 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
             type="button"
             onClick={handleSubmit}
             disabled={pending}
-            className="h-11 w-full max-w-full gap-2 bg-sky-600 text-white hover:bg-sky-700 sm:h-10 sm:min-w-[140px] sm:w-auto"
+            className="h-11 w-full max-w-full gap-2 bg-sky-600 text-white shadow-sm shadow-sky-600/20 transition-colors hover:bg-sky-700 hover:shadow-md hover:shadow-sky-600/30 sm:h-10 sm:min-w-[140px] sm:w-auto"
           >
             {pending && <Loader2 className="size-4 animate-spin" aria-hidden />}
             Enregistrer
