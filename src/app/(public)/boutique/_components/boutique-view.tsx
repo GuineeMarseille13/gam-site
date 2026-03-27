@@ -9,6 +9,7 @@ import { useCart } from "../_hooks/use-cart";
 import { ProductCard } from "./product-card";
 import { CartDrawer } from "./cart-drawer";
 import type { Product } from "../_schemas/product.schema";
+import type { FeaturedProductRecord } from "@/app/_services/home";
 
 /** Durée de la mise en évidence du produit après redirection (ms) */
 const HIGHLIGHT_DURATION_MS = 4500;
@@ -17,10 +18,11 @@ const SCROLL_DELAY_MS = 150;
 
 const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
 
-function transformProduct(p: any): Product {
-  const hasDiscount = p.discountActive && p.discountPercent > 0;
+function transformProduct(p: FeaturedProductRecord): Product {
+  const pct = p.discountPercent ?? 0;
+  const hasDiscount = Boolean(p.discountActive && pct > 0);
   const effectivePrice = hasDiscount
-    ? Math.round(p.price * (1 - p.discountPercent / 100))
+    ? Math.round(p.price * (1 - pct / 100))
     : p.price;
   return {
     id: p.id,
@@ -28,7 +30,7 @@ function transformProduct(p: any): Product {
     image: p.imageId ? `${CLOUDINARY_BASE}/w_600,h_600,c_fill,q_auto,f_auto/${p.imageId}` : "",
     price: effectivePrice,
     originalPrice: hasDiscount ? p.price : undefined,
-    discount: hasDiscount ? p.discountPercent : undefined,
+    discount: hasDiscount ? pct : undefined,
     description: p.description ?? undefined,
     inStock: (p.stock ?? 0) > 0,
   };
@@ -156,7 +158,7 @@ export function BoutiqueView() {
           transition={{ duration: 0.5 }}
           className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3 sm:mb-4"
         >
-          Boutique de l'association
+          Boutique de l&apos;association
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 8 }}

@@ -21,7 +21,7 @@ import {
   type Review,
   type Statistic,
   type Volunteer,
-  type Product,
+  type FeaturedProductRecord,
   type VideoTestimonial,
   type SocialMediaItem,
 } from '../_services/home';
@@ -129,7 +129,7 @@ export function useSocialMedias() {
  * Hook pour récupérer les produits en vedette
  */
 export function useFeaturedProducts() {
-  return useQuery<Product[]>({
+  return useQuery<FeaturedProductRecord[]>({
     queryKey: ['featured-products'],
     queryFn: getFeaturedProducts,
     staleTime: 5 * 60 * 1000, // 5 minutes

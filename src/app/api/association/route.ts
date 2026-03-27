@@ -4,82 +4,103 @@ import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updateAssociationSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional(),
-  logo: z.string().url().optional(),
-  president: z.object({
-    name: z.string(),
-    role: z.string(),
-    image: z.string().url(),
-    message: z.string(),
-  }).optional(),
-  aboutUs: z.object({
-    whoWeAre: z.object({
-      title: z.string(),
-      text: z.string(),
-      image: z.string().url(),
-    }),
-    whatWeOffer: z.object({
-      title: z.string(),
-      text: z.string(),
-      image: z.string().url(),
-    }),
-  }).optional(),
-  foundingDate: z.string().datetime().optional(),
-  address: z.string().optional(),
-  contactEmail: z.string().email().optional(),
-  contactPhone: z.string().optional(),
-})
+const updateAssociationSchema = z
+  .object({
+    name: z.string().min(1).optional(),
+    description: z.string().optional(),
+    logo: z.string().url().optional(),
+    president: z
+      .object({
+        name: z.string(),
+        role: z.string(),
+        image: z.string().url(),
+        message: z.string(),
+      })
+      .optional(),
+    aboutUs: z
+      .object({
+        whoWeAre: z.object({
+          title: z.string(),
+          text: z.string(),
+          image: z.string().url(),
+        }),
+        whatWeOffer: z.object({
+          title: z.string(),
+          text: z.string(),
+          image: z.string().url(),
+        }),
+      })
+      .optional(),
+    foundingDate: z.string().datetime().optional(),
+    address: z.string().optional(),
+    contactEmail: z.string().email().optional(),
+    contactPhone: z.string().optional(),
+  })
+  .strict()
 
-// GET /api/association - Récupérer les informations de l'association
+/**
+ * GET /api/association — Basé sur `AboutUs` (premier enregistrement).
+ */
 export async function GET() {
   try {
-    let associationInfo = await prisma.associationInfo.findFirst()
-
-    // Si aucune info n'existe, créer une entrée par défaut
-    if (!associationInfo) {
-      associationInfo = await prisma.associationInfo.create({
+    let row = await prisma.aboutUs.findFirst({ orderBy: { createdAt: 'asc' } })
+    if (!row) {
+      row = await prisma.aboutUs.create({
         data: {
-          name: 'Guinée À Marseille',
+          title: 'Guinée À Marseille',
           description: '',
         },
       })
     }
 
-    return successResponse(associationInfo)
+    return successResponse({
+      id: row.id,
+      name: row.title,
+      description: row.description ?? '',
+    })
   } catch (error) {
     return handleApiError(error)
   }
 }
 
-// PUT /api/association - Mettre à jour les informations de l'association
+/**
+ * PUT /api/association — Met à jour titre / description sur `AboutUs`.
+ */
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
     const validatedData = updateAssociationSchema.parse(body)
 
-    const updateData: any = { ...validatedData }
-    if (validatedData.foundingDate) {
-      updateData.foundingDate = new Date(validatedData.foundingDate)
-    }
+    let row = await prisma.aboutUs.findFirst({ orderBy: { createdAt: 'asc' } })
+    const nextTitle = validatedData.name ?? row?.title ?? 'Guinée À Marseille'
+    const nextDesc = validatedData.description ?? row?.description ?? ''
 
-    let associationInfo = await prisma.associationInfo.findFirst()
-
-    if (!associationInfo) {
-      associationInfo = await prisma.associationInfo.create({
-        data: updateData,
+    if (!row) {
+      row = await prisma.aboutUs.create({
+        data: {
+          title: nextTitle,
+          description: nextDesc,
+        },
       })
     } else {
-      associationInfo = await prisma.associationInfo.update({
-        where: { id: associationInfo.id },
-        data: updateData,
+      row = await prisma.aboutUs.update({
+        where: { id: row.id },
+        data: {
+          title: nextTitle,
+          description: nextDesc,
+        },
       })
     }
 
-    return successResponse(associationInfo, 'Informations mises à jour avec succès')
+    return successResponse(
+      {
+        id: row.id,
+        name: row.title,
+        description: row.description ?? '',
+      },
+      'Informations mises à jour avec succès',
+    )
   } catch (error) {
     return handleApiError(error)
   }
 }
-

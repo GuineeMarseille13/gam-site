@@ -9,13 +9,11 @@ import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/(public)/evenements/_confi
 
 interface EventCardProps {
   event: Event;
-  isMobile?: boolean;
   index: number;
 }
 
 const EventCard = memo(function EventCard({
   event,
-  isMobile = false,
   index,
 }: EventCardProps) {
   return (
@@ -54,7 +52,7 @@ const EventCard = memo(function EventCard({
 
       {/* Galerie : image actuelle en grand + autres en miniatures */}
       {event.media && event.media.length > 0 && (
-        <MediaGallery media={event.media} isMobile={isMobile} galleryId={String(event.id)} />
+        <MediaGallery media={event.media} galleryId={String(event.id)} />
       )}
     </motion.div>
   );

@@ -177,7 +177,7 @@ export default function PolePage({ pole }: PolePageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Description détaillée - Section introductive avec design moderne */}
         <motion.section
-          ref={descriptionRef as any}
+          ref={descriptionRef}
           initial={{ opacity: 0, y: 30 }}
           animate={isDescriptionVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{

@@ -3,7 +3,7 @@
  * Sections : Welcome, Pole, Partner, Event, Review, Product, Achievement, Volunteer, TeamMember, ReportActivity, AboutUs
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
 import type {
   WelcomeSection,
   PoleSection,
@@ -22,7 +22,7 @@ import type {
 // ============================================
 // Welcome Section
 // ============================================
-const welcomeSectionCrud = useCrud<WelcomeSection>({
+const welcomeSectionCrud = createCrudResources<WelcomeSection>({
   endpoint: '/welcome-sections',
   queryKey: ['welcomeSections'],
 })
@@ -52,7 +52,7 @@ export function useDeleteWelcomeSection() {
 // ============================================
 // Pole Section
 // ============================================
-const poleSectionCrud = useCrud<PoleSection>({
+const poleSectionCrud = createCrudResources<PoleSection>({
   endpoint: '/pole-sections',
   queryKey: ['poleSections'],
 })
@@ -84,7 +84,7 @@ export function useDeletePoleSection() {
 // ============================================
 // Partner Section
 // ============================================
-const partnerSectionCrud = useCrud<PartnerSection>({
+const partnerSectionCrud = createCrudResources<PartnerSection>({
   endpoint: '/partner-sections',
   queryKey: ['partnerSections'],
 })
@@ -116,7 +116,7 @@ export function useDeletePartnerSection() {
 // ============================================
 // Event Section
 // ============================================
-const eventSectionCrud = useCrud<EventSection>({
+const eventSectionCrud = createCrudResources<EventSection>({
   endpoint: '/event-sections',
   queryKey: ['eventSections'],
 })
@@ -148,7 +148,7 @@ export function useDeleteEventSection() {
 // ============================================
 // Review Section
 // ============================================
-const reviewSectionCrud = useCrud<ReviewSection>({
+const reviewSectionCrud = createCrudResources<ReviewSection>({
   endpoint: '/review-sections',
   queryKey: ['reviewSections'],
 })
@@ -180,7 +180,7 @@ export function useDeleteReviewSection() {
 // ============================================
 // Product Section
 // ============================================
-const productSectionCrud = useCrud<ProductSection>({
+const productSectionCrud = createCrudResources<ProductSection>({
   endpoint: '/product-sections',
   queryKey: ['productSections'],
 })
@@ -212,7 +212,7 @@ export function useDeleteProductSection() {
 // ============================================
 // Product Category
 // ============================================
-const productCategoryCrud = useCrud<ProductCategory>({
+const productCategoryCrud = createCrudResources<ProductCategory>({
   endpoint: '/product-categories',
   queryKey: ['productCategories'],
 })
@@ -244,7 +244,7 @@ export function useDeleteProductCategory() {
 // ============================================
 // Achievement Section
 // ============================================
-const achievementSectionCrud = useCrud<AchievementSection>({
+const achievementSectionCrud = createCrudResources<AchievementSection>({
   endpoint: '/achievement-sections',
   queryKey: ['achievementSections'],
 })
@@ -276,7 +276,7 @@ export function useDeleteAchievementSection() {
 // ============================================
 // Volunteer Section
 // ============================================
-const volunteerSectionCrud = useCrud<VolunteerSection>({
+const volunteerSectionCrud = createCrudResources<VolunteerSection>({
   endpoint: '/volunteer-sections',
   queryKey: ['volunteerSections'],
 })
@@ -308,7 +308,7 @@ export function useDeleteVolunteerSection() {
 // ============================================
 // Team Member Section
 // ============================================
-const teamMemberSectionCrud = useCrud<TeamMemberSection>({
+const teamMemberSectionCrud = createCrudResources<TeamMemberSection>({
   endpoint: '/team-member-sections',
   queryKey: ['teamMemberSections'],
 })
@@ -340,7 +340,7 @@ export function useDeleteTeamMemberSection() {
 // ============================================
 // Report Activity Section
 // ============================================
-const reportActivitySectionCrud = useCrud<ReportActivitySection>({
+const reportActivitySectionCrud = createCrudResources<ReportActivitySection>({
   endpoint: '/report-activity-sections',
   queryKey: ['reportActivitySections'],
 })
@@ -372,7 +372,7 @@ export function useDeleteReportActivitySection() {
 // ============================================
 // About Us Section
 // ============================================
-const aboutUsSectionCrud = useCrud<AboutUsSection>({
+const aboutUsSectionCrud = createCrudResources<AboutUsSection>({
   endpoint: '/about-us-sections',
   queryKey: ['aboutUsSections'],
 })

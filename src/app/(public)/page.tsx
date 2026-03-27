@@ -28,6 +28,7 @@ import {
   useVideoTestimonials,
   useSocialMedias,
 } from "@/app/_hooks/use-home-data";
+import type { CarouselItem, FeaturedProductRecord } from "@/app/_services/home";
 import {
   CarouselSkeleton,
   PartnersCarouselSkeleton,
@@ -117,13 +118,11 @@ const floatingElements = [
  */
 export default function Home() {
   // Récupération des données dynamiques
-  const { data: carouselItems = [], isLoading: isLoadingCarousel, isError: isErrorCarousel } = useCarouselItems();
+  const { data: carouselItems = [], isLoading: isLoadingCarousel } = useCarouselItems();
   const { data: partnersData = [], isLoading: isLoadingPartners } = usePartners();
   const { data: polesData = [], isLoading: isLoadingPoles } = usePoles();
   const { data: recentEvents = [], isLoading: isLoadingEvents } = useRecentEvents();
-  const { data: reviews = [], isLoading: isLoadingReviews } = useReviews({
-    include: { role: true },
-  });
+  const { data: reviews = [], isLoading: isLoadingReviews } = useReviews();
   const { data: statistics = [], isLoading: isLoadingStatistics } = useStatistics();
   const { data: volunteers = [], isLoading: isLoadingVolunteers } = useVolunteers();
   const { data: featuredProducts = [], isLoading: isLoadingProducts } = useFeaturedProducts();
@@ -134,6 +133,13 @@ export default function Home() {
   const router = useRouter();
 
   // Données par défaut pour le carrousel si l'API ne retourne rien
+  type DefaultCarouselSlide = {
+    id: number
+    image: string
+    title: string
+    description: string
+  }
+
   const defaultCarouselItems = useMemo(() => [
     {
       id: 1,
@@ -157,15 +163,22 @@ export default function Home() {
 
   // Transformer les données du carrousel pour correspondre au format attendu
   const transformedCarouselItems = useMemo(() => {
-    // Utiliser les données de l'API si disponibles, sinon les données par défaut
-    const itemsToUse = carouselItems.length > 0 ? carouselItems : defaultCarouselItems;
-    const transformed = itemsToUse.map((item: any) => ({
-      id: typeof item.id === 'string' ? parseInt(item.id) || 0 : (item.id || 0),
-      image: item.image || '',
-      title: item.title || '',
-      description: item.description || '',
-    }));
-    return transformed;
+    const itemsToUse: (CarouselItem | DefaultCarouselSlide)[] =
+      carouselItems.length > 0 ? carouselItems : defaultCarouselItems;
+    return itemsToUse.map((item) => {
+      const idNum =
+        typeof item.id === "string"
+          ? parseInt(item.id, 10) || 0
+          : typeof item.id === "number"
+            ? item.id
+            : 0;
+      return {
+        id: idNum,
+        image: item.image || "",
+        title: item.title || "",
+        description: item.description || "",
+      };
+    });
   }, [carouselItems, defaultCarouselItems]);
 
   // Transformer les données des partenaires pour correspondre au format attendu
@@ -182,10 +195,11 @@ export default function Home() {
 
   // Transformer les données des produits pour correspondre au format attendu
   const transformedProducts = useMemo(() => {
-    return featuredProducts.map((product: any) => {
-      const hasDiscount = product.discountActive && product.discountPercent > 0;
+    return featuredProducts.map((product: FeaturedProductRecord) => {
+      const pct = product.discountPercent ?? 0;
+      const hasDiscount = Boolean(product.discountActive && pct > 0);
       const effectivePrice = hasDiscount
-        ? Math.round(product.price * (1 - product.discountPercent / 100))
+        ? Math.round(product.price * (1 - pct / 100))
         : product.price;
       return {
         id: product.id,
@@ -195,8 +209,8 @@ export default function Home() {
           : "",
         price: effectivePrice,
         originalPrice: hasDiscount ? product.price : undefined,
-        discount: hasDiscount ? product.discountPercent : undefined,
-        description: product.description,
+        discount: hasDiscount ? pct : undefined,
+        description: product.description ?? undefined,
         inStock: (product.stock ?? 0) > 0,
       };
     });

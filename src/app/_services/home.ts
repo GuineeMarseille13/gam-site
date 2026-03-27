@@ -102,8 +102,27 @@ export interface Product {
   discount?: number;
 }
 
+/**
+ * Produit tel que renvoyé par GET /api/products (champs Prisma exposés au front).
+ */
+export interface FeaturedProductRecord {
+  id: string
+  title: string
+  imageId: string | null
+  price: number
+  discountActive?: boolean
+  discountPercent?: number
+  description?: string | null
+  stock?: number | null
+}
 
 const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload';
+
+/** Tableau d’objets JSON issus des routes API internes. */
+function asJsonObjectArray(data: unknown): Record<string, unknown>[] {
+  if (!Array.isArray(data)) return []
+  return data.filter((x): x is Record<string, unknown> => typeof x === 'object' && x !== null)
+}
 
 function buildImageUrl(publicId: string) {
   return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`;
@@ -191,14 +210,13 @@ export async function getCarouselItems(): Promise<CarouselItem[]> {
     const response = await fetch(`/api/images?where=${where}&orderBy=${orderBy}`, { cache: 'no-store' })
     if (!response.ok) return []
     const data = await response.json()
-    if (!Array.isArray(data)) return []
-    return data.map((img: any) => ({
-      id:          img.id,
-      image:       img.url,
-      title:       img.title       ?? '',
-      description: img.description ?? '',
-      order:       img.order       ?? 0,
-      isActive:    img.isActive    ?? true,
+    return asJsonObjectArray(data).map((img) => ({
+      id: String(img.id ?? ''),
+      image: String(img.url ?? ''),
+      title: typeof img.title === 'string' ? img.title : '',
+      description: typeof img.description === 'string' ? img.description : '',
+      order: typeof img.order === 'number' ? img.order : 0,
+      isActive: typeof img.isActive === 'boolean' ? img.isActive : true,
     }))
   } catch {
     return []
@@ -213,15 +231,14 @@ export async function getPartners(): Promise<Partner[]> {
     const response = await fetch('/api/partners', { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    if (!Array.isArray(data)) return [];
-    return data.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      logo: p.imageId ? `${CLOUDINARY_BASE}/${p.imageId}` : undefined,
-      description: p.description ?? undefined,
-      website: p.url ?? undefined,
-      order: p.order ?? 0,
-      isActive: p.isActive ?? true,
+    return asJsonObjectArray(data).map((p) => ({
+      id: String(p.id ?? ''),
+      name: typeof p.name === 'string' ? p.name : '',
+      logo: typeof p.imageId === 'string' ? `${CLOUDINARY_BASE}/${p.imageId}` : undefined,
+      description: typeof p.description === 'string' ? p.description : undefined,
+      website: typeof p.url === 'string' ? p.url : undefined,
+      order: typeof p.order === 'number' ? p.order : 0,
+      isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
     }));
   } catch {
     return [];
@@ -236,31 +253,44 @@ export async function getRecentEvents(): Promise<Event[]> {
     const response = await fetch('/api/events', { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    if (!Array.isArray(data)) return [];
+    const rows = asJsonObjectArray(data);
 
-    return data
-      .sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+    return rows
+      .sort((a, b) => {
+        const tb = new Date(String(b.startDate ?? '')).getTime()
+        const ta = new Date(String(a.startDate ?? '')).getTime()
+        return tb - ta
+      })
       .slice(0, 5)
-      .map((event: any) => {
-        const startDate = new Date(event.startDate);
-        const media = buildEventMedia(event.images ?? [], event.videos ?? [], event.imageId, event.videoId, event.title);
+      .map((event) => {
+        const startDate = new Date(String(event.startDate ?? ''))
+        const title = typeof event.title === 'string' ? event.title : ''
+        const images = Array.isArray(event.images)
+          ? (event.images as { imageId: string }[])
+          : []
+        const videos = Array.isArray(event.videos)
+          ? (event.videos as { url: string }[])
+          : undefined
+        const imageId = typeof event.imageId === 'string' ? event.imageId : null
+        const videoId = typeof event.videoId === 'string' ? event.videoId : null
+        const media = buildEventMedia(images, videos, imageId, videoId, title)
         return {
-          id: event.id,
-          title: event.title,
-          description: event.description ?? '',
+          id: String(event.id ?? ''),
+          title,
+          description: typeof event.description === 'string' ? event.description : '',
           date: startDate.toLocaleDateString('fr-FR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
           }),
-          location: event.location ?? undefined,
+          location: typeof event.location === 'string' ? event.location : undefined,
           year: startDate.getFullYear(),
           category: undefined,
-          image: media[0]?.type === 'image' ? media[0].url : (event.imageId ? `${CLOUDINARY_BASE}/${event.imageId}` : undefined),
-          video: event.videoId ? `${CLOUDINARY_BASE}/${event.videoId}` : undefined,
+          image: media[0]?.type === 'image' ? media[0].url : (imageId ? `${CLOUDINARY_BASE}/${imageId}` : undefined),
+          video: videoId ? `${CLOUDINARY_BASE}/${videoId}` : undefined,
           media: media.length > 0 ? media : undefined,
-        };
-      });
+        }
+      })
   } catch {
     return [];
   }
@@ -278,21 +308,26 @@ export async function getReviews(): Promise<Review[]> {
     const response = await fetch('/api/reviews', { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    if (!Array.isArray(data)) return [];
+    const rows = asJsonObjectArray(data);
 
-    return data
-      .filter((r: any) => r.isActive)
-      .map((r: any) => ({
-        id: r.id,
-        name: `${r.firstName} ${r.lastName}`,
-        role: r.role,
-        body: r.body,
-        img: r.avatarUrl || undefined,
-        country: r.country ?? '',
-        rating: RATING_MAP[r.rating] ?? 'FIVE',
-        isPublished: r.isActive,
-        isFeatured: r.isVerified ?? false,
-      }));
+    return rows
+      .filter((r) => r.isActive === true)
+      .map((r) => {
+        const first = typeof r.firstName === 'string' ? r.firstName : ''
+        const last = typeof r.lastName === 'string' ? r.lastName : ''
+        const ratingNum = typeof r.rating === 'number' ? r.rating : 5
+        return {
+          id: String(r.id ?? ''),
+          name: `${first} ${last}`.trim(),
+          role: typeof r.role === 'string' ? r.role : '',
+          body: typeof r.body === 'string' ? r.body : '',
+          img: typeof r.avatarUrl === 'string' ? r.avatarUrl : undefined,
+          country: typeof r.country === 'string' ? r.country : '',
+          rating: RATING_MAP[ratingNum] ?? 'FIVE',
+          isPublished: r.isActive === true,
+          isFeatured: r.isVerified === true,
+        }
+      })
   } catch {
     return [];
   }
@@ -308,20 +343,26 @@ export async function getStatistics(): Promise<Statistic[]> {
     const response = await fetch('/api/achievements', { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    if (!Array.isArray(data)) return [];
-    return data
-      .filter((a: any) => a.isActive && a.label && a.value != null)
-      .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-      .map((a: any) => ({
-        id: a.id,
-        label: a.label,
-        value: a.value,
-        color: (VALID_COLORS.includes(a.color) ? a.color : 'blue') as Statistic['color'],
-        icon: a.icon ?? '📊',
-        suffix: a.suffix ?? undefined,
-        order: a.order ?? 0,
-        isActive: true,
-      }));
+    const rows = asJsonObjectArray(data);
+    return rows
+      .filter((a) => a.isActive === true && a.label != null && a.value != null)
+      .sort((a, b) => (typeof a.order === 'number' ? a.order : 0) - (typeof b.order === 'number' ? b.order : 0))
+      .map((a) => {
+        const colorRaw = typeof a.color === 'string' ? a.color : 'blue'
+        const color = (VALID_COLORS as readonly string[]).includes(colorRaw)
+          ? (colorRaw as Statistic['color'])
+          : 'blue'
+        return {
+          id: String(a.id ?? ''),
+          label: String(a.label ?? ''),
+          value: typeof a.value === 'number' ? a.value : Number(a.value),
+          color,
+          icon: typeof a.icon === 'string' ? a.icon : '📊',
+          suffix: typeof a.suffix === 'string' ? a.suffix : undefined,
+          order: typeof a.order === 'number' ? a.order : 0,
+          isActive: true,
+        }
+      })
   } catch {
     return [];
   }
@@ -360,15 +401,14 @@ export async function getVideoTestimonials(): Promise<VideoTestimonial[]> {
     const response = await fetch(`/api/videos?where=${where}&orderBy=${orderBy}`, { cache: 'no-store' });
     if (!response.ok) return [];
     const data = await response.json();
-    if (!Array.isArray(data)) return [];
-    return data.map((v: any) => ({
-      id: v.id,
-      url: v.url,
-      title: v.title ?? undefined,
-      description: v.description ?? undefined,
-      thumbnail: v.thumbnail ?? undefined,
-      order: v.order ?? 0,
-    }));
+    return asJsonObjectArray(data).map((v) => ({
+      id: String(v.id ?? ''),
+      url: typeof v.url === 'string' ? v.url : '',
+      title: typeof v.title === 'string' ? v.title : undefined,
+      description: typeof v.description === 'string' ? v.description : undefined,
+      thumbnail: typeof v.thumbnail === 'string' ? v.thumbnail : undefined,
+      order: typeof v.order === 'number' ? v.order : 0,
+    }))
   } catch {
     return [];
   }
@@ -391,13 +431,14 @@ export async function getSocialMedias(): Promise<SocialMediaItem[]> {
     const response = await fetch(`/api/social-medias?orderBy=${orderBy}`, { cache: 'no-store' })
     if (!response.ok) return []
     const data = await response.json()
-    const items = Array.isArray(data) ? data : data?.data ?? []
-    return items.map((sm: any) => ({
-      id: sm.id,
-      name: sm.name,
-      url: sm.url,
-      icon: sm.icon ?? null,
-      order: sm.order ?? 0,
+    const rawItems = Array.isArray(data) ? data : (data as Record<string, unknown>)?.data
+    const items = Array.isArray(rawItems) ? rawItems : []
+    return asJsonObjectArray(items).map((sm) => ({
+      id: String(sm.id ?? ''),
+      name: typeof sm.name === 'string' ? sm.name : '',
+      url: typeof sm.url === 'string' ? sm.url : '',
+      icon: typeof sm.icon === 'string' ? sm.icon : null,
+      order: typeof sm.order === 'number' ? sm.order : 0,
     }))
   } catch {
     return []
@@ -407,12 +448,18 @@ export async function getSocialMedias(): Promise<SocialMediaItem[]> {
 /**
  * Récupère les produits en vedette
  */
-export async function getFeaturedProducts(): Promise<Product[]> {
+export async function getFeaturedProducts(): Promise<FeaturedProductRecord[]> {
   try {
     const response = await fetch('/api/products?active=true&inStock=true', { cache: 'no-store' });
     if (!response.ok) return [];
-    const result = await response.json();
-    return Array.isArray(result.data) ? result.data : [];
+    const result = await response.json() as { data?: unknown };
+    const raw = result.data;
+    if (!Array.isArray(raw)) return [];
+    return raw.filter((x): x is FeaturedProductRecord => {
+      if (typeof x !== 'object' || x === null) return false
+      const o = x as Record<string, unknown>
+      return typeof o.id === 'string' && typeof o.title === 'string' && typeof o.price === 'number'
+    });
   } catch {
     return [];
   }

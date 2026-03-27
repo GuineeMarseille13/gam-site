@@ -7,6 +7,7 @@
  */
 
 import { NextRequest } from 'next/server'
+import type { Prisma } from '@/lib/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
     const activeOnly = searchParams.get('active') !== 'false'
     const inStock = searchParams.get('inStock') === 'true'
 
-    const where: any = {}
+    const where: Prisma.ProductWhereInput = {}
     if (activeOnly) where.isActive = true
     if (inStock) where.stock = { gt: 0 }
 

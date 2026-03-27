@@ -251,6 +251,8 @@ const ParticleTextEffect: React.FC<ParticleTextEffectProps> = ({
     });
 
     particlesRef.current.splice(pixels.length, particlesRef.current.length);
+    // ParticleClass est défini dans le module ; textBox est rempli par write() avant dottify()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- éviter re-création à chaque frame
   }, [particleDensity]);
 
   const write = useCallback(() => {
@@ -283,6 +285,7 @@ const ParticleTextEffect: React.FC<ParticleTextEffectProps> = ({
 
     ctx.fillText(textBox.str, canvas.width / 2, canvas.height / 2);
     dottify();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- textBox est un objet mutable partagé
   }, [text, dimensions.fontSize, colors, dottify]);
 
   const animate = useCallback(() => {

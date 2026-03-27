@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les événements
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Event } from '@/lib/generated/prisma/client'
 
-const eventsCrud = useCrud<Event>({
+const eventsCrud = createCrudResources<Event>({
   endpoint: '/events',
   queryKey: ['events'],
 })
@@ -13,14 +14,14 @@ const eventsCrud = useCrud<Event>({
 /**
  * Récupérer tous les événements
  */
-export function useEvents(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useEvents(options?: CrudQueryOptions) {
   return eventsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un événement par ID
  */
-export function useEvent(id: string | null | undefined, options?: { include?: any }) {
+export function useEvent(id: string | null | undefined, options?: CrudQueryOptions) {
   return eventsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useEvent(id: string | null | undefined, options?: { include?: an
 export function useEventsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return eventsCrud.useGetPaginated(page, limit, options)
 }

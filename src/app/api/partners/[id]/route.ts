@@ -4,28 +4,30 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updatePartnerSchema = z.object({
-  name: z.string().min(1).optional(),
-  logo: z.string().url().optional(),
-  description: z.string().optional(),
-  website: z.string().url().optional(),
-  category: z.string().optional(),
-  categoryId: z.string().optional(),
-  order: z.number().int().optional(),
-  isActive: z.boolean().optional(),
-})
+const updatePartnerSchema = z
+  .object({
+    name: z.string().min(1).optional(),
+    logo: z.string().url().optional(),
+    description: z.string().optional(),
+    website: z.string().url().optional(),
+    partnerSectionId: z.string().optional(),
+    isActive: z.boolean().optional(),
+  })
+  .strict()
 
-// GET /api/partners/[id] - Récupérer un partenaire par ID
+/**
+ * GET /api/partners/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const partner = await prisma.partner.findUnique({
       where: { id },
       include: {
-        categoryRef: true,
+        partnerSection: true,
       },
     })
 
@@ -39,21 +41,39 @@ export async function GET(
   }
 }
 
-// PUT /api/partners/[id] - Mettre à jour un partenaire
+/**
+ * PUT /api/partners/[id] — `logo` -> `imageId`, `website` -> `url`, `isActive` -> `published`.
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updatePartnerSchema.parse(body)
 
+    const data: {
+      name?: string
+      imageId?: string | null
+      description?: string | null
+      url?: string | null
+      published?: boolean
+      partnerSectionId?: string | null
+    } = {}
+
+    if (validatedData.name !== undefined) data.name = validatedData.name
+    if (validatedData.logo !== undefined) data.imageId = validatedData.logo
+    if (validatedData.description !== undefined) data.description = validatedData.description
+    if (validatedData.website !== undefined) data.url = validatedData.website
+    if (validatedData.isActive !== undefined) data.published = validatedData.isActive
+    if (validatedData.partnerSectionId !== undefined) data.partnerSectionId = validatedData.partnerSectionId
+
     const partner = await prisma.partner.update({
       where: { id },
-      data: validatedData,
+      data,
       include: {
-        categoryRef: true,
+        partnerSection: true,
       },
     })
 
@@ -63,10 +83,12 @@ export async function PUT(
   }
 }
 
-// DELETE /api/partners/[id] - Supprimer un partenaire
+/**
+ * DELETE /api/partners/[id]
+ */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -79,4 +101,3 @@ export async function DELETE(
     return handleApiError(error)
   }
 }
-

@@ -1,6 +1,6 @@
 /**
- * Hook générique CRUD pour toutes les ressources
- * Utilise React Query pour la gestion du cache et des états
+ * Fabrique de hooks CRUD (ce n’est pas un hook React : ne pas préfixer `use`).
+ * Retourne des fonctions `useGetAll`, etc. qui appellent useQuery/useMutation à l’usage.
  */
 
 import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query'
@@ -9,7 +9,7 @@ import { apiGet, apiPost, apiPut, apiDelete, apiGetPaginated, type ApiOptions, t
 /**
  * Options pour le hook CRUD
  */
-export interface UseCrudOptions<T> {
+export interface UseCrudOptions {
   endpoint: string
   queryKey: (string | number | boolean | null | undefined)[]
   enabled?: boolean
@@ -18,9 +18,9 @@ export interface UseCrudOptions<T> {
 }
 
 /**
- * Hook générique pour les opérations CRUD
+ * Crée un jeu de hooks CRUD pour un endpoint donné.
  */
-export function useCrud<T = any>(options: UseCrudOptions<T>) {
+export function createCrudResources<T = unknown>(options: UseCrudOptions) {
   const { endpoint, queryKey, enabled = true, staleTime = 5 * 60 * 1000, gcTime = 10 * 60 * 1000 } = options
 
   // GET - Récupérer tous les enregistrements
@@ -69,29 +69,25 @@ export function useCrud<T = any>(options: UseCrudOptions<T>) {
   }
 
   // POST - Créer
-  const useCreate = (mutationOptions?: Omit<UseMutationOptions<T, Error, any>, 'mutationFn'>) => {
+  const useCreate = (mutationOptions?: Omit<UseMutationOptions<T, Error, unknown>, 'mutationFn'>) => {
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: (data: any) => apiPost<T>(endpoint, data),
-      onSuccess: (data, variables, context) => {
-        // Invalider les queries pour rafraîchir les données
+      mutationFn: (data: unknown) => apiPost<T>(endpoint, data),
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey })
-        //mutationOptions?.onSuccess?.(data, variables, undefined, context)
       },
       ...mutationOptions,
     })
   }
 
   // PUT - Mettre à jour
-  const useUpdate = (mutationOptions?: Omit<UseMutationOptions<T, Error, { id: string; data: Partial<any> }>, 'mutationFn'>) => {
+  const useUpdate = (mutationOptions?: Omit<UseMutationOptions<T, Error, { id: string; data: Partial<T> }>, 'mutationFn'>) => {
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: ({ id, data }: { id: string; data: Partial<any> }) => apiPut<T>(endpoint, id, data),
-      onSuccess: (data, variables, context) => {
-        // Invalider les queries et mettre à jour le cache
+      mutationFn: ({ id, data }: { id: string; data: Partial<T> }) => apiPut<T>(endpoint, id, data),
+      onSuccess: (data, variables) => {
         queryClient.invalidateQueries({ queryKey })
         queryClient.setQueryData([...queryKey, 'byId', variables.id], data)
-        //mutationOptions?.onSuccess?.(data, variables, context)
       },
       ...mutationOptions,
     })
@@ -102,11 +98,9 @@ export function useCrud<T = any>(options: UseCrudOptions<T>) {
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: (id: string) => apiDelete<T>(endpoint, id),
-      onSuccess: (data, variables, context) => {
-        // Invalider les queries et supprimer du cache
+      onSuccess: (_result, variables) => {
         queryClient.invalidateQueries({ queryKey })
         queryClient.removeQueries({ queryKey: [...queryKey, 'byId', variables] })
-        //mutationOptions?.onSuccess?.(data, variables, context)
       },
       ...mutationOptions,
     })

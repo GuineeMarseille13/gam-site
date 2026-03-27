@@ -278,6 +278,7 @@ export default function TestPage() {
                 <p><strong>Dimensions:</strong> {imageResult.image.width} x {imageResult.image.height}</p>
                 <p><strong>Taille:</strong> {(((imageResult.image.size ?? 0) / 1024).toFixed(2))} KB</p>
                 <div className="mt-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- page de test upload, URL dynamique */}
                   <img 
                     src={imageResult.image.url} 
                     alt={imageResult.image.alt || ''}
@@ -349,6 +350,7 @@ export default function TestPage() {
                 {videoResult.video.thumbnail && (
                   <div className="mt-2">
                     <p><strong>Thumbnail:</strong></p>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- page de test, vignette dynamique */}
                     <img 
                       src={videoResult.video.thumbnail} 
                       alt="Thumbnail"

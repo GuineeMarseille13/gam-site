@@ -3,34 +3,30 @@ import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 
-// GET /api/donations/submissions - Liste toutes les soumissions de dons
+/**
+ * GET /api/donations/submissions — Le modèle `Donation` n’a pas de champ `status` (suivi via `Payment`).
+ */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const status = searchParams.get('status')
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
-    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined
-
-    const where: any = {}
-    if (status) where.status = status
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : undefined
+    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : undefined
 
     const donations = await prisma.donation.findMany({
-      where,
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
     })
 
-    const total = await prisma.donation.count({ where })
+    const total = await prisma.donation.count()
     const totalAmount = await prisma.donation.aggregate({
-      where: { status: 'confirmed' },
       _sum: { amount: true },
     })
 
     return successResponse({
       data: donations,
       total,
-      totalAmount: totalAmount._sum.amount || 0,
+      totalAmount: totalAmount._sum.amount ?? 0,
       limit,
       offset,
     })
@@ -38,4 +34,3 @@ export async function GET(request: NextRequest) {
     return handleApiError(error)
   }
 }
-

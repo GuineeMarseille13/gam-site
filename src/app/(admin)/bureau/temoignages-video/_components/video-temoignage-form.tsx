@@ -18,7 +18,7 @@ interface VideoTemoignageFormProps {
     title?: string | null
     description?: string | null
     thumbnail?: string | null
-    order?: number
+    order?: number | null
     isActive?: boolean
   }
 }

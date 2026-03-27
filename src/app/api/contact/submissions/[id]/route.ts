@@ -2,32 +2,26 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
+import { ContactSubmissionStatus } from '@/lib/generated/prisma/enums'
 import { z } from 'zod'
 
-const updateSubmissionSchema = z.object({
-  status: z.enum(['pending', 'read', 'replied', 'archived']).optional(),
-  notes: z.string().optional(),
-})
+const updateSubmissionSchema = z
+  .object({
+    status: z.nativeEnum(ContactSubmissionStatus).optional(),
+  })
+  .strict()
 
-// GET /api/contact/submissions/[id] - Récupérer une soumission par ID
+/**
+ * GET /api/contact/submissions/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const submission = await prisma.contactSubmission.findUnique({
       where: { id },
-      include: {
-        repliedByUser: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-      },
     })
 
     if (!submission) {
@@ -40,33 +34,22 @@ export async function GET(
   }
 }
 
-// PUT /api/contact/submissions/[id] - Mettre à jour une soumission
+/**
+ * PUT /api/contact/submissions/[id]
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updateSubmissionSchema.parse(body)
 
-    const updateData: any = { ...validatedData }
-    if (validatedData.status === 'replied' && !updateData.repliedAt) {
-      updateData.repliedAt = new Date()
-    }
-
     const submission = await prisma.contactSubmission.update({
       where: { id },
-      data: updateData,
-      include: {
-        repliedByUser: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
+      data: {
+        ...(validatedData.status !== undefined ? { status: validatedData.status } : {}),
       },
     })
 
@@ -76,10 +59,12 @@ export async function PUT(
   }
 }
 
-// DELETE /api/contact/submissions/[id] - Supprimer une soumission
+/**
+ * DELETE /api/contact/submissions/[id]
+ */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -92,4 +77,3 @@ export async function DELETE(
     return handleApiError(error)
   }
 }
-

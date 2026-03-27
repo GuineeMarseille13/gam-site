@@ -4,6 +4,23 @@ import prisma from '@/lib/prisma'
 import type { Prisma } from '@/lib/generated/prisma/client'
 
 /**
+ * Delegate Prisma minimal pour le service CRUD générique (évite `any` sur le client).
+ */
+type PrismaCrudDelegate = {
+  create: (args: { data: unknown }) => Promise<unknown>
+  createMany: (args: { data: unknown[]; skipDuplicates?: boolean }) => Promise<{ count: number }>
+  findUnique: (args: unknown) => Promise<unknown>
+  findFirst: (args: unknown) => Promise<unknown>
+  findMany: (args: unknown) => Promise<unknown>
+  count: (args: unknown) => Promise<number>
+  update: (args: unknown) => Promise<unknown>
+  updateMany: (args: { where: unknown; data: unknown }) => Promise<{ count: number }>
+  upsert: (args: unknown) => Promise<unknown>
+  delete: (args: unknown) => Promise<unknown>
+  deleteMany: (args: { where: unknown }) => Promise<{ count: number }>
+}
+
+/**
  * Options pour la pagination
  */
 export interface PaginationOptions {
@@ -45,12 +62,12 @@ function toCamelCase(str: string): string {
  */
 export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   private modelName: string
-  private model: any
+  private readonly model: PrismaCrudDelegate
 
   constructor(modelName: ModelName) {
     this.modelName = modelName as string
     const delegateName = toCamelCase(this.modelName) as keyof typeof prisma
-    this.model = prisma[delegateName]
+    this.model = prisma[delegateName] as unknown as PrismaCrudDelegate
     
     if (!this.model) {
       throw new Error(`Model "${this.modelName}" not found in Prisma client. Available models: ${Object.keys(prisma).filter(k => !k.startsWith('$') && typeof prisma[k as keyof typeof prisma] === 'object').join(', ')}`)
@@ -60,11 +77,9 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Crée un nouvel enregistrement
    */
-  async create<T = any>(
-    data: any
-  ): Promise<T> {
+  async create<T = unknown>(data: unknown): Promise<T> {
     try {
-      return await this.model.create({ data })
+      return (await this.model.create({ data })) as T
     } catch (error) {
       throw this.handleError(error, 'create')
     }
@@ -74,7 +89,7 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
    * Crée plusieurs enregistrements
    */
   async createMany(
-    data: any[],
+    data: unknown[],
     options?: { skipDuplicates?: boolean }
   ): Promise<{ count: number }> {
     try {
@@ -87,15 +102,15 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Trouve un enregistrement par son ID
    */
-  async findById<T = any>(
+  async findById<T = unknown>(
     id: string,
-    options?: { include?: any; select?: any }
+    options?: { include?: unknown; select?: unknown }
   ): Promise<T | null> {
     try {
-      return await this.model.findUnique({
+      return (await this.model.findUnique({
         where: { id },
         ...options,
-      })
+      })) as T | null
     } catch (error) {
       throw this.handleError(error, 'findById')
     }
@@ -104,16 +119,16 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Trouve un enregistrement unique selon des critères
    */
-  async findOne<T = any>(
+  async findOne<T = unknown>(
     options?: {
-      where?: any
-      include?: any
-      select?: any
-      orderBy?: any
+      where?: unknown
+      include?: unknown
+      select?: unknown
+      orderBy?: unknown
     }
   ): Promise<T | null> {
     try {
-      return await this.model.findFirst(options)
+      return (await this.model.findFirst(options)) as T | null
     } catch (error) {
       throw this.handleError(error, 'findOne')
     }
@@ -122,18 +137,18 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Trouve plusieurs enregistrements
    */
-  async findAll<T = any>(
+  async findAll<T = unknown>(
     options?: {
-      where?: any
-      include?: any
-      select?: any
-      orderBy?: any
+      where?: unknown
+      include?: unknown
+      select?: unknown
+      orderBy?: unknown
       take?: number
       skip?: number
     }
   ): Promise<T[]> {
     try {
-      return await this.model.findMany(options)
+      return (await this.model.findMany(options)) as T[]
     } catch (error) {
       throw this.handleError(error, 'findAll')
     }
@@ -142,12 +157,12 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Trouve plusieurs enregistrements avec pagination
    */
-  async findManyPaginated<T = any>(
+  async findManyPaginated<T = unknown>(
     options?: {
-      where?: any
-      include?: any
-      select?: any
-      orderBy?: any
+      where?: unknown
+      include?: unknown
+      select?: unknown
+      orderBy?: unknown
       page?: number
       limit?: number
     }
@@ -170,7 +185,7 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
       const totalPages = Math.ceil(total / limit)
 
       return {
-        data,
+        data: data as T[],
         total,
         page,
         limit,
@@ -188,7 +203,7 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
    */
   async count(
     options?: {
-      where?: any
+      where?: unknown
     }
   ): Promise<number> {
     try {
@@ -201,20 +216,20 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Met à jour un enregistrement par son ID
    */
-  async updateById<T = any>(
+  async updateById<T = unknown>(
     id: string,
-    data: any,
+    data: unknown,
     options?: {
-      include?: any
-      select?: any
+      include?: unknown
+      select?: unknown
     }
   ): Promise<T> {
     try {
-      return await this.model.update({
+      return (await this.model.update({
         where: { id },
         data,
         ...options,
-      })
+      })) as T
     } catch (error) {
       throw this.handleError(error, 'updateById')
     }
@@ -224,8 +239,8 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
    * Met à jour plusieurs enregistrements
    */
   async updateMany(
-    where: any,
-    data: any
+    where: unknown,
+    data: unknown
   ): Promise<{ count: number }> {
     try {
       return await this.model.updateMany({ where, data })
@@ -237,22 +252,22 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Met à jour ou crée un enregistrement (upsert)
    */
-  async upsert<T = any>(
-    where: any,
-    create: any,
-    update: any,
+  async upsert<T = unknown>(
+    where: unknown,
+    create: unknown,
+    update: unknown,
     options?: {
-      include?: any
-      select?: any
+      include?: unknown
+      select?: unknown
     }
   ): Promise<T> {
     try {
-      return await this.model.upsert({
+      return (await this.model.upsert({
         where,
         create,
         update,
         ...options,
-      })
+      })) as T
     } catch (error) {
       throw this.handleError(error, 'upsert')
     }
@@ -261,18 +276,18 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
   /**
    * Supprime un enregistrement par son ID
    */
-  async deleteById<T = any>(
+  async deleteById<T = unknown>(
     id: string,
     options?: {
-      include?: any
-      select?: any
+      include?: unknown
+      select?: unknown
     }
   ): Promise<T> {
     try {
-      return await this.model.delete({
+      return (await this.model.delete({
         where: { id },
         ...options,
-      })
+      })) as T
     } catch (error) {
       throw this.handleError(error, 'deleteById')
     }
@@ -282,7 +297,7 @@ export class CrudService<ModelName extends keyof Prisma.TypeMap['model']> {
    * Supprime plusieurs enregistrements
    */
   async deleteMany(
-    where: any
+    where: unknown
   ): Promise<{ count: number }> {
     try {
       return await this.model.deleteMany({ where })

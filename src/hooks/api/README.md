@@ -458,14 +458,14 @@ Tous les hooks de sections suivent le même pattern avec leurs relations incluse
 - `useUpdatePoleDetail()` - Mettre à jour un détail
 - `useDeletePoleDetail()` - Supprimer un détail
 
-## 🔧 Hook générique `useCrud`
+## 🔧 Fabrique `createCrudResources` (hooks CRUD)
 
 Pour créer vos propres hooks personnalisés :
 
 ```typescript
-import { useCrud } from '@/hooks/api'
+import { createCrudResources } from '@/hooks/api'
 
-const myResourceCrud = useCrud<MyType>({
+const myResourceCrud = createCrudResources<MyType>({
   endpoint: '/my-resource',
   queryKey: ['myResource'],
 })

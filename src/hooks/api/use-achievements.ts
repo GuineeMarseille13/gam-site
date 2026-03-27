@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les réalisations/statistiques
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Achievement } from '@/lib/generated/prisma/client'
 
-const achievementsCrud = useCrud<Achievement>({
+const achievementsCrud = createCrudResources<Achievement>({
   endpoint: '/achievements',
   queryKey: ['achievements'],
 })
@@ -13,14 +14,14 @@ const achievementsCrud = useCrud<Achievement>({
 /**
  * Récupérer toutes les réalisations
  */
-export function useAchievements(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useAchievements(options?: CrudQueryOptions) {
   return achievementsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une réalisation par ID
  */
-export function useAchievement(id: string | null | undefined, options?: { include?: any }) {
+export function useAchievement(id: string | null | undefined, options?: CrudQueryOptions) {
   return achievementsCrud.useGetById(id, options)
 }
 

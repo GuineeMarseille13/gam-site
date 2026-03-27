@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Minus, Users, CheckCircle2, Trash2, Loader2, ArrowLeft } from "lucide-react";
+import { Plus, Users, CheckCircle2, Trash2, Loader2, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_schemas/adhesion.schema";
 import StripePaymentForm from "./stripe-payment-form";
@@ -21,17 +21,15 @@ export default function AdhesionView() {
   const [validatedMessage, setValidatedMessage] = useState("");
   const total = useMemo(() => members.length * PRICE_PER_MEMBER_EUR, [members.length]);
 
-  const frenchPhoneRegex = /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/;
-
-  function isValidFrenchPhone(phone: string): boolean {
+  const isValidFrenchPhone = useCallback((phone: string): boolean => {
     const cleaned = phone.replace(/\s/g, "");
-    return frenchPhoneRegex.test(cleaned);
-  }
+    return /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/.test(cleaned);
+  }, []);
 
-  function isValidEmail(email: string): boolean {
+  const isValidEmail = useCallback((email: string): boolean => {
     if (!email || email.trim() === "") return true;
     return z.string().email().safeParse(email).success;
-  }
+  }, []);
 
   const canAddRow = useMemo(() => {
     const last = members[members.length - 1];
@@ -43,7 +41,7 @@ export default function AdhesionView() {
       isValidFrenchPhone(phoneCleaned) &&
       isValidEmail(last.email || "")
     );
-  }, [members]);
+  }, [members, isValidFrenchPhone, isValidEmail]);
 
   const addRow = () => {
     if (canAddRow) {
@@ -211,7 +209,7 @@ export default function AdhesionView() {
           transition={{ duration: 0.5 }}
           className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3 sm:mb-4"
         >
-          Adhérer à l'association
+          Adhérer à l&apos;association
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 
@@ -276,7 +274,7 @@ export default function AdhesionView() {
             transition={{ delay: 0.35 }} 
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200/60"
           >
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Formulaire d'adhésion</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Formulaire d&apos;adhésion</h2>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg shadow-amber-200/50">
               <span className="inline-flex items-center justify-center px-2 py-1 rounded-full bg-white/20 text-sm font-semibold">{members.length} personne{members.length>1?'s':''}</span>
               <span className="font-bold text-base sm:text-lg">{new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(total)}</span>

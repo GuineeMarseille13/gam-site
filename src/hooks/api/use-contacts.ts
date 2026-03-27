@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les contacts
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Contact } from '@/lib/generated/prisma/client'
 
-const contactsCrud = useCrud<Contact>({
+const contactsCrud = createCrudResources<Contact>({
   endpoint: '/contacts',
   queryKey: ['contacts'],
 })
@@ -13,14 +14,14 @@ const contactsCrud = useCrud<Contact>({
 /**
  * Récupérer tous les contacts
  */
-export function useContacts(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useContacts(options?: CrudQueryOptions) {
   return contactsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un contact par ID
  */
-export function useContact(id: string | null | undefined, options?: { include?: any }) {
+export function useContact(id: string | null | undefined, options?: CrudQueryOptions) {
   return contactsCrud.useGetById(id, {
     ...options,
     include: {

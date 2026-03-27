@@ -37,7 +37,6 @@ function initials(name: string) {
 
 export function NavUser({
   user,
-  role,
   profileHref = "/bureau/profil",
   afterLogoutHref = "/connexion",
 }: {

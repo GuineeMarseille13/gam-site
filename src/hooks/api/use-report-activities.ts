@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les rapports d'activité
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { ReportActivity } from '@/lib/generated/prisma/client'
 
-const reportActivitiesCrud = useCrud<ReportActivity>({
+const reportActivitiesCrud = createCrudResources<ReportActivity>({
   endpoint: '/report-activities',
   queryKey: ['reportActivities'],
 })
@@ -13,14 +14,14 @@ const reportActivitiesCrud = useCrud<ReportActivity>({
 /**
  * Récupérer tous les rapports d'activité
  */
-export function useReportActivities(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useReportActivities(options?: CrudQueryOptions) {
   return reportActivitiesCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un rapport d'activité par ID
  */
-export function useReportActivity(id: string | null | undefined, options?: { include?: any }) {
+export function useReportActivity(id: string | null | undefined, options?: CrudQueryOptions) {
   return reportActivitiesCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useReportActivity(id: string | null | undefined, options?: { inc
 export function useReportActivitiesPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return reportActivitiesCrud.useGetPaginated(page, limit, options)
 }

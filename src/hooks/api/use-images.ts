@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les images
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Image } from '@/lib/generated/prisma/client'
 
-const imagesCrud = useCrud<Image>({
+const imagesCrud = createCrudResources<Image>({
   endpoint: '/images',
   queryKey: ['images'],
 })
@@ -13,14 +14,14 @@ const imagesCrud = useCrud<Image>({
 /**
  * Récupérer toutes les images
  */
-export function useImages(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useImages(options?: CrudQueryOptions) {
   return imagesCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une image par ID
  */
-export function useImage(id: string | null | undefined, options?: { include?: any }) {
+export function useImage(id: string | null | undefined, options?: CrudQueryOptions) {
   return imagesCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useImage(id: string | null | undefined, options?: { include?: an
 export function useImagesPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return imagesCrud.useGetPaginated(page, limit, options)
 }

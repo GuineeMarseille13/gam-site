@@ -10,10 +10,9 @@ import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/(public)/evenements/_confi
 interface StatCardProps {
   value: number | string;
   label: string;
-  index?: number;
 }
 
-export default function StatCard({ value, label, index = 0 }: StatCardProps) {
+export default function StatCard({ value, label }: StatCardProps) {
   return (
     <motion.div
       whileHover={ANIMATION_CONFIG.stats.card.whileHover}

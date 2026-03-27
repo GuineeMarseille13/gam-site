@@ -39,7 +39,6 @@ export default function ProductsCarousel({
   autoPlay = true,
   interval = 4000,
   showDots = true,
-  showArrows = true,
   enableSwipe = true,
   loop = true,
   className = "",
@@ -49,9 +48,9 @@ export default function ProductsCarousel({
 }: ProductsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying] = useState(autoPlay);
-  const [direction, setDirection] = useState(0);
+  const [, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [, setHoveredCard] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);

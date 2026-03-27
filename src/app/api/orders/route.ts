@@ -18,8 +18,8 @@ const createOrderSchema = z.object({
   status: z.string().default('PENDING'),
   paymentMethod: z.string().optional(),
   paymentReference: z.string().optional(),
-  customer: z.record(z.any()).optional(),
-  shippingAddress: z.record(z.any()).optional(),
+  customer: z.record(z.string(), z.unknown()).optional(),
+  shippingAddress: z.record(z.string(), z.unknown()).optional(),
   notes: z.string().optional(),
 })
 
@@ -30,12 +30,15 @@ const handlers = createCrudHandler({
   modelName: 'Order',
   validateCreate: (data) => createOrderSchema.parse(data),
   validateUpdate: (data) => updateOrderSchema.parse(data),
-  beforeCreate: async (data) => {
-    // Générer un numéro de commande si non fourni
-    if (!data.orderNumber) {
-      data.orderNumber = `CMD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
+  beforeCreate: async (data: unknown) => {
+    const parsed = createOrderSchema.parse(data)
+    if (!parsed.orderNumber) {
+      return {
+        ...parsed,
+        orderNumber: `CMD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+      }
     }
-    return data
+    return parsed
   },
 })
 

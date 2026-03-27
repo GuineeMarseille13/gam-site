@@ -32,7 +32,7 @@ export default function CancelPage() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-xl mx-auto mb-8"
         >
-          Votre paiement a été annulé. Aucun montant n'a été débité de votre compte.
+          Votre paiement a été annulé. Aucun montant n&apos;a été débité de votre compte.
           Vous pouvez réessayer à tout moment en retournant sur la page précédente.
         </motion.p>
 
@@ -47,7 +47,7 @@ export default function CancelPage() {
             className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-gray-900 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
           >
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
 
           <button
@@ -66,7 +66,7 @@ export default function CancelPage() {
           className="mt-8 p-4 rounded-xl bg-blue-50 border-2 border-blue-200 text-left max-w-md mx-auto"
         >
           <p className="text-sm text-blue-900">
-            <strong className="font-semibold">Besoin d'aide ?</strong> Si vous avez rencontré un problème lors du paiement, n'hésitez pas à{" "}
+            <strong className="font-semibold">Besoin d&apos;aide ?</strong> Si vous avez rencontré un problème lors du paiement, n&apos;hésitez pas à{" "}
             <Link href="/contacts" className="underline hover:text-blue-700 font-medium">
               nous contacter
             </Link>

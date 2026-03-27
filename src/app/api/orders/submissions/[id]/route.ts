@@ -2,18 +2,23 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
+import { PaymentStatus } from '@/lib/generated/prisma/enums'
 import { z } from 'zod'
 
-const updateOrderSchema = z.object({
-  status: z.enum(['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled']).optional(),
-  paymentMethod: z.string().optional(),
-  paymentReference: z.string().optional(),
-})
+const updateOrderSchema = z
+  .object({
+    status: z.nativeEnum(PaymentStatus).optional(),
+    paymentMethod: z.string().optional(),
+    paymentReference: z.string().optional(),
+  })
+  .strict()
 
-// GET /api/orders/submissions/[id] - Récupérer une commande par ID
+/**
+ * GET /api/orders/submissions/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -25,6 +30,7 @@ export async function GET(
             product: true,
           },
         },
+        payment: true,
       },
     })
 
@@ -38,25 +44,52 @@ export async function GET(
   }
 }
 
-// PUT /api/orders/submissions/[id] - Mettre à jour une commande
+/**
+ * PUT /api/orders/submissions/[id] — Met à jour le `Payment` lié (pas de champs de statut sur `Order`).
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updateOrderSchema.parse(body)
 
-    const order = await prisma.order.update({
+    const existing = await prisma.order.findUnique({
       where: { id },
-      data: validatedData,
+      select: { paymentId: true },
+    })
+
+    if (!existing) {
+      return notFoundResponse('Commande')
+    }
+
+    const paymentData: {
+      status?: PaymentStatus
+      paymentMethod?: string
+      paymentReference?: string
+    } = {}
+    if (validatedData.status !== undefined) paymentData.status = validatedData.status
+    if (validatedData.paymentMethod !== undefined) paymentData.paymentMethod = validatedData.paymentMethod
+    if (validatedData.paymentReference !== undefined) paymentData.paymentReference = validatedData.paymentReference
+
+    if (Object.keys(paymentData).length > 0) {
+      await prisma.payment.update({
+        where: { id: existing.paymentId },
+        data: paymentData,
+      })
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id },
       include: {
         items: {
           include: {
             product: true,
           },
         },
+        payment: true,
       },
     })
 
@@ -65,4 +98,3 @@ export async function PUT(
     return handleApiError(error)
   }
 }
-

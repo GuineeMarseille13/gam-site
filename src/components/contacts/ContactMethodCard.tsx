@@ -10,10 +10,9 @@ import { STYLE_CONFIG, ANIMATION_CONFIG } from "@/app/(public)/contacts/_config/
 
 interface ContactMethodCardProps {
   method: ContactMethod;
-  index: number;
 }
 
-export default function ContactMethodCard({ method, index }: ContactMethodCardProps) {
+export default function ContactMethodCard({ method }: ContactMethodCardProps) {
   const IconComponent = method.icon;
 
   return (

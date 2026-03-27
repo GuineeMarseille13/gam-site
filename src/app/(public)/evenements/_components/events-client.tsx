@@ -2,7 +2,6 @@
 
 import { useMemo } from "react"
 import { motion } from "framer-motion"
-import { useIsMobile } from "@/hooks/useIsMobile"
 import { useExpandedYears } from "../_hooks/useExpandedYears"
 import { getSortedYears, getTotalEvents } from "../_utils/events.utils"
 import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "../_config/events.config"
@@ -12,7 +11,6 @@ import YearSection from "@/components/events/YearSection"
 import type { EventsByYear } from "@/types/events"
 
 export function EventsClient({ eventsData }: { eventsData: EventsByYear }) {
-  const isMobile = useIsMobile()
   const years = useMemo(() => getSortedYears(eventsData), [eventsData])
   const totalEvents = useMemo(() => getTotalEvents(eventsData), [eventsData])
   const { toggleYear, isExpanded } = useExpandedYears(years.length > 0 ? [years[0]] : [])
@@ -25,8 +23,8 @@ export function EventsClient({ eventsData }: { eventsData: EventsByYear }) {
         {...ANIMATION_CONFIG.stats.container}
         className={STYLE_CONFIG.stats.grid}
       >
-        <StatCard value={totalEvents} label={MESSAGES.stats.eventsLabel(totalEvents)} index={0} />
-        <StatCard value={years.length} label={MESSAGES.stats.yearsLabel(years.length)} index={1} />
+        <StatCard value={totalEvents} label={MESSAGES.stats.eventsLabel(totalEvents)} />
+        <StatCard value={years.length} label={MESSAGES.stats.yearsLabel(years.length)} />
       </motion.div>
 
       <div>
@@ -48,7 +46,6 @@ export function EventsClient({ eventsData }: { eventsData: EventsByYear }) {
                 events={eventsData[year]}
                 isExpanded={isExpanded(year)}
                 onToggle={() => toggleYear(year)}
-                isMobile={isMobile}
                 index={index}
               />
             ))}

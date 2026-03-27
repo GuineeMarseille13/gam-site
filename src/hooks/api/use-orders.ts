@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les commandes
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Order } from '@/lib/generated/prisma/client'
 
-const ordersCrud = useCrud<Order>({
+const ordersCrud = createCrudResources<Order>({
   endpoint: '/orders',
   queryKey: ['orders'],
 })
@@ -13,14 +14,14 @@ const ordersCrud = useCrud<Order>({
 /**
  * Récupérer toutes les commandes
  */
-export function useOrders(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useOrders(options?: CrudQueryOptions) {
   return ordersCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une commande par ID
  */
-export function useOrder(id: string | null | undefined, options?: { include?: any }) {
+export function useOrder(id: string | null | undefined, options?: CrudQueryOptions) {
   return ordersCrud.useGetById(id, {
     ...options,
     include: {
@@ -41,7 +42,7 @@ export function useOrder(id: string | null | undefined, options?: { include?: an
 export function useOrdersPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return ordersCrud.useGetPaginated(page, limit, options)
 }

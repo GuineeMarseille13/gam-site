@@ -100,8 +100,8 @@ export default function ContactInfo({ contact, socialMedias }: ContactInfoProps)
         {...ANIMATION_CONFIG.contactInfo.container}
         className={STYLE_CONFIG.contactInfo.grid}
       >
-        {methods.map((method, index) => (
-          <ContactMethodCard key={method.label} method={method} index={index} />
+        {methods.map((method) => (
+          <ContactMethodCard key={method.label} method={method} />
         ))}
       </motion.div>
 

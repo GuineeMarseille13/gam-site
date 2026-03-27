@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { ContactSubmissionStatus, type Prisma } from '@/lib/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
@@ -11,8 +12,13 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined
 
-    const where: any = {}
-    if (status) where.status = status
+    const where: Prisma.ContactSubmissionWhereInput = {}
+    if (status) {
+      const allowed = new Set<string>(Object.values(ContactSubmissionStatus))
+      if (allowed.has(status)) {
+        where.status = status as ContactSubmissionStatus
+      }
+    }
 
     const submissions = await prisma.contactSubmission.findMany({
       where,

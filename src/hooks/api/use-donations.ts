@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les dons
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Donation } from '@/lib/generated/prisma/client'
 
-const donationsCrud = useCrud<Donation>({
+const donationsCrud = createCrudResources<Donation>({
   endpoint: '/donations',
   queryKey: ['donations'],
 })
@@ -13,14 +14,14 @@ const donationsCrud = useCrud<Donation>({
 /**
  * Récupérer tous les dons
  */
-export function useDonations(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useDonations(options?: CrudQueryOptions) {
   return donationsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un don par ID
  */
-export function useDonation(id: string | null | undefined, options?: { include?: any }) {
+export function useDonation(id: string | null | undefined, options?: CrudQueryOptions) {
   return donationsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useDonation(id: string | null | undefined, options?: { include?:
 export function useDonationsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return donationsCrud.useGetPaginated(page, limit, options)
 }

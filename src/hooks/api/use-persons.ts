@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les personnes
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Person } from '@/lib/generated/prisma/client'
 
-const personsCrud = useCrud<Person>({
+const personsCrud = createCrudResources<Person>({
   endpoint: '/persons',
   queryKey: ['persons'],
 })
@@ -13,14 +14,14 @@ const personsCrud = useCrud<Person>({
 /**
  * Récupérer toutes les personnes
  */
-export function usePersons(options?: { where?: any; include?: any; orderBy?: any }) {
+export function usePersons(options?: CrudQueryOptions) {
   return personsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une personne par ID
  */
-export function usePerson(id: string | null | undefined, options?: { include?: any }) {
+export function usePerson(id: string | null | undefined, options?: CrudQueryOptions) {
   return personsCrud.useGetById(id, {
     ...options,
     include: {
@@ -36,7 +37,7 @@ export function usePerson(id: string | null | undefined, options?: { include?: a
 export function usePersonsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return personsCrud.useGetPaginated(page, limit, options)
 }

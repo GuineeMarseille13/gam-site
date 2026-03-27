@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les produits
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Product } from '@/lib/generated/prisma/client'
 
-const productsCrud = useCrud<Product>({
+const productsCrud = createCrudResources<Product>({
   endpoint: '/products',
   queryKey: ['products'],
 })
@@ -13,14 +14,14 @@ const productsCrud = useCrud<Product>({
 /**
  * Récupérer tous les produits
  */
-export function useProducts(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useProducts(options?: CrudQueryOptions) {
   return productsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un produit par ID
  */
-export function useProduct(id: string | null | undefined, options?: { include?: any }) {
+export function useProduct(id: string | null | undefined, options?: CrudQueryOptions) {
   return productsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useProduct(id: string | null | undefined, options?: { include?: 
 export function useProductsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return productsCrud.useGetPaginated(page, limit, options)
 }

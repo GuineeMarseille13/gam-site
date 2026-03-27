@@ -33,8 +33,9 @@ const handlers = createCrudHandler({
   modelName: 'Review',
   validateCreate: (data) => createReviewSchema.parse(data),
   validateUpdate: (data) => updateReviewSchema.parse(data),
-  beforeCreate: async (data: z.infer<typeof createReviewSchema>) => {
-    const { roleCode, ...rest } = data
+  beforeCreate: async (data: unknown) => {
+    const parsed = createReviewSchema.parse(data)
+    const { roleCode, ...rest } = parsed
     const publishedAt =
       rest.isVerified && rest.publishedAt == null ? new Date() : rest.publishedAt
     return {
@@ -43,8 +44,9 @@ const handlers = createCrudHandler({
       role: { connect: { code: roleCode } },
     }
   },
-  beforeUpdate: async (data: z.infer<typeof updateReviewSchema>) => {
-    const { roleCode, ...rest } = data
+  beforeUpdate: async (data: unknown) => {
+    const parsed = updateReviewSchema.parse(data)
+    const { roleCode, ...rest } = parsed
     if (roleCode) {
       return { ...rest, role: { connect: { code: roleCode } } }
     }

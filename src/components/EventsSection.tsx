@@ -289,6 +289,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    const el = itemRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -298,13 +299,13 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
       { threshold: 0.2 }
     );
 
-    if (itemRef.current) {
-      observer.observe(itemRef.current);
+    if (el) {
+      observer.observe(el);
     }
 
     return () => {
-      if (itemRef.current) {
-        observer.unobserve(itemRef.current);
+      if (el) {
+        observer.unobserve(el);
       }
     };
   }, []);

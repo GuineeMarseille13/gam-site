@@ -12,7 +12,6 @@ interface YearSectionProps {
   events: Event[];
   isExpanded: boolean;
   onToggle: () => void;
-  isMobile: boolean;
   index: number;
 }
 
@@ -21,7 +20,6 @@ const YearSection = memo(function YearSection({
   events,
   isExpanded,
   onToggle,
-  isMobile,
   index,
 }: YearSectionProps) {
   return (
@@ -85,7 +83,6 @@ const YearSection = memo(function YearSection({
                   key={event.id}
                   event={event}
                   index={eventIndex}
-                  isMobile={isMobile}
                 />
               ))}
             </motion.div>

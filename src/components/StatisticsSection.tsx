@@ -183,13 +183,14 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    const el = sectionRef.current;
+    if (el) {
+      observer.observe(el);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (el) {
+        observer.unobserve(el);
       }
     };
   }, []);

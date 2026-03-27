@@ -27,16 +27,18 @@ const handlers = createCrudHandler({
   modelName: 'Person',
   validateCreate: (data) => createPersonSchema.parse(data),
   validateUpdate: (data) => updatePersonSchema.parse(data),
-  beforeCreate: async (data: z.infer<typeof createPersonSchema>) => {
-    const { roleCode, ...rest } = data
+  beforeCreate: async (data: unknown) => {
+    const parsed = createPersonSchema.parse(data)
+    const { roleCode, ...rest } = parsed
     const code = roleCode ?? 'VOLUNTEER'
     return {
       ...rest,
       role: { connect: { code } },
     }
   },
-  beforeUpdate: async (data: z.infer<typeof updatePersonSchema>) => {
-    const { roleCode, ...rest } = data
+  beforeUpdate: async (data: unknown) => {
+    const parsed = updatePersonSchema.parse(data)
+    const { roleCode, ...rest } = parsed
     if (roleCode) {
       return { ...rest, role: { connect: { code: roleCode } } }
     }

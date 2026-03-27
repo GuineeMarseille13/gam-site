@@ -143,7 +143,7 @@ export function CarouselForm({ slide, action, submitLabel = "Enregistrer" }: Car
         {/* Aperçu positionnement */}
         <div className="flex items-center gap-2 rounded-lg border border-dashed bg-background px-3 py-2">
           <IconAlignLeft className="size-3.5 shrink-0 text-muted-foreground/60" />
-          <p className="text-xs text-muted-foreground">Ces textes s'affichent en bas à gauche de l'image du slide</p>
+          <p className="text-xs text-muted-foreground">Ces textes s&apos;affichent en bas à gauche de l&apos;image du slide</p>
         </div>
       </div>
 

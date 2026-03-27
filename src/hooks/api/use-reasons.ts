@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les raisons
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Reason } from '@/lib/generated/prisma/client'
 
-const reasonsCrud = useCrud<Reason>({
+const reasonsCrud = createCrudResources<Reason>({
   endpoint: '/reasons',
   queryKey: ['reasons'],
 })
@@ -13,14 +14,14 @@ const reasonsCrud = useCrud<Reason>({
 /**
  * Récupérer toutes les raisons
  */
-export function useReasons(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useReasons(options?: CrudQueryOptions) {
   return reasonsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une raison par ID
  */
-export function useReason(id: string | null | undefined, options?: { include?: any }) {
+export function useReason(id: string | null | undefined, options?: CrudQueryOptions) {
   return reasonsCrud.useGetById(id, options)
 }
 

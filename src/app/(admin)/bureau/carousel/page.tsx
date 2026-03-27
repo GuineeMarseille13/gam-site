@@ -38,8 +38,8 @@ export default async function CarouselPage() {
             <IconPhoto className="size-8 opacity-40" />
           </div>
           <div>
-            <p className="font-medium">Aucun slide pour l'instant</p>
-            <p className="mt-1 text-sm">Ajoutez des images pour alimenter le carousel de la page d'accueil</p>
+            <p className="font-medium">Aucun slide pour l&apos;instant</p>
+            <p className="mt-1 text-sm">Ajoutez des images pour alimenter le carousel de la page d&apos;accueil</p>
           </div>
           <Button asChild variant="outline" size="sm">
             <Link href="/bureau/carousel/nouveau">

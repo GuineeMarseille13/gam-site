@@ -12,12 +12,12 @@ import type { Prisma } from '@/lib/generated/prisma/client'
  */
 export interface CrudHandlerOptions {
   modelName: keyof Prisma.TypeMap['model']
-  validateCreate?: (data: any) => Promise<any> | any
-  validateUpdate?: (data: any) => Promise<any> | any
-  beforeCreate?: (data: any) => Promise<any> | any
-  beforeUpdate?: (data: any) => Promise<any> | any
-  afterCreate?: (result: any) => Promise<any> | any
-  afterUpdate?: (result: any) => Promise<any> | any
+  validateCreate?: (data: unknown) => Promise<unknown> | unknown
+  validateUpdate?: (data: unknown) => Promise<unknown> | unknown
+  beforeCreate?: (data: unknown) => Promise<unknown> | unknown
+  beforeUpdate?: (data: unknown) => Promise<unknown> | unknown
+  afterCreate?: (result: unknown) => Promise<unknown> | unknown
+  afterUpdate?: (result: unknown) => Promise<unknown> | unknown
 }
 
 /**
@@ -62,7 +62,14 @@ export async function handleGet(
     const page = searchParams.get('page')
     const limit = searchParams.get('limit')
 
-    const queryOptions: any = {
+    const queryOptions: {
+      where?: unknown
+      include?: unknown
+      select?: unknown
+      orderBy?: unknown
+      take?: number
+      skip?: number
+    } = {
       where: where ? JSON.parse(where) : undefined,
       include: include ? JSON.parse(include) : undefined,
       select: select ? JSON.parse(select) : undefined,

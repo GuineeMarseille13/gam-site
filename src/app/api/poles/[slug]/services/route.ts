@@ -1,36 +1,49 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse, notFoundResponse } from '@/lib/api/response'
-import { handleApiError } from '@/lib/api/errors'
+import { ApiError, handleApiError } from '@/lib/api/errors'
+import { findPoleBySlugOrId } from '@/lib/api/pole-by-slug'
 import { z } from 'zod'
 
-const createServiceSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  icon: z.string(),
-  order: z.number().int().default(0),
-})
+const createServiceSchema = z
+  .object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    icon: z.string(),
+    order: z.number().int().default(0),
+  })
+  .strict()
 
-// GET /api/poles/[slug]/services - Liste les services d'un pôle
+/**
+ * GET /api/poles/[slug]/services — Détails du pôle (`DetailsPole`) exposés comme liste.
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const { slug } = await params
-    const pole = await prisma.pole.findUnique({
-      where: { slug },
-      select: { id: true },
-    })
+    const pole = await findPoleBySlugOrId(slug)
 
     if (!pole) {
       return notFoundResponse('Pôle')
     }
 
-    const services = await prisma.poleService.findMany({
-      where: { poleId: pole.id },
-      orderBy: { order: 'asc' },
+    const details = await prisma.detailsPole.findUnique({
+      where: { id: pole.detailsPoleId },
     })
+
+    const services = details
+      ? [
+          {
+            id: details.id,
+            title: details.title,
+            description: details.description ?? '',
+            icon: details.reason ?? '',
+            order: 0,
+          },
+        ]
+      : []
 
     return successResponse(services)
   } catch (error) {
@@ -38,29 +51,34 @@ export async function GET(
   }
 }
 
-// POST /api/poles/[slug]/services - Ajouter un service à un pôle
+/**
+ * POST /api/poles/[slug]/services — Met à jour `DetailsPole` (un bloc par pôle).
+ */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const { slug } = await params
     const body = await request.json()
     const validatedData = createServiceSchema.parse(body)
 
-    const pole = await prisma.pole.findUnique({
-      where: { slug },
-      select: { id: true },
-    })
+    const pole = await findPoleBySlugOrId(slug)
 
     if (!pole) {
       return notFoundResponse('Pôle')
     }
 
-    const service = await prisma.poleService.create({
+    if (!pole.detailsPoleId) {
+      throw new ApiError('Détails pôle manquants', 400)
+    }
+
+    const service = await prisma.detailsPole.update({
+      where: { id: pole.detailsPoleId },
       data: {
-        ...validatedData,
-        poleId: pole.id,
+        title: validatedData.title,
+        description: validatedData.description,
+        reason: validatedData.icon,
       },
     })
 
@@ -69,4 +87,3 @@ export async function POST(
     return handleApiError(error)
   }
 }
-

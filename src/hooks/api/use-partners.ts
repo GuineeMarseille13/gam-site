@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les partenaires
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Partner } from '@/lib/generated/prisma/client'
 
-const partnersCrud = useCrud<Partner>({
+const partnersCrud = createCrudResources<Partner>({
   endpoint: '/partners',
   queryKey: ['partners'],
 })
@@ -13,14 +14,14 @@ const partnersCrud = useCrud<Partner>({
 /**
  * Récupérer tous les partenaires
  */
-export function usePartners(options?: { where?: any; include?: any; orderBy?: any }) {
+export function usePartners(options?: CrudQueryOptions) {
   return partnersCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un partenaire par ID
  */
-export function usePartner(id: string | null | undefined, options?: { include?: any }) {
+export function usePartner(id: string | null | undefined, options?: CrudQueryOptions) {
   return partnersCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function usePartner(id: string | null | undefined, options?: { include?: 
 export function usePartnersPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return partnersCrud.useGetPaginated(page, limit, options)
 }

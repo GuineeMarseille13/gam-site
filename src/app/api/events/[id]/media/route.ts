@@ -4,17 +4,18 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const createMediaSchema = z.object({
-  type: z.enum(['image', 'video']),
-  url: z.string().url(),
-  description: z.string().optional(),
-  order: z.number().int().default(0),
-})
+const createMediaSchema = z
+  .object({
+    type: z.enum(['image', 'video']),
+    url: z.string().url(),
+    description: z.string().optional(),
+    order: z.number().int().default(0),
+  })
+  .strict()
 
-// GET /api/events/[id]/media - Liste les médias d'un événement
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -27,21 +28,31 @@ export async function GET(
       return notFoundResponse('Événement')
     }
 
-    const media = await prisma.eventMedia.findMany({
-      where: { eventId: id },
-      orderBy: { order: 'asc' },
-    })
+    const [images, videos] = await Promise.all([
+      prisma.eventImage.findMany({
+        where: { eventId: id },
+        orderBy: { order: 'asc' },
+      }),
+      prisma.eventVideo.findMany({
+        where: { eventId: id },
+        orderBy: { order: 'asc' },
+      }),
+    ])
 
-    return successResponse(media)
+    const merged = [
+      ...images.map((row) => ({ ...row, mediaType: 'image' as const })),
+      ...videos.map((row) => ({ ...row, mediaType: 'video' as const })),
+    ].sort((a, b) => a.order - b.order)
+
+    return successResponse(merged)
   } catch (error) {
     return handleApiError(error)
   }
 }
 
-// POST /api/events/[id]/media - Ajouter un média à un événement
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -57,16 +68,26 @@ export async function POST(
       return notFoundResponse('Événement')
     }
 
-    const media = await prisma.eventMedia.create({
+    if (validatedData.type === 'image') {
+      const row = await prisma.eventImage.create({
+        data: {
+          eventId: id,
+          imageId: validatedData.url,
+          order: validatedData.order,
+        },
+      })
+      return successResponse({ ...row, mediaType: 'image' as const }, 'Média ajouté avec succès', 201)
+    }
+
+    const row = await prisma.eventVideo.create({
       data: {
-        ...validatedData,
         eventId: id,
+        url: validatedData.url,
+        order: validatedData.order,
       },
     })
-
-    return successResponse(media, 'Média ajouté avec succès', 201)
+    return successResponse({ ...row, mediaType: 'video' as const }, 'Média ajouté avec succès', 201)
   } catch (error) {
     return handleApiError(error)
   }
 }
-

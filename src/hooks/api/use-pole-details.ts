@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les détails de pôles
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { DetailsPole } from '@/lib/generated/prisma/client'
 
-const poleDetailsCrud = useCrud<DetailsPole>({
+const poleDetailsCrud = createCrudResources<DetailsPole>({
   endpoint: '/pole-details',
   queryKey: ['poleDetails'],
 })
@@ -13,14 +14,14 @@ const poleDetailsCrud = useCrud<DetailsPole>({
 /**
  * Récupérer tous les détails de pôles
  */
-export function usePoleDetails(options?: { where?: any; include?: any; orderBy?: any }) {
+export function usePoleDetails(options?: CrudQueryOptions) {
   return poleDetailsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un détail de pôle par ID
  */
-export function usePoleDetail(id: string | null | undefined, options?: { include?: any }) {
+export function usePoleDetail(id: string | null | undefined, options?: CrudQueryOptions) {
   return poleDetailsCrud.useGetById(id, options)
 }
 

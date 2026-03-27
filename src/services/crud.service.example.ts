@@ -4,6 +4,7 @@
  * Ce fichier montre comment utiliser le CrudService pour différents modèles
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars -- exemples documentés, non exécutés par l’app */
 import { createCrudService } from './crud.service'
 
 // ============================================
@@ -146,7 +147,7 @@ async function getImagesByPage(page: string) {
 // ============================================
 
 // Upsert (créer ou mettre à jour)
-async function upsertProduct(productId: string, data: any) {
+async function upsertProduct(productId: string, data: Record<string, unknown>) {
   const product = await productService.upsert(
     { id: productId },
     data, // create
@@ -173,7 +174,7 @@ async function deleteInactiveProducts() {
 }
 
 // Créer plusieurs produits en une fois
-async function createMultipleProducts(products: any[]) {
+async function createMultipleProducts(products: Record<string, unknown>[]) {
   const result = await productService.createMany(products, {
     skipDuplicates: true, // Ignorer les doublons
   })

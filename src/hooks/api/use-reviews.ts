@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les avis/témoignages
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Review } from '@/lib/generated/prisma/client'
 
-const reviewsCrud = useCrud<Review>({
+const reviewsCrud = createCrudResources<Review>({
   endpoint: '/reviews',
   queryKey: ['reviews'],
 })
@@ -13,14 +14,14 @@ const reviewsCrud = useCrud<Review>({
 /**
  * Récupérer tous les avis
  */
-export function useReviews(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useReviews(options?: CrudQueryOptions) {
   return reviewsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un avis par ID
  */
-export function useReview(id: string | null | undefined, options?: { include?: any }) {
+export function useReview(id: string | null | undefined, options?: CrudQueryOptions) {
   return reviewsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useReview(id: string | null | undefined, options?: { include?: a
 export function useReviewsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return reviewsCrud.useGetPaginated(page, limit, options)
 }

@@ -4,34 +4,25 @@ import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const createCategorySchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1).regex(/^[a-z0-9-]+$/, 'Slug invalide'),
-  description: z.string().optional(),
-  image: z.string().url().optional(),
-  type: z.enum(['product', 'event', 'partner']),
-  parentId: z.string().optional(),
-  isActive: z.boolean().default(true),
-})
+const createCategorySchema = z
+  .object({
+    name: z.string().min(1),
+    slug: z.string().min(1).regex(/^[a-z0-9-]+$/, 'Slug invalide').optional(),
+    description: z.string().optional(),
+    image: z.string().url().optional(),
+    type: z.enum(['product', 'event', 'partner']).optional(),
+    parentId: z.string().optional(),
+    isActive: z.boolean().default(true),
+  })
+  .strict()
 
-// GET /api/categories - Liste toutes les catégories
-export async function GET(request: NextRequest) {
+/**
+ * GET /api/categories — `ProductCategory` (titre + description).
+ */
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const type = searchParams.get('type')
-    const activeOnly = searchParams.get('active') !== 'false'
-
-    const where: any = {}
-    if (activeOnly) where.isActive = true
-    if (type) where.type = type
-
-    const categories = await prisma.category.findMany({
-      where,
-      include: {
-        parent: true,
-        children: true,
-      },
-      orderBy: { name: 'asc' },
+    const categories = await prisma.productCategory.findMany({
+      orderBy: { title: 'asc' },
     })
 
     return successResponse(categories)
@@ -40,17 +31,18 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/categories - Créer une nouvelle catégorie
+/**
+ * POST /api/categories — `title` ← `name` du corps.
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const validatedData = createCategorySchema.parse(body)
 
-    const category = await prisma.category.create({
-      data: validatedData,
-      include: {
-        parent: true,
-        children: true,
+    const category = await prisma.productCategory.create({
+      data: {
+        title: validatedData.name,
+        description: validatedData.description,
       },
     })
 
@@ -59,4 +51,3 @@ export async function POST(request: NextRequest) {
     return handleApiError(error)
   }
 }
-

@@ -1,7 +1,7 @@
 /**
  * API Routes pour les partenaires
  */
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
@@ -23,7 +23,7 @@ const handlers = createCrudHandler({
 })
 
 // GET public : retourne uniquement les partenaires publiés
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const partners = await prisma.partner.findMany({
     where: { published: true },
     orderBy: { createdAt: 'desc' },

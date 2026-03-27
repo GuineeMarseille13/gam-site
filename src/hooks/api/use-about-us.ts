@@ -2,10 +2,11 @@
  * Hooks spécifiques pour "À propos de nous"
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { AboutUs } from '@/lib/generated/prisma/client'
 
-const aboutUsCrud = useCrud<AboutUs>({
+const aboutUsCrud = createCrudResources<AboutUs>({
   endpoint: '/about-us',
   queryKey: ['aboutUs'],
 })
@@ -13,14 +14,14 @@ const aboutUsCrud = useCrud<AboutUs>({
 /**
  * Récupérer tous les contenus "À propos"
  */
-export function useAboutUs(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useAboutUs(options?: CrudQueryOptions) {
   return aboutUsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un contenu "À propos" par ID
  */
-export function useAboutUsItem(id: string | null | undefined, options?: { include?: any }) {
+export function useAboutUsItem(id: string | null | undefined, options?: CrudQueryOptions) {
   return aboutUsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useAboutUsItem(id: string | null | undefined, options?: { includ
 export function useAboutUsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return aboutUsCrud.useGetPaginated(page, limit, options)
 }

@@ -4,17 +4,19 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updateDonationSchema = z.object({
-  status: z.enum(['pending', 'paid', 'confirmed', 'cancelled']).optional(),
-  paymentMethod: z.string().optional(),
-  paymentReference: z.string().optional(),
-  isAnonymous: z.boolean().optional(),
-})
+const updateDonationSchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    message: z.string().optional(),
+  })
+  .strict()
 
-// GET /api/donations/submissions/[id] - Récupérer un don par ID
+/**
+ * GET /api/donations/submissions/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -32,19 +34,25 @@ export async function GET(
   }
 }
 
-// PUT /api/donations/submissions/[id] - Mettre à jour un don
+/**
+ * PUT /api/donations/submissions/[id] — Champs alignés sur le modèle `Donation`.
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updateDonationSchema.parse(body)
 
+    const data: { title?: string; message?: string | null } = {}
+    if (validatedData.title !== undefined) data.title = validatedData.title
+    if (validatedData.message !== undefined) data.message = validatedData.message
+
     const donation = await prisma.donation.update({
       where: { id },
-      data: validatedData,
+      data,
     })
 
     return successResponse(donation, 'Don mis à jour avec succès')
@@ -52,4 +60,3 @@ export async function PUT(
     return handleApiError(error)
   }
 }
-

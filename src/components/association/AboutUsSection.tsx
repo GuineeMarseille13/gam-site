@@ -376,14 +376,12 @@ function LoadingState({ data }: { data: AboutUsData }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16 md:space-y-20">
         {/* Skeleton pour "Qui sommes-nous ?" */}
         <SectionSkeleton 
-          title={data.whoWeAre.title}
           paragraphs={whoWeAreParagraphs}
           hasBadge={true}
         />
 
         {/* Skeleton pour "Que propose l'association ?" */}
         <SectionSkeleton 
-          title={data.whatWeOffer.title}
           paragraphs={whatWeOfferParts[0] ? [whatWeOfferParts[0]] : []}
           points={whatWeOfferPoints}
           conclusion={whatWeOfferParts[2] || ""}
@@ -397,14 +395,12 @@ function LoadingState({ data }: { data: AboutUsData }) {
 // Skeleton pour une section
 function SectionSkeleton({ 
   reverse = false,
-  title,
   paragraphs = [],
   points = [],
   conclusion = "",
   hasBadge = false,
 }: { 
   reverse?: boolean;
-  title: string;
   paragraphs?: string[];
   points?: string[];
   conclusion?: string;

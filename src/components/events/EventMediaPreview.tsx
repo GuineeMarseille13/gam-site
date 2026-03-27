@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- URLs dynamiques (Cloudinary, embeds), tailles variables */
 import { memo, useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
@@ -33,11 +34,6 @@ const EventMediaPreview = memo(function EventMediaPreview({
   const [isOpen, setIsOpen] = useState(false);
   const { setLightboxOpen } = useEventMediaPreview() ?? {};
 
-  if (!media || media.length === 0) return null;
-
-  const firstMedia = media[0];
-  const hasMultiple = media.length > 1;
-
   const handleOpen = useCallback(() => {
     setIsOpen(true);
     setLightboxOpen?.(true);
@@ -47,6 +43,11 @@ const EventMediaPreview = memo(function EventMediaPreview({
     setIsOpen(false);
     setLightboxOpen?.(false);
   }, [setLightboxOpen]);
+
+  if (!media || media.length === 0) return null;
+
+  const firstMedia = media[0];
+  const hasMultiple = media.length > 1;
 
   return (
     <>
@@ -176,7 +177,11 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
       const endX = e.changedTouches[0].clientX;
       const diff = touchStartX.current - endX;
       if (Math.abs(diff) > 50) {
-        diff > 0 ? nextMedia() : prevMedia();
+        if (diff > 0) {
+          nextMedia();
+        } else {
+          prevMedia();
+        }
       }
     },
     [nextMedia, prevMedia]

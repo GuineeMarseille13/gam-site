@@ -2,17 +2,26 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
+import { PaymentStatus } from '@/lib/generated/prisma/enums'
+import type { Prisma } from '@/lib/generated/prisma/client'
 
-// GET /api/orders/submissions - Liste toutes les commandes
+/**
+ * GET /api/orders/submissions — Filtre optionnel sur `payment.status`.
+ */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const status = searchParams.get('status')
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
-    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined
+    const statusParam = searchParams.get('status')
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : undefined
+    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : undefined
 
-    const where: any = {}
-    if (status) where.status = status
+    const where: Prisma.OrderWhereInput = {}
+    if (statusParam) {
+      const key = statusParam.toUpperCase() as keyof typeof PaymentStatus
+      if (key in PaymentStatus) {
+        where.payment = { is: { status: PaymentStatus[key] } }
+      }
+    }
 
     const orders = await prisma.order.findMany({
       where,
@@ -22,6 +31,7 @@ export async function GET(request: NextRequest) {
             product: true,
           },
         },
+        payment: true,
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -30,14 +40,14 @@ export async function GET(request: NextRequest) {
 
     const total = await prisma.order.count({ where })
     const totalAmount = await prisma.order.aggregate({
-      where: { status: 'paid' },
+      where,
       _sum: { totalAmount: true },
     })
 
     return successResponse({
       data: orders,
       total,
-      totalAmount: totalAmount._sum.totalAmount || 0,
+      totalAmount: totalAmount._sum.totalAmount ?? 0,
       limit,
       offset,
     })
@@ -45,4 +55,3 @@ export async function GET(request: NextRequest) {
     return handleApiError(error)
   }
 }
-

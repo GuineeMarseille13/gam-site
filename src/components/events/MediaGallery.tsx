@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- vignettes événements, URLs distantes */
 import { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -9,14 +10,12 @@ import { ANIMATION_CONFIG, STYLE_CONFIG, MESSAGES } from "@/app/(public)/eveneme
 
 interface MediaGalleryProps {
   media: EventMedia[];
-  isMobile?: boolean;
   /** ID unique pour les animations de layout (évite les conflits avec plusieurs galeries) */
   galleryId?: string;
 }
 
 const MediaGallery = memo(function MediaGallery({
   media,
-  isMobile = false,
   galleryId = "gallery",
 }: MediaGalleryProps) {
   const {

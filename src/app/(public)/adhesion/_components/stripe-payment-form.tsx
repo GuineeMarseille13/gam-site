@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import {
   Elements,
@@ -25,14 +25,8 @@ interface StripePaymentFormProps {
   onCancel?: () => void;
 }
 
-function PaymentForm({
-  clientSecret,
-  members,
-  message,
-  total,
-  onSuccess,
-  onCancel,
-}: StripePaymentFormProps) {
+function PaymentForm(props: StripePaymentFormProps) {
+  const { clientSecret, total, onSuccess, onCancel } = props;
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);

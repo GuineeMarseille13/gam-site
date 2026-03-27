@@ -30,18 +30,15 @@ export default function PartnersCarousel({
   partners,
   autoPlay = true,
   interval = 4000,
-  showDots = true,
-  showArrows = true,
-  enableSwipe = true,
   loop = true,
   className = "",
   title = "Nos Partenaires",
 }: PartnersCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying] = useState(autoPlay);
-  const [direction, setDirection] = useState(0);
+  const [, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [, setHoveredCard] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
@@ -75,7 +72,6 @@ export default function PartnersCarousel({
 
   // Calcul du nombre de slides disponibles (pour navigation par groupe)
   const effectiveSlidesToShow = isMounted ? responsiveSlidesToShow : 3;
-  const maxSlides = Math.max(0, totalPartners - effectiveSlidesToShow + 1);
 
   const nextSlide = useCallback(() => {
     if (totalPartners === 0) return;
@@ -88,28 +84,6 @@ export default function PartnersCarousel({
       return prev < totalPartners - 1 ? prev + 1 : prev;
     });
   }, [totalPartners, loop]);
-
-  const prevSlide = useCallback(() => {
-    if (totalPartners === 0) return;
-
-    setDirection(-1);
-    setCurrentIndex((prev) => {
-      if (loop) {
-        return (prev - 1 + totalPartners) % totalPartners;
-      }
-      return prev > 0 ? prev - 1 : prev;
-    });
-  }, [totalPartners, loop]);
-
-  const goToSlide = useCallback(
-    (index: number) => {
-      if (index < 0 || index >= totalPartners) return;
-
-      setDirection(index > currentIndex ? 1 : -1);
-      setCurrentIndex(index);
-    },
-    [currentIndex, totalPartners]
-  );
 
   // Gestion du timer d'autoplay
   const startTimer = useCallback(() => {

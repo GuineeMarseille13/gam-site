@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les pôles
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Pole } from '@/lib/generated/prisma/client'
 
-const polesCrud = useCrud<Pole>({
+const polesCrud = createCrudResources<Pole>({
   endpoint: '/poles',
   queryKey: ['poles'],
 })
@@ -13,14 +14,14 @@ const polesCrud = useCrud<Pole>({
 /**
  * Récupérer tous les pôles
  */
-export function usePoles(options?: { where?: any; include?: any; orderBy?: any }) {
+export function usePoles(options?: CrudQueryOptions) {
   return polesCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un pôle par ID
  */
-export function usePole(id: string | null | undefined, options?: { include?: any }) {
+export function usePole(id: string | null | undefined, options?: CrudQueryOptions) {
   return polesCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function usePole(id: string | null | undefined, options?: { include?: any
 export function usePolesPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return polesCrud.useGetPaginated(page, limit, options)
 }

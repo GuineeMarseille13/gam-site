@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les adhésions
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { MemberShip } from '@/lib/generated/prisma/client'
 
-const membershipsCrud = useCrud<MemberShip>({
+const membershipsCrud = createCrudResources<MemberShip>({
   endpoint: '/memberships',
   queryKey: ['memberships'],
 })
@@ -13,14 +14,14 @@ const membershipsCrud = useCrud<MemberShip>({
 /**
  * Récupérer toutes les adhésions
  */
-export function useMemberships(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useMemberships(options?: CrudQueryOptions) {
   return membershipsCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une adhésion par ID
  */
-export function useMembership(id: string | null | undefined, options?: { include?: any }) {
+export function useMembership(id: string | null | undefined, options?: CrudQueryOptions) {
   return membershipsCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useMembership(id: string | null | undefined, options?: { include
 export function useMembershipsPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return membershipsCrud.useGetPaginated(page, limit, options)
 }

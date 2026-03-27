@@ -116,7 +116,7 @@ function TestimonialCard({
   body,
   country,
   rating,
-}: (typeof testimonials)[number]) {
+}: (typeof defaultTestimonials)[number]) {
   return (
     <Card className="w-72 sm:w-80 shrink-0 border-2 border-gray-100 hover:border-amber-300 transition-colors duration-300 shadow-md hover:shadow-lg">
       <CardContent className="p-5">
@@ -151,7 +151,9 @@ function TestimonialCard({
           </div>
         </div>
         <blockquote className="text-sm text-gray-700 leading-relaxed line-clamp-4">
-          "{body}"
+          <span aria-hidden="true">&ldquo;</span>
+          {body}
+          <span aria-hidden="true">&rdquo;</span>
         </blockquote>
       </CardContent>
     </Card>
@@ -169,7 +171,7 @@ function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
       : typeof review.role === "string"
         ? review.role
         : ""
-  const img = review.img ?? review.avatarUrl ?? undefined
+  const img = review.img ?? review.avatarUrl ?? ""
   const ratingNum =
     typeof review.rating === "number"
       ? review.rating

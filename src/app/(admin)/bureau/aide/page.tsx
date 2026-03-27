@@ -22,7 +22,6 @@ import {
   IconEdit,
   IconTrash,
   IconEye,
-  IconEyeOff,
   IconArrowRight,
   IconBook,
   IconBulb,

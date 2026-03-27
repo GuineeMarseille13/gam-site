@@ -4,27 +4,32 @@ import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const createSocialNetworkSchema = z.object({
-  platform: z.enum(['facebook', 'instagram', 'tiktok', 'linkedin', 'twitter', 'youtube', 'snapchat']),
-  label: z.string().min(1),
-  href: z.string().url(),
-  color: z.string(),
-  icon: z.string(),
-  order: z.number().int().default(0),
-  isActive: z.boolean().default(true),
-})
+const createSocialNetworkSchema = z
+  .object({
+    platform: z.enum([
+      'facebook',
+      'instagram',
+      'tiktok',
+      'linkedin',
+      'twitter',
+      'youtube',
+      'snapchat',
+    ]),
+    label: z.string().min(1),
+    href: z.string().url(),
+    color: z.string(),
+    icon: z.string(),
+    order: z.number().int().default(0),
+    isActive: z.boolean().default(true),
+  })
+  .strict()
 
-// GET /api/social-networks - Liste tous les réseaux sociaux
-export async function GET(request: NextRequest) {
+/**
+ * GET /api/social-networks — Modèle Prisma `SocialMedia` (pas de champ `isActive`).
+ */
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const activeOnly = searchParams.get('active') !== 'false'
-
-    const where: any = {}
-    if (activeOnly) where.isActive = true
-
-    const networks = await prisma.socialNetwork.findMany({
-      where,
+    const networks = await prisma.socialMedia.findMany({
       orderBy: { order: 'asc' },
     })
 
@@ -34,14 +39,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/social-networks - Créer un nouveau réseau social
+/**
+ * POST /api/social-networks — `name` = plateforme + libellé, `url` = href.
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const validatedData = createSocialNetworkSchema.parse(body)
 
-    const network = await prisma.socialNetwork.create({
-      data: validatedData,
+    const network = await prisma.socialMedia.create({
+      data: {
+        name: `${validatedData.platform} — ${validatedData.label}`,
+        url: validatedData.href,
+        icon: validatedData.icon,
+        order: validatedData.order,
+      },
     })
 
     return successResponse(network, 'Réseau social créé avec succès', 201)
@@ -49,4 +61,3 @@ export async function POST(request: NextRequest) {
     return handleApiError(error)
   }
 }
-

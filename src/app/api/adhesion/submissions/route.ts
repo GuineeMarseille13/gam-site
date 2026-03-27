@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import type { Prisma } from '@/lib/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined
 
-    const where: any = {}
+    const where: Prisma.MemberShipWhereInput = {}
     if (isActiveParam !== null) where.isActive = isActiveParam === 'true'
 
     const memberShips = await prisma.memberShip.findMany({

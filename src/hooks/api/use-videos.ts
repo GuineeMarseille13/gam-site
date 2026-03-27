@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les vidéos
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Video } from '@/lib/generated/prisma/client'
 
-const videosCrud = useCrud<Video>({
+const videosCrud = createCrudResources<Video>({
   endpoint: '/videos',
   queryKey: ['videos'],
 })
@@ -13,14 +14,14 @@ const videosCrud = useCrud<Video>({
 /**
  * Récupérer toutes les vidéos
  */
-export function useVideos(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useVideos(options?: CrudQueryOptions) {
   return videosCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une vidéo par ID
  */
-export function useVideo(id: string | null | undefined, options?: { include?: any }) {
+export function useVideo(id: string | null | undefined, options?: CrudQueryOptions) {
   return videosCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useVideo(id: string | null | undefined, options?: { include?: an
 export function useVideosPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return videosCrud.useGetPaginated(page, limit, options)
 }

@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { ContactSubmissionStatus } from '@/lib/generated/prisma/enums'
 import { successResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { contactFormSchema } from '@/app/(public)/contacts/_schemas/contact.schema'
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
         phone: validatedData.phone || null,
         subject: validatedData.subject,
         message: validatedData.message,
-        status: 'pending',
+        status: ContactSubmissionStatus.PENDING,
       },
     })
 

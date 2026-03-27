@@ -4,32 +4,32 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updateEventSchema = z.object({
-  title: z.string().min(1).optional(),
-  description: z.string().optional(),
-  date: z.string().datetime().optional(),
-  location: z.string().optional(),
-  year: z.number().int().optional(),
-  category: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  isPublished: z.boolean().optional(),
-  categoryId: z.string().optional(),
-})
+const updateEventSchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    description: z.string().optional(),
+    startDate: z.string().datetime().optional(),
+    endDate: z.string().datetime().optional(),
+    location: z.string().optional(),
+    published: z.boolean().optional(),
+  })
+  .strict()
 
-// GET /api/events/[id] - Récupérer un événement par ID
+/**
+ * GET /api/events/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const event = await prisma.event.findUnique({
       where: { id },
       include: {
-        media: {
-          orderBy: { order: 'asc' },
-        },
-        categoryRef: true,
+        images: { orderBy: { order: 'asc' } },
+        videos: { orderBy: { order: 'asc' } },
+        eventSection: true,
       },
     })
 
@@ -43,27 +43,41 @@ export async function GET(
   }
 }
 
-// PUT /api/events/[id] - Mettre à jour un événement
+/**
+ * PUT /api/events/[id]
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updateEventSchema.parse(body)
 
-    const updateData: any = { ...validatedData }
-    if (validatedData.date) {
-      updateData.date = new Date(validatedData.date)
-    }
+    const data: {
+      title?: string
+      description?: string | null
+      startDate?: Date
+      endDate?: Date
+      location?: string | null
+      published?: boolean
+    } = {}
+
+    if (validatedData.title !== undefined) data.title = validatedData.title
+    if (validatedData.description !== undefined) data.description = validatedData.description
+    if (validatedData.location !== undefined) data.location = validatedData.location
+    if (validatedData.published !== undefined) data.published = validatedData.published
+    if (validatedData.startDate !== undefined) data.startDate = new Date(validatedData.startDate)
+    if (validatedData.endDate !== undefined) data.endDate = new Date(validatedData.endDate)
 
     const event = await prisma.event.update({
       where: { id },
-      data: updateData,
+      data,
       include: {
-        media: true,
-        categoryRef: true,
+        images: { orderBy: { order: 'asc' } },
+        videos: { orderBy: { order: 'asc' } },
+        eventSection: true,
       },
     })
 
@@ -73,10 +87,12 @@ export async function PUT(
   }
 }
 
-// DELETE /api/events/[id] - Supprimer un événement
+/**
+ * DELETE /api/events/[id]
+ */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
@@ -89,4 +105,3 @@ export async function DELETE(
     return handleApiError(error)
   }
 }
-

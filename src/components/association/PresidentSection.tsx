@@ -99,7 +99,6 @@ export default function PresidentSection() {
           <PresidentInfoCard president={presidentInfo} />
           <MessageCard
             paragraphs={messageParagraphs}
-            presidentName={presidentInfo.name}
             presidentRole={presidentInfo.role}
             firstName={firstName}
             lastName={lastName}
@@ -304,13 +303,11 @@ function PresidentDetailsCard({ name, role }: { name: string; role: string }) {
 // Composant pour la carte de message
 function MessageCard({
   paragraphs,
-  presidentName,
   presidentRole,
   firstName,
   lastName,
 }: {
   paragraphs: string[];
-  presidentName: string;
   presidentRole: string;
   firstName: string;
   lastName: string;

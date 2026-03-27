@@ -132,7 +132,7 @@ export function Marquee({
                     // Cloner l'élément avec une nouvelle clé unique
                     return React.cloneElement(child, {
                       key: uniqueKey,
-                    } as any);
+                    } as React.Attributes & { key?: string });
                   }
                   // Pour les enfants non-éléments React, utiliser un Fragment avec une clé unique
                   return <React.Fragment key={uniqueKey}>{child}</React.Fragment>;

@@ -403,14 +403,3 @@ export function EquipeRowActions({
     </>
   )
 }
-
-// ── Sous-composants ────────────────────────────────────────────────────────────
-
-function DetailRow({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 hover:bg-muted/40">
-      <span className="shrink-0 text-muted-foreground">{icon}</span>
-      <span className="min-w-0 truncate text-sm text-foreground/80">{children}</span>
-    </div>
-  )
-}

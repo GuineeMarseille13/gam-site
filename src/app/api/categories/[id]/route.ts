@@ -4,29 +4,29 @@ import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
 import { z } from 'zod'
 
-const updateCategorySchema = z.object({
-  name: z.string().min(1).optional(),
-  slug: z.string().regex(/^[a-z0-9-]+$/).optional(),
-  description: z.string().optional(),
-  image: z.string().url().optional(),
-  type: z.enum(['product', 'event', 'partner']).optional(),
-  parentId: z.string().optional(),
-  isActive: z.boolean().optional(),
-})
+const updateCategorySchema = z
+  .object({
+    name: z.string().min(1).optional(),
+    slug: z.string().regex(/^[a-z0-9-]+$/).optional(),
+    description: z.string().optional(),
+    image: z.string().url().optional(),
+    type: z.enum(['product', 'event', 'partner']).optional(),
+    parentId: z.string().optional(),
+    isActive: z.boolean().optional(),
+  })
+  .strict()
 
-// GET /api/categories/[id] - Récupérer une catégorie par ID
+/**
+ * GET /api/categories/[id]
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
-    const category = await prisma.category.findUnique({
+    const category = await prisma.productCategory.findUnique({
       where: { id },
-      include: {
-        parent: true,
-        children: true,
-      },
     })
 
     if (!category) {
@@ -39,23 +39,25 @@ export async function GET(
   }
 }
 
-// PUT /api/categories/[id] - Mettre à jour une catégorie
+/**
+ * PUT /api/categories/[id]
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const body = await request.json()
     const validatedData = updateCategorySchema.parse(body)
 
-    const category = await prisma.category.update({
+    const data: { title?: string; description?: string | null } = {}
+    if (validatedData.name !== undefined) data.title = validatedData.name
+    if (validatedData.description !== undefined) data.description = validatedData.description
+
+    const category = await prisma.productCategory.update({
       where: { id },
-      data: validatedData,
-      include: {
-        parent: true,
-        children: true,
-      },
+      data,
     })
 
     return successResponse(category, 'Catégorie mise à jour avec succès')
@@ -64,14 +66,16 @@ export async function PUT(
   }
 }
 
-// DELETE /api/categories/[id] - Supprimer une catégorie
+/**
+ * DELETE /api/categories/[id]
+ */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
-    await prisma.category.delete({
+    await prisma.productCategory.delete({
       where: { id },
     })
 
@@ -80,4 +84,3 @@ export async function DELETE(
     return handleApiError(error)
   }
 }
-

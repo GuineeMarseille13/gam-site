@@ -4,7 +4,7 @@
  */
 
 // Hooks génériques
-export { useCrud } from './use-crud'
+export { createCrudResources } from './use-crud'
 export type { UseCrudOptions } from './use-crud'
 
 // Hooks spécifiques

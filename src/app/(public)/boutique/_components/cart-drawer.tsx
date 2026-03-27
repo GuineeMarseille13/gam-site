@@ -416,7 +416,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   <CheckCircle2 className="w-14 h-14" />
                 </motion.div>
                 <h4 className="mt-3 text-lg font-semibold">Merci pour votre soutien !</h4>
-                <p className="text-sm text-gray-600 mt-2">Votre commande simulée a été enregistrée localement. Un membre de l'association pourra vous contacter si besoin.</p>
+                <p className="text-sm text-gray-600 mt-2">Votre commande simulée a été enregistrée localement. Un membre de l&apos;association pourra vous contacter si besoin.</p>
                 <button onClick={onClose} className="mt-6 rounded-md bg-gray-900 text-white px-4 py-2 text-sm cursor-pointer">Fermer</button>
               </div>
             )}

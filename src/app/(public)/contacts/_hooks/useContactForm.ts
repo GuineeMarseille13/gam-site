@@ -71,9 +71,9 @@ export function useContactForm() {
       fieldSchema.parse(valueToValidate);
       return undefined;
     } catch (error) {
-      if (error instanceof z.ZodError && error.errors && error.errors.length > 0) {
+      if (error instanceof z.ZodError && error.issues.length > 0) {
         // Prendre la première erreur avec son message personnalisé
-        const firstError = error.errors[0];
+        const firstError = error.issues[0];
         if (firstError && firstError.message) {
           return firstError.message;
         }
@@ -127,10 +127,10 @@ export function useContactForm() {
     const result = contactFormSchema.safeParse(dataToValidate);
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof ContactFormData, string>> = {};
-      result.error.errors.forEach((error) => {
-        const field = error.path[0] as keyof ContactFormData;
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof ContactFormData;
         if (field) {
-          fieldErrors[field] = error.message;
+          fieldErrors[field] = issue.message;
         }
       });
       setErrors(fieldErrors);

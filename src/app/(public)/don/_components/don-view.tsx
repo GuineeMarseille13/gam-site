@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, CheckCircle2, DollarSign, Target, Users, Sparkles, Loader2, ArrowLeft } from "lucide-react";
-import { z } from "zod";
+import { Heart, CheckCircle2, DollarSign, Target, Sparkles, Loader2, ArrowLeft } from "lucide-react";
 import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT_EUR, type Don } from "../_schemas/don.schema";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
@@ -23,19 +22,6 @@ export default function DonView() {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [validatedFormData, setValidatedFormData] = useState<Don | null>(null);
-
-  const frenchPhoneRegex = /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/;
-
-  function isValidFrenchPhone(phone: string): boolean {
-    if (!phone || phone.trim() === "") return true;
-    const cleaned = phone.replace(/\s/g, "");
-    return frenchPhoneRegex.test(cleaned);
-  }
-
-  function isValidEmail(email: string): boolean {
-    if (!email || email.trim() === "") return true;
-    return z.string().email().safeParse(email).success;
-  }
 
   function handleAmountSelect(amount: number) {
     setFormData((prev) => ({ ...prev, amount }));
@@ -217,7 +203,7 @@ export default function DonView() {
           transition={{ delay: 0.1, duration: 0.4 }}
           className="mt-2 sm:mt-3 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4"
         >
-          Votre don est essentiel pour notre association. Il nous permet de financer nos projets, d'organiser nos événements et d'amplifier notre impact au service de notre communauté.
+          Votre don est essentiel pour notre association. Il nous permet de financer nos projets, d&apos;organiser nos événements et d&apos;amplifier notre impact au service de notre communauté.
         </motion.p>
         <motion.div 
           initial={{ scaleX: 0 }} 

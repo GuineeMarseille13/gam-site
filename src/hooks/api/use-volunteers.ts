@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les bénévoles
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Volunteer } from '@/lib/generated/prisma/client'
 
-const volunteersCrud = useCrud<Volunteer>({
+const volunteersCrud = createCrudResources<Volunteer>({
   endpoint: '/volunteers',
   queryKey: ['volunteers'],
 })
@@ -13,14 +14,14 @@ const volunteersCrud = useCrud<Volunteer>({
 /**
  * Récupérer tous les bénévoles
  */
-export function useVolunteers(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useVolunteers(options?: CrudQueryOptions) {
   return volunteersCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un bénévole par ID
  */
-export function useVolunteer(id: string | null | undefined, options?: { include?: any }) {
+export function useVolunteer(id: string | null | undefined, options?: CrudQueryOptions) {
   return volunteersCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useVolunteer(id: string | null | undefined, options?: { include?
 export function useVolunteersPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return volunteersCrud.useGetPaginated(page, limit, options)
 }

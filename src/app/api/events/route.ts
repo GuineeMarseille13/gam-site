@@ -7,7 +7,7 @@
  * DELETE /api/events?id=xxx - Supprime un événement
  */
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
@@ -54,7 +54,7 @@ const handlers = createCrudHandler({
 })
 
 // GET public : retourne uniquement les événements publiés (avec galerie d'images et vidéos)
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const events = await prisma.event.findMany({
     where: { published: true },
     orderBy: { startDate: 'desc' },

@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les réseaux sociaux
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { SocialMedia } from '@/lib/generated/prisma/client'
 
-const socialMediasCrud = useCrud<SocialMedia>({
+const socialMediasCrud = createCrudResources<SocialMedia>({
   endpoint: '/social-medias',
   queryKey: ['socialMedias'],
 })
@@ -13,14 +14,14 @@ const socialMediasCrud = useCrud<SocialMedia>({
 /**
  * Récupérer tous les réseaux sociaux
  */
-export function useSocialMedias(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useSocialMedias(options?: CrudQueryOptions) {
   return socialMediasCrud.useGetAll(options)
 }
 
 /**
  * Récupérer un réseau social par ID
  */
-export function useSocialMedia(id: string | null | undefined, options?: { include?: any }) {
+export function useSocialMedia(id: string | null | undefined, options?: CrudQueryOptions) {
   return socialMediasCrud.useGetById(id, options)
 }
 

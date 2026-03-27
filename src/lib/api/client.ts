@@ -11,9 +11,10 @@ const API_BASE_URL = '/api'
 export interface ApiOptions {
   id?: string
   params?: Record<string, string | number | boolean | null | undefined>
-  include?: Record<string, boolean>
+  /** Prisma-style nested includes (passées en query string JSON côté client). */
+  include?: Record<string, unknown>
   select?: Record<string, boolean>
-  where?: Record<string, any>
+  where?: Record<string, unknown>
   orderBy?: Record<string, 'asc' | 'desc'> | Array<Record<string, 'asc' | 'desc'>>
   page?: number
   limit?: number
@@ -104,7 +105,7 @@ export async function apiGet<T>(endpoint: string, options?: ApiOptions): Promise
 /**
  * POST - Créer une ressource
  */
-export async function apiPost<T>(endpoint: string, data: any): Promise<T> {
+export async function apiPost<T>(endpoint: string, data: unknown): Promise<T> {
   const url = buildUrl(endpoint)
   const response = await fetch(url, {
     method: 'POST',
@@ -120,7 +121,7 @@ export async function apiPost<T>(endpoint: string, data: any): Promise<T> {
 /**
  * PUT - Mettre à jour une ressource
  */
-export async function apiPut<T>(endpoint: string, id: string, data: Partial<any>): Promise<T> {
+export async function apiPut<T>(endpoint: string, id: string, data: Partial<T>): Promise<T> {
   const url = buildUrl(endpoint, { id })
   const response = await fetch(url, {
     method: 'PUT',

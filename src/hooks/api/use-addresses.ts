@@ -2,10 +2,11 @@
  * Hooks spécifiques pour les adresses
  */
 
-import { useCrud } from './use-crud'
+import { createCrudResources } from './use-crud'
+import type { CrudQueryOptions } from './crud-query-types'
 import type { Address } from '@/lib/generated/prisma/client'
 
-const addressesCrud = useCrud<Address>({
+const addressesCrud = createCrudResources<Address>({
   endpoint: '/addresses',
   queryKey: ['addresses'],
 })
@@ -13,14 +14,14 @@ const addressesCrud = useCrud<Address>({
 /**
  * Récupérer toutes les adresses
  */
-export function useAddresses(options?: { where?: any; include?: any; orderBy?: any }) {
+export function useAddresses(options?: CrudQueryOptions) {
   return addressesCrud.useGetAll(options)
 }
 
 /**
  * Récupérer une adresse par ID
  */
-export function useAddress(id: string | null | undefined, options?: { include?: any }) {
+export function useAddress(id: string | null | undefined, options?: CrudQueryOptions) {
   return addressesCrud.useGetById(id, options)
 }
 
@@ -30,7 +31,7 @@ export function useAddress(id: string | null | undefined, options?: { include?: 
 export function useAddressesPaginated(
   page: number = 1,
   limit: number = 10,
-  options?: { where?: any; orderBy?: any }
+  options?: CrudQueryOptions
 ) {
   return addressesCrud.useGetPaginated(page, limit, options)
 }

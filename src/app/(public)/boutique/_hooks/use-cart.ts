@@ -95,7 +95,19 @@ export function useCart(): UseCartResult {
   }, []);
 
   const update = useCallback((productId: string, quantity: number) => {
-    setItems((prev) => addOrUpdateItem(prev, { product: prev.find(p => p.product.id === productId)?.product ?? { id: productId, name: "", image: "", price: 0 }, quantity }));
+    setItems((prev) =>
+      addOrUpdateItem(prev, {
+        product:
+          prev.find((p) => p.product.id === productId)?.product ?? {
+            id: productId,
+            name: "",
+            image: "",
+            price: 0,
+            inStock: true,
+          },
+        quantity,
+      })
+    );
   }, []);
 
   const remove = useCallback((productId: string) => {
