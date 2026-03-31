@@ -8,6 +8,11 @@ import { REQUEST_STATUS_LABELS, type RequestStatusValue } from "../_schemas/bene
 
 const TAKE = 500
 
+export interface GetBeneficiariesForTrackingOptions {
+  /** Limite aux dossiers qui incluent ce type de demande (relation Prisma). */
+  demandTypeId?: string
+}
+
 function statusLabel(value: string | null): string | null {
   if (!value) return null
   if (value in REQUEST_STATUS_LABELS) {
@@ -19,10 +24,19 @@ function statusLabel(value: string | null): string | null {
 /**
  * Liste des fiches pour la page Suivi demande (tri récent en premier).
  */
-export async function getBeneficiariesForTracking(): Promise<BeneficiaryTrackingListRow[]> {
+export async function getBeneficiariesForTracking(
+  options: GetBeneficiariesForTrackingOptions = {},
+): Promise<BeneficiaryTrackingListRow[]> {
   await requireAdministrationDashboard()
 
+  const { demandTypeId } = options
+
   const rows = await prisma.beneficiary.findMany({
+    where: demandTypeId
+      ? {
+          demandTypes: { some: { id: demandTypeId } },
+        }
+      : undefined,
     orderBy: { createdAt: "desc" },
     take: TAKE,
     include: {

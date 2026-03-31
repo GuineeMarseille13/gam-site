@@ -19,6 +19,23 @@ export const beneficiaryTrackingParamsSchema = z
 export type BeneficiaryTrackingParams = z.infer<typeof beneficiaryTrackingParamsSchema>
 
 /**
+ * Query string page Suivi demande (?type=id). Valeur normalisée (trim, premier élément si tableau).
+ */
+export const suiviDemandeSearchParamsSchema = z
+  .object({
+    type: z.preprocess((val: unknown) => {
+      if (val === undefined || val === null) return undefined
+      const raw = Array.isArray(val) ? val[0] : val
+      if (typeof raw !== "string") return undefined
+      const t = raw.trim()
+      return t === "" ? undefined : t
+    }, z.string().optional()),
+  })
+  .strict()
+
+export type SuiviDemandeSearchParams = z.infer<typeof suiviDemandeSearchParamsSchema>
+
+/**
  * Mise à jour du statut de demande (suivi).
  */
 export const updateBeneficiaryRequestStatusSchema = z

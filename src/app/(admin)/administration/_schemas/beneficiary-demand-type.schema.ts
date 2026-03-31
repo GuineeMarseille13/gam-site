@@ -39,3 +39,13 @@ export const beneficiaryDemandTypeRowSchema = z
   .strict()
 
 export type BeneficiaryDemandTypeRow = z.infer<typeof beneficiaryDemandTypeRowSchema>
+
+/** Option minimaliste pour un filtre (id + libellé). */
+export const beneficiaryDemandTypeFilterOptionSchema = z
+  .object({
+    id: z.string(),
+    label: z.string(),
+  })
+  .strict()
+
+export type BeneficiaryDemandTypeFilterOption = z.infer<typeof beneficiaryDemandTypeFilterOptionSchema>
