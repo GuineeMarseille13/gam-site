@@ -9,6 +9,7 @@ import { BeneficiarySuiviWizard } from "../_components/beneficiary-suivi-wizard"
 import { getActiveBeneficiaryDemandTypes } from "../_services/get-beneficiary-demand-types"
 import { getActiveBeneficiaryDocumentTypes } from "../_services/get-active-beneficiary-document-types"
 import { getRecentBeneficiaries } from "../_services/get-recent-beneficiaries"
+import { getAdministrativePermanenceSlots } from "@/lib/administrative-permanence/queries"
 
 export const metadata: Metadata = {
   title: "Demande bénéficiaire — permanence administrative",
@@ -17,11 +18,14 @@ export const metadata: Metadata = {
 }
 
 export default async function DemandeBeneficiairePage() {
-  const [recentRows, demandTypes, documentTypes] = await Promise.all([
+  const [recentRows, demandTypes, documentTypes, permanenceSlots] = await Promise.all([
     getRecentBeneficiaries(),
     getActiveBeneficiaryDemandTypes(),
     getActiveBeneficiaryDocumentTypes(),
+    getAdministrativePermanenceSlots(),
   ])
+
+  const permanenceSlotDates = permanenceSlots.map((s) => s.date)
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -57,7 +61,11 @@ export default async function DemandeBeneficiairePage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="px-4 pt-0 sm:px-6">
-          <BeneficiarySuiviWizard demandTypes={demandTypes} documentTypes={documentTypes} />
+          <BeneficiarySuiviWizard
+            demandTypes={demandTypes}
+            documentTypes={documentTypes}
+            permanenceSlotDates={permanenceSlotDates}
+          />
         </CardContent>
       </Card>
 

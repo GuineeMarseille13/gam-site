@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, Clock, Info } from "lucide-react";
+
+import type { PermanenceSlotDisplay } from "@/lib/administrative-permanence/build-pole-slots";
+import { formatSlotRangeFr } from "@/lib/administrative-permanence/format-hm-fr";
 
 // Composant pour l'icône avec tooltip
 function NextPermanenceIcon() {
@@ -71,33 +74,44 @@ function NextPermanenceIcon() {
 }
 
 interface PermanenceCalendarProps {
-  dates: string[]; // Format: "YYYY-MM-DD"
-  schedule: string; // Ex: "14h à 18h"
+  slots: PermanenceSlotDisplay[];
   colorScheme: {
     primary: string;
   };
+  /** Année affichée dans le titre (sinon déduite des dates). */
+  calendarYear?: number;
 }
 
 export default function PermanenceCalendar({
-  dates,
-  schedule,
+  slots,
   colorScheme,
+  calendarYear,
 }: PermanenceCalendarProps) {
-  // Extraire les heures de la chaîne schedule (ex: "Permanences les samedis de 14h à 16h" -> "14h-16h")
-  const extractHours = (scheduleText: string): string => {
-    const hourMatch = scheduleText.match(
-      /(\d{1,2})h\s*(?:à|au|-)\s*(\d{1,2})h/
-    );
-    if (hourMatch) {
-      return `${hourMatch[1]}h-${hourMatch[2]}h`;
-    }
-    // Fallback si le format n'est pas reconnu
-    return scheduleText.includes("14h") && scheduleText.includes("16h")
-      ? "14h-16h"
-      : scheduleText;
-  };
+  const dates = useMemo(
+    () =>
+      [...slots.map((s) => s.date)].sort(
+        (a, b) => new Date(a).getTime() - new Date(b).getTime()
+      ),
+    [slots]
+  );
 
-  const displaySchedule = extractHours(schedule);
+  const timeByDate = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const s of slots) {
+      m.set(s.date, formatSlotRangeFr(s.startTime, s.endTime));
+    }
+    return m;
+  }, [slots]);
+
+  const resolvedYearLabel = useMemo(() => {
+    if (calendarYear != null) {
+      return calendarYear;
+    }
+    if (dates.length === 0) {
+      return new Date().getFullYear();
+    }
+    return Math.max(...dates.map((d) => new Date(d).getFullYear()));
+  }, [calendarYear, dates]);
 
   // Fonction pour formater une date
   const formatDate = (dateString: string) => {
@@ -253,7 +267,7 @@ export default function PermanenceCalendar({
             />
           </motion.div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-            Calendrier des Permanences {new Date().getFullYear()}
+            Calendrier des Permanences {resolvedYearLabel}
           </h2>
         </motion.div>
         <motion.div
@@ -552,7 +566,7 @@ export default function PermanenceCalendar({
                                 : `bg-gradient-to-r ${colorScheme.primary} bg-clip-text text-transparent font-bold`
                             }`}
                           >
-                            {displaySchedule}
+                            {timeByDate.get(dateStr) ?? ""}
                           </span>
                         </div>
 

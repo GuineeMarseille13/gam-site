@@ -36,13 +36,14 @@ import { BeneficiarySuiviDocumentChecks } from "./beneficiary-suivi-document-che
 import { submitBeneficiaryPermanence } from "../_actions/submit-beneficiary-permanence"
 import type { ActiveBeneficiaryDocumentType } from "../_services/get-active-beneficiary-document-types"
 import {
+  buildBeneficiaryPermanenceStep1Schema,
   buildBeneficiaryPermanenceStep3Schema,
   beneficiaryPermanenceStep4Schema,
   buildBeneficiaryPermanenceStep2Schema,
   buildSubmitBeneficiaryPermanenceSchema,
-  beneficiaryPermanenceStep1Schema,
   type DemandTypeOptionForValidation,
 } from "../_schemas/beneficiary-permanence.schema"
+import { dateToYmdLocal } from "@/lib/administrative-permanence/date-to-ymd-local"
 import {
   PAYMENT_RESPONSIBLE_LABELS,
   PAYMENT_RESPONSIBLE_VALUES,
@@ -54,10 +55,6 @@ const STEPS = 5
 
 const STEP_LABELS = ["Date", "Demande", "Dossier", "Fiche", "Validation"]
 
-function toYmd(d: Date): string {
-  return format(d, "yyyy-MM-dd")
-}
-
 export type BeneficiaryDemandTypeOption = DemandTypeOptionForValidation & {
   readonly label: string
 }
@@ -66,6 +63,8 @@ interface BeneficiarySuiviWizardProps {
   className?: string
   demandTypes: BeneficiaryDemandTypeOption[]
   documentTypes: ActiveBeneficiaryDocumentType[]
+  /** Journées autorisées (YYYY-MM-DD), alignées sur le calendrier des permanences. */
+  permanenceSlotDates: readonly string[]
 }
 
 /**
@@ -75,6 +74,7 @@ export function BeneficiarySuiviWizard({
   className,
   demandTypes,
   documentTypes,
+  permanenceSlotDates,
 }: BeneficiarySuiviWizardProps) {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -86,6 +86,16 @@ export function BeneficiarySuiviWizard({
   const validationSet = useMemo(
     () => demandTypes.map((d) => ({ id: d.id, requiresDetail: d.requiresDetail })),
     [demandTypes],
+  )
+
+  const allowedPermanenceDatesSet = useMemo(
+    () => new Set(permanenceSlotDates),
+    [permanenceSlotDates],
+  )
+
+  const step1Schema = useMemo(
+    () => buildBeneficiaryPermanenceStep1Schema(allowedPermanenceDatesSet),
+    [allowedPermanenceDatesSet],
   )
 
   const documentValidationSet = useMemo(
@@ -105,8 +115,13 @@ export function BeneficiarySuiviWizard({
   )
 
   const submitSchema = useMemo(
-    () => buildSubmitBeneficiaryPermanenceSchema(validationSet, documentValidationSet),
-    [validationSet, documentValidationSet],
+    () =>
+      buildSubmitBeneficiaryPermanenceSchema(
+        validationSet,
+        documentValidationSet,
+        allowedPermanenceDatesSet,
+      ),
+    [validationSet, documentValidationSet, allowedPermanenceDatesSet],
   )
 
   const defaultTypeId = demandTypes[0]?.id ?? ""
@@ -168,8 +183,27 @@ export function BeneficiarySuiviWizard({
     }
   }, [needsDocFreeText])
 
-  const ymd = permanenceDate ? toYmd(permanenceDate) : ""
-  const birthYmd = birthDate ? toYmd(birthDate) : ""
+  const ymd = permanenceDate ? dateToYmdLocal(permanenceDate) : ""
+  const birthYmd = birthDate ? dateToYmdLocal(birthDate) : ""
+
+  const isPermanenceCalendarDayDisabled = useCallback(
+    (d: Date) => {
+      if (allowedPermanenceDatesSet.size === 0) {
+        return true
+      }
+      return !allowedPermanenceDatesSet.has(dateToYmdLocal(d))
+    },
+    [allowedPermanenceDatesSet],
+  )
+
+  useEffect(() => {
+    if (!permanenceDate || allowedPermanenceDatesSet.size === 0) {
+      return
+    }
+    if (!allowedPermanenceDatesSet.has(dateToYmdLocal(permanenceDate))) {
+      setPermanenceDate(undefined)
+    }
+  }, [permanenceDate, allowedPermanenceDatesSet])
 
   const selectedRequiresDetail = useMemo(
     () =>
@@ -229,7 +263,7 @@ export function BeneficiarySuiviWizard({
     setFormError(null)
     setFieldErrors({})
     if (step === 1) {
-      const p = beneficiaryPermanenceStep1Schema.safeParse({ permanenceDate: ymd })
+      const p = step1Schema.safeParse({ permanenceDate: ymd })
       if (!p.success) {
         const e = p.error.flatten().fieldErrors
         setFieldErrors({ permanenceDate: e.permanenceDate?.[0] ?? "Date requise." })
@@ -312,6 +346,7 @@ export function BeneficiarySuiviWizard({
   }, [
     step,
     ymd,
+    step1Schema,
     requestTypeIds,
     requestDetail,
     step2Schema,
@@ -504,6 +539,25 @@ export function BeneficiarySuiviWizard({
             Date de la permanence
             <BeneficiaryRequiredMark />
           </Label>
+          {permanenceSlotDates.length === 0 ? (
+            <p
+              className="max-w-xl rounded-lg border border-amber-200/80 bg-amber-50/40 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/25 dark:text-amber-50"
+              role="status"
+            >
+              Aucune date de permanence n’est configurée. Ajoutez-en dans{" "}
+              <Link
+                href="/administration/calendrier-permanence"
+                className="font-medium underline underline-offset-2 hover:text-amber-900 dark:hover:text-amber-100"
+              >
+                Calendrier permanence
+              </Link>{" "}
+              pour activer le sélecteur.
+            </p>
+          ) : (
+            <p className="max-w-xl text-sm text-muted-foreground">
+              Seules les dates prévues au calendrier des permanences sont sélectionnables.
+            </p>
+          )}
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -535,6 +589,7 @@ export function BeneficiarySuiviWizard({
                 locale={fr}
                 captionLayout="dropdown"
                 initialFocus
+                disabled={isPermanenceCalendarDayDisabled}
               />
             </PopoverContent>
           </Popover>

@@ -17,6 +17,14 @@ export interface Pole {
     address?: string;
   };
   permanenceDates?: string[]; // Format: "YYYY-MM-DD"
+  /** Créneaux enrichis (heures) — renseignés quand la base synchronise le calendrier. */
+  permanenceSlots?: {
+    date: string;
+    startTime: string;
+    endTime: string;
+  }[];
+  /** Texte carte « Horaires » (prioritaire sur `contactInfo.schedule` si défini). */
+  permanenceScheduleSummary?: string;
   statistics?: {
     title?: string;
     items: {
@@ -163,49 +171,11 @@ export const poles: Pole[] = [
     contactInfo: {
       email: "guineeamarseille13@gmail.com",
       phone: "07-67-13-39-28",
-      schedule: "Permanences les samedis de 14h à 16h",
+      schedule:
+        "Permanences régulières : horaires et dates précises sont affichés sur cette page (mis à jour depuis notre espace d’administration).",
       address: "93 La Canebière, 13001 Marseille",
     },
-    permanenceDates: [
-      // Janvier 2026
-      "2026-01-10",
-      "2026-01-24",
-      // Février 2026
-      "2026-02-07",
-      "2026-02-21",
-      // Mars 2026
-      "2026-03-07",
-      "2026-03-21",
-      // Avril 2026
-      "2026-04-04",
-      "2026-04-18",
-      // Mai 2026
-      "2026-05-02",
-      "2026-05-16",
-      "2026-05-30",
-      // Juin 2026
-      "2026-06-13",
-      "2026-06-27",
-      // Juillet 2026
-      "2026-07-11",
-      "2026-07-25",  
-      // Août 2026
-      "2026-08-08", 
-      "2026-08-22", 
-      // Septembre 2026
-      "2026-09-05",
-      "2026-09-19",
-      // Octobre 2026
-      "2026-10-03",
-      "2026-10-17",
-      "2026-10-31",
-      // Novembre 2026
-      "2026-11-14",
-      "2026-11-28",
-      // Décembre 2026
-      "2026-12-12",
-      "2026-12-26",
-    ],
+    // Calendrier des permanences : exclusivement depuis PostgreSQL (voir administration).
     statistics: {
       title: "Accompagnements administratifs faits par nos bénévoles",
       items: [

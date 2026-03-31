@@ -14,6 +14,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Pole } from "@/data/poles";
+import { buildSlotsFromLegacyPole } from "@/lib/administrative-permanence/build-pole-slots";
+import { ADMINISTRATIVE_POLE_SLUG } from "@/lib/administrative-permanence/constants";
 import PermanenceCalendar from "./PermanenceCalendar";
 
 interface PolePageProps {
@@ -23,6 +25,25 @@ interface PolePageProps {
 export default function PolePage({ pole }: PolePageProps) {
   const descriptionRef = useRef<HTMLElement | null>(null);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
+
+  const isAdministrativeDbCalendar = pole.slug === ADMINISTRATIVE_POLE_SLUG;
+
+  const calendarSlots = isAdministrativeDbCalendar
+    ? (pole.permanenceSlots ?? [])
+    : pole.permanenceSlots?.length
+      ? pole.permanenceSlots
+      : buildSlotsFromLegacyPole(pole);
+
+  const horairesDisplayText =
+    pole.permanenceScheduleSummary ??
+    pole.contactInfo?.schedule ??
+    "Permanences les samedis de 14h à 16h";
+
+  /** Pôle ADM : encadré coordonnées / horaires toujours visible ; calendrier seulement si créneaux en base. */
+  const showPermanenceBlock =
+    isAdministrativeDbCalendar ||
+    (pole.permanenceDates?.length ?? 0) > 0 ||
+    (pole.permanenceSlots?.length ?? 0) > 0;
 
   useEffect(() => {
     if (!descriptionRef.current) return;
@@ -343,7 +364,7 @@ export default function PolePage({ pole }: PolePageProps) {
         </motion.section>
 
         {/* Section Horaires et Adresse - Juste avant le calendrier */}
-        {pole.permanenceDates && pole.permanenceDates.length > 0 && (
+        {showPermanenceBlock && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -386,8 +407,7 @@ export default function PolePage({ pole }: PolePageProps) {
                           Horaires
                         </p>
                         <p className="text-white/95 text-sm md:text-base leading-relaxed">
-                          {pole.contactInfo?.schedule ||
-                            "Permanences les samedis de 14h à 16h"}
+                          {horairesDisplayText}
                         </p>
                       </div>
                     </div>
@@ -471,11 +491,19 @@ export default function PolePage({ pole }: PolePageProps) {
         )}
 
         {/* Calendrier des Permanences - Uniquement pour le pôle administratif */}
-        {pole.permanenceDates && pole.permanenceDates.length > 0 && (
+        {showPermanenceBlock && calendarSlots.length > 0 && (
           <PermanenceCalendar
-            dates={pole.permanenceDates}
-            schedule={pole.contactInfo?.schedule || "14h à 18h"}
+            slots={calendarSlots}
             colorScheme={pole.colorScheme}
+            calendarYear={
+              calendarSlots.length > 0
+                ? Math.max(
+                    ...calendarSlots.map(
+                      (s) => new Date(s.date).getFullYear()
+                    )
+                  )
+                : undefined
+            }
           />
         )}
 

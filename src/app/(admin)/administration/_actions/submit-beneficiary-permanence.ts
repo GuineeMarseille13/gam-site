@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import type { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
+import { getAdministrativePermanenceSlots } from "@/lib/administrative-permanence/queries"
 import { buildSubmitBeneficiaryPermanenceSchema } from "../_schemas/beneficiary-permanence.schema"
 
 export type SubmitBeneficiaryPermanenceResult =
@@ -24,7 +25,7 @@ export async function submitBeneficiaryPermanence(
     return { success: false, error: "Session requise." }
   }
 
-  const [activeTypes, activeDocTypes] = await Promise.all([
+  const [activeTypes, activeDocTypes, slots] = await Promise.all([
     prisma.beneficiaryDemandType.findMany({
       where: { isActive: true },
       select: { id: true, requiresDetail: true },
@@ -33,6 +34,7 @@ export async function submitBeneficiaryPermanence(
       where: { isActive: true },
       select: { code: true, requiresOtherDetail: true },
     }),
+    getAdministrativePermanenceSlots(),
   ])
 
   if (activeTypes.length === 0) {
@@ -48,7 +50,12 @@ export async function submitBeneficiaryPermanence(
     requiresOtherDetail: row.requiresOtherDetail,
   }))
 
-  const schema = buildSubmitBeneficiaryPermanenceSchema(activeTypes, docValidation)
+  const allowedPermanenceDates = new Set(slots.map((s) => s.date))
+  const schema = buildSubmitBeneficiaryPermanenceSchema(
+    activeTypes,
+    docValidation,
+    allowedPermanenceDates,
+  )
   const parsed = schema.safeParse(raw)
   if (!parsed.success) {
     return {

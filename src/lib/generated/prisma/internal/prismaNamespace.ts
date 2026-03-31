@@ -426,6 +426,8 @@ export const ModelName = {
   BeneficiaryDocumentType: 'BeneficiaryDocumentType',
   Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
+  AdministrativePermanenceSlot: 'AdministrativePermanenceSlot',
+  AdministrativePermanenceSettings: 'AdministrativePermanenceSettings',
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
@@ -449,7 +451,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3561,6 +3563,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AdministrativePermanenceSlot: {
+      payload: Prisma.$AdministrativePermanenceSlotPayload<ExtArgs>
+      fields: Prisma.AdministrativePermanenceSlotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdministrativePermanenceSlotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdministrativePermanenceSlotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        findFirst: {
+          args: Prisma.AdministrativePermanenceSlotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdministrativePermanenceSlotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        findMany: {
+          args: Prisma.AdministrativePermanenceSlotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>[]
+        }
+        create: {
+          args: Prisma.AdministrativePermanenceSlotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        createMany: {
+          args: Prisma.AdministrativePermanenceSlotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdministrativePermanenceSlotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>[]
+        }
+        delete: {
+          args: Prisma.AdministrativePermanenceSlotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        update: {
+          args: Prisma.AdministrativePermanenceSlotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdministrativePermanenceSlotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdministrativePermanenceSlotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdministrativePermanenceSlotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdministrativePermanenceSlotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSlotPayload>
+        }
+        aggregate: {
+          args: Prisma.AdministrativePermanenceSlotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdministrativePermanenceSlot>
+        }
+        groupBy: {
+          args: Prisma.AdministrativePermanenceSlotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdministrativePermanenceSlotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdministrativePermanenceSlotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdministrativePermanenceSlotCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdministrativePermanenceSettings: {
+      payload: Prisma.$AdministrativePermanenceSettingsPayload<ExtArgs>
+      fields: Prisma.AdministrativePermanenceSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdministrativePermanenceSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdministrativePermanenceSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.AdministrativePermanenceSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdministrativePermanenceSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.AdministrativePermanenceSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.AdministrativePermanenceSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.AdministrativePermanenceSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdministrativePermanenceSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.AdministrativePermanenceSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        update: {
+          args: Prisma.AdministrativePermanenceSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdministrativePermanenceSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdministrativePermanenceSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdministrativePermanenceSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdministrativePermanenceSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdministrativePermanenceSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.AdministrativePermanenceSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdministrativePermanenceSettings>
+        }
+        groupBy: {
+          args: Prisma.AdministrativePermanenceSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdministrativePermanenceSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdministrativePermanenceSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdministrativePermanenceSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     Order: {
       payload: Prisma.$OrderPayload<ExtArgs>
       fields: Prisma.OrderFieldRefs
@@ -4816,6 +4966,27 @@ export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
 export type PermanenceAdminPresenceVolunteerScalarFieldEnum = (typeof PermanenceAdminPresenceVolunteerScalarFieldEnum)[keyof typeof PermanenceAdminPresenceVolunteerScalarFieldEnum]
 
 
+export const AdministrativePermanenceSlotScalarFieldEnum = {
+  id: 'id',
+  slotDate: 'slotDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdministrativePermanenceSlotScalarFieldEnum = (typeof AdministrativePermanenceSlotScalarFieldEnum)[keyof typeof AdministrativePermanenceSlotScalarFieldEnum]
+
+
+export const AdministrativePermanenceSettingsScalarFieldEnum = {
+  id: 'id',
+  horairesCardText: 'horairesCardText',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdministrativePermanenceSettingsScalarFieldEnum = (typeof AdministrativePermanenceSettingsScalarFieldEnum)[keyof typeof AdministrativePermanenceSettingsScalarFieldEnum]
+
+
 export const OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
@@ -5279,6 +5450,8 @@ export type GlobalOmitConfig = {
   beneficiaryDocumentType?: Prisma.BeneficiaryDocumentTypeOmit
   beneficiary?: Prisma.BeneficiaryOmit
   permanenceAdminPresenceVolunteer?: Prisma.PermanenceAdminPresenceVolunteerOmit
+  administrativePermanenceSlot?: Prisma.AdministrativePermanenceSlotOmit
+  administrativePermanenceSettings?: Prisma.AdministrativePermanenceSettingsOmit
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit
   payment?: Prisma.PaymentOmit

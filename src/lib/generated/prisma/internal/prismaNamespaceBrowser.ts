@@ -93,6 +93,8 @@ export const ModelName = {
   BeneficiaryDocumentType: 'BeneficiaryDocumentType',
   Beneficiary: 'Beneficiary',
   PermanenceAdminPresenceVolunteer: 'PermanenceAdminPresenceVolunteer',
+  AdministrativePermanenceSlot: 'AdministrativePermanenceSlot',
+  AdministrativePermanenceSettings: 'AdministrativePermanenceSettings',
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
@@ -741,6 +743,27 @@ export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
 } as const
 
 export type PermanenceAdminPresenceVolunteerScalarFieldEnum = (typeof PermanenceAdminPresenceVolunteerScalarFieldEnum)[keyof typeof PermanenceAdminPresenceVolunteerScalarFieldEnum]
+
+
+export const AdministrativePermanenceSlotScalarFieldEnum = {
+  id: 'id',
+  slotDate: 'slotDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdministrativePermanenceSlotScalarFieldEnum = (typeof AdministrativePermanenceSlotScalarFieldEnum)[keyof typeof AdministrativePermanenceSlotScalarFieldEnum]
+
+
+export const AdministrativePermanenceSettingsScalarFieldEnum = {
+  id: 'id',
+  horairesCardText: 'horairesCardText',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdministrativePermanenceSettingsScalarFieldEnum = (typeof AdministrativePermanenceSettingsScalarFieldEnum)[keyof typeof AdministrativePermanenceSettingsScalarFieldEnum]
 
 
 export const OrderScalarFieldEnum = {

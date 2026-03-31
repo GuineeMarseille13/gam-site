@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   IconChartBar,
+  IconCalendar,
   IconCalendarCheck,
   IconClipboardList,
   IconDashboard,
@@ -45,6 +46,7 @@ const SUIVI_DEMANDE = `${BASE}/suivi-demande`
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
+  { title: "Calendrier permanence", url: `${BASE}/calendrier-permanence`, icon: IconCalendar },
   { title: "Demande bénéficiaire", url: DEMANDE_BENEFICIAIRE, icon: IconClipboardList },
   { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
   {

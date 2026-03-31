@@ -252,6 +252,16 @@ export type Beneficiary = Prisma.BeneficiaryModel
  */
 export type PermanenceAdminPresenceVolunteer = Prisma.PermanenceAdminPresenceVolunteerModel
 /**
+ * Model AdministrativePermanenceSlot
+ * Créneaux affichés sur le pôle « Démarche administrative » (synchronisés site + dashboard).
+ */
+export type AdministrativePermanenceSlot = Prisma.AdministrativePermanenceSlotModel
+/**
+ * Model AdministrativePermanenceSettings
+ * Texte libre pour la carte « Horaires » (pôle administratif). Une seule ligne `default`.
+ */
+export type AdministrativePermanenceSettings = Prisma.AdministrativePermanenceSettingsModel
+/**
  * Model Order
  * 
  */

@@ -212,11 +212,39 @@ export const beneficiaryPermanenceStep4Schema = z
 export type BeneficiaryPermanenceStep4Input = z.infer<typeof beneficiaryPermanenceStep4Schema>
 
 /**
+ * Vérifie que la date de permanence figure dans le calendrier administratif (base).
+ */
+export function refinePermanenceDateAllowed(
+  permanenceDate: string,
+  allowedPermanenceDates: ReadonlySet<string>,
+  ctx: z.RefinementCtx,
+): void {
+  if (allowedPermanenceDates.size === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "Aucune permanence planifiée. Ajoutez des dates dans Administration → Calendrier permanence.",
+      path: ["permanenceDate"],
+    })
+    return
+  }
+  if (!allowedPermanenceDates.has(permanenceDate)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "Cette date ne correspond pas à une permanence prévue. Sélectionnez une date disponible dans le calendrier.",
+      path: ["permanenceDate"],
+    })
+  }
+}
+
+/**
  * Schéma d’envoi complet — Demande bénéficiaire (permanence administrative).
  */
 export function buildSubmitBeneficiaryPermanenceSchema(
   demandTypes: readonly DemandTypeOptionForValidation[],
   documentTypes: readonly DocumentTypeOptionForValidation[],
+  allowedPermanenceDates: ReadonlySet<string>,
 ) {
   const validIds = new Set(demandTypes.map((d) => d.id))
   const detailRequired = new Set(
@@ -267,17 +295,30 @@ export function buildSubmitBeneficiaryPermanenceSchema(
         }
       }
     })
+    .superRefine((data, ctx) => {
+      refinePermanenceDateAllowed(data.permanenceDate, allowedPermanenceDates, ctx)
+    })
 }
 
 export type SubmitBeneficiaryPermanenceInput = z.infer<
   ReturnType<typeof buildSubmitBeneficiaryPermanenceSchema>
 >
 
-export const beneficiaryPermanenceStep1Schema = z
-  .object({
-    permanenceDate: dateYmd,
-  })
-  .strict()
+/**
+ * Étape 1 — date limitée aux journées définies dans le calendrier des permanences.
+ */
+export function buildBeneficiaryPermanenceStep1Schema(
+  allowedPermanenceDates: ReadonlySet<string>,
+) {
+  return z
+    .object({
+      permanenceDate: dateYmd,
+    })
+    .strict()
+    .superRefine((data, ctx) => {
+      refinePermanenceDateAllowed(data.permanenceDate, allowedPermanenceDates, ctx)
+    })
+}
 
 export function buildBeneficiaryPermanenceStep2Schema(
   demandTypes: readonly DemandTypeOptionForValidation[],

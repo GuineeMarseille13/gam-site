@@ -777,6 +777,31 @@ model PermanenceAdminPresenceVolunteer {
   @@map("permanence_admin_presence_volunteers")
 }
 
+/// Créneaux affichés sur le pôle « Démarche administrative » (synchronisés site + dashboard).
+model AdministrativePermanenceSlot {
+  id        String   @id @default(cuid())
+  slotDate  DateTime @unique @db.Date
+  /// Heure locale au format 24h « HH:mm » (ex. 14:00).
+  startTime String
+  endTime   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slotDate])
+  @@map("administrative_permanence_slots")
+}
+
+/// Texte libre pour la carte « Horaires » (pôle administratif). Une seule ligne `default`.
+model AdministrativePermanenceSettings {
+  id               String   @id @default("default")
+  /// Si renseigné, remplace le texte généré automatiquement dans la carte Horaires.
+  horairesCardText String?  @db.Text
+  updatedAt        DateTime @updatedAt
+
+  @@map("administrative_permanence_settings")
+}
+
 model Order {
   id          String   @id @default(cuid())
   orderNumber String   // Numéro de la commande

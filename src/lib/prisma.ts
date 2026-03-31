@@ -19,6 +19,7 @@ type PrismaWithDelegates = PrismaClient & {
   permanenceAdminPresenceVolunteer?: { findMany: (...args: unknown[]) => unknown }
   beneficiary?: { findMany: (...args: unknown[]) => unknown }
   beneficiaryDemandType?: { findMany: (...args: unknown[]) => unknown }
+  administrativePermanenceSlot?: { upsert: (...args: unknown[]) => unknown }
 }
 
 /**
@@ -35,7 +36,14 @@ function getPrismaClient(): PrismaClient {
     const hasBeneficiary = typeof withDelegates.beneficiary?.findMany === "function"
     const hasBeneficiaryDemandType =
       typeof withDelegates.beneficiaryDemandType?.findMany === "function"
-    if (hasPermanenceAdminPresenceVolunteer && hasBeneficiary && hasBeneficiaryDemandType) {
+    const hasAdministrativePermanenceSlot =
+      typeof withDelegates.administrativePermanenceSlot?.upsert === "function"
+    if (
+      hasPermanenceAdminPresenceVolunteer &&
+      hasBeneficiary &&
+      hasBeneficiaryDemandType &&
+      hasAdministrativePermanenceSlot
+    ) {
       return existing
     }
     void existing.$disconnect().catch(() => {
