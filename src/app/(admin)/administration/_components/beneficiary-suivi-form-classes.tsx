@@ -148,6 +148,21 @@ export const beneficiarySuiviPrimaryButtonClassName = cn(
   "disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none",
 )
 
+/**
+ * Contenu Dialog « Nouveau / Modifier » (types de demande, documents) :
+ * feuille basse sur mobile (safe area), dialogue centré et limité en hauteur à partir de sm.
+ */
+export const beneficiarySuiviFormDialogContentClassName = cn(
+  "w-full gap-4 border-sky-200/70 dark:border-sky-800/60",
+  "p-0 px-4 pt-5 pb-[max(1rem,env(safe-area-inset-bottom,0px))] sm:p-6",
+  "left-0 right-0 top-auto bottom-0 max-h-[92dvh] max-w-none translate-x-0 translate-y-0 rounded-t-2xl rounded-b-none",
+  "overflow-y-auto overscroll-contain",
+  "sm:bottom-auto sm:left-[50%] sm:right-auto sm:top-[50%] sm:max-h-[min(100dvh-2rem,40rem)] sm:max-w-md sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-lg",
+)
+
+export const beneficiarySuiviFormDialogFooterClassName =
+  "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto"
+
 export const beneficiaryTrackingGhostNavClassName = cn(
   "text-muted-foreground",
   "transition-colors hover:bg-sky-100/70 hover:text-sky-900",

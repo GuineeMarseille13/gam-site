@@ -24,9 +24,9 @@ export default async function DemandeBeneficiaireConfigurationPage() {
   ])
 
   return (
-    <div className="flex flex-1 flex-col gap-10 p-4 md:p-6 lg:p-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="space-y-2">
+    <div className="flex min-w-0 flex-1 flex-col gap-8 p-4 md:gap-10 md:p-6 lg:p-8">
+      <header className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+        <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
             Paramètres de la demande bénéficiaire
           </h1>
@@ -38,16 +38,16 @@ export default async function DemandeBeneficiaireConfigurationPage() {
         <Button
           asChild
           variant="outline"
-          className="h-11 w-full shrink-0 gap-2 border-sky-200/80 text-sky-800 transition-colors hover:border-sky-400 hover:bg-sky-50 hover:text-sky-950 sm:h-10 sm:w-auto dark:border-sky-800 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/50 dark:hover:text-sky-50"
+          className="h-11 w-full shrink-0 gap-2 self-start border-sky-200/80 text-sky-800 transition-colors hover:border-sky-400 hover:bg-sky-50 hover:text-sky-950 sm:h-10 sm:w-auto lg:shrink-0 dark:border-sky-800 dark:text-sky-100 dark:hover:border-sky-500 dark:hover:bg-sky-950/50 dark:hover:text-sky-50"
         >
           <Link href="/administration/demande-beneficiaire">
-            <IconArrowLeft className="size-4" aria-hidden />
-            Retour à la demande bénéficiaire
+            <IconArrowLeft className="size-4 shrink-0" aria-hidden />
+            <span className="text-left leading-snug sm:text-center">Retour à la demande bénéficiaire</span>
           </Link>
         </Button>
-      </div>
+      </header>
 
-      <section className="min-w-0 space-y-4" aria-labelledby="cfg-demand-types-heading">
+      <section className="min-w-0 space-y-3 md:space-y-4" aria-labelledby="cfg-demand-types-heading">
         <h2
           id="cfg-demand-types-heading"
           className="text-lg font-semibold tracking-tight text-foreground"
@@ -57,7 +57,7 @@ export default async function DemandeBeneficiaireConfigurationPage() {
         <BeneficiaryDemandTypeManager initialRows={demandRows} />
       </section>
 
-      <section className="min-w-0 space-y-4" aria-labelledby="cfg-doc-types-heading">
+      <section className="min-w-0 space-y-3 md:space-y-4" aria-labelledby="cfg-doc-types-heading">
         <h2
           id="cfg-doc-types-heading"
           className="text-lg font-semibold tracking-tight text-foreground"

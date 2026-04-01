@@ -6,8 +6,14 @@ import { Loader2, Pencil, Plus, Trash2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
+  beneficiarySuiviFormDialogContentClassName,
+  beneficiarySuiviFormDialogFooterClassName,
   beneficiarySuiviPrimaryButtonClassName,
   beneficiarySuiviTableIconEditClassName,
+  beneficiaryTrackingCardClassName,
+  beneficiaryTrackingTableShellClassName,
+  beneficiaryTrackingTableBodyRowClassName,
+  beneficiaryTrackingTableHeaderRowClassName,
 } from "./beneficiary-suivi-form-classes"
 import {
   createBeneficiaryDemandTypeAction,
@@ -37,6 +43,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -49,6 +56,60 @@ import {
 interface BeneficiaryDemandTypeManagerProps {
   className?: string
   initialRows: BeneficiaryDemandTypeRow[]
+}
+
+interface DemandTypeRowActionsProps {
+  row: BeneficiaryDemandTypeRow
+  pending: boolean
+  onEdit: (row: BeneficiaryDemandTypeRow) => void
+  onDeleteRequest: (id: string) => void
+  layout?: "inline" | "footer"
+}
+
+/**
+ * Boutons modifier / supprimer (même logique que le tableau desktop).
+ */
+function DemandTypeRowActions({
+  row,
+  pending,
+  onEdit,
+  onDeleteRequest,
+  layout = "inline",
+}: DemandTypeRowActionsProps) {
+  const wrap =
+    layout === "footer"
+      ? "flex w-full items-center justify-end gap-2 border-t border-border/60 pt-3"
+      : "flex justify-end gap-1"
+
+  return (
+    <div className={wrap}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className={cn("size-9", beneficiarySuiviTableIconEditClassName)}
+        onClick={() => onEdit(row)}
+        disabled={pending}
+        aria-label={`Modifier ${row.label}`}
+      >
+        <Pencil className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="size-9 text-destructive hover:text-destructive"
+        onClick={() => onDeleteRequest(row.id)}
+        disabled={pending || row.usageCount > 0}
+        aria-label={`Supprimer ${row.label}`}
+        title={
+          row.usageCount > 0 ? "Impossible : types utilisés par des fiches" : "Supprimer"
+        }
+      >
+        <Trash2 className="size-4" />
+      </Button>
+    </div>
+  )
 }
 
 /**
@@ -171,10 +232,43 @@ export function BeneficiaryDemandTypeManager({
         </p>
       )}
 
-      <div className="relative w-full overflow-x-auto rounded-lg border border-border/80">
+      <ul className="grid gap-3 md:hidden" aria-label="Types de demande, affichage compact">
+        {initialRows.map((r) => (
+          <li key={r.id}>
+            <Card className={cn(beneficiaryTrackingCardClassName, "gap-0 py-0 shadow-sm")}>
+              <CardContent className="space-y-3 p-4">
+                <p className="text-base font-semibold leading-snug break-words text-foreground">
+                  {r.label}
+                </p>
+                <dl className="grid grid-cols-[minmax(0,auto)_1fr] gap-x-3 gap-y-2 text-sm">
+                  <dt className="text-muted-foreground">Ordre</dt>
+                  <dd className="tabular-nums text-foreground">{r.sortOrder}</dd>
+                  <dt className="text-muted-foreground">Précision</dt>
+                  <dd className="text-muted-foreground">{r.requiresDetail ? "Oui" : "Non"}</dd>
+                  <dt className="text-muted-foreground">Actif</dt>
+                  <dd className="text-foreground">{r.isActive ? "Oui" : "Non"}</dd>
+                  <dt className="text-muted-foreground">Demandes</dt>
+                  <dd className="tabular-nums text-right text-foreground">{r.usageCount}</dd>
+                </dl>
+                <DemandTypeRowActions
+                  row={r}
+                  pending={pending}
+                  onEdit={openEdit}
+                  onDeleteRequest={setDeleteId}
+                  layout="footer"
+                />
+              </CardContent>
+            </Card>
+          </li>
+        ))}
+      </ul>
+
+      <div
+        className={cn("relative hidden w-full md:block", beneficiaryTrackingTableShellClassName)}
+      >
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className={beneficiaryTrackingTableHeaderRowClassName}>
               <TableHead className="min-w-[180px]">Libellé</TableHead>
               <TableHead className="w-24 text-left">Ordre</TableHead>
               <TableHead className="min-w-[120px]">Précision</TableHead>
@@ -185,7 +279,7 @@ export function BeneficiaryDemandTypeManager({
           </TableHeader>
           <TableBody>
             {initialRows.map((r) => (
-              <TableRow key={r.id}>
+              <TableRow key={r.id} className={beneficiaryTrackingTableBodyRowClassName}>
                 <TableCell className="align-top font-medium break-words">{r.label}</TableCell>
                 <TableCell className="align-top text-left tabular-nums">{r.sortOrder}</TableCell>
                 <TableCell className="align-top text-sm text-muted-foreground">
@@ -194,35 +288,12 @@ export function BeneficiaryDemandTypeManager({
                 <TableCell className="align-top text-sm">{r.isActive ? "Oui" : "Non"}</TableCell>
                 <TableCell className="align-top text-right tabular-nums">{r.usageCount}</TableCell>
                 <TableCell className="align-top text-right">
-                  <div className="flex justify-end gap-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className={cn("size-9", beneficiarySuiviTableIconEditClassName)}
-                      onClick={() => openEdit(r)}
-                      disabled={pending}
-                      aria-label={`Modifier ${r.label}`}
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-9 text-destructive hover:text-destructive"
-                      onClick={() => setDeleteId(r.id)}
-                      disabled={pending || r.usageCount > 0}
-                      aria-label={`Supprimer ${r.label}`}
-                      title={
-                        r.usageCount > 0
-                          ? "Impossible : types utilisés par des fiches"
-                          : "Supprimer"
-                      }
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
+                  <DemandTypeRowActions
+                    row={r}
+                    pending={pending}
+                    onEdit={openEdit}
+                    onDeleteRequest={setDeleteId}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -231,15 +302,15 @@ export function BeneficiaryDemandTypeManager({
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
+        <DialogContent className={beneficiarySuiviFormDialogContentClassName}>
+          <DialogHeader className="space-y-2 pr-10 text-left sm:pr-12">
             <DialogTitle>{editing ? "Modifier le type" : "Nouveau type"}</DialogTitle>
             <DialogDescription>
               Libellé affiché dans le formulaire Demande bénéficiaire. L&apos;ordre détermine la liste
               déroulante.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-2">
+          <div className="grid min-w-0 gap-4 py-2">
             <div className="space-y-2">
               <Label htmlFor="bdt-label">Libellé</Label>
               <Input
@@ -263,8 +334,8 @@ export function BeneficiaryDemandTypeManager({
                 className="h-11"
               />
             </div>
-            <div className="flex items-center justify-between gap-4 rounded-lg border border-border/80 p-3">
-              <div className="space-y-0.5">
+            <div className="flex flex-col gap-3 rounded-lg border border-border/80 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <div className="min-w-0 space-y-0.5">
                 <p className="text-sm font-medium">Précision obligatoire</p>
                 <p className="text-xs text-muted-foreground">Champ texte supplémentaire au formulaire</p>
               </div>
@@ -272,14 +343,20 @@ export function BeneficiaryDemandTypeManager({
                 checked={requiresDetail}
                 onCheckedChange={setRequiresDetail}
                 aria-label="Exiger une précision"
+                className="shrink-0 self-end sm:self-auto"
               />
             </div>
-            <div className="flex items-center justify-between gap-4 rounded-lg border border-border/80 p-3">
-              <div className="space-y-0.5">
+            <div className="flex flex-col gap-3 rounded-lg border border-border/80 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <div className="min-w-0 space-y-0.5">
                 <p className="text-sm font-medium">Actif</p>
                 <p className="text-xs text-muted-foreground">Types inactifs masqués du formulaire</p>
               </div>
-              <Switch checked={isActive} onCheckedChange={setIsActive} aria-label="Type actif" />
+              <Switch
+                checked={isActive}
+                onCheckedChange={setIsActive}
+                aria-label="Type actif"
+                className="shrink-0 self-end sm:self-auto"
+              />
             </div>
           </div>
           {formError && (
@@ -287,7 +364,7 @@ export function BeneficiaryDemandTypeManager({
               {formError}
             </p>
           )}
-          <DialogFooter className="gap-2 sm:gap-2">
+          <DialogFooter className={beneficiarySuiviFormDialogFooterClassName}>
             <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
               Annuler
             </Button>
