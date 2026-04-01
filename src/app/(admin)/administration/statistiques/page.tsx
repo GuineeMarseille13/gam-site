@@ -1,12 +1,15 @@
 import type { Metadata } from "next"
 import { BureauDataPage } from "@/components/bureau/bureau-data-page"
 import { permanenceStatsYearParamSchema } from "../_schemas/permanence-hours-annual-stats.schema"
+import { getBeneficiaryDemographicStats } from "../_services/get-beneficiary-demographic-stats"
 import { getPermanenceAnnualHoursByVolunteer } from "../_services/get-permanence-annual-hours-by-volunteer"
+import { BeneficiaryDemographicStatsSection } from "./_components/beneficiary-demographic-stats-section"
 import { PermanenceAnnualHoursStatsSection } from "./_components/permanence-annual-hours-stats-section"
 
 export const metadata: Metadata = {
   title: "Statistiques",
-  description: "Indicateurs du dashboard administration — permanence ADM et autres",
+  description:
+    "Indicateurs administration — heures de permanence ADM et bénéficiaires (mineurs / majeurs) par mois et par journée.",
 }
 
 function firstParam(v: string | string[] | undefined): string | undefined {
@@ -24,14 +27,20 @@ export default async function AdministrationStatistiquesPage({
   const parsedYear = permanenceStatsYearParamSchema.safeParse(rawYear)
   const year = parsedYear.success ? parsedYear.data : new Date().getFullYear()
 
-  const rows = await getPermanenceAnnualHoursByVolunteer(year)
+  const [rows, beneficiaryDemographics] = await Promise.all([
+    getPermanenceAnnualHoursByVolunteer(year),
+    getBeneficiaryDemographicStats(year),
+  ])
 
   return (
     <BureauDataPage
       title="Statistiques"
       description="Indicateurs issus des saisies du dashboard administration (permanence ADM, etc.)."
     >
-      <PermanenceAnnualHoursStatsSection year={year} rows={rows} />
+      <div className="space-y-12">
+        <PermanenceAnnualHoursStatsSection year={year} rows={rows} />
+        <BeneficiaryDemographicStatsSection year={year} data={beneficiaryDemographics} />
+      </div>
     </BureauDataPage>
   )
 }
