@@ -77,8 +77,8 @@ export function useReviews() {
   return useQuery<Review[]>({
     queryKey: ['reviews'],
     queryFn: getReviews,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+    staleTime: 60 * 1000,
+ });
 }
 
 /**

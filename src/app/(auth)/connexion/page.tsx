@@ -7,7 +7,7 @@ function ConnexionContent() {
   return (
     <AuthLoginView
       defaultRedirect="/bureau"
-      title="Bureau administratif"
+      title="Bureau GAM"
       description="Connectez-vous pour accéder au dashboard"
       footnote="Accès réservé aux membres du bureau GAM"
       haloClassName="bg-amber-400/10"

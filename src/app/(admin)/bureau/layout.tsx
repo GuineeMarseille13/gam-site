@@ -10,9 +10,9 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 export const metadata: Metadata = {
   title: {
     template: "%s | GAM Bureau",
-    default: "Bureau administratif | GAM",
+    default: "Bureau GAM",
   },
-  description: "Backoffice d'administration du site GAM",
+  description: "Espace bureau de l'association GAM",
 }
 
 export default async function BureauShellLayout({ children }: { children: React.ReactNode }) {

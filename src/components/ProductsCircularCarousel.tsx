@@ -101,6 +101,29 @@ function useInfiniteCarousel(catalog: Product[]) {
     return () => clearTimeout(timeoutId);
   }, [catalog.length, getSingleSetWidth]);
 
+  /**
+   * Bloque le défilement utilisateur (molette, trackpad horizontal, Shift+molette).
+   * Le déplacement reste possible uniquement via scrollBy (flèches, auto-scroll).
+   */
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || catalog.length === 0) return;
+
+    const isHorizontalWheelIntent = (e: WheelEvent): boolean => {
+      if (e.deltaX !== 0) return true;
+      if (e.shiftKey && e.deltaY !== 0) return true;
+      return false;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (!isHorizontalWheelIntent(e)) return;
+      e.preventDefault();
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [catalog.length]);
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container || catalog.length === 0) return;
@@ -282,8 +305,8 @@ export function ProductsCircularCarousel({
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
           {title}
         </h2>
-        <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
-        <p className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4">
+        <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-primary/35 to-transparent rounded-full" />
+        <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto px-4">
           {subtitle}
         </p>
       </div>
@@ -300,7 +323,7 @@ export function ProductsCircularCarousel({
             type="button"
             onClick={() => scrollBy("left")}
             aria-label="Produits précédents"
-            className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-amber-200/50 text-amber-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+            className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-card/95 backdrop-blur-sm shadow-lg border border-border/80 text-primary hover:bg-muted/90 hover:border-primary/35 hover:text-primary transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <ChevronLeft className="w-6 h-6" strokeWidth={2} />
           </button>
@@ -308,11 +331,8 @@ export function ProductsCircularCarousel({
           {/* Zone scrollable - défilement 1 carte, responsive (padding + scroll-padding) */}
           <div
             ref={scrollRef}
-            className="overflow-x-auto snap-x snap-mandatory scroll-smooth py-4 sm:py-5 scroll-px-4 sm:scroll-px-6 lg:scroll-px-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            style={{
-              scrollbarWidth: "none",
-              WebkitOverflowScrolling: "touch",
-            }}
+            className="overflow-x-hidden touch-pan-y overscroll-x-none snap-x snap-mandatory scroll-smooth py-4 sm:py-5 scroll-px-4 sm:scroll-px-6 lg:scroll-px-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none" }}
           >
             <div className="flex gap-4 sm:gap-5 lg:gap-6 min-w-max pl-6 pr-4 sm:pl-8 sm:pr-6 lg:pl-10 lg:pr-8">
               {duplicatedCatalog.map((p, index) => (
@@ -330,7 +350,7 @@ export function ProductsCircularCarousel({
             type="button"
             onClick={() => scrollBy("right")}
             aria-label="Produits suivants"
-            className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-amber-200/50 text-amber-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+            className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-card/95 backdrop-blur-sm shadow-lg border border-border/80 text-primary hover:bg-muted/90 hover:border-primary/35 hover:text-primary transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <ChevronRight className="w-6 h-6" strokeWidth={2} />
           </button>
@@ -341,7 +361,7 @@ export function ProductsCircularCarousel({
               type="button"
               onClick={() => scrollBy("left")}
               aria-label="Produits précédents"
-              className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-white shadow-md border border-amber-200/60 text-amber-700 active:bg-amber-50"
+              className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-card shadow-md border border-border/80 text-primary transition-colors hover:bg-muted/90 hover:border-primary/35 active:bg-muted"
             >
               <ChevronLeft className="w-6 h-6" strokeWidth={2} />
             </button>
@@ -349,7 +369,7 @@ export function ProductsCircularCarousel({
               type="button"
               onClick={() => scrollBy("right")}
               aria-label="Produits suivants"
-              className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-white shadow-md border border-amber-200/60 text-amber-700 active:bg-amber-50"
+              className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full bg-card shadow-md border border-border/80 text-primary transition-colors hover:bg-muted/90 hover:border-primary/35 active:bg-muted"
             >
               <ChevronRight className="w-6 h-6" strokeWidth={2} />
             </button>

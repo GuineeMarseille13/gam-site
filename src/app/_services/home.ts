@@ -305,31 +305,42 @@ const RATING_MAP: Record<number, Review['rating']> = {
 
 export async function getReviews(): Promise<Review[]> {
   try {
-    const response = await fetch('/api/reviews', { cache: 'no-store' });
-    if (!response.ok) return [];
-    const data = await response.json();
-    const rows = asJsonObjectArray(data);
+    const params = new URLSearchParams({
+      where: JSON.stringify({ isActive: true }),
+      include: JSON.stringify({ role: { select: { labelFr: true } } }),
+      orderBy: JSON.stringify({ order: 'asc' }),
+    })
+    const response = await fetch(`/api/reviews?${params.toString()}`, { cache: 'no-store' })
+    if (!response.ok) return []
+    const data = await response.json()
+    const rows = asJsonObjectArray(data)
 
-    return rows
-      .filter((r) => r.isActive === true)
-      .map((r) => {
-        const first = typeof r.firstName === 'string' ? r.firstName : ''
-        const last = typeof r.lastName === 'string' ? r.lastName : ''
-        const ratingNum = typeof r.rating === 'number' ? r.rating : 5
-        return {
-          id: String(r.id ?? ''),
-          name: `${first} ${last}`.trim(),
-          role: typeof r.role === 'string' ? r.role : '',
-          body: typeof r.body === 'string' ? r.body : '',
-          img: typeof r.avatarUrl === 'string' ? r.avatarUrl : undefined,
-          country: typeof r.country === 'string' ? r.country : '',
-          rating: RATING_MAP[ratingNum] ?? 'FIVE',
-          isPublished: r.isActive === true,
-          isFeatured: r.isVerified === true,
-        }
-      })
+    return rows.map((r) => {
+      const first = typeof r.firstName === 'string' ? r.firstName : ''
+      const last = typeof r.lastName === 'string' ? r.lastName : ''
+      const ratingNum = typeof r.rating === 'number' ? r.rating : 5
+      const roleObj = r.role
+      const roleLabel =
+        typeof roleObj === 'object' &&
+        roleObj !== null &&
+        'labelFr' in roleObj &&
+        typeof (roleObj as { labelFr: unknown }).labelFr === 'string'
+          ? (roleObj as { labelFr: string }).labelFr
+          : ''
+      return {
+        id: String(r.id ?? ''),
+        name: `${first} ${last}`.trim(),
+        role: roleLabel,
+        body: typeof r.body === 'string' ? r.body : '',
+        img: typeof r.avatarUrl === 'string' ? r.avatarUrl : undefined,
+        country: typeof r.country === 'string' ? r.country : '',
+        rating: RATING_MAP[ratingNum] ?? 'FIVE',
+        isPublished: r.isActive === true,
+        isFeatured: r.isVerified === true,
+      }
+    })
   } catch {
-    return [];
+    return []
   }
 }
 

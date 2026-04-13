@@ -7,9 +7,9 @@ function ConnexionAdministrationContent() {
   return (
     <AuthLoginView
       defaultRedirect="/administration"
-      title="Administration"
-      description="Connectez-vous pour accéder au dashboard Administration"
-      footnote="Rôles autorisés : administrateur, bureau et administration"
+      title="Permanence Administrative GAM"
+      description="Connectez-vous pour accéder au dashboard"
+      footnote="Page reservée exclusivement aux personnes autorisées"
       haloClassName="bg-sky-400/10"
       submitButtonClassName="bg-sky-600 text-white shadow-md shadow-sky-500/20 hover:bg-sky-700"
       alternateLink={{

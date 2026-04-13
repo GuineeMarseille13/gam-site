@@ -105,7 +105,7 @@ export function RowActions({ editHref, onDelete, onBanToggle, isBanned = false }
       <div className="flex lg:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-gray-200 hover:text-foreground" disabled={isPending}>
+            <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-muted hover:text-foreground" disabled={isPending}>
               {isPending
                 ? <IconLoader2 className="size-4 animate-spin" />
                 : <IconDotsVertical className="size-4" />

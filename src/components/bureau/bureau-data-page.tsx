@@ -45,20 +45,20 @@ export function BureauDataPage({
       )}
 
       {/* En-tête */}
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0 space-y-1">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
           {description && (
             <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           {actions}
           {addHref && (
             <Button
               asChild
               className={cn(
-                "gap-2 rounded-xl px-5 py-2.5 text-base",
+                "w-full justify-center gap-2 rounded-xl px-5 py-2.5 text-base sm:w-auto",
                 dashboard === "administration"
                   ? administrationPrimaryButtonClassName
                   : "bg-amber-500 text-white shadow-md transition-shadow hover:bg-amber-600 hover:shadow-lg",
