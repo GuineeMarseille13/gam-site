@@ -91,7 +91,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
         </motion.div>
 
         {/* Grille de cartes */}
-        <div className="flex flex-wrap gap-6 sm:gap-8 justify-center items-stretch">
+        <div className="flex flex-wrap gap-4 sm:gap-4 justify-center items-stretch">
           {items.map((item) => (
             <PoleCard
               key={item.key}

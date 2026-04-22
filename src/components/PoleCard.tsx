@@ -62,45 +62,11 @@ export const PoleCard = ({
             style={{
               background: "transparent",
               boxShadow: `
-            0 20px 25px -5px rgba(59, 130, 246, 0.15),
-            0 10px 10px -5px rgba(59, 130, 246, 0.1),
-            0 0 40px rgba(147, 51, 234, 0.2),
-            0 0 60px rgba(236, 72, 153, 0.15)
+            0 5px 10px 0px rgba(59, 130, 246, 0.15),
+            0 5px 10px 0px rgba(59, 130, 246, 0.1),
+            0 0 5px rgba(147, 51, 234, 0.2),
+            0 0 5px rgba(236, 72, 153, 0.15)
           `,
-              willChange: "opacity",
-            }}
-          />
-
-          {/* Bordure dégradée moderne qui s'estompe progressivement au hover */}
-          <motion.div
-            className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-            style={{
-              background: `
-              conic-gradient(from 0deg at 50% 50%,
-                rgba(59, 130, 246, 0.15) 0deg,
-                rgba(147, 51, 234, 0.2) 90deg,
-                rgba(236, 72, 153, 0.15) 180deg,
-                rgba(147, 51, 234, 0.2) 270deg,
-                rgba(59, 130, 246, 0.15) 360deg
-              )
-            `,
-              maskImage: `
-              radial-gradient(ellipse 100% 100% at 50% 50%, 
-                transparent 45%, 
-                black 48%, 
-                black 52%, 
-                transparent 55%
-              )
-            `,
-              WebkitMaskImage: `
-              radial-gradient(ellipse 100% 100% at 50% 50%, 
-                transparent 45%, 
-                black 48%, 
-                black 52%, 
-                transparent 55%
-              )
-            `,
-              filter: "blur(1px)",
               willChange: "opacity",
             }}
           />
