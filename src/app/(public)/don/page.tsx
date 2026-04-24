@@ -1,4 +1,4 @@
-import DonView from "./_components/don-view";
+import DonationView from "./_components/don-view";
 
 export const metadata = {
   title: "Faire un don",
@@ -8,7 +8,7 @@ export const metadata = {
 export default async function DonPage() {
   return (
     <section className="py-6">
-      <DonView />
+      <DonationView />
     </section>
   );
 }

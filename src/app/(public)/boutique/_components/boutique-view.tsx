@@ -16,7 +16,7 @@ const HIGHLIGHT_DURATION_MS = 4500;
 /** Délai avant le scroll pour laisser le DOM se rendre (ms) */
 const SCROLL_DELAY_MS = 150;
 
-export function BoutiqueView() {
+export function ShopView() {
   const { data: catalog = [] } = useActiveProducts();
   const products = useMemo<Product[]>(() => catalog, [catalog]);
   const { items, totalPrice, totalQuantity, add, update, remove, clear } = useCart();

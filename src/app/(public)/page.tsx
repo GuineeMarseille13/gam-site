@@ -198,9 +198,11 @@ export default function Home() {
     return featuredProducts.map((product: FeaturedProductRecord) => {
       const pct = product.discountPercent ?? 0;
       const hasDiscount = Boolean(product.discountActive && pct > 0);
+      // `price` vient de Prisma en centimes → conversion en euros pour l’affichage.
+      const basePriceEur = product.price / 100;
       const effectivePrice = hasDiscount
-        ? Math.round(product.price * (1 - pct / 100))
-        : product.price;
+        ? Math.round(product.price * (1 - pct / 100)) / 100
+        : basePriceEur;
       return {
         id: product.id,
         name: product.title ?? "",
@@ -208,7 +210,7 @@ export default function Home() {
           ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_600,h_600,c_fill,q_auto,f_auto/${product.imageId}`
           : "",
         price: effectivePrice,
-        originalPrice: hasDiscount ? product.price : undefined,
+        originalPrice: hasDiscount ? basePriceEur : undefined,
         discount: hasDiscount ? pct : undefined,
         description: product.description ?? undefined,
         inStock: (product.stock ?? 0) > 0,

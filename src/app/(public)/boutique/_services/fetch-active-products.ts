@@ -15,7 +15,11 @@ function mapApiProductToCatalogProduct(input: {
 }): Product {
   const pct = input.discountPercent ?? 0;
   const hasDiscount = Boolean(input.discountActive && pct > 0);
-  const effectivePrice = hasDiscount ? Math.round(input.price * (1 - pct / 100)) : input.price;
+  // `price` vient de Prisma en centimes → conversion en euros pour l’affichage.
+  const basePriceEur = input.price / 100;
+  const effectivePrice = hasDiscount
+    ? basePriceEur * (1 - (pct/100))
+    : basePriceEur;
 
   return {
     id: input.id,
@@ -24,7 +28,7 @@ function mapApiProductToCatalogProduct(input: {
       ? `${CLOUDINARY_BASE}/w_600,h_600,c_fill,q_auto,f_auto/${input.imageId}`
       : "",
     price: effectivePrice,
-    originalPrice: hasDiscount ? input.price : undefined,
+    originalPrice: hasDiscount ? basePriceEur : undefined,
     discount: hasDiscount ? pct : undefined,
     description: input.description ?? undefined,
     inStock: (input.stock ?? 0) > 0,
@@ -51,7 +55,6 @@ export async function fetchActiveProducts(): Promise<Product[]> {
 
   const records = parsed.data ?? [];
   const products = records.map((p) => mapApiProductToCatalogProduct(p));
-
   return productSchema.array().parse(products);
 }
 

@@ -8,7 +8,7 @@ import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_sc
 import { useCreateAdhesionPaymentIntent } from "../_hooks/use-create-adhesion-payment-intent";
 import StripePaymentForm from "./stripe-payment-form";
 
-export default function AdhesionView() {
+export default function MembershipView() {
   const [members, setMembers] = useState<Member[]>([
     { firstName: "", lastName: "", email: "", phone: "" },
   ]);

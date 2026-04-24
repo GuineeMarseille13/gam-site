@@ -7,7 +7,7 @@ import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT
 import { useCreateDonPaymentIntent } from "../_hooks/use-create-don-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
-export default function DonView() {
+export default function DonationView() {
   const [formData, setFormData] = useState<Partial<Don>>({
     firstName: "",
     lastName: "",

@@ -11,6 +11,11 @@ const productRecordSchema = z
     discountPercent: z.number().int().min(0).max(100).nullable().optional(),
     discountActive: z.boolean().nullable().optional(),
     isActive: z.boolean().nullable().optional(),
+    productSectionId: z.string().nullable().optional(),
+    productCategoryId: z.string().nullable().optional(),
+    orderId: z.string().nullable().optional(),
+    createdAt: z.string().datetime().nullable().optional(),
+    updatedAt: z.string().datetime().nullable().optional(),
   })
   .strict();
 

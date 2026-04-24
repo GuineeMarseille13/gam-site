@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { BoutiqueView } from "./_components/boutique-view";
+import { ShopView } from "./_components/boutique-view";
 
 export const metadata = {
   title: "Boutique",
@@ -17,7 +17,7 @@ export default async function BoutiquePage() {
           </div>
         </div>
       }>
-        <BoutiqueView />
+        <ShopView />
       </Suspense>
     </section>
   );

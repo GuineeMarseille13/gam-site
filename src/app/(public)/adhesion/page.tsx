@@ -1,4 +1,4 @@
-import AdhesionView from "./_components/adhesion-view";
+import MembershipView from "./_components/adhesion-view";
 
 export const metadata = {
   title: "Adhésion",
@@ -8,7 +8,7 @@ export const metadata = {
 export default async function AdhesionPage() {
   return (
     <section className="py-6">
-      <AdhesionView />
+      <MembershipView />
     </section>
   );
 }

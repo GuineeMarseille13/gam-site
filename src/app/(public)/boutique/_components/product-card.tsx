@@ -16,7 +16,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCardProps) {
   const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(price / 100);
+    new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(price);
 
   const pathname = usePathname();
   const isBoutique = pathname === "/boutique";
