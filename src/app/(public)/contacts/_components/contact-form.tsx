@@ -4,6 +4,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { Send, Mail, User, MessageSquare, Phone } from "lucide-react";
 import { useContactForm } from "../_hooks/useContactForm";
+import { useSubmitContact } from "../_hooks/use-submit-contact";
 import { cleanFormData } from "../_utils/form.utils";
 import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "../_config/contacts.config";
 import FormField from "@/components/contacts/FormField";
@@ -24,6 +25,8 @@ const ContactForm = memo(function ContactForm({ onSubmit }: ContactFormProps) {
     scrollToFirstError,
   } = useContactForm();
 
+  const { mutateAsync: submitContact } = useSubmitContact();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -34,16 +37,12 @@ const ContactForm = memo(function ContactForm({ onSubmit }: ContactFormProps) {
       return;
     }
 
-    const res = await fetch("/api/contact-submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cleanFormData(formData)),
-    });
-
-    setIsSubmitting(false);
-
-    if (!res.ok) return;
-    onSubmit();
+    try {
+      await submitContact(cleanFormData(formData));
+      onSubmit();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const fieldDelays = {

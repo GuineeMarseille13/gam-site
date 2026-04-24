@@ -1,53 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { CART_OPEN_EVENT, CART_TOGGLE_EVENT } from "../_services/cart-storage";
 import { useCart } from "../_hooks/use-cart";
+import { useActiveProducts } from "../_hooks/use-active-products";
 import { ProductCard } from "./product-card";
 import { CartDrawer } from "./cart-drawer";
 import type { Product } from "../_schemas/product.schema";
-import type { FeaturedProductRecord } from "@/app/_services/home";
 
 /** Durée de la mise en évidence du produit après redirection (ms) */
 const HIGHLIGHT_DURATION_MS = 4500;
 /** Délai avant le scroll pour laisser le DOM se rendre (ms) */
 const SCROLL_DELAY_MS = 150;
 
-const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
-
-function transformProduct(p: FeaturedProductRecord): Product {
-  const pct = p.discountPercent ?? 0;
-  const hasDiscount = Boolean(p.discountActive && pct > 0);
-  const effectivePrice = hasDiscount
-    ? Math.round(p.price * (1 - pct / 100))
-    : p.price;
-  return {
-    id: p.id,
-    name: p.title ?? "",
-    image: p.imageId ? `${CLOUDINARY_BASE}/w_600,h_600,c_fill,q_auto,f_auto/${p.imageId}` : "",
-    price: effectivePrice,
-    originalPrice: hasDiscount ? p.price : undefined,
-    discount: hasDiscount ? pct : undefined,
-    description: p.description ?? undefined,
-    inStock: (p.stock ?? 0) > 0,
-  };
-}
-
 export function BoutiqueView() {
-  const [catalog, setCatalog] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch("/api/products?active=true", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((result) => {
-        const raw = Array.isArray(result.data) ? result.data : [];
-        setCatalog(raw.map(transformProduct));
-      })
-      .catch(() => {});
-  }, []);
+  const { data: catalog = [] } = useActiveProducts();
+  const products = useMemo<Product[]>(() => catalog, [catalog]);
   const { items, totalPrice, totalQuantity, add, update, remove, clear } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const DRAWER_STATE_KEY = "boutique.drawer.open.v1";
@@ -82,10 +53,10 @@ export function BoutiqueView() {
 
   // 2) Scroll vers le produit et retrait de la mise en évidence - quand le catalogue est chargé
   useEffect(() => {
-    if (!highlightedProductId || catalog.length === 0) return;
+    if (!highlightedProductId || products.length === 0) return;
 
     const productIdStr = String(highlightedProductId);
-    const hasProduct = catalog.some((p) => String(p.id) === productIdStr);
+    const hasProduct = products.some((p) => String(p.id) === productIdStr);
     if (!hasProduct) return;
 
     const scrollTimer = window.setTimeout(() => {
@@ -101,7 +72,7 @@ export function BoutiqueView() {
       window.clearTimeout(scrollTimer);
       window.clearTimeout(clearTimer);
     };
-  }, [highlightedProductId, catalog]);
+  }, [highlightedProductId, products]);
 
   // Open drawer if URL hash is #panier (e.g., from mobile header button)
   useEffect(() => {
@@ -178,7 +149,7 @@ export function BoutiqueView() {
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        {catalog.map((p) => (
+        {products.map((p) => (
           <ProductCard
             key={p.id}
             product={p}

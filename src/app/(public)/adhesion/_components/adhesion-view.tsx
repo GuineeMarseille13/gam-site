@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Plus, Users, CheckCircle2, Trash2, Loader2, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_schemas/adhesion.schema";
+import { useCreateAdhesionPaymentIntent } from "../_hooks/use-create-adhesion-payment-intent";
 import StripePaymentForm from "./stripe-payment-form";
 
 export default function AdhesionView() {
@@ -13,13 +14,14 @@ export default function AdhesionView() {
   ]);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [validatedMembers, setValidatedMembers] = useState<Member[]>([]);
   const [validatedMessage, setValidatedMessage] = useState("");
   const total = useMemo(() => members.length * PRICE_PER_MEMBER_EUR, [members.length]);
+
+  const { mutateAsync: createPaymentIntent, isPending: isLoading } = useCreateAdhesionPaymentIntent();
 
   const isValidFrenchPhone = useCallback((phone: string): boolean => {
     const cleaned = phone.replace(/\s/g, "");
@@ -76,22 +78,9 @@ export default function AdhesionView() {
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch("/api/payment_intents", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ members, message }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Erreur lors de la création du paiement");
-      }
-
-      const { clientSecret: secret } = await response.json();
+      const result = await createPaymentIntent({ members, message });
+      const secret = result.clientSecret ?? null;
       if (secret) {
         setClientSecret(secret);
         setValidatedMembers(members);
@@ -103,8 +92,6 @@ export default function AdhesionView() {
     } catch (err) {
       console.error("Erreur lors du paiement:", err);
       setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
-    } finally {
-      setIsLoading(false);
     }
   }
 

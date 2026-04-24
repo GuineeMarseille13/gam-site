@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, CheckCircle2, DollarSign, Target, Sparkles, Loader2, ArrowLeft } from "lucide-react";
 import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT_EUR, type Don } from "../_schemas/don.schema";
+import { useCreateDonPaymentIntent } from "../_hooks/use-create-don-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
 export default function DonView() {
@@ -17,11 +18,12 @@ export default function DonView() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [validatedFormData, setValidatedFormData] = useState<Don | null>(null);
+
+  const { mutateAsync: createPaymentIntent, isPending: isLoading } = useCreateDonPaymentIntent();
 
   function handleAmountSelect(amount: number) {
     setFormData((prev) => ({ ...prev, amount }));
@@ -64,22 +66,9 @@ export default function DonView() {
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch("/api/payment_intents/don", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Erreur lors de la création du paiement");
-      }
-
-      const { clientSecret: secret } = await response.json();
+      const result = await createPaymentIntent(parsed.data);
+      const secret = result.clientSecret ?? null;
       if (secret) {
         setClientSecret(secret);
         setValidatedFormData(parsed.data);
@@ -90,8 +79,6 @@ export default function DonView() {
     } catch (err) {
       console.error("Erreur lors du paiement:", err);
       setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
-    } finally {
-      setIsLoading(false);
     }
   }
 

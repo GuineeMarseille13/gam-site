@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createPortal } from "react-dom";
 import type { CartItem, CheckoutData } from "../_schemas/product.schema";
 import { checkoutDataSchema } from "../_schemas/product.schema";
+import { useCreateOrderPaymentIntent } from "../_hooks/use-create-order-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 
 interface CartDrawerProps {
@@ -24,9 +25,10 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
   const [form, setForm] = useState<CheckoutData>({ firstName: "", lastName: "", phone: undefined, email: undefined });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  const { mutateAsync: createPaymentIntent, isPending: isLoading } = useCreateOrderPaymentIntent();
 
   const formattedTotal = useMemo(
     () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalPrice),
@@ -59,25 +61,9 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch("/api/payment_intents/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          items,
-          customer: parsed.data,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Erreur lors de la création du paiement");
-      }
-
-      const { clientSecret: secret } = await response.json();
+      const result = await createPaymentIntent({ items, customer: parsed.data });
+      const secret = result.clientSecret ?? null;
       if (secret) {
         setClientSecret(secret);
         setStep("payment");
@@ -87,8 +73,6 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
     } catch (err) {
       console.error("Erreur lors du paiement:", err);
       setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
