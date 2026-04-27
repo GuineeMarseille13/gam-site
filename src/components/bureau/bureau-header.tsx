@@ -25,6 +25,7 @@ const segmentLabels: Record<string, string> = {
   poles: "Pôles",
   equipe: "Équipe",
   benevoles: "Bénévoles",
+  adherents: "Adhérents",
   partenaires: "Partenaires",
   produits: "Produits",
   statistiques: "Statistiques",

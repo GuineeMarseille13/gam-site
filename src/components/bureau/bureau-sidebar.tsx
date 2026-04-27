@@ -25,6 +25,7 @@ import {
   IconSpeakerphone,
   IconLayoutNavbar,
   IconUserCircle,
+  IconUserCheck,
 } from "@tabler/icons-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -85,6 +86,7 @@ const navigation: {
   admin: [
     { title: "Tous les membres",   url: "/bureau/membres",   icon: IconUserCircle },
     { title: "Membres du bureau",    url: "/bureau/equipe",    icon: IconUsers,    adminOnly: true },
+    { title: "Adhérent", url: "/bureau/adherents", icon: IconUserCheck },
     { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
     { title: "Aide",      url: "/bureau/aide",      icon: IconHelp },
   ],

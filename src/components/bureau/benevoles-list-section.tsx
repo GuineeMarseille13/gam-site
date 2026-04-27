@@ -1,4 +1,4 @@
-import { BureauContent, type BureauDataPageDashboard } from "@/components/bureau/bureau-content"
+import { BureauContent, type BureauContentDashboard } from "@/components/bureau/bureau-content"
 import { administrationCardClassName } from "@/config/administration-dashboard-theme"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -18,7 +18,7 @@ interface BenevolesListSectionProps {
  */
 export function BenevolesListSection({ benevoles, basePath }: BenevolesListSectionProps) {
   const nouveauHref = `${basePath}/benevoles/nouveau`
-  const dashboard: BureauDataPageDashboard =
+  const dashboard: BureauContentDashboard =
     basePath === "/administration" ? "administration" : "bureau"
   const isAdministration = dashboard === "administration"
 
