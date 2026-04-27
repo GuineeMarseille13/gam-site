@@ -4,7 +4,7 @@ import * as React from "react"
 import { usePathname } from "next/navigation"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { DASHBOARD_THEME_STORAGE_KEY } from "@/config/dashboard-theme"
-import { isDashboardThemeRoute } from "@/lib/dashboard-theme-routes"
+import { isDashboardThemeRoute } from "@/helpers/dashboard-theme-routes"
 
 interface ThemeProviderProps {
   children: React.ReactNode

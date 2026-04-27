@@ -4944,7 +4944,7 @@ export const BeneficiaryScalarFieldEnum = {
   assignedResponsibleName: 'assignedResponsibleName',
   paymentResponsible: 'paymentResponsible',
   paymentOtherDetail: 'paymentOtherDetail',
-  submittedByUserId: 'submittedByUserId',
+  submittedByPersonId: 'submittedByPersonId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4958,7 +4958,7 @@ export const PermanenceAdminPresenceVolunteerScalarFieldEnum = {
   memberFullName: 'memberFullName',
   hours: 'hours',
   comment: 'comment',
-  submittedByUserId: 'submittedByUserId',
+  submittedByPersonId: 'submittedByPersonId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

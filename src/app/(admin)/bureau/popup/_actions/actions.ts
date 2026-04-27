@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
+import { deleteSupersededPublicId } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -103,9 +104,26 @@ export async function updatePopup(id: string, _prev: ActionState, formData: Form
           prospectusIds: [],
         },
       })
+      if (existing.type !== "IMAGE_TEXT") {
+        for (const pid of existing.prospectusIds) {
+          await deleteImage(pid).catch(() => {})
+        }
+      }
+      await deleteSupersededPublicId({
+        previousPublicId: existing.imageId,
+        nextPublicId: imageId,
+        resourceType: "image",
+      })
     } else {
       const prospectusIds = await uploadMultiple(formData)
+      const prevProspects = existing.prospectusIds
       await prisma.popup.update({ where: { id }, data: { type, isActive, prospectusIds, imageId: null } })
+
+      if (existing.type === "IMAGE_TEXT" && existing.imageId) {
+        await deleteImage(existing.imageId).catch(() => {})
+      }
+      const removedProspects = prevProspects.filter((pid) => !prospectusIds.includes(pid))
+      await Promise.all(removedProspects.map((pid) => deleteImage(pid).catch(() => {})))
     }
 
     revalidatePath("/bureau/popup")

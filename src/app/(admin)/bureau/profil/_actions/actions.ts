@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { uploadImage } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
 
 // ── Mettre à jour le profil ────────────────────────────────────────────────────
@@ -64,6 +65,13 @@ export async function updateProfil(formData: FormData) {
           userId,
           image: imageUrl ?? null,
         },
+      })
+    }
+
+    if (imageUrl !== undefined) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: existing?.image,
+        nextUrl: imageUrl ?? null,
       })
     }
 

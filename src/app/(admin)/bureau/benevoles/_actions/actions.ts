@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { uploadImage } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
@@ -145,6 +146,12 @@ export async function updateBenevole(id: string, formData: FormData) {
     },
   })
 
+  if (imageUrl !== undefined) {
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: existing.image,
+      nextUrl: imageUrl ?? null,
+    })
+  }
 
   revalidateBenevolesLists()
   redirect(benevolesListPathFromForm(formData))

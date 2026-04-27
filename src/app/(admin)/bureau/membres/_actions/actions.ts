@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { getRoleIdByCode } from "@/lib/association-role-helpers"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import type { MembreBureauRow } from "../_components/membres-team-table"
 
 // ── Lister les utilisateurs ────────────────────────────────────────────────────
@@ -258,6 +259,13 @@ export async function updateUser(userId: string, formData: FormData) {
       await prisma.teamMember.create({ data: { personId } })
     }
 
+    if (imageUrl !== undefined) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: existingPerson?.image,
+        nextUrl: imageUrl ?? null,
+      })
+    }
+
     revalidatePath("/bureau/membres")
     revalidatePath("/bureau/equipe")
     return { success: true as const }
@@ -495,6 +503,13 @@ export async function updateBenevole(personId: string, formData: FormData) {
       },
     })
 
+    if (imageUrl !== undefined) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: existing.image,
+        nextUrl: imageUrl ?? null,
+      })
+    }
+
     revalidatePath("/bureau/membres")
     return { success: true as const }
   } catch {
@@ -507,7 +522,17 @@ export async function updateBenevole(personId: string, formData: FormData) {
 export async function deleteBenevole(personId: string) {
   await requireAdmin()
   try {
+    const existing = await prisma.person.findUnique({
+      where: { id: personId },
+      select: { image: true },
+    })
     await prisma.person.delete({ where: { id: personId } })
+    if (existing?.image) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: existing.image,
+        nextUrl: null,
+      })
+    }
     revalidatePath("/bureau/membres")
     return { success: true as const }
   } catch {

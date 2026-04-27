@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
+import { deleteSupersededPublicId } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -53,6 +54,11 @@ export async function updatePole(
 ): Promise<ActionState> {
   await requireBureau()
   try {
+    const previous = await prisma.pole.findUnique({
+      where: { id },
+      select: { imageId: true },
+    })
+
     const name = formData.get("name") as string
     const description = (formData.get("description") as string) || null
     const imageId = await resolveImageId(formData)
@@ -60,6 +66,12 @@ export async function updatePole(
     await prisma.pole.update({
       where: { id },
       data: { name, description, imageId },
+    })
+
+    await deleteSupersededPublicId({
+      previousPublicId: previous?.imageId,
+      nextPublicId: imageId,
+      resourceType: "image",
     })
 
     revalidatePath("/bureau/poles")

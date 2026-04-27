@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse, notFoundResponse } from '@/lib/api/response'
 import { handleApiError } from '@/lib/api/errors'
+import { deleteSupersededCloudinaryUrl } from '@/lib/cloudinary-replacement'
 import { z } from 'zod'
 
 const updateActivityReportSchema = z
@@ -49,6 +50,11 @@ export async function PUT(
     const body = await request.json()
     const validatedData = updateActivityReportSchema.parse(body)
 
+    const previous = await prisma.reportActivity.findUnique({
+      where: { id },
+      select: { pdfUrl: true },
+    })
+
     const data: {
       year?: number
       label?: string
@@ -62,6 +68,13 @@ export async function PUT(
       where: { id },
       data,
     })
+
+    if (validatedData.pdfUrl !== undefined) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: previous?.pdfUrl,
+        nextUrl: validatedData.pdfUrl,
+      })
+    }
 
     return successResponse(report, "Rapport d'activité mis à jour avec succès")
   } catch (error) {
@@ -78,8 +91,18 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const existing = await prisma.reportActivity.findUnique({
+      where: { id },
+      select: { pdfUrl: true },
+    })
+
     await prisma.reportActivity.delete({
       where: { id },
+    })
+
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: existing?.pdfUrl,
+      nextUrl: null,
     })
 
     return successResponse(null, "Rapport d'activité supprimé avec succès")

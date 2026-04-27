@@ -250,6 +250,8 @@ export type PersonWhereInput = {
   memberShips?: Prisma.MemberShipListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
+  beneficiaries?: Prisma.BeneficiaryListRelationFilter
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
   role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
@@ -274,6 +276,8 @@ export type PersonOrderByWithRelationInput = {
   memberShips?: Prisma.MemberShipOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
+  beneficiaries?: Prisma.BeneficiaryOrderByRelationAggregateInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerOrderByRelationAggregateInput
   address?: Prisma.AddressOrderByWithRelationInput
   paymentHistories?: Prisma.PaymentHistoryOrderByRelationAggregateInput
   role?: Prisma.RoleOrderByWithRelationInput
@@ -301,6 +305,8 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   memberShips?: Prisma.MemberShipListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
+  beneficiaries?: Prisma.BeneficiaryListRelationFilter
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
   role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
@@ -361,6 +367,8 @@ export type PersonCreateInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -385,6 +393,8 @@ export type PersonUncheckedCreateInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -405,6 +415,8 @@ export type PersonUpdateInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -429,6 +441,8 @@ export type PersonUncheckedUpdateInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -677,6 +691,38 @@ export type PersonUncheckedUpdateManyWithoutAddressNestedInput = {
   deleteMany?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
 }
 
+export type PersonCreateNestedOneWithoutBeneficiariesInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutBeneficiariesInput, Prisma.PersonUncheckedCreateWithoutBeneficiariesInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutBeneficiariesInput
+  connect?: Prisma.PersonWhereUniqueInput
+}
+
+export type PersonUpdateOneWithoutBeneficiariesNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutBeneficiariesInput, Prisma.PersonUncheckedCreateWithoutBeneficiariesInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutBeneficiariesInput
+  upsert?: Prisma.PersonUpsertWithoutBeneficiariesInput
+  disconnect?: Prisma.PersonWhereInput | boolean
+  delete?: Prisma.PersonWhereInput | boolean
+  connect?: Prisma.PersonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutBeneficiariesInput, Prisma.PersonUpdateWithoutBeneficiariesInput>, Prisma.PersonUncheckedUpdateWithoutBeneficiariesInput>
+}
+
+export type PersonCreateNestedOneWithoutPermanenceAdminPresenceVolunteersInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPermanenceAdminPresenceVolunteersInput
+  connect?: Prisma.PersonWhereUniqueInput
+}
+
+export type PersonUpdateOneWithoutPermanenceAdminPresenceVolunteersNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput>
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPermanenceAdminPresenceVolunteersInput
+  upsert?: Prisma.PersonUpsertWithoutPermanenceAdminPresenceVolunteersInput
+  disconnect?: Prisma.PersonWhereInput | boolean
+  delete?: Prisma.PersonWhereInput | boolean
+  connect?: Prisma.PersonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUpdateWithoutPermanenceAdminPresenceVolunteersInput>, Prisma.PersonUncheckedUpdateWithoutPermanenceAdminPresenceVolunteersInput>
+}
+
 export type PersonCreateNestedOneWithoutOrdersInput = {
   create?: Prisma.XOR<Prisma.PersonCreateWithoutOrdersInput, Prisma.PersonUncheckedCreateWithoutOrdersInput>
   connectOrCreate?: Prisma.PersonCreateOrConnectWithoutOrdersInput
@@ -737,6 +783,8 @@ export type PersonCreateWithoutRoleInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
@@ -759,6 +807,8 @@ export type PersonUncheckedCreateWithoutRoleInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -824,6 +874,8 @@ export type PersonCreateWithoutTeamMemberInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -847,6 +899,8 @@ export type PersonUncheckedCreateWithoutTeamMemberInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
 }
 
@@ -882,6 +936,8 @@ export type PersonUpdateWithoutTeamMemberInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -905,6 +961,8 @@ export type PersonUncheckedUpdateWithoutTeamMemberInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
 }
 
@@ -923,6 +981,8 @@ export type PersonCreateWithoutMemberShipsInput = {
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -946,6 +1006,8 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -981,6 +1043,8 @@ export type PersonUpdateWithoutMemberShipsInput = {
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -1004,6 +1068,8 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1023,6 +1089,8 @@ export type PersonCreateWithoutDonationsInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -1046,6 +1114,8 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -1081,6 +1151,8 @@ export type PersonUpdateWithoutDonationsInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -1104,6 +1176,8 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1124,6 +1198,8 @@ export type PersonCreateWithoutAddressInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
@@ -1146,6 +1222,8 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -1176,6 +1254,222 @@ export type PersonUpdateManyWithWhereWithoutAddressInput = {
   data: Prisma.XOR<Prisma.PersonUpdateManyMutationInput, Prisma.PersonUncheckedUpdateManyWithoutAddressInput>
 }
 
+export type PersonCreateWithoutBeneficiariesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
+}
+
+export type PersonUncheckedCreateWithoutBeneficiariesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  userId?: string | null
+  roleId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutBeneficiariesInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutBeneficiariesInput, Prisma.PersonUncheckedCreateWithoutBeneficiariesInput>
+}
+
+export type PersonUpsertWithoutBeneficiariesInput = {
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutBeneficiariesInput, Prisma.PersonUncheckedUpdateWithoutBeneficiariesInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutBeneficiariesInput, Prisma.PersonUncheckedCreateWithoutBeneficiariesInput>
+  where?: Prisma.PersonWhereInput
+}
+
+export type PersonUpdateToOneWithWhereWithoutBeneficiariesInput = {
+  where?: Prisma.PersonWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutBeneficiariesInput, Prisma.PersonUncheckedUpdateWithoutBeneficiariesInput>
+}
+
+export type PersonUpdateWithoutBeneficiariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutBeneficiariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonCreateWithoutPermanenceAdminPresenceVolunteersInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  userId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  address?: Prisma.AddressCreateNestedOneWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
+  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
+}
+
+export type PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone: string
+  addressId?: string | null
+  userId?: string | null
+  roleId?: string | null
+  image?: string | null
+  showOnSite?: boolean
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
+  memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
+  teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
+}
+
+export type PersonCreateOrConnectWithoutPermanenceAdminPresenceVolunteersInput = {
+  where: Prisma.PersonWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput>
+}
+
+export type PersonUpsertWithoutPermanenceAdminPresenceVolunteersInput = {
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedUpdateWithoutPermanenceAdminPresenceVolunteersInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput>
+  where?: Prisma.PersonWhereInput
+}
+
+export type PersonUpdateToOneWithWhereWithoutPermanenceAdminPresenceVolunteersInput = {
+  where?: Prisma.PersonWhereInput
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutPermanenceAdminPresenceVolunteersInput, Prisma.PersonUncheckedUpdateWithoutPermanenceAdminPresenceVolunteersInput>
+}
+
+export type PersonUpdateWithoutPermanenceAdminPresenceVolunteersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
+  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
+}
+
+export type PersonUncheckedUpdateWithoutPermanenceAdminPresenceVolunteersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
+  memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
+  teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
+}
+
 export type PersonCreateWithoutOrdersInput = {
   id?: string
   firstName: string
@@ -1191,6 +1485,8 @@ export type PersonCreateWithoutOrdersInput = {
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -1214,6 +1510,8 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -1249,6 +1547,8 @@ export type PersonUpdateWithoutOrdersInput = {
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -1272,6 +1572,8 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1291,6 +1593,8 @@ export type PersonCreateWithoutPaymentsInput = {
   donations?: Prisma.DonationCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
@@ -1314,6 +1618,8 @@ export type PersonUncheckedCreateWithoutPaymentsInput = {
   donations?: Prisma.DonationUncheckedCreateNestedManyWithoutPersonInput
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
@@ -1349,6 +1655,8 @@ export type PersonUpdateWithoutPaymentsInput = {
   donations?: Prisma.DonationUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
@@ -1372,6 +1680,8 @@ export type PersonUncheckedUpdateWithoutPaymentsInput = {
   donations?: Prisma.DonationUncheckedUpdateManyWithoutPersonNestedInput
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1392,6 +1702,8 @@ export type PersonCreateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
@@ -1415,6 +1727,8 @@ export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipUncheckedCreateNestedManyWithoutPersonInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutPersonInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutPersonInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedCreateNestedManyWithoutPersonInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedCreateNestedManyWithoutPersonInput
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
@@ -1450,6 +1764,8 @@ export type PersonUpdateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
@@ -1473,6 +1789,8 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
@@ -1507,6 +1825,8 @@ export type PersonUpdateWithoutRoleInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
@@ -1529,6 +1849,8 @@ export type PersonUncheckedUpdateWithoutRoleInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1579,6 +1901,8 @@ export type PersonUpdateWithoutAddressInput = {
   memberShips?: Prisma.MemberShipUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
   role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
@@ -1601,6 +1925,8 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   memberShips?: Prisma.MemberShipUncheckedUpdateManyWithoutPersonNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutPersonNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutPersonNestedInput
+  beneficiaries?: Prisma.BeneficiaryUncheckedUpdateManyWithoutPersonNestedInput
+  permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUncheckedUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUncheckedUpdateManyWithoutPersonNestedInput
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
@@ -1630,6 +1956,8 @@ export type PersonCountOutputType = {
   memberShips: number
   orders: number
   payments: number
+  beneficiaries: number
+  permanenceAdminPresenceVolunteers: number
   paymentHistories: number
 }
 
@@ -1638,6 +1966,8 @@ export type PersonCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   memberShips?: boolean | PersonCountOutputTypeCountMemberShipsArgs
   orders?: boolean | PersonCountOutputTypeCountOrdersArgs
   payments?: boolean | PersonCountOutputTypeCountPaymentsArgs
+  beneficiaries?: boolean | PersonCountOutputTypeCountBeneficiariesArgs
+  permanenceAdminPresenceVolunteers?: boolean | PersonCountOutputTypeCountPermanenceAdminPresenceVolunteersArgs
   paymentHistories?: boolean | PersonCountOutputTypeCountPaymentHistoriesArgs
 }
 
@@ -1682,6 +2012,20 @@ export type PersonCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types
 /**
  * PersonCountOutputType without action
  */
+export type PersonCountOutputTypeCountBeneficiariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BeneficiaryWhereInput
+}
+
+/**
+ * PersonCountOutputType without action
+ */
+export type PersonCountOutputTypeCountPermanenceAdminPresenceVolunteersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PermanenceAdminPresenceVolunteerWhereInput
+}
+
+/**
+ * PersonCountOutputType without action
+ */
 export type PersonCountOutputTypeCountPaymentHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PaymentHistoryWhereInput
 }
@@ -1705,6 +2049,8 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
   orders?: boolean | Prisma.Person$ordersArgs<ExtArgs>
   payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
+  beneficiaries?: boolean | Prisma.Person$beneficiariesArgs<ExtArgs>
+  permanenceAdminPresenceVolunteers?: boolean | Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
   role?: boolean | Prisma.Person$roleArgs<ExtArgs>
@@ -1770,6 +2116,8 @@ export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
   orders?: boolean | Prisma.Person$ordersArgs<ExtArgs>
   payments?: boolean | Prisma.Person$paymentsArgs<ExtArgs>
+  beneficiaries?: boolean | Prisma.Person$beneficiariesArgs<ExtArgs>
+  permanenceAdminPresenceVolunteers?: boolean | Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
   role?: boolean | Prisma.Person$roleArgs<ExtArgs>
@@ -1792,6 +2140,8 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     memberShips: Prisma.$MemberShipPayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
+    beneficiaries: Prisma.$BeneficiaryPayload<ExtArgs>[]
+    permanenceAdminPresenceVolunteers: Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>[]
     address: Prisma.$AddressPayload<ExtArgs> | null
     paymentHistories: Prisma.$PaymentHistoryPayload<ExtArgs>[]
     role: Prisma.$RolePayload<ExtArgs> | null
@@ -2209,6 +2559,8 @@ export interface Prisma__PersonClient<T, Null = never, ExtArgs extends runtime.T
   memberShips<T extends Prisma.Person$memberShipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$memberShipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberShipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.Person$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.Person$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  beneficiaries<T extends Prisma.Person$beneficiariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$beneficiariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BeneficiaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  permanenceAdminPresenceVolunteers<T extends Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   address<T extends Prisma.Person$addressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$addressArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   paymentHistories<T extends Prisma.Person$paymentHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   role<T extends Prisma.Person$roleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$roleArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2749,6 +3101,54 @@ export type Person$paymentsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * Person.beneficiaries
+ */
+export type Person$beneficiariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Beneficiary
+   */
+  select?: Prisma.BeneficiarySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Beneficiary
+   */
+  omit?: Prisma.BeneficiaryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BeneficiaryInclude<ExtArgs> | null
+  where?: Prisma.BeneficiaryWhereInput
+  orderBy?: Prisma.BeneficiaryOrderByWithRelationInput | Prisma.BeneficiaryOrderByWithRelationInput[]
+  cursor?: Prisma.BeneficiaryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BeneficiaryScalarFieldEnum | Prisma.BeneficiaryScalarFieldEnum[]
+}
+
+/**
+ * Person.permanenceAdminPresenceVolunteers
+ */
+export type Person$permanenceAdminPresenceVolunteersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PermanenceAdminPresenceVolunteer
+   */
+  select?: Prisma.PermanenceAdminPresenceVolunteerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PermanenceAdminPresenceVolunteer
+   */
+  omit?: Prisma.PermanenceAdminPresenceVolunteerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PermanenceAdminPresenceVolunteerInclude<ExtArgs> | null
+  where?: Prisma.PermanenceAdminPresenceVolunteerWhereInput
+  orderBy?: Prisma.PermanenceAdminPresenceVolunteerOrderByWithRelationInput | Prisma.PermanenceAdminPresenceVolunteerOrderByWithRelationInput[]
+  cursor?: Prisma.PermanenceAdminPresenceVolunteerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PermanenceAdminPresenceVolunteerScalarFieldEnum | Prisma.PermanenceAdminPresenceVolunteerScalarFieldEnum[]
 }
 
 /**

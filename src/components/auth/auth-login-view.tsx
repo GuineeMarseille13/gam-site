@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { IconAlertCircle, IconLoader2, IconEye, IconEyeOff } from "@tabler/icons-react"
-import { formatAuthSignInError } from "@/lib/format-auth-sign-in-error"
+import { formatAuthSignInError } from "@/helpers/format-auth-sign-in-error"
 
 export interface AuthLoginViewProps {
   /** Redirection si le paramètre `redirect` est absent */

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
+import { deleteSupersededPublicId } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -52,6 +53,11 @@ export async function updatePartenaire(
 ): Promise<ActionState> {
   await requireBureau()
   try {
+    const previous = await prisma.partner.findUnique({
+      where: { id },
+      select: { imageId: true },
+    })
+
     const name = formData.get("name") as string
     const description = (formData.get("description") as string) || null
     const url = (formData.get("url") as string) || null
@@ -61,6 +67,12 @@ export async function updatePartenaire(
     await prisma.partner.update({
       where: { id },
       data: { name, description, url, imageId, published },
+    })
+
+    await deleteSupersededPublicId({
+      previousPublicId: previous?.imageId,
+      nextPublicId: imageId,
+      resourceType: "image",
     })
 
     revalidatePath("/bureau/partenaires")

@@ -6,6 +6,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error"
 import { prisma } from "@/lib/prisma"
 import { requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { getRoleIdByCode } from "@/lib/association-role-helpers"
 import {
   formatAvisFormErrorMessage,
@@ -137,6 +138,11 @@ export async function updateAvis(
       },
     })
 
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: existing.avatarUrl,
+      nextUrl: avatarUrl,
+    })
+
     REVALIDATE_PATHS.forEach((p) => revalidatePath(p))
     redirect("/bureau/avis")
   } catch (err) {
@@ -148,6 +154,16 @@ export async function updateAvis(
 
 export async function deleteAvis(id: string) {
   await requireBureau()
+  const existing = await prisma.review.findUnique({
+    where: { id },
+    select: { avatarUrl: true },
+  })
   await prisma.review.delete({ where: { id } })
+
+  await deleteSupersededCloudinaryUrl({
+    previousUrl: existing?.avatarUrl,
+    nextUrl: null,
+  })
+
   REVALIDATE_PATHS.forEach((p) => revalidatePath(p))
 }

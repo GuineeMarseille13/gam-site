@@ -104,12 +104,10 @@ export async function updateEvenement(
     const keptImageIds = formData.getAll("keptImageIds") as string[]
     const imageFiles   = formData.getAll("imageFiles")   as File[]
 
-    // Supprimer les images retirées de Cloudinary
     const existingImages = await prisma.eventImage.findMany({ where: { eventId: id } })
     const toDelete = existingImages
       .filter((img) => !keptImageIds.includes(img.imageId))
       .map((img) => img.imageId)
-    await deleteCloudinaryImages(toDelete)
 
     // Uploader les nouvelles images
     const newIds = await uploadFiles(imageFiles)
@@ -141,6 +139,8 @@ export async function updateEvenement(
       where: { id },
       data: { title, description, location, imageId: coverImageId, startDate, endDate, published },
     })
+
+    await deleteCloudinaryImages(toDelete)
 
     revalidatePath("/bureau/evenements")
     revalidatePath("/evenements")

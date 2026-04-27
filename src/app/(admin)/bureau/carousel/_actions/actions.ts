@@ -58,7 +58,6 @@ export async function updateCarouselSlide(id: string, formData: FormData) {
   if (file && file.size > 0) {
     const existing   = await prisma.image.findUniqueOrThrow({ where: { id } })
     const oldPublicId = getPublicId(existing.metadata)
-    if (oldPublicId) await deleteImage(oldPublicId)
 
     const upload = await uploadImage(file, "gam/carousel")
 
@@ -78,6 +77,12 @@ export async function updateCarouselSlide(id: string, formData: FormData) {
         metadata:    { publicId: upload.publicId },
       },
     })
+
+    if (oldPublicId && oldPublicId !== upload.publicId) {
+      await deleteImage(oldPublicId).catch((err: unknown) => {
+        console.warn("[updateCarouselSlide] Ancienne image non supprimée:", err)
+      })
+    }
   } else {
     await prisma.image.update({
       where: { id },

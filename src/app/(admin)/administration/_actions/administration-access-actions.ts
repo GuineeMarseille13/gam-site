@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { updateAdministrationAccessSchema } from "../_schemas/administration-access.schema"
 
 const ACCES_PATH = "/administration/acces"
@@ -39,8 +40,17 @@ export async function deleteAdministrationAccessUser(userId: string): Promise<Ad
   }
 
   try {
-    const person = await prisma.person.findUnique({ where: { userId } })
+    const person = await prisma.person.findUnique({
+      where: { userId },
+      select: { id: true, image: true },
+    })
     if (person) {
+      if (person.image) {
+        await deleteSupersededCloudinaryUrl({
+          previousUrl: person.image,
+          nextUrl: null,
+        })
+      }
       await prisma.person.delete({ where: { id: person.id } })
     }
     await auth.api.removeUser({ body: { userId }, headers: await headers() })
@@ -131,6 +141,13 @@ export async function updateAdministrationAccessUser(
           image: imageUrl ?? null,
           showOnSite: true,
         },
+      })
+    }
+
+    if (imageUrl !== undefined) {
+      await deleteSupersededCloudinaryUrl({
+        previousUrl: existing?.image,
+        nextUrl: imageUrl ?? null,
       })
     }
 

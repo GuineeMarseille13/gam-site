@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import type { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
+import { getPersonIdForAuthUserId } from "@/lib/get-person-id-for-auth-user"
 import { getAdministrativePermanenceSlots } from "@/lib/administrative-permanence/queries"
 import { buildSubmitBeneficiaryPermanenceSchema } from "../_schemas/beneficiary-permanence.schema"
 
@@ -99,6 +100,8 @@ export async function submitBeneficiaryPermanence(
   const paymentOtherDetail =
     d.paymentResponsible === "OTHER" ? (d.paymentOtherDetail?.trim() ?? null) : null
 
+  const submittedByPersonId = await getPersonIdForAuthUserId(session.user.id)
+
   try {
     await prisma.beneficiary.create({
       data: {
@@ -126,7 +129,7 @@ export async function submitBeneficiaryPermanence(
         assignedResponsibleName: d.assignedResponsibleName,
         paymentResponsible: d.paymentResponsible,
         paymentOtherDetail,
-        submittedByUserId: session.user.id,
+        submittedByPersonId,
       },
     })
     revalidatePath("/administration")

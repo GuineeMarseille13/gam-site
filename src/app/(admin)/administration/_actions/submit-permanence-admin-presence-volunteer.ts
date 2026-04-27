@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
+import { getPersonIdForAuthUserId } from "@/lib/get-person-id-for-auth-user"
 import { submitPermanenceAdminPresenceVolunteerSchema } from "../_schemas/permanence-admin-presence-volunteer.schema"
 
 export type SubmitPermanenceAdminPresenceVolunteerResult =
@@ -33,6 +34,7 @@ export async function submitPermanenceAdminPresenceVolunteer(
 
   const { permanenceDate, memberFullName, hours, comment } = parsed.data
   const dateOnly = new Date(`${permanenceDate}T12:00:00.000Z`)
+  const submittedByPersonId = await getPersonIdForAuthUserId(session.user.id)
 
   try {
     await prisma.permanenceAdminPresenceVolunteer.create({
@@ -41,7 +43,7 @@ export async function submitPermanenceAdminPresenceVolunteer(
         memberFullName,
         hours,
         comment: comment ?? null,
-        submittedByUserId: session.user.id,
+        submittedByPersonId,
       },
     })
     revalidatePath("/administration")

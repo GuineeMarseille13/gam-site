@@ -125,6 +125,16 @@ export async function deleteImage(publicId: string): Promise<void> {
   await cloudinary.uploader.destroy(publicId, { resource_type: 'image' })
 }
 
+export async function deleteVideo(publicId: string): Promise<void> {
+  ensureCloudinaryConfig()
+  await cloudinary.uploader.destroy(publicId, { resource_type: 'video' })
+}
+
+export async function deleteRaw(publicId: string): Promise<void> {
+  ensureCloudinaryConfig()
+  await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' })
+}
+
 export async function uploadPdf(
   file: File | Buffer,
   folder?: string

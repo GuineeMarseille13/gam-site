@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { uploadVideo } from "@/lib/cloudinary"
+import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -66,6 +67,11 @@ export async function updateVideoTemoignage(
 ): Promise<ActionState> {
   await requireBureau()
   try {
+    const previous = await prisma.video.findUnique({
+      where: { id },
+      select: { url: true },
+    })
+
     const { url, thumbnail } = await resolveVideoSource(formData)
     const title = (formData.get("title") as string) || null
     const description = (formData.get("description") as string) || null
@@ -75,6 +81,11 @@ export async function updateVideoTemoignage(
     await prisma.video.update({
       where: { id },
       data: { url, title, description, thumbnail, order, isActive },
+    })
+
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: previous?.url,
+      nextUrl: url,
     })
 
     REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
@@ -88,6 +99,16 @@ export async function updateVideoTemoignage(
 
 export async function deleteVideoTemoignage(id: string) {
   await requireBureau()
+  const existing = await prisma.video.findUnique({
+    where: { id },
+    select: { url: true },
+  })
   await prisma.video.delete({ where: { id } })
+
+  await deleteSupersededCloudinaryUrl({
+    previousUrl: existing?.url,
+    nextUrl: null,
+  })
+
   REVALIDATE_PATHS.forEach((path) => revalidatePath(path))
 }

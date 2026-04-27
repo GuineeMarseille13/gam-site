@@ -5,6 +5,10 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { uploadImage } from "@/lib/cloudinary"
+import {
+  deleteSupersededPublicId,
+  safeDestroyCloudinaryAsset,
+} from "@/lib/cloudinary-replacement"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 import { getRoleIdByCode } from "@/lib/association-role-helpers"
 
@@ -152,6 +156,12 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
       data: { description, imageId, order, showOnSite },
     })
 
+    await deleteSupersededPublicId({
+      previousPublicId: member.imageId,
+      nextPublicId: imageId,
+      resourceType: "image",
+    })
+
     revalidatePath("/bureau/equipe")
     return { success: true as const }
   } catch {
@@ -198,7 +208,13 @@ export async function deleteMembreEquipe(id: string) {
   await requireAdmin()
 
   try {
-    const member = await prisma.teamMember.findUnique({ where: { id } })
+    const member = await prisma.teamMember.findUnique({
+      where: { id },
+      select: {
+        personId: true,
+        imageId: true,
+      },
+    })
     if (!member) return { error: "Membre introuvable." }
 
     const person = await prisma.person.findUnique({ where: { id: member.personId } })
@@ -206,6 +222,10 @@ export async function deleteMembreEquipe(id: string) {
 
     await prisma.teamMember.delete({ where: { id } })
     await prisma.person.delete({ where: { id: member.personId } })
+
+    if (member.imageId) {
+      await safeDestroyCloudinaryAsset(member.imageId, "image")
+    }
 
     if (userId) {
       try {
