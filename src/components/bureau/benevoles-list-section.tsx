@@ -1,4 +1,4 @@
-import { BureauDataPage, type BureauDataPageDashboard } from "@/components/bureau/bureau-data-page"
+import { BureauContent, type BureauDataPageDashboard } from "@/components/bureau/bureau-content"
 import { administrationCardClassName } from "@/config/administration-dashboard-theme"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -23,7 +23,7 @@ export function BenevolesListSection({ benevoles, basePath }: BenevolesListSecti
   const isAdministration = dashboard === "administration"
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Bénévoles"
       description={`${benevoles.length} bénévole${benevoles.length > 1 ? "s" : ""} — Nos héros du quotidien`}
       addHref={nouveauHref}
@@ -178,6 +178,6 @@ export function BenevolesListSection({ benevoles, basePath }: BenevolesListSecti
           </div>
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

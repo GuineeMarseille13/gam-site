@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
@@ -71,7 +71,7 @@ export default async function EvenementsPage({
       : all
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Événements"
       description={`${counts.ALL} événement${counts.ALL > 1 ? "s" : ""}`}
       addHref="/bureau/evenements/nouveau"
@@ -189,6 +189,6 @@ export default async function EvenementsPage({
           </ul>
         )}
       </div>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

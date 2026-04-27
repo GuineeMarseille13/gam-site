@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateVideoTemoignage } from "../../_actions/actions"
 import { VideoTemoignageForm } from "../../_components/video-temoignage-form"
@@ -17,7 +17,7 @@ export default async function ModifierVideoTemoignagePage({
   const action = updateVideoTemoignage.bind(null, video.id)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier le témoignage vidéo"
       description={video.title ?? video.url}
     >
@@ -26,6 +26,6 @@ export default async function ModifierVideoTemoignagePage({
           <VideoTemoignageForm action={action} defaultValues={video} />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

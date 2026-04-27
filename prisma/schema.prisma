@@ -429,6 +429,8 @@ model Person {
   memberShips MemberShip[] // Cotisations de la personne
   orders Order[] // Commandes de la personne
   payments Payment[] // Paiements de la personne
+  beneficiaries Beneficiary[] // Demandes bénéficiaires de la personne
+  permanenceAdminPresenceVolunteers PermanenceAdminPresenceVolunteer[] // Présences à la permanence administrative de la personne
 
   // Relations
   address Address? @relation(fields: [addressId], references: [id])
@@ -746,15 +748,15 @@ model Beneficiary {
   assignedResponsibleName String?
   paymentResponsible     String?
   paymentOtherDetail     String?
-  submittedByUserId String?
+  submittedByPersonId String?
 
-  user User? @relation(fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  person Person? @relation(fields: [submittedByPersonId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([permanenceDate])
-  @@index([submittedByUserId])
+  @@index([submittedByPersonId])
   @@map("beneficiaries")
 }
 
@@ -765,15 +767,15 @@ model PermanenceAdminPresenceVolunteer {
   memberFullName      String
   hours               Decimal  @db.Decimal(5, 2)
   comment             String?
-  submittedByUserId   String?
+  submittedByPersonId   String?
 
-  user User? @relation(fields: [submittedByUserId], references: [id], onDelete: SetNull)
+  person Person? @relation(fields: [submittedByPersonId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([permanenceDate])
-  @@index([submittedByUserId])
+  @@index([submittedByPersonId])
   @@map("permanence_admin_presence_volunteers")
 }
 
@@ -894,8 +896,6 @@ model User {
 
   sessions                           Session[]
   accounts                           Account[]
-  permanenceAdminPresenceVolunteers  PermanenceAdminPresenceVolunteer[]
-  beneficiaries                      Beneficiary[]
 
   @@map("user")
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { createAvis } from "../_actions/actions"
 import { AvisForm } from "../_components/avis-form"
@@ -22,7 +22,7 @@ export default async function NouvelAvisPage() {
   const roles = await getRoles()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Nouvel avis"
       description="Le témoignage apparaît sur la page d’accueil lorsque « Visible » est coché."
       backHref="/bureau/avis"
@@ -32,6 +32,6 @@ export default async function NouvelAvisPage() {
           <AvisForm action={createAvis} roles={roles} />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

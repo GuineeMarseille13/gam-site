@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { permanenceStatsYearParamSchema } from "../_schemas/permanence-hours-annual-stats.schema"
 import { getBeneficiaryDemographicStats } from "../_services/get-beneficiary-demographic-stats"
 import { getPermanenceAnnualHoursByVolunteer } from "../_services/get-permanence-annual-hours-by-volunteer"
@@ -33,7 +33,7 @@ export default async function AdministrationStatistiquesPage({
   ])
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Statistiques"
       description="Indicateurs issus des saisies du dashboard administration (permanence ADM, etc.)."
     >
@@ -41,6 +41,6 @@ export default async function AdministrationStatistiquesPage({
         <PermanenceAnnualHoursStatsSection year={year} rows={rows} />
         <BeneficiaryDemographicStatsSection year={year} data={beneficiaryDemographics} />
       </div>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

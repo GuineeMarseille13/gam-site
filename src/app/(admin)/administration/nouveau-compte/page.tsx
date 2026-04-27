@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { AdministrationCreateAccountForm } from "../_components/create-administration-account-form"
 import { createAdministrationAccount } from "../_actions/create-administration-account"
 
@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 export default function NouveauCompteAdministrationPage() {
   return (
-    <BureauDataPage
+    <BureauContent
       title="Nouvel accès administration"
       backHref="/administration/acces"
     >
       <AdministrationCreateAccountForm action={createAdministrationAccount} />
-    </BureauDataPage>
+    </BureauContent>
   )
 }

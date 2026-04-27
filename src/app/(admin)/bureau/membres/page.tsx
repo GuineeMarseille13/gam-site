@@ -1,11 +1,21 @@
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { IconUsers, IconCircleFilled, IconHandStop, IconPhone, IconMail, IconBriefcase } from "@tabler/icons-react"
-import { listComptes, listBenevoles } from "./_actions/actions"
+import {
+  IconHandStop,
+  IconPhone,
+  IconMail,
+  IconBriefcase,
+  IconShieldCheck,
+  IconBuildingCommunity,
+} from "@tabler/icons-react"
+import { listComptes, listBenevoles, listTeamMembersForMembresPage } from "./_actions/actions"
 import { UserFilters } from "./_components/user-filters"
+import { MembresUsersTable } from "./_components/membres-users-table"
+import { MembresTeamTable } from "./_components/membres-team-table"
+import { MembresEmptyZone } from "./_components/membres-empty-zone"
 
 export const metadata: Metadata = { title: "Membres" }
 
@@ -15,10 +25,6 @@ const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }>
   administration:  { label: "Administration",  dot: "bg-sky-500",   badge: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:ring-sky-800/40" },
 }
 
-function initials(name: string) {
-  return name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
-}
-
 export default async function MembresPage({
   searchParams,
 }: {
@@ -26,42 +32,69 @@ export default async function MembresPage({
 }) {
   const { role: roleFilter, statut: statutFilter } = await searchParams
 
-  const [session, allComptes, benevoles] = await Promise.all([
+  const [session, allComptes, benevoles, teamMembersRows] = await Promise.all([
     auth.api.getSession({ headers: await headers() }),
     listComptes(),
     listBenevoles(),
+    listTeamMembersForMembresPage(),
   ])
 
-  const showUsers     = roleFilter !== "benevole"
-  const showBenevoles = !roleFilter || roleFilter === "benevole"
+  const isAllRoles = !roleFilter
+  const isFilterBureauEquipe = roleFilter === "bureau"
+  const isFilterAdministration = roleFilter === "administration"
+  const isFilterAdmin = roleFilter === "admin"
+  const isFilterBenevole = roleFilter === "benevole"
 
-  const users = allComptes.filter((u) => {
+  /** Comptes après filtre statut (Actif / Banni) — sans filtre rôle métier. */
+  const comptesAfterStatut = allComptes.filter((u) => {
     const banned = (u as { banned?: boolean }).banned === true
-    if (roleFilter && roleFilter !== "benevole" && u.role !== roleFilter) return false
     if (statutFilter === "actif" && banned) return false
     if (statutFilter === "banni" && !banned) return false
     return true
   })
 
+  const adminUsers =
+    isAllRoles || roleFilter === "admin"
+      ? comptesAfterStatut.filter((u) => u.role === "admin")
+      : []
+
+  const administrationUsers =
+    isAllRoles || roleFilter === "administration"
+      ? comptesAfterStatut.filter((u) => u.role === "administration")
+      : []
+
+  /** Filtre Administrateur : comptes dashboard rôle `admin`. */
+  const usersAdminDashboard =
+    isFilterAdmin ? comptesAfterStatut.filter((u) => u.role === "admin") : []
+
+  /** Filtre Administration : uniquement accès dashboard `/administration` (rôle `administration`). */
+  const usersAdministrationDashboard =
+    isFilterAdministration ? comptesAfterStatut.filter((u) => u.role === "administration") : []
+
+  const showComptesEtEquipe = !isFilterBenevole
+  const showBenevoles = isAllRoles || isFilterBenevole
+
   const roleStyle = (role: string | null | undefined) =>
     ROLE_STYLES[role ?? ""] ?? { label: role ?? "—", dot: "bg-muted-foreground", badge: "bg-muted text-muted-foreground ring-border" }
 
+  const showFiltersRow = allComptes.length > 0 || benevoles.length > 0 || teamMembersRows.length > 0
+
   return (
-    <BureauDataPage
+    <BureauContent
       title="Membres"
       description="Vue d'ensemble des comptes et des bénévoles"
     >
-      {/* Filtres */}
-      {(allComptes.length > 0 || benevoles.length > 0) && <UserFilters />}
+      {showFiltersRow && <UserFilters />}
 
-      {/* Stats rapides */}
-      {showUsers && allComptes.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {/* Stats — uniquement sur « Tous » */}
+      {isAllRoles && showComptesEtEquipe && allComptes.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[
-            { label: "Total comptes",   count: allComptes.length },
-            { label: "Administrateurs", count: allComptes.filter((u) => u.role === "admin").length },
-            { label: "Bureau",          count: allComptes.filter((u) => u.role === "bureau").length },
-            { label: "Administration",  count: allComptes.filter((u) => u.role === "administration").length },
+            { label: "Total comptes",       count: allComptes.length },
+            { label: "Administrateurs",     count: allComptes.filter((u) => u.role === "admin").length },
+            { label: "Comptes « Bureau »",  count: allComptes.filter((u) => u.role === "bureau").length },
+            { label: "Administration",      count: allComptes.filter((u) => u.role === "administration").length },
+            { label: "Membres équipe",      count: teamMembersRows.length },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border bg-card px-4 py-3">
               <p className="text-xs text-muted-foreground">{stat.label}</p>
@@ -71,116 +104,138 @@ export default async function MembresPage({
         </div>
       )}
 
-      {/* ── Comptes d'accès ────────────────────────────────────────────────── */}
-      {showUsers && (
-        users.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed bg-muted/20 py-16 text-center">
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-muted/60">
-              <IconUsers className="size-5 text-muted-foreground/50" />
+      {/* ── Comptes + équipe (masqué si filtre Bénévole) ───────────────── */}
+      {showComptesEtEquipe && (
+        <>
+          {/* Filtre Bureau = uniquement membres d’équipe (team_members) */}
+          {isFilterBureauEquipe && (
+            <section className="space-y-3">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">Membres du bureau</h2>
+                <p className="text-xs text-muted-foreground">
+                  Équipe dirigeante enregistrée sur le site ({teamMembersRows.length})
+                </p>
+              </div>
+              {teamMembersRows.length > 0 ? (
+                <MembresTeamTable rows={teamMembersRows} sessionUserId={session?.user.id} roleStyle={roleStyle} />
+              ) : (
+                <MembresEmptyZone
+                  Icon={IconBriefcase}
+                  title="Aucun membre du bureau"
+                  description="Aucun membre du bureau enregistré dans l’équipe."
+                />
+              )}
+            </section>
+          )}
+
+          {/* Vue « Tous » : sections empilées */}
+          {isAllRoles && (
+            <div className="space-y-8">
+              <section className="space-y-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-foreground">Administrateurs</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Comptes avec accès administrateur ({adminUsers.length})
+                  </p>
+                </div>
+                {adminUsers.length > 0 ? (
+                  <MembresUsersTable users={adminUsers} sessionUserId={session?.user.id} roleStyle={roleStyle} />
+                ) : (
+                  <MembresEmptyZone
+                    Icon={IconShieldCheck}
+                    title="Aucun administrateur"
+                    description="Aucun compte avec le rôle administrateur n’est enregistré."
+                  />
+                )}
+              </section>
+
+              <section className="space-y-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-foreground">Membres du bureau</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Membres de l’équipe dirigeante (équipe site) ({teamMembersRows.length})
+                  </p>
+                </div>
+                {teamMembersRows.length > 0 ? (
+                  <MembresTeamTable rows={teamMembersRows} sessionUserId={session?.user.id} roleStyle={roleStyle} />
+                ) : (
+                  <MembresEmptyZone
+                    Icon={IconBriefcase}
+                    title="Aucun membre du bureau"
+                    description="Aucun membre du bureau enregistré dans l’équipe."
+                  />
+                )}
+              </section>
+
+              <section className="space-y-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-foreground">Administration</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Comptes espace administration ({administrationUsers.length})
+                  </p>
+                </div>
+                {administrationUsers.length > 0 ? (
+                  <MembresUsersTable users={administrationUsers} sessionUserId={session?.user.id} roleStyle={roleStyle} />
+                ) : (
+                  <MembresEmptyZone
+                    Icon={IconBuildingCommunity}
+                    title="Aucun compte administration"
+                    description="Aucun compte avec le rôle administration n’est enregistré."
+                  />
+                )}
+              </section>
             </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                {allComptes.length === 0 ? "Aucun utilisateur" : "Aucun résultat"}
-              </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {allComptes.length === 0
-                  ? "Aucun compte enregistré"
-                  : "Aucun utilisateur ne correspond aux filtres sélectionnés"}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+          )}
 
-            {/* En-tête colonnes */}
-            <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr]">
-              <span>Utilisateur</span>
-              <span className="hidden sm:block">Rôle</span>
-              <span className="hidden lg:block">Rôle GAM</span>
-            </div>
+          {/* Filtre Administrateur : section dédiée */}
+          {!isAllRoles && !isFilterBureauEquipe && isFilterAdmin && (
+            <section className="space-y-3">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">Administrateurs</h2>
+                <p className="text-xs text-muted-foreground">
+                  Comptes avec accès administrateur au dashboard bureau ({usersAdminDashboard.length})
+                </p>
+              </div>
+              {usersAdminDashboard.length > 0 ? (
+                <MembresUsersTable users={usersAdminDashboard} sessionUserId={session?.user.id} roleStyle={roleStyle} />
+              ) : (
+                <MembresEmptyZone
+                  Icon={IconShieldCheck}
+                  title="Aucun administrateur"
+                  description="Aucun compte avec le rôle administrateur ne correspond aux filtres."
+                />
+              )}
+            </section>
+          )}
 
-            {/* Lignes */}
-            <div className="divide-y divide-border/60">
-              {users.map((user) => {
-                const isSelf  = session?.user.id === user.id
-                const style   = roleStyle(user.role)
-                const banned  = (user as { banned?: boolean }).banned === true
-                const roleGam = (user as { associationRoleLabel?: string | null }).associationRoleLabel ?? null
-
-                return (
-                  <div
-                    key={user.id}
-                    className="grid grid-cols-[1fr_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr]"
-                  >
-                    {/* Colonne 1 — Avatar + nom + email */}
-                    <div className="flex min-w-0 items-center gap-3.5">
-                      <div className="relative size-9 shrink-0">
-                        <Avatar className="size-9 ring-2 ring-border/40">
-                          <AvatarImage src={user.image ?? ""} alt={user.name} />
-                          <AvatarFallback className="bg-gradient-to-br from-amber-100 to-amber-200 text-amber-800 text-xs font-bold dark:from-amber-900/40 dark:to-amber-800/40 dark:text-amber-300">
-                            {initials(user.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span
-                          className={`absolute bottom-0 right-0 size-2.5 rounded-full ring-2 ring-background shadow-sm ${banned ? "bg-rose-400" : "bg-emerald-400"}`}
-                          title={banned ? "Banni" : "Actif"}
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
-                          {isSelf && (
-                            <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold tracking-wide text-amber-700 dark:bg-amber-950/50 dark:text-amber-400">
-                              VOUS
-                            </span>
-                          )}
-                        </div>
-                        <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                        {/* Poste — mobile */}
-                        {roleGam && (
-                          <p className="mt-0.5 flex items-center gap-1 truncate text-[10px] text-muted-foreground sm:hidden">
-                            <IconBriefcase className="size-3 shrink-0" />
-                            {roleGam}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Colonne 2 — Rôle (sm+) */}
-                    <div className="hidden sm:block">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${style.badge}`}>
-                        <IconCircleFilled className={`size-1.5 ${style.dot}`} />
-                        {style.label}
-                      </span>
-                      {/* Poste — sm uniquement */}
-                      {roleGam && (
-                        <p className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground lg:hidden">
-                          <IconBriefcase className="size-3 shrink-0" />
-                          {roleGam}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Colonne 3 — Poste (lg+) */}
-                    <div className="hidden lg:block">
-                      {roleGam ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
-                          <IconBriefcase className="size-3 shrink-0" />
-                          {roleGam}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground/40">—</span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )
+          {/* Filtre Administration : uniquement dashboard `/administration` */}
+          {!isAllRoles && !isFilterBureauEquipe && isFilterAdministration && (
+            <section className="space-y-3">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">Administration</h2>
+                <p className="text-xs text-muted-foreground">
+                  Comptes avec accès au dashboard Administration ({usersAdministrationDashboard.length})
+                </p>
+              </div>
+              {usersAdministrationDashboard.length > 0 ? (
+                <MembresUsersTable
+                  users={usersAdministrationDashboard}
+                  sessionUserId={session?.user.id}
+                  roleStyle={roleStyle}
+                />
+              ) : (
+                <MembresEmptyZone
+                  Icon={IconBuildingCommunity}
+                  title="Aucun accès Administration"
+                  description="Aucun compte avec le rôle « administration » (dashboard Administration) ne correspond aux filtres."
+                />
+              )}
+            </section>
+          )}
+        </>
       )}
 
-      {/* ── Section Bénévoles ──────────────────────────────────────────────── */}
+      {/* ── Bénévoles ───────────────────────────────────────────────────── */}
       {showBenevoles && (
         <div className="space-y-3 pt-2">
           <div>
@@ -191,19 +246,13 @@ export default async function MembresPage({
           </div>
 
           {benevoles.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed bg-muted/20 py-12 text-center">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-muted/60">
-                <IconHandStop className="size-5 text-muted-foreground/50" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Aucun bénévole</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Aucun bénévole enregistré</p>
-              </div>
-            </div>
+            <MembresEmptyZone
+              Icon={IconHandStop}
+              title="Aucun bénévole"
+              description="Aucun bénévole enregistré."
+            />
           ) : (
             <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-
-              {/* En-tête */}
               <div className="grid grid-cols-1 items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr]">
                 <span>Bénévole</span>
                 <span className="hidden sm:block">Téléphone</span>
@@ -218,7 +267,6 @@ export default async function MembresPage({
                       key={person.id}
                       className="grid grid-cols-1 items-center gap-4 px-5 py-3.5 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr]"
                     >
-                      {/* Colonne 1 — Avatar + nom + sous-textes */}
                       <div className="flex min-w-0 items-center gap-3.5">
                         <div className="relative size-9 shrink-0">
                           <Avatar className="size-9 ring-2 ring-border/40">
@@ -236,13 +284,11 @@ export default async function MembresPage({
                           <p className="truncate text-sm font-semibold text-foreground">
                             {person.firstName} {person.lastName}
                           </p>
-                          {/* Téléphone — mobile */}
                           {person.phone && (
                             <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground sm:hidden">
                               <IconPhone className="size-3 shrink-0" />{person.phone}
                             </p>
                           )}
-                          {/* Email — mobile + sm */}
                           {person.email && (
                             <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground lg:hidden">
                               <IconMail className="size-3 shrink-0" />{person.email}
@@ -251,7 +297,6 @@ export default async function MembresPage({
                         </div>
                       </div>
 
-                      {/* Colonne 2 — Téléphone (sm+) */}
                       <div className="hidden sm:flex items-center gap-1.5 text-sm text-foreground/80">
                         {person.phone
                           ? <><IconPhone className="size-3.5 shrink-0 text-muted-foreground" /><span className="truncate">{person.phone}</span></>
@@ -259,7 +304,6 @@ export default async function MembresPage({
                         }
                       </div>
 
-                      {/* Colonne 3 — Email (lg+) */}
                       <div className="hidden lg:flex items-center gap-1.5 text-sm">
                         {person.email
                           ? <><IconMail className="size-3.5 shrink-0 text-muted-foreground" /><span className="truncate text-foreground/80">{person.email}</span></>
@@ -274,6 +318,6 @@ export default async function MembresPage({
           )}
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

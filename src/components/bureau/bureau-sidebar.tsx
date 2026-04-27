@@ -83,8 +83,8 @@ const navigation: {
     { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
-    { title: "Membres",   url: "/bureau/membres",   icon: IconUserCircle },
-    { title: "Équipe",    url: "/bureau/equipe",    icon: IconUsers,    adminOnly: true },
+    { title: "Tous les membres",   url: "/bureau/membres",   icon: IconUserCircle },
+    { title: "Membres du bureau",    url: "/bureau/equipe",    icon: IconUsers,    adminOnly: true },
     { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
     { title: "Aide",      url: "/bureau/aide",      icon: IconHelp },
   ],

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -32,7 +32,7 @@ export default async function ProduitsPage() {
   const produits = await getProduits()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Produits"
       description={`${produits.length} produit${produits.length > 1 ? "s" : ""} en boutique`}
       addHref="/bureau/produits/nouveau"
@@ -101,6 +101,6 @@ export default async function ProduitsPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

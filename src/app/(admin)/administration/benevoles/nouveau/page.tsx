@@ -1,4 +1,4 @@
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { administrationCardClassName } from "@/config/administration-dashboard-theme"
 import { createBenevole } from "@/app/(admin)/bureau/benevoles/_actions/actions"
@@ -6,7 +6,7 @@ import { BenevoleForm } from "@/app/(admin)/bureau/benevoles/_components/benevol
 
 export default function AdministrationNouveauBenevolePage() {
   return (
-    <BureauDataPage
+    <BureauContent
       title="Nouveau bénévole"
       description="Ajouter un bénévole à l'équipe"
       dashboard="administration"
@@ -20,6 +20,6 @@ export default function AdministrationNouveauBenevolePage() {
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

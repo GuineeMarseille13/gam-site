@@ -1,11 +1,11 @@
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { createBanner } from "../_actions/actions"
 import { BannerForm } from "../_components/banner-form"
 
 export default function NouveauBandeauPage() {
   return (
-    <BureauDataPage
+    <BureauContent
       title="Nouveau bandeau"
       description="Créer un bandeau défilant"
       backHref="/bureau/bandeau"
@@ -15,6 +15,6 @@ export default function NouveauBandeauPage() {
           <BannerForm action={createBanner} />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

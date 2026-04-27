@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { createPopup } from "../_actions/actions"
 import { PopupForm } from "../_components/popup-form"
@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Nouvelle annonce" }
 
 export default function NouveauPopupPage() {
   return (
-    <BureauDataPage
+    <BureauContent
       title="Nouvelle annonce"
       description="Créez un popup ou prospectus à afficher sur le site"
       backHref="/bureau/popup"
@@ -18,6 +18,6 @@ export default function NouveauPopupPage() {
           <PopupForm action={createPopup} />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

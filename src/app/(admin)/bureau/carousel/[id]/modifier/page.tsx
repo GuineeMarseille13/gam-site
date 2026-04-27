@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { CarouselForm } from "../../_components/carousel-form"
 import { updateCarouselSlide } from "../../_actions/actions"
 
@@ -19,7 +19,7 @@ export default async function ModifierSlidePage({ params }: { params: Promise<{ 
   const boundAction = updateCarouselSlide.bind(null, slide.id)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier le slide"
       description={slide.title ?? "Sans titre"}
       backHref="/bureau/carousel"
@@ -38,6 +38,6 @@ export default async function ModifierSlidePage({ params }: { params: Promise<{ 
           submitLabel="Enregistrer les modifications"
         />
       </div>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

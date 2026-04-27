@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { RowActions } from "@/components/bureau/row-actions"
@@ -15,7 +15,7 @@ export default async function BandeauPage() {
   const banners = await prisma.banner.findMany({ orderBy: { createdAt: "desc" } })
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Bandeau défilant"
       description="Gérez le bandeau d'annonce affiché en haut puis en bas de page"
       actions={
@@ -106,6 +106,6 @@ export default async function BandeauPage() {
           </ul>
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

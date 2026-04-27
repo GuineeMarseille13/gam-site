@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { prisma } from "@/lib/prisma"
 import { UserForm } from "../../_components/user-form"
@@ -28,7 +28,7 @@ export default async function ModifierUtilisateurPage({
   const lastName  = person?.lastName  ?? (nameParts.slice(-1).join(" ") || "")
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier l'utilisateur"
       description={`Modifier le compte de ${user.name}`}
     >
@@ -51,6 +51,6 @@ export default async function ModifierUtilisateurPage({
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

@@ -1,8 +1,8 @@
 /** Tous les rôles (utilisé pour les filtres et badges) */
 export const ROLES = [
   { value: "admin",           label: "Administrateur", description: "Accès complet au dashboard" },
-  { value: "bureau",          label: "Bureau",         description: "Membre du bureau" },
-  { value: "administration",  label: "Administration", description: "Dashboard administration (bénévoles, profil)" },
+  { value: "bureau",          label: "Bureau",         description: "Membres du bureau (équipe)" },
+  { value: "administration",  label: "Administration", description: "Accès au dashboard Administration (/administration)" },
   { value: "benevole",        label: "Bénévole",       description: "Bénévole de l'association" },
 ] as const
 

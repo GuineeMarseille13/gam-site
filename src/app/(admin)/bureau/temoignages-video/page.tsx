@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -27,7 +27,7 @@ export default async function VideoTemoignagesPage() {
   const videos = await getVideoTemoignages()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Témoignages vidéo"
       description={`${videos.length} vidéo${videos.length > 1 ? "s" : ""}`}
       addHref="/bureau/temoignages-video/nouveau"
@@ -90,6 +90,6 @@ export default async function VideoTemoignagesPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updatePopup } from "../../_actions/actions"
 import { PopupForm } from "../../_components/popup-form"
@@ -13,7 +13,7 @@ export default async function ModifierPopupPage({ params }: { params: Promise<{ 
   const action = updatePopup.bind(null, popup.id)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier l'annonce"
       description={popup.title ?? (popup.type === "PROSPECTUS" ? "Prospectus" : "Annonce")}
       backHref="/bureau/popup"
@@ -39,6 +39,6 @@ export default async function ModifierPopupPage({ params }: { params: Promise<{ 
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

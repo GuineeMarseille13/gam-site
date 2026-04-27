@@ -1,4 +1,4 @@
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { createEvenement } from "../_actions/actions"
 import { EvenementForm } from "../_components/evenement-form"
@@ -14,7 +14,7 @@ function getDefaultDates() {
 export default function NouvelEvenementPage() {
   const { startDate, endDate } = getDefaultDates()
   return (
-    <BureauDataPage title="Nouvel événement" description="Créer un nouvel événement">
+    <BureauContent title="Nouvel événement" description="Créer un nouvel événement">
       <Card className="rounded-2xl border-border/60 shadow-sm">
         <CardContent className="px-6 pt-6 pb-8 sm:px-8 sm:pt-8 sm:pb-10">
           <EvenementForm
@@ -23,6 +23,6 @@ export default function NouvelEvenementPage() {
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

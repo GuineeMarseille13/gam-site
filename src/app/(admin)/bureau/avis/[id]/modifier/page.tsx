@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateAvis } from "../../_actions/actions"
 import { AvisForm } from "../../_components/avis-form"
@@ -38,7 +38,7 @@ export default async function ModifierAvisPage({ params }: PageProps) {
   }
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier l’avis"
       description={`${review.firstName} ${review.lastName}`}
       backHref="/bureau/avis"
@@ -63,6 +63,6 @@ export default async function ModifierAvisPage({ params }: PageProps) {
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

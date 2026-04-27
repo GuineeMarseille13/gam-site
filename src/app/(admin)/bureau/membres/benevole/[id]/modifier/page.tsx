@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { prisma } from "@/lib/prisma"
 import { BenevoleForm } from "../../../_components/benevole-form"
@@ -22,7 +22,7 @@ export default async function ModifierBenevolePage({
   if (!person) notFound()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier le bénévole"
       description={`${person.firstName} ${person.lastName}`}
     >
@@ -50,6 +50,6 @@ export default async function ModifierBenevolePage({
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

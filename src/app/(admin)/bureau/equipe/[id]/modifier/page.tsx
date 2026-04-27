@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateMembreEquipe, changePasswordEquipe } from "../../_actions/actions"
 import { EquipeForm } from "../../_components/equipe-form"
@@ -21,7 +21,7 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
     : null
 
   return (
-    <BureauDataPage title="Modifier le membre" description={`${person.firstName} ${person.lastName}`}>
+    <BureauContent title="Modifier le membre" description={`${person.firstName} ${person.lastName}`}>
       <Card>
         <CardContent className="pt-6">
           <EquipeForm
@@ -44,6 +44,6 @@ export default async function ModifierMembrePage({ params }: { params: Promise<{
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

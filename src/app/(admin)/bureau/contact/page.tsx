@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +28,7 @@ export default async function ContactPage() {
   ])
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Contact"
       description="Informations de contact affichées sur le site public"
     >
@@ -137,6 +137,6 @@ export default async function ContactPage() {
           </CardHeader>
         </Card>
       </div>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

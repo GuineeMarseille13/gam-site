@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -50,7 +50,7 @@ export default async function DonsPage() {
   const totalDons = dons.reduce((sum, d) => sum + d.amount, 0)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Dons"
       description={`${dons.length} don${dons.length > 1 ? "s" : ""} — ${formatCurrency(totalDons)} collectés au total`}
     >
@@ -111,6 +111,6 @@ export default async function DonsPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

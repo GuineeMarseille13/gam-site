@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { ContactSubmissionStatus } from "@/lib/generated/prisma/enums"
 import { SubmissionActions } from "./_components/submission-actions"
@@ -68,7 +68,7 @@ export default async function MessagesPage({
     : all.filter((s) => s.status === activeFilter)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Messages de contact"
       description={`${counts.ALL} message${counts.ALL !== 1 ? "s" : ""} reçu${counts.ALL !== 1 ? "s" : ""}`}
     >
@@ -163,6 +163,6 @@ export default async function MessagesPage({
           </ul>
         )}
       </div>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

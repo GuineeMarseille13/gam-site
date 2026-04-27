@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateBenevole } from "../../_actions/actions"
 import { BenevoleForm } from "../../_components/benevole-form"
@@ -19,7 +19,7 @@ export default async function ModifierBenevolePage({ params }: { params: Promise
   const action = updateBenevole.bind(null, volunteer.id)
 
   return (
-    <BureauDataPage title="Modifier le bénévole" description={`${person.firstName} ${person.lastName}`}>
+    <BureauContent title="Modifier le bénévole" description={`${person.firstName} ${person.lastName}`}>
       <Card>
         <CardContent className="pt-6">
           <BenevoleForm
@@ -40,6 +40,6 @@ export default async function ModifierBenevolePage({ params }: { params: Promise
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

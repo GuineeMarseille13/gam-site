@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { IconCircleFilled, IconUsers } from "@tabler/icons-react"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deleteMembreEquipe, banUserEquipe, unbanUserEquipe } from "./_actions/actions"
@@ -36,7 +36,7 @@ function RoleBadge({ role }: { role: string | null }) {
   )
 }
 
-function AssociationRoleBadge({ labelFr }: { labelFr: string | null }) {
+function BureauRoleBadge({ labelFr }: { labelFr: string | null }) {
   if (!labelFr) return <span className="text-xs text-muted-foreground/40">—</span>
   return (
     <span className="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
@@ -102,7 +102,7 @@ export default async function EquipePage({
   const hasFilters = roleFilter || visibiliteFilter
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Équipe"
       description={`${allMembres.length} membre${allMembres.length > 1 ? "s" : ""} de l'équipe`}
       addHref="/bureau/equipe/nouveau"
@@ -180,7 +180,7 @@ export default async function EquipePage({
                       {/* Poste — mobile uniquement */}
                       {m.associationRoleLabel && (
                         <div className="mt-0.5 sm:hidden">
-                          <AssociationRoleBadge labelFr={m.associationRoleLabel} />
+                          <BureauRoleBadge labelFr={m.associationRoleLabel} />
                         </div>
                       )}
                       {/* Description — mobile + sm */}
@@ -192,14 +192,9 @@ export default async function EquipePage({
                     </div>
                   </div>
 
-                  {/* Colonne 2 — Rôle GAM (sm+) */}
+                  {/* Colonne 2 — Rôle Bureau (sm+) */}
                   <div className="hidden sm:block">
-                    <AssociationRoleBadge labelFr={m.associationRoleLabel} />
-                  </div>
-
-                  {/* Colonne 3 — Rôle (sm+) */}
-                  <div className="hidden sm:block">
-                    <RoleBadge role={m.role} />
+                    <BureauRoleBadge labelFr={m.associationRoleLabel} />
                   </div>
 
                   {/* Colonne 4 — Description (lg+) */}
@@ -239,6 +234,6 @@ export default async function EquipePage({
           )}
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

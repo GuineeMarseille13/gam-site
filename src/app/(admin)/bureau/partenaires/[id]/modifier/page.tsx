@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updatePartenaire } from "../../_actions/actions"
 import { PartenaireForm } from "../../_components/partenaire-form"
@@ -13,12 +13,12 @@ export default async function ModifierPartenairePage({ params }: { params: Promi
   const action = updatePartenaire.bind(null, partner.id)
 
   return (
-    <BureauDataPage title="Modifier le partenaire" description={partner.name}>
+    <BureauContent title="Modifier le partenaire" description={partner.name}>
       <Card>
         <CardContent className="pt-6">
           <PartenaireForm action={action} submitLabel="Enregistrer les modifications" defaultValues={partner} />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

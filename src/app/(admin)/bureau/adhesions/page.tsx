@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -52,7 +52,7 @@ export default async function AdhesionsPage() {
   const adhesions = await getAdhesions()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Adhésions"
       description={`${adhesions.length} adhésion${adhesions.length > 1 ? "s" : ""} enregistrée${adhesions.length > 1 ? "s" : ""}`}
     >
@@ -128,6 +128,6 @@ export default async function AdhesionsPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

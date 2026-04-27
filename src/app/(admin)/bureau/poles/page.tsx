@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -24,7 +24,7 @@ export default async function PolesPage() {
   const poles = await getPoles()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Pôles"
       description={`${poles.length} pôle${poles.length > 1 ? "s" : ""} d'activité`}
       addHref="/bureau/poles/nouveau"
@@ -71,6 +71,6 @@ export default async function PolesPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

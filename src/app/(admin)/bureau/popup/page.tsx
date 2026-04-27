@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Button } from "@/components/ui/button"
 import { IconSpeakerphone, IconPlus } from "@tabler/icons-react"
 import { PopupPreviewCard } from "./_components/popup-preview-card"
@@ -12,7 +12,7 @@ export default async function PopupPage() {
   const popups = await prisma.popup.findMany({ orderBy: { createdAt: "desc" } })
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Popup / Annonce"
       description="Gérez les annonces affichées à chaque visite du site"
       actions={
@@ -58,6 +58,6 @@ export default async function PopupPage() {
           ))}
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

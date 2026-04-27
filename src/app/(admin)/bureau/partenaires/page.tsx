@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
@@ -17,7 +17,7 @@ export default async function PartenairesPage() {
   const partenaires = await getPartenaires()
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Partenaires"
       description={`${partenaires.length} partenaire${partenaires.length > 1 ? "s" : ""}`}
       addHref="/bureau/partenaires/nouveau"
@@ -132,6 +132,6 @@ export default async function PartenairesPage() {
           </div>
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

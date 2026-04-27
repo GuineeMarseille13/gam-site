@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Button } from "@/components/ui/button"
 import { IconPlus, IconPhoto, IconPencil, IconEye, IconEyeOff } from "@tabler/icons-react"
 import { DeleteSlideButton }  from "./_components/delete-slide-button"
@@ -18,7 +18,7 @@ export default async function CarouselPage() {
   const activeCount = slides.filter((s) => s.isActive).length
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Carousel principal"
       description={`${slides.length} slide${slides.length !== 1 ? "s" : ""} · ${activeCount} visible${activeCount !== 1 ? "s" : ""}`}
       actions={
@@ -141,6 +141,6 @@ export default async function CarouselPage() {
           </Link>
         </div>
       )}
-    </BureauDataPage>
+    </BureauContent>
   )
 }

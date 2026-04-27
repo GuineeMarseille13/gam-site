@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateBanner } from "../../_actions/actions"
 import { BannerForm } from "../../_components/banner-form"
@@ -13,7 +13,7 @@ export default async function ModifierBandeauPage({ params }: { params: Promise<
   const action = updateBanner.bind(null, banner.id)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier le bandeau"
       description={banner.title}
       backHref="/bureau/bandeau"
@@ -32,6 +32,6 @@ export default async function ModifierBandeauPage({ params }: { params: Promise<
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

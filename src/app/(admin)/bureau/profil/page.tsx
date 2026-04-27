@@ -3,7 +3,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProfilForm } from "./_components/profil-form"
 import { updateProfil, changeOwnPassword } from "./_actions/actions"
@@ -38,7 +38,7 @@ export default async function ProfilPage() {
   const fallbackLast  = nameParts.slice(1).join(" ") || ""
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Mon profil"
       description="Gérez vos informations personnelles et la sécurité de votre compte"
     >
@@ -59,6 +59,6 @@ export default async function ProfilPage() {
           />
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }

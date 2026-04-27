@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { IconPlus, IconArrowLeft } from "@tabler/icons-react"
 
-export type BureauDataPageDashboard = "bureau" | "administration"
+export type BureauContentDashboard = "bureau" | "administration"
 
-interface BureauDataPageProps {
+interface BureauContentProps {
   title: string
   description?: string
   /** Lien "Retour" affiché au-dessus du titre */
@@ -17,11 +17,11 @@ interface BureauDataPageProps {
   /** Slot libre pour des actions custom dans l'en-tête */
   actions?: React.ReactNode
   /** Palette du shell : Administration (sky) vs Bureau (ambre) */
-  dashboard?: BureauDataPageDashboard
+  dashboard?: BureauContentDashboard
   children: React.ReactNode
 }
 
-export function BureauDataPage({
+export function BureauContent({
   title,
   description,
   backHref,
@@ -30,7 +30,7 @@ export function BureauDataPage({
   actions,
   dashboard = "bureau",
   children,
-}: BureauDataPageProps) {
+}: BureauContentProps) {
   return (
     <div className="flex flex-1 flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 xl:p-10">
       {/* Retour */}

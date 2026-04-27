@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { getAdministrationAccessForEdit } from "../../../_services/get-administration-access-list"
 import { updateAdministrationAccessUser } from "../../../_actions/administration-access-actions"
 import { EditAdministrationAccessForm } from "./_components/edit-administration-access-form"
@@ -24,7 +24,7 @@ export default async function ModifierAccesAdministrationPage({
   const defaultLastName = person?.lastName ?? parts.slice(1).join(" ") ?? ""
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Modifier l’accès"
       description="Mettre à jour les coordonnées, la photo ou le mot de passe du compte."
       backHref="/administration/acces"
@@ -38,6 +38,6 @@ export default async function ModifierAccesAdministrationPage({
         defaultImageUrl={person?.image ?? null}
         action={updateAdministrationAccessUser.bind(null, userId)}
       />
-    </BureauDataPage>
+    </BureauContent>
   )
 }

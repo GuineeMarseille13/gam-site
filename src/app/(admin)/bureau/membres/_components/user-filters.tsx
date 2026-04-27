@@ -29,7 +29,7 @@ export function UserFilters() {
     const params = new URLSearchParams(searchParams.toString())
     if (value) {
       params.set("role", value)
-      if (value === "benevole") params.delete("statut")
+      if (value === "benevole" || value === "bureau") params.delete("statut")
     } else {
       params.delete("role")
     }
@@ -69,8 +69,8 @@ export function UserFilters() {
         ))}
       </div>
 
-      {/* Filtre statut — masqué pour les bénévoles (pas de compte d'accès) */}
-      {activeRole !== "benevole" && (
+      {/* Filtre statut — comptes uniquement (pas pour bénévoles ni membres d'équipe) */}
+      {activeRole !== "benevole" && activeRole !== "bureau" && (
         <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
           <button
             onClick={() => set("statut", "")}

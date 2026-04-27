@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { getRoleIdByCode } from "@/lib/association-role-helpers"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
+import type { MembreBureauRow } from "../_components/membres-team-table"
 
 // ── Lister les utilisateurs ────────────────────────────────────────────────────
 
@@ -47,6 +48,50 @@ export async function listComptes() {
       : null
     const image = person?.image ?? imageFromTeamMember ?? u.image ?? null
     return { ...u, associationRoleLabel: person?.role?.labelFr ?? null, image }
+  })
+}
+
+// ── Membres du bureau (table `team_members`, page Membres) ───────────────────
+
+/**
+ * Lignes `team_members` triées par `order`, avec personne, rôle GAM et compte d’accès optionnel.
+ */
+export async function listTeamMembersForMembresPage(): Promise<MembreBureauRow[]> {
+  await requireBureau()
+  const members = await prisma.teamMember.findMany({
+    orderBy: { order: "asc" },
+    include: {
+      person: { include: { role: true } },
+    },
+  })
+  if (members.length === 0) return []
+
+  const userIds = members.map((m) => m.person.userId).filter((id): id is string => id != null)
+  const users =
+    userIds.length > 0 ? await prisma.user.findMany({ where: { id: { in: userIds } } }) : []
+  const usersById = Object.fromEntries(users.map((u) => [u.id, u]))
+
+  return members.map((tm) => {
+    const person = tm.person
+    const user = person.userId ? usersById[person.userId] ?? null : null
+    const imageFromTeamMember = tm.imageId
+      ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_80,h_80,c_fill,q_auto,f_auto/${tm.imageId}`
+      : null
+    const image = person.image ?? imageFromTeamMember ?? user?.image ?? null
+
+    return {
+      id: tm.id,
+      personId: person.id,
+      userId: person.userId,
+      firstName: person.firstName,
+      lastName: person.lastName,
+      email: person.email ?? user?.email ?? null,
+      phone: person.phone,
+      associationRoleLabel: person.role?.labelFr ?? null,
+      image,
+      dashboardRole: user?.role ?? null,
+      banned: user?.banned === true,
+    }
   })
 }
 
@@ -281,24 +326,26 @@ export async function deleteUser(userId: string) {
   }
 }
 
-// ── Lister les bénévoles (table Person) ───────────────────────────────────────
+// ── Lister les bénévoles (table `volunteers`) ────────────────────────────────
 
 export async function listBenevoles() {
   await requireBureau()
-  const teamMemberPersonIds = await prisma.teamMember
-    .findMany({ select: { personId: true } })
-    .then((tms) => tms.map((tm) => tm.personId))
-
-  const volunteerRoleId = await getRoleIdByCode(prisma, "VOLUNTEER")
-  if (!volunteerRoleId) return []
-
-  return prisma.person.findMany({
-    where: {
-      roleId: volunteerRoleId,
-      NOT: { id: { in: teamMemberPersonIds } },
-    },
+  const volunteers = await prisma.volunteer.findMany({
     orderBy: { createdAt: "desc" },
+    select: { personId: true },
   })
+
+  const personIds = volunteers.map((v) => v.personId)
+  if (personIds.length === 0) return []
+
+  const persons = await prisma.person.findMany({
+    where: { id: { in: personIds } },
+  })
+
+  const personsById = Object.fromEntries(persons.map((p) => [p.id, p]))
+  return personIds
+    .map((id) => personsById[id] ?? null)
+    .filter((p): p is NonNullable<typeof p> => p != null)
 }
 
 // ── Créer un bénévole (table Person) ──────────────────────────────────────────

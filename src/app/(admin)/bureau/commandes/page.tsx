@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
-import { BureauDataPage } from "@/components/bureau/bureau-data-page"
+import { BureauContent } from "@/components/bureau/bureau-content"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -63,7 +63,7 @@ export default async function CommandesPage() {
   const totalCA = commandes.reduce((sum, c) => sum + c.totalAmount, 0)
 
   return (
-    <BureauDataPage
+    <BureauContent
       title="Commandes"
       description={`${commandes.length} commande${commandes.length > 1 ? "s" : ""} · ${formatCurrency(totalCA)} de chiffre d'affaires`}
     >
@@ -130,6 +130,6 @@ export default async function CommandesPage() {
           </Table>
         </CardContent>
       </Card>
-    </BureauDataPage>
+    </BureauContent>
   )
 }
