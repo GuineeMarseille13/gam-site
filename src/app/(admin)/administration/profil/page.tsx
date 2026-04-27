@@ -7,6 +7,7 @@ import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProfilForm } from "@/app/(admin)/bureau/profil/_components/profil-form"
 import { updateProfil, changeOwnPassword } from "@/app/(admin)/bureau/profil/_actions/actions"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 export const metadata: Metadata = { title: "Mon profil" }
 
@@ -24,9 +25,8 @@ export default async function AdministrationProfilPage() {
     ? await prisma.teamMember.findUnique({ where: { personId: person.id } })
     : null
 
-  const CLOUD_NAME = "df3ymbrqe"
   const imageFromTeamMember = teamMember?.imageId
-    ? `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_400,h_400,c_fill,q_auto,f_auto/${teamMember.imageId}`
+    ? cloudinaryImageUrl(teamMember.imageId, "w_400,h_400,c_fill,q_auto,f_auto")
     : null
   const resolvedImage = person?.image ?? imageFromTeamMember ?? session.user.image ?? null
 

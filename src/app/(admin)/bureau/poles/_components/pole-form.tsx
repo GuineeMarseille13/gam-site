@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/bureau/submit-button"
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react"
 import type { ActionState } from "../_actions/actions"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
-const CLOUD_NAME = "df3ymbrqe"
 const MAX_MB = 10
 
 function buildThumbUrl(imageId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_800,h_600,c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(imageId, "w_800,h_600,c_fill,q_auto,f_auto")
 }
 
 interface PoleFormProps {

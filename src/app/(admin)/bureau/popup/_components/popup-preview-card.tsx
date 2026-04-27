@@ -5,14 +5,13 @@ import { IconFileDescription, IconPresentationAnalytics, IconEye, IconEyeOff, Ic
 import { RowActions } from "@/components/bureau/row-actions"
 import { TogglePopupButton } from "./toggle-popup-button"
 import { deletePopup } from "../_actions/actions"
-
-const CLOUD = "df3ymbrqe"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function thumbLg(id: string) {
-  return `https://res.cloudinary.com/${CLOUD}/image/upload/w_480,h_640,c_fill,q_auto,f_auto/${id}`
+  return cloudinaryImageUrl(id, "w_480,h_640,c_fill,q_auto,f_auto")
 }
 function thumbSm(id: string) {
-  return `https://res.cloudinary.com/${CLOUD}/image/upload/w_96,h_128,c_fill,q_auto,f_auto/${id}`
+  return cloudinaryImageUrl(id, "w_96,h_128,c_fill,q_auto,f_auto")
 }
 
 interface Props {

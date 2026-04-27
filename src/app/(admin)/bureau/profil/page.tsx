@@ -7,6 +7,7 @@ import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProfilForm } from "./_components/profil-form"
 import { updateProfil, changeOwnPassword } from "./_actions/actions"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 export const metadata: Metadata = { title: "Mon profil" }
 
@@ -26,9 +27,8 @@ export default async function ProfilPage() {
     : null
 
   // Résoudre l'image : person.image (URL) prioritaire sur user.image
-  const CLOUD_NAME = "df3ymbrqe"
   const imageFromTeamMember = teamMember?.imageId
-    ? `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_400,h_400,c_fill,q_auto,f_auto/${teamMember.imageId}`
+    ? cloudinaryImageUrl(teamMember.imageId, "w_400,h_400,c_fill,q_auto,f_auto")
     : null
   const resolvedImage = person?.image ?? imageFromTeamMember ?? session.user.image ?? null
 

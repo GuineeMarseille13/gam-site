@@ -11,11 +11,10 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getRoleIdByCode } from '@/lib/association-role-helpers'
-
-const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload'
+import { cloudinaryImageUrl } from '@/lib/cloudinary-delivery'
 
 function buildAvatarUrl(imageId: string) {
-  return `${CLOUDINARY_BASE}/w_400,h_400,c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(imageId, 'w_400,h_400,c_fill,q_auto,f_auto')
 }
 
 function initials(firstName: string, lastName: string) {

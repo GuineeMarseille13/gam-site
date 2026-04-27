@@ -28,6 +28,7 @@ import {
   useVideoTestimonials,
   useSocialMedias,
 } from "@/app/_hooks/use-home-data";
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
 import type { CarouselItem, FeaturedProductRecord } from "@/app/_services/home";
 import {
   CarouselSkeleton,
@@ -207,7 +208,7 @@ export default function Home() {
         id: product.id,
         name: product.title ?? "",
         image: product.imageId
-          ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_600,h_600,c_fill,q_auto,f_auto/${product.imageId}`
+          ? cloudinaryImageUrl(product.imageId, "w_600,h_600,c_fill,q_auto,f_auto")
           : "",
         price: effectivePrice,
         originalPrice: hasDiscount ? basePriceEur : undefined,

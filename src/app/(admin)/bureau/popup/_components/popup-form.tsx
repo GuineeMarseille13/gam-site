@@ -12,12 +12,12 @@ import {
   IconFileDescription, IconPresentationAnalytics, IconPlus, IconTrash, IconLoader2,
 } from "@tabler/icons-react"
 import type { ActionState } from "../_actions/actions"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
-const CLOUD_NAME = "df3ymbrqe"
 const MAX_MB = 10
 
 function buildUrl(id: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_600,h_400,c_fill,q_auto,f_auto/${id}`
+  return cloudinaryImageUrl(id, "w_600,h_400,c_fill,q_auto,f_auto")
 }
 
 type PopupType = "IMAGE_TEXT" | "PROSPECTUS"

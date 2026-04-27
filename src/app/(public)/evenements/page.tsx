@@ -2,11 +2,10 @@ import { prisma } from "@/lib/prisma"
 import { EventsClient } from "./_components/events-client"
 import type { EventsByYear } from "@/types/events"
 import { parseVideoUrl } from "@/lib/video-urls"
-
-const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function buildImageUrl(publicId: string) {
-  return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`
+  return cloudinaryImageUrl(publicId, "f_auto,q_auto")
 }
 
 /** Construit le tableau media à partir de EventImage, EventVideo et imageId (rétro-compat) */

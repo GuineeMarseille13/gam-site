@@ -11,11 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { IconUpload, IconUser, IconX, IconEye, IconEyeOff, IconLoader2, IconAlertCircle, IconKey, IconShieldCheck, IconChevronDown } from "@tabler/icons-react"
 import { POSTES } from "./postes"
 import { DASHBOARD_ROLES } from "../../membres/_components/roles"
-
-const CLOUD_NAME = "df3ymbrqe"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function buildThumbUrl(imageId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_400,h_400,c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(imageId, "w_400,h_400,c_fill,q_auto,f_auto")
 }
 
 // ── Types ──────────────────────────────────────────────────────────────────────

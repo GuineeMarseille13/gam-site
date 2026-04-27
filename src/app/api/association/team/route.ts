@@ -8,8 +8,7 @@
  */
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-
-const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 export async function GET() {
   try {
@@ -41,7 +40,7 @@ export async function GET() {
           id:    m.id,
           name:  `${person.firstName} ${person.lastName}`,
           role:  person.role?.labelFr ?? "Membre du bureau",
-          image: m.imageId ? `${CLOUDINARY_BASE}/${m.imageId}` : "",
+          image: m.imageId ? cloudinaryImageUrl(m.imageId) : "",
           order: m.order,
         }
       })

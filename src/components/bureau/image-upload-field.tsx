@@ -4,10 +4,10 @@ import { useRef, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react"
 
-const CLOUD_NAME = "df3ymbrqe"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function buildThumbUrl(imageId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_320,h_200,c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(imageId, "w_320,h_200,c_fill,q_auto,f_auto")
 }
 
 interface ImageUploadFieldProps {

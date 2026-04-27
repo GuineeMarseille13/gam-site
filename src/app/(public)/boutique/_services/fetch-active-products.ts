@@ -1,7 +1,6 @@
 import { productsApiResponseSchema } from "../_schemas/product-api.schema";
 import { productSchema, type Product } from "../_schemas/product.schema";
-
-const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
 
 function mapApiProductToCatalogProduct(input: {
   id: string;
@@ -25,7 +24,7 @@ function mapApiProductToCatalogProduct(input: {
     id: input.id,
     name: input.title ?? "",
     image: input.imageId
-      ? `${CLOUDINARY_BASE}/w_600,h_600,c_fill,q_auto,f_auto/${input.imageId}`
+      ? cloudinaryImageUrl(input.imageId, "w_600,h_600,c_fill,q_auto,f_auto")
       : "",
     price: effectivePrice,
     originalPrice: hasDiscount ? basePriceEur : undefined,

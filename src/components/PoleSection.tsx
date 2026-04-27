@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import { PoleCard } from "@/components/PoleCard";
 import { poles as staticPoles } from "@/data/poles";
 import type { PoleItem } from "@/app/_services/home";
-
-const CLOUDINARY_BASE = "https://res.cloudinary.com/df3ymbrqe/image/upload";
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
 
 function slugify(name: string): string {
   return name
@@ -28,7 +27,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
           const slug = slugify(pole.name);
           const staticMatch = staticPoles.find((s) => s.slug === slug);
           const image = pole.imageId
-            ? `${CLOUDINARY_BASE}/f_auto,q_auto/${pole.imageId}`
+            ? cloudinaryImageUrl(pole.imageId, "f_auto,q_auto")
             : staticMatch?.image ?? staticPoles[index % staticPoles.length].image;
           return {
             key: pole.id,

@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export type PopupData = {
@@ -23,9 +25,8 @@ export type PopupData = {
   prospectusIds: string[];
 };
 
-const CLOUD = "df3ymbrqe";
 function imgUrl(id: string, w = 900) {
-  return `https://res.cloudinary.com/${CLOUD}/image/upload/w_${w},q_auto,f_auto/${id}`;
+  return cloudinaryImageUrl(id, `w_${w},q_auto,f_auto`);
 }
 
 // ── Variants d'animation ──────────────────────────────────────────────────────

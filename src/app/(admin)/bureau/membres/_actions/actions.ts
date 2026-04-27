@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { getRoleIdByCode } from "@/lib/association-role-helpers"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import type { MembreBureauRow } from "../_components/membres-team-table"
 
@@ -45,7 +46,7 @@ export async function listComptes() {
     const person = persons.find((p) => p.userId === u.id) ?? null
     const tm = person ? (teamMembers.find((tm) => tm.personId === person.id) ?? null) : null
     const imageFromTeamMember = tm?.imageId
-      ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_80,h_80,c_fill,q_auto,f_auto/${tm.imageId}`
+      ? cloudinaryImageUrl(tm.imageId, "w_80,h_80,c_fill,q_auto,f_auto")
       : null
     const image = person?.image ?? imageFromTeamMember ?? u.image ?? null
     return { ...u, associationRoleLabel: person?.role?.labelFr ?? null, image }
@@ -76,7 +77,7 @@ export async function listTeamMembersForMembresPage(): Promise<MembreBureauRow[]
     const person = tm.person
     const user = person.userId ? usersById[person.userId] ?? null : null
     const imageFromTeamMember = tm.imageId
-      ? `https://res.cloudinary.com/df3ymbrqe/image/upload/w_80,h_80,c_fill,q_auto,f_auto/${tm.imageId}`
+      ? cloudinaryImageUrl(tm.imageId, "w_80,h_80,c_fill,q_auto,f_auto")
       : null
     const image = person.image ?? imageFromTeamMember ?? user?.image ?? null
 

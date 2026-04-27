@@ -43,6 +43,8 @@ import {
   IconTrash,
 } from "@tabler/icons-react"
 
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface Person {
@@ -69,10 +71,11 @@ interface EquipeRowActionsProps {
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
 
-const CLOUD_NAME = "df3ymbrqe"
-
 function buildThumb(imageId: string, size: number) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_${size * 2},h_${size * 2},c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(
+    imageId,
+    `w_${size * 2},h_${size * 2},c_fill,q_auto,f_auto`,
+  )
 }
 
 const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }> = {

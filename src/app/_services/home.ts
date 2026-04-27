@@ -3,6 +3,7 @@
  */
 
 import { parseVideoUrl } from '@/lib/video-urls'
+import { cloudinaryImageUrl, cloudinaryVideoUrl } from '@/lib/cloudinary-delivery'
 
 export interface CarouselItem {
   id: string;
@@ -116,8 +117,6 @@ export interface FeaturedProductRecord {
   stock?: number | null
 }
 
-const CLOUDINARY_BASE = 'https://res.cloudinary.com/df3ymbrqe/image/upload';
-
 /** Tableau d’objets JSON issus des routes API internes. */
 function asJsonObjectArray(data: unknown): Record<string, unknown>[] {
   if (!Array.isArray(data)) return []
@@ -125,7 +124,7 @@ function asJsonObjectArray(data: unknown): Record<string, unknown>[] {
 }
 
 function buildImageUrl(publicId: string) {
-  return `${CLOUDINARY_BASE}/f_auto,q_auto/${publicId}`;
+  return cloudinaryImageUrl(publicId, 'f_auto,q_auto')
 }
 
 /** Construit le tableau media (images + vidéos YouTube/Vimeo + vidéo Cloudinary) pour un événement */
@@ -160,7 +159,7 @@ function buildEventMedia(
     result.push({
       id: ++id,
       type: 'video',
-      url: `https://res.cloudinary.com/df3ymbrqe/video/upload/${videoId}`,
+      url: cloudinaryVideoUrl(videoId),
       description: title,
     });
   }
@@ -234,7 +233,7 @@ export async function getPartners(): Promise<Partner[]> {
     return asJsonObjectArray(data).map((p) => ({
       id: String(p.id ?? ''),
       name: typeof p.name === 'string' ? p.name : '',
-      logo: typeof p.imageId === 'string' ? `${CLOUDINARY_BASE}/${p.imageId}` : undefined,
+      logo: typeof p.imageId === 'string' ? cloudinaryImageUrl(p.imageId, 'f_auto,q_auto') : undefined,
       description: typeof p.description === 'string' ? p.description : undefined,
       website: typeof p.url === 'string' ? p.url : undefined,
       order: typeof p.order === 'number' ? p.order : 0,
@@ -286,8 +285,10 @@ export async function getRecentEvents(): Promise<Event[]> {
           location: typeof event.location === 'string' ? event.location : undefined,
           year: startDate.getFullYear(),
           category: undefined,
-          image: media[0]?.type === 'image' ? media[0].url : (imageId ? `${CLOUDINARY_BASE}/${imageId}` : undefined),
-          video: videoId ? `${CLOUDINARY_BASE}/${videoId}` : undefined,
+          image: media[0]?.type === 'image'
+            ? media[0].url
+            : (imageId ? cloudinaryImageUrl(imageId, 'f_auto,q_auto') : undefined),
+          video: videoId ? cloudinaryVideoUrl(videoId) : undefined,
           media: media.length > 0 ? media : undefined,
         }
       })

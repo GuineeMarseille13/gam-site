@@ -15,13 +15,13 @@ import {
 } from "@tabler/icons-react"
 import { isValidVideoUrl, parseVideoUrl } from "@/lib/video-urls"
 import type { ActionState } from "../_actions/actions"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
-const CLOUD_NAME = "df3ymbrqe"
 const MAX_MB     = 10
 const MAX_IMAGES = 10
 
 function buildThumbUrl(imageId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_600,h_800,c_fill,q_auto,f_auto/${imageId}`
+  return cloudinaryImageUrl(imageId, "w_600,h_800,c_fill,q_auto,f_auto")
 }
 
 // ── Types ──────────────────────────────────────────────────────────────────────

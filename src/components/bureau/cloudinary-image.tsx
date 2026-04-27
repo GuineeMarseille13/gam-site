@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/dialog"
 import { IconPhoto, IconX } from "@tabler/icons-react"
 
-const CLOUD_NAME = "df3ymbrqe"
+import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function buildUrl(imageId: string, transformations = "") {
-  const transforms = transformations ? `${transformations}/` : ""
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transforms}${imageId}`
+  return cloudinaryImageUrl(imageId, transformations || undefined)
 }
 
 interface CloudinaryImageProps {
