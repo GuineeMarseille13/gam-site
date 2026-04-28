@@ -778,6 +778,33 @@ CREATE TABLE "verification" (
 );
 
 -- CreateTable
+CREATE TABLE "campuce_france_student_submissions" (
+    "id" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "submissionYear" INTEGER NOT NULL,
+    "country" TEXT NOT NULL,
+    "acceptanceCity" TEXT NOT NULL,
+    "universitySite" TEXT NOT NULL,
+    "academicLevel" TEXT NOT NULL,
+    "program" TEXT NOT NULL,
+    "helpTypes" TEXT[],
+    "visaAppointmentDate" DATE,
+    "comment" TEXT,
+    "filesIds" TEXT[],
+    "isComplete" BOOLEAN NOT NULL DEFAULT false,
+    "hasHostingAttestation" BOOLEAN NOT NULL DEFAULT false,
+    "hasHousingFound" BOOLEAN NOT NULL DEFAULT false,
+    "hasVisa" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "campuce_france_student_submissions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_BeneficiaryToBeneficiaryDemandType" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -895,6 +922,15 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
+
+-- CreateIndex
+CREATE INDEX "campuce_france_student_submissions_createdAt_idx" ON "campuce_france_student_submissions"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "campuce_france_student_submissions_submissionYear_idx" ON "campuce_france_student_submissions"("submissionYear");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "campuce_france_student_submissions_submissionYear_phone_ema_key" ON "campuce_france_student_submissions"("submissionYear", "phone", "email");
 
 -- CreateIndex
 CREATE INDEX "_BeneficiaryToBeneficiaryDemandType_B_index" ON "_BeneficiaryToBeneficiaryDemandType"("B");

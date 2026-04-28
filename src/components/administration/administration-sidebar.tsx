@@ -15,6 +15,7 @@ import {
   IconBriefcase,
   IconList,
   IconListDetails,
+  IconSchool,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -42,12 +43,18 @@ const BASE = "/administration"
 const DEMANDE_BENEFICIAIRE = `${BASE}/demande-beneficiaire`
 const DEMANDE_BENEFICIAIRE_CONFIG = `${DEMANDE_BENEFICIAIRE}/configuration`
 const SUIVI_DEMANDE = `${BASE}/suivi-demande`
+const CAMPUS_FRANCE_DEPOTS = `${BASE}/campus-france-depots`
 
 const mainNav: NavItem[] = [
   { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
   { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
   { title: "Calendrier permanence", url: `${BASE}/calendrier-permanence`, icon: IconCalendar },
   { title: "Demande bénéficiaire", url: DEMANDE_BENEFICIAIRE, icon: IconClipboardList },
+  {
+    title: "Campus France — dépôts",
+    url: CAMPUS_FRANCE_DEPOTS,
+    icon: IconSchool,
+  },
   { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
   {
     title: "Paramètres demande",
@@ -74,14 +81,18 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
             const isActive =
               item.url === BASE
                 ? pathname === BASE
-                : item.url === DEMANDE_BENEFICIAIRE
-                  ? pathname === DEMANDE_BENEFICIAIRE
-                  : item.url === DEMANDE_BENEFICIAIRE_CONFIG
-                    ? pathname === DEMANDE_BENEFICIAIRE_CONFIG ||
-                      pathname.startsWith(`${DEMANDE_BENEFICIAIRE_CONFIG}/`)
-                    : item.url === SUIVI_DEMANDE
-                      ? pathname === SUIVI_DEMANDE || pathname.startsWith(`${SUIVI_DEMANDE}/`)
-                      : pathname.startsWith(item.url)
+                : item.url === CAMPUS_FRANCE_DEPOTS
+                  ? pathname === CAMPUS_FRANCE_DEPOTS ||
+                    pathname.startsWith(`${CAMPUS_FRANCE_DEPOTS}/`)
+                  : item.url === DEMANDE_BENEFICIAIRE
+                    ? pathname === DEMANDE_BENEFICIAIRE
+                    : item.url === DEMANDE_BENEFICIAIRE_CONFIG
+                      ? pathname === DEMANDE_BENEFICIAIRE_CONFIG ||
+                        pathname.startsWith(`${DEMANDE_BENEFICIAIRE_CONFIG}/`)
+                      : item.url === SUIVI_DEMANDE
+                        ? pathname === SUIVI_DEMANDE ||
+                          pathname.startsWith(`${SUIVI_DEMANDE}/`)
+                        : pathname.startsWith(item.url)
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>

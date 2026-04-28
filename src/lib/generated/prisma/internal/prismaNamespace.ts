@@ -435,7 +435,8 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -451,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4303,6 +4304,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CampuceFranceStudentSubmission: {
+      payload: Prisma.$CampuceFranceStudentSubmissionPayload<ExtArgs>
+      fields: Prisma.CampuceFranceStudentSubmissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampuceFranceStudentSubmissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampuceFranceStudentSubmissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        findFirst: {
+          args: Prisma.CampuceFranceStudentSubmissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampuceFranceStudentSubmissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        findMany: {
+          args: Prisma.CampuceFranceStudentSubmissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>[]
+        }
+        create: {
+          args: Prisma.CampuceFranceStudentSubmissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        createMany: {
+          args: Prisma.CampuceFranceStudentSubmissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CampuceFranceStudentSubmissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>[]
+        }
+        delete: {
+          args: Prisma.CampuceFranceStudentSubmissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        update: {
+          args: Prisma.CampuceFranceStudentSubmissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampuceFranceStudentSubmissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampuceFranceStudentSubmissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CampuceFranceStudentSubmissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CampuceFranceStudentSubmissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampuceFranceStudentSubmissionPayload>
+        }
+        aggregate: {
+          args: Prisma.CampuceFranceStudentSubmissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampuceFranceStudentSubmission>
+        }
+        groupBy: {
+          args: Prisma.CampuceFranceStudentSubmissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampuceFranceStudentSubmissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampuceFranceStudentSubmissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampuceFranceStudentSubmissionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -5106,6 +5181,33 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const CampuceFranceStudentSubmissionScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  submissionYear: 'submissionYear',
+  country: 'country',
+  acceptanceCity: 'acceptanceCity',
+  universitySite: 'universitySite',
+  academicLevel: 'academicLevel',
+  program: 'program',
+  helpTypes: 'helpTypes',
+  visaAppointmentDate: 'visaAppointmentDate',
+  comment: 'comment',
+  filesIds: 'filesIds',
+  isComplete: 'isComplete',
+  hasHostingAttestation: 'hasHostingAttestation',
+  hasHousingFound: 'hasHousingFound',
+  hasVisa: 'hasVisa',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampuceFranceStudentSubmissionScalarFieldEnum = (typeof CampuceFranceStudentSubmissionScalarFieldEnum)[keyof typeof CampuceFranceStudentSubmissionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5460,6 +5562,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
+  campuceFranceStudentSubmission?: Prisma.CampuceFranceStudentSubmissionOmit
 }
 
 /* Types for Logging */

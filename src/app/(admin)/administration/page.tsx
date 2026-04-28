@@ -17,6 +17,7 @@ import {
   IconUserPlus,
   IconCalendarCheck,
   IconClipboardList,
+  IconSchool,
 } from "@tabler/icons-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -103,6 +104,36 @@ export default async function AdministrationHomePage() {
             >
               <Link href="/administration/permanence-administrative">
                 Enregistrer une présence
+                <IconArrowRight className="size-4" aria-hidden />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className={administrationCardClassName}>
+          <CardHeader className="pb-2">
+            <div
+              className={cn(
+                "flex size-10 items-center justify-center rounded-xl",
+                administrationIconBadgeClassName,
+              )}
+            >
+              <IconSchool className="size-5" aria-hidden />
+            </div>
+            <CardTitle className="text-lg">Campus France — dépôts</CardTitle>
+            <CardDescription>
+              Consultez les étudiants ayant envoyé un dossier depuis le formulaire
+              public (coordonnées et fichiers Cloudinary).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              asChild
+              variant="secondary"
+              className={cn("w-full gap-2", administrationPrimaryButtonClassName)}
+            >
+              <Link href="/administration/campus-france-depots">
+                Ouvrir la liste
                 <IconArrowRight className="size-4" aria-hidden />
               </Link>
             </Button>

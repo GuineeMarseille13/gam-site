@@ -16,6 +16,7 @@ import {
 import { Pole } from "@/data/poles";
 import { buildSlotsFromLegacyPole } from "@/lib/administrative-permanence/build-pole-slots";
 import { ADMINISTRATIVE_POLE_SLUG } from "@/lib/administrative-permanence/constants";
+import { CampuceFranceStudentForm } from "@/app/(public)/poles/_components/campuce-france-student-form";
 import PermanenceCalendar from "./PermanenceCalendar";
 
 interface PolePageProps {
@@ -26,9 +27,9 @@ export default function PolePage({ pole }: PolePageProps) {
   const descriptionRef = useRef<HTMLElement | null>(null);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
-  const isAdministrativeDbCalendar = pole.slug === ADMINISTRATIVE_POLE_SLUG;
+  const isAdministrativePole = pole.slug === ADMINISTRATIVE_POLE_SLUG;
 
-  const calendarSlots = isAdministrativeDbCalendar
+  const calendarSlots = isAdministrativePole
     ? (pole.permanenceSlots ?? [])
     : pole.permanenceSlots?.length
       ? pole.permanenceSlots
@@ -41,7 +42,7 @@ export default function PolePage({ pole }: PolePageProps) {
 
   /** Pôle ADM : encadré coordonnées / horaires toujours visible ; calendrier seulement si créneaux en base. */
   const showPermanenceBlock =
-    isAdministrativeDbCalendar ||
+    isAdministrativePole ||
     (pole.permanenceDates?.length ?? 0) > 0 ||
     (pole.permanenceSlots?.length ?? 0) > 0;
 
@@ -505,6 +506,10 @@ export default function PolePage({ pole }: PolePageProps) {
                 : undefined
             }
           />
+        )}
+
+        {isAdministrativePole && (
+          <CampuceFranceStudentForm colorScheme={pole.colorScheme} />
         )}
 
         {/* Statistics Section - Section statistique moderne et élégante */}

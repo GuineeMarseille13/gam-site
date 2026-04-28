@@ -20,6 +20,7 @@ type PrismaWithDelegates = PrismaClient & {
   beneficiary?: { findMany: (...args: unknown[]) => unknown }
   beneficiaryDemandType?: { findMany: (...args: unknown[]) => unknown }
   administrativePermanenceSlot?: { upsert: (...args: unknown[]) => unknown }
+  campuceFranceStudentSubmission?: { create: (...args: unknown[]) => unknown }
 }
 
 /**
@@ -38,11 +39,14 @@ function getPrismaClient(): PrismaClient {
       typeof withDelegates.beneficiaryDemandType?.findMany === "function"
     const hasAdministrativePermanenceSlot =
       typeof withDelegates.administrativePermanenceSlot?.upsert === "function"
+    const hasCampuceFranceStudentSubmission =
+      typeof withDelegates.campuceFranceStudentSubmission?.create === "function"
     if (
       hasPermanenceAdminPresenceVolunteer &&
       hasBeneficiary &&
       hasBeneficiaryDemandType &&
-      hasAdministrativePermanenceSlot
+      hasAdministrativePermanenceSlot &&
+      hasCampuceFranceStudentSubmission
     ) {
       return existing
     }

@@ -301,3 +301,8 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model CampuceFranceStudentSubmission
+ * Dépôt étudiant — démarche Campus France (formulaire public pôle administratif).
+ */
+export type CampuceFranceStudentSubmission = Prisma.CampuceFranceStudentSubmissionModel

@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  
+  async redirects() {
+    return [
+      {
+        source: "/demarche-administrative",
+        destination: "/poles/demarche-administrative",
+        permanent: false,
+      },
+    ]
+  },
+
   serverExternalPackages: ['cloudinary'],
   experimental: {
     serverActions: {

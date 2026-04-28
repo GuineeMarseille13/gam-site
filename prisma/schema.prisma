@@ -943,3 +943,40 @@ model Verification {
 
   @@map("verification")
 }
+
+/// Dépôt étudiant — démarche Campus France (formulaire public pôle administratif).
+model CampuceFranceStudentSubmission {
+  id             String   @id @default(cuid())
+  firstName      String
+  lastName       String
+  phone          String
+  email          String
+  /// Année de dépôt (clé de déduplication métier).
+  submissionYear Int
+  country        String
+  acceptanceCity String
+  universitySite String
+  academicLevel  String
+  program        String
+  /// Types d'aide sollicités (plusieurs possibles sur le même dossier).
+  helpTypes      String[]
+  visaAppointmentDate DateTime? @db.Date
+  comment        String? @db.Text
+  /// Identifiants Cloudinary (`gam/campuce-france`), jusqu’à 3 fichiers (PDF ou image).
+  filesIds String[]
+  /// Suivi admin : dossier complet (validation interne).
+  isComplete      Boolean  @default(false)
+  /// Suivi admin : attestation d'hébergement fournie.
+  hasHostingAttestation Boolean @default(false)
+  /// Suivi admin : logement trouvé (si aide sollicitée = logement).
+  hasHousingFound Boolean @default(false)
+  /// Suivi admin : visa obtenu.
+  hasVisa Boolean @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([submissionYear])
+  @@unique([submissionYear, phone, email])
+  @@map("campuce_france_student_submissions")
+}

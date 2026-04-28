@@ -57,3 +57,32 @@ export function cloudinaryVideoUrl(publicId: string, transform?: string): string
   const base = `https://${DELIVERY_HOST}/${cloud}/video/upload`
   return t ? `${base}/${t}/${publicId}` : `${base}/${publicId}`
 }
+
+/**
+ * Fichier brut Cloudinary (`resource_type: raw`, ex. PDF déposés via `uploadPdf`).
+ * Préfixe `.../raw/upload/` (sans slash final).
+ */
+export interface CloudinaryRawDeliveryOptions {
+  /**
+   * Transformations/flags Cloudinary insérés avant le publicId.
+   * Ex: `fl_inline` pour forcer l’affichage des PDFs dans un iframe.
+   */
+  transform?: string
+  /**
+   * Extension/format à suffixer au publicId (sans point). Ex: `pdf`.
+   * Recommandé pour les assets `resource_type: raw`.
+   */
+  format?: string
+}
+
+export function cloudinaryRawUploadUrl(
+  publicId: string,
+  options?: CloudinaryRawDeliveryOptions,
+): string {
+  const cloud = getCloudinaryCloudName()
+  const t = options?.transform?.trim()
+  const f = options?.format?.trim()
+  const suffix = f ? `.${f.replace(/^\./, "")}` : ""
+  const base = `https://${DELIVERY_HOST}/${cloud}/raw/upload`
+  return t ? `${base}/${t}/${publicId}${suffix}` : `${base}/${publicId}${suffix}`
+}

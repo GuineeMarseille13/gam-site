@@ -372,6 +372,52 @@
   }
 }
 
+/* Campus France — suivi dépôts: remplissage 1/3, 2/3, 3/3 sans dégradé (bord net). */
+@layer utilities {
+  .campuce-progress-0 {
+    --campuce-progress: 0%;
+  }
+  .campuce-progress-1 {
+    --campuce-progress: 33.333%;
+  }
+  .campuce-progress-2 {
+    --campuce-progress: 66.666%;
+  }
+  .campuce-progress-3 {
+    --campuce-progress: 100%;
+  }
+
+  .campuce-progress-row {
+    background-image: linear-gradient(
+      to right,
+      var(--campuce-progress-color) 0,
+      var(--campuce-progress-color) var(--campuce-progress),
+      transparent var(--campuce-progress),
+      transparent 100%
+    );
+  }
+
+  .campuce-progress-color-default {
+    --campuce-progress-color: rgb(14 165 233 / 0.10);
+  }
+  .campuce-progress-color-attestation {
+    --campuce-progress-color: rgb(245 158 11 / 0.12);
+  }
+  .campuce-progress-color-complete {
+    --campuce-progress-color: rgb(16 185 129 / 0.12);
+  }
+
+  .dark .campuce-progress-color-default {
+    --campuce-progress-color: rgb(56 189 248 / 0.10);
+  }
+  .dark .campuce-progress-color-attestation {
+    --campuce-progress-color: rgb(251 191 36 / 0.10);
+  }
+  .dark .campuce-progress-color-complete {
+    --campuce-progress-color: rgb(52 211 153 / 0.10);
+  }
+}
+
 /* Animation pour le logo en arrière-plan */
 @keyframes logo-float {
   0%,

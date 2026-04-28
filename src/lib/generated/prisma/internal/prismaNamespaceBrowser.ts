@@ -102,7 +102,8 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -883,6 +884,33 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const CampuceFranceStudentSubmissionScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  submissionYear: 'submissionYear',
+  country: 'country',
+  acceptanceCity: 'acceptanceCity',
+  universitySite: 'universitySite',
+  academicLevel: 'academicLevel',
+  program: 'program',
+  helpTypes: 'helpTypes',
+  visaAppointmentDate: 'visaAppointmentDate',
+  comment: 'comment',
+  filesIds: 'filesIds',
+  isComplete: 'isComplete',
+  hasHostingAttestation: 'hasHostingAttestation',
+  hasHousingFound: 'hasHousingFound',
+  hasVisa: 'hasVisa',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampuceFranceStudentSubmissionScalarFieldEnum = (typeof CampuceFranceStudentSubmissionScalarFieldEnum)[keyof typeof CampuceFranceStudentSubmissionScalarFieldEnum]
 
 
 export const SortOrder = {
