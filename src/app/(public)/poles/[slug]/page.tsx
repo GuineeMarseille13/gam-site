@@ -2,12 +2,12 @@ import { notFound } from "next/navigation";
 
 import PolePage from "@/components/poles/PolePage";
 import { getPoleBySlug, getAllPoleSlugs } from "@/data/poles";
-import { ADMINISTRATIVE_POLE_SLUG } from "@/lib/administrative-permanence/constants";
-import { mergeAdministrativePoleWithDb } from "@/lib/administrative-permanence/merge-administrative-pole";
+import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants";
+import { mergeAdministrativePoleWithDb } from "@/helpers/administrative-permanence/merge-administrative-pole";
 import {
   getAdministrativePermanenceSettings,
   getAdministrativePermanenceSlots,
-} from "@/lib/administrative-permanence/queries";
+} from "@/helpers/administrative-permanence/queries";
 
 /** Calendrier admin lu en base : pas de cache page statique indéfini. */
 export const revalidate = 0;

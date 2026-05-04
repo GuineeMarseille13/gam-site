@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 const OPTIONS = [
   { value: "light" as const, label: "Clair", Icon: Sun },

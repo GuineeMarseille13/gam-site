@@ -2,8 +2,8 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
 import { auth } from "@/lib/auth"
-import { getAdherentsForDashboard } from "@/lib/data/adherents"
-import { isBureauDashboardRole } from "@/lib/dashboard-roles"
+import { getAdherentsForDashboard } from "@/helpers/adherents"
+import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
 
 /**
  * Liste des adhérents pour le dashboard bureau (session requise, rôle admin ou bureau).

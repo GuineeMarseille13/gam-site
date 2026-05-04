@@ -5,14 +5,14 @@ import { revalidatePath } from "next/cache"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
-import { ADMINISTRATIVE_POLE_SLUG } from "@/lib/administrative-permanence/constants"
-import { DEFAULT_ADMINISTRATIVE_PERMANENCE_SLOTS_2026 } from "@/lib/administrative-permanence/default-admin-slots"
+import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants"
+import { DEFAULT_ADMINISTRATIVE_PERMANENCE_SLOTS_2026 } from "@/helpers/administrative-permanence/default-admin-slots"
 
 import {
   administrativePermanenceSettingsInputSchema,
   deleteAdministrativePermanenceSlotInputSchema,
   saveAdministrativePermanenceSlotInputSchema,
-} from "@/lib/administrative-permanence/administrative-permanence.schema"
+} from "@/helpers/administrative-permanence/administrative-permanence.schema"
 
 export type AdministrativePermanenceActionResult =
   | { success: true }

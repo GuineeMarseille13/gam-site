@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { requireBureau } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
-import { getRoleIdByCode } from "@/lib/association-role-helpers"
+import { getRoleIdByCode } from "@/helpers/association-role-helpers"
 import {
   formatAvisFormErrorMessage,
   parseAvisFormFields,

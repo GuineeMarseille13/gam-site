@@ -4,7 +4,7 @@ import { useCallback, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, Pencil, Plus, Trash2 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import {
   beneficiarySuiviFormDialogContentClassName,
   beneficiarySuiviFormDialogFooterClassName,

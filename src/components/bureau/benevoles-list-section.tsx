@@ -1,10 +1,10 @@
 import { BureauContent, type BureauContentDashboard } from "@/components/bureau/bureau-content"
 import { administrationCardClassName } from "@/config/administration-dashboard-theme"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { IconHandStop, IconPhone, IconMail } from "@tabler/icons-react"
 import { BenevoleRowActions } from "@/app/(admin)/bureau/benevoles/_components/benevole-row-actions"
-import type { BenevoleListRow } from "@/lib/data/benevoles"
+import type { BenevoleListRow } from "@/helpers/benevoles"
 
 export type DashboardBasePath = "/bureau" | "/administration"
 

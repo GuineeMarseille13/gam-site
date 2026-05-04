@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 /**
  * Astérisque obligatoire — aligné sur la palette sky du parcours.

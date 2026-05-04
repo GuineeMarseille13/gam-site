@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { PaymentStatus } from '@/types/paiement-status'
 import { memberSchema, type Member } from '../_schemas/adhesion.schema'
-import { findOrCreatePerson } from '@/lib/person.utils'
+import { findOrCreatePerson } from '@/helpers/person.utils'
 
 /**
  * Sauvegarde une adhésion à partir d'un PaymentIntent Stripe complété

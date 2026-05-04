@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { donPayloadSchema } from '../_schemas/don.schema'
 import { PaymentStatus } from '@/types/paiement-status'
-import { findOrCreatePerson } from '@/lib/person.utils'
+import { findOrCreatePerson } from '@/helpers/person.utils'
 
 /**
  * Sauvegarde un don à partir d'un PaymentIntent Stripe complété

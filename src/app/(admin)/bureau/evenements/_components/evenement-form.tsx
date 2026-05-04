@@ -13,7 +13,7 @@ import {
   IconCalendar, IconMapPin, IconEye, IconEyeOff,
   IconLoader2, IconAlertCircle, IconVideo,
 } from "@tabler/icons-react"
-import { isValidVideoUrl, parseVideoUrl } from "@/lib/video-urls"
+import { isValidVideoUrl, parseVideoUrl } from "@/helpers/video-urls"
 import type { ActionState } from "../_actions/actions"
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 

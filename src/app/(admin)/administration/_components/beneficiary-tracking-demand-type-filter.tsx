@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select"
 
 import type { BeneficiaryDemandTypeFilterOption } from "../_schemas/beneficiary-demand-type.schema"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { beneficiaryTrackingOutlineButtonClassName } from "./beneficiary-suivi-form-classes"
 
 const ALL_TYPES_VALUE = "__all__"

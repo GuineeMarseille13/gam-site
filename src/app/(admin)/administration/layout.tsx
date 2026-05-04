@@ -7,11 +7,11 @@ import {
   administrationDashboardCanvasClassName,
   administrationDashboardProviderClassName,
 } from "@/config/administration-dashboard-theme"
-import { isAdministrationDashboardRole } from "@/lib/dashboard-roles"
+import { isAdministrationDashboardRole } from "@/helpers/dashboard-roles"
 import { AdministrationSidebar } from "@/components/administration/administration-sidebar"
 import { BureauHeader } from "@/components/bureau/bureau-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 export const metadata: Metadata = {
   title: {

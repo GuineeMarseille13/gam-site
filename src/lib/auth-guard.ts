@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth"
 import {
   ADMINISTRATION_DASHBOARD_ROLES,
   BUREAU_DASHBOARD_ROLES,
-} from "@/lib/dashboard-roles"
+} from "@/helpers/dashboard-roles"
 
 const BUREAU_ONLY = BUREAU_DASHBOARD_ROLES as readonly string[]
 const ADMINISTRATION_ZONE = ADMINISTRATION_DASHBOARD_ROLES as readonly string[]

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 /**
  * Attribut à poser sur le shell du dashboard Administration pour activer les variables CSS

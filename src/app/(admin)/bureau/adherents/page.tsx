@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
-import { getAdherentsForDashboard } from "@/lib/data/adherents"
+import { getAdherentsForDashboard } from "@/helpers/adherents"
 
 import { AdherentsList } from "./_components/adherents-list"
 import { adherentDashboardKeys } from "./_services/adherent-query-keys"

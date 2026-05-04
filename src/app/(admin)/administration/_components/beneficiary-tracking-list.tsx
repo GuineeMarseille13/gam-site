@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { format, parseISO } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { fr } from "date-fns/locale"
 import { ChevronRight } from "lucide-react"
 

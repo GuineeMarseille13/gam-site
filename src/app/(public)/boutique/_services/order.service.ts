@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { PaymentStatus } from '@/types/paiement-status'
-import { findOrCreatePerson } from '@/lib/person.utils'
+import { findOrCreatePerson } from '@/helpers/person.utils'
 
 /**
  * Sauvegarde une commande à partir d'un PaymentIntent Stripe complété

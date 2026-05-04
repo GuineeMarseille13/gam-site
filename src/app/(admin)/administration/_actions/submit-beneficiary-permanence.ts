@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache"
 import type { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
-import { getPersonIdForAuthUserId } from "@/lib/get-person-id-for-auth-user"
-import { getAdministrativePermanenceSlots } from "@/lib/administrative-permanence/queries"
+import { getPersonIdForAuthUserId } from "@/helpers/get-person-id-for-auth-user"
+import { getAdministrativePermanenceSlots } from "@/helpers/administrative-permanence/queries"
 import { buildSubmitBeneficiaryPermanenceSchema } from "../_schemas/beneficiary-permanence.schema"
 
 export type SubmitBeneficiaryPermanenceResult =

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useIsMobile } from "@/hooks/useIsMobile";
 

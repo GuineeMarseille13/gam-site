@@ -6,9 +6,9 @@ import { fr } from "date-fns/locale"
 import { CalendarIcon, Loader2 } from "lucide-react"
 
 import { upsertAdministrativePermanenceSlotAction } from "../_actions/manage-administrative-permanence"
-import type { AdministrativePermanenceSlotRow } from "@/lib/administrative-permanence/administrative-permanence.schema"
-import { saveAdministrativePermanenceSlotInputSchema } from "@/lib/administrative-permanence/administrative-permanence.schema"
-import { dateToYmdLocal } from "@/lib/administrative-permanence/date-to-ymd-local"
+import type { AdministrativePermanenceSlotRow } from "@/helpers/administrative-permanence/administrative-permanence.schema"
+import { saveAdministrativePermanenceSlotInputSchema } from "@/helpers/administrative-permanence/administrative-permanence.schema"
+import { dateToYmdLocal } from "@/helpers/administrative-permanence/date-to-ymd-local"
 import {
   administrationOutlineButtonClassName,
   administrationPrimaryButtonClassName,
@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 interface AdministrativePermanenceSlotDialogProps {
   open: boolean

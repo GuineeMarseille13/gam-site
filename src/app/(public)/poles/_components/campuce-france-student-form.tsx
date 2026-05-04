@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import type { Pole } from "@/data/poles"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { IconFiles } from "@tabler/icons-react"
 
 const initialActionState: CampuceFranceFormState = { kind: "idle" }

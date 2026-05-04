@@ -10,7 +10,7 @@ import {
   safeDestroyCloudinaryAsset,
 } from "@/lib/cloudinary-replacement"
 import { requireAdmin, requireBureau } from "@/lib/auth-guard"
-import { getRoleIdByCode } from "@/lib/association-role-helpers"
+import { getRoleIdByCode } from "@/helpers/association-role-helpers"
 
 // ── Helper image ───────────────────────────────────────────────────────────────
 

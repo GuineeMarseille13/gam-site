@@ -9,7 +9,7 @@ import { BeneficiarySuiviWizard } from "../_components/beneficiary-suivi-wizard"
 import { getActiveBeneficiaryDemandTypes } from "../_services/get-beneficiary-demand-types"
 import { getActiveBeneficiaryDocumentTypes } from "../_services/get-active-beneficiary-document-types"
 import { getRecentBeneficiaries } from "../_services/get-recent-beneficiaries"
-import { getAdministrativePermanenceSlots } from "@/lib/administrative-permanence/queries"
+import { getAdministrativePermanenceSlots } from "@/helpers/administrative-permanence/queries"
 
 export const metadata: Metadata = {
   title: "Demande bénéficiaire — permanence administrative",

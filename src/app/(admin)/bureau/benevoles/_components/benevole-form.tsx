@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"

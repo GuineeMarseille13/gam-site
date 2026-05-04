@@ -6,7 +6,7 @@ import { IconArrowLeft } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { BeneficiaryTrackingDetailView } from "../../_components/beneficiary-tracking-detail-view"
 import { beneficiaryTrackingGhostNavClassName } from "../../_components/beneficiary-suivi-form-classes"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { beneficiaryTrackingParamsSchema } from "../../_schemas/beneficiary-tracking.schema"
 import { getBeneficiaryDetailForTracking } from "../../_services/get-beneficiary-detail-for-tracking"
 

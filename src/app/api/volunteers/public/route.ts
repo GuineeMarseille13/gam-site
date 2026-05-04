@@ -10,7 +10,7 @@
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getRoleIdByCode } from '@/lib/association-role-helpers'
+import { getRoleIdByCode } from '@/helpers/association-role-helpers'
 import { cloudinaryImageUrl } from '@/lib/cloudinary-delivery'
 
 function buildAvatarUrl(imageId: string) {

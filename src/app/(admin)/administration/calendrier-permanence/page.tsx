@@ -6,7 +6,7 @@ import { AdministrativePermanenceCalendarManager } from "../_components/administ
 import {
   getAdministrativePermanenceSettings,
   getAdministrativePermanenceSlots,
-} from "@/lib/administrative-permanence/queries"
+} from "@/helpers/administrative-permanence/queries"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
