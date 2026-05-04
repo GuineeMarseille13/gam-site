@@ -16,6 +16,8 @@ import {
 import { AdherentsFilterBar } from "./adherents-filter-bar"
 import { AdherentsRows } from "./adherents-rows"
 
+const EMPTY_ADHERENT_ROWS: AdherentListRow[] = []
+
 /**
  * Liste des adhérents (lecture seule) avec filtres recherche, année (URL ?annee=) et statut de cotisation.
  */
@@ -24,7 +26,7 @@ export function AdherentsList() {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("tous")
 
-  const adherents: AdherentListRow[] = data ?? []
+  const adherents = data ?? EMPTY_ADHERENT_ROWS
 
   const { yearFilter, setYearFilter, availableYears } =
     useAdherentYearFromUrl(adherents)
