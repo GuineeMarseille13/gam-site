@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, X, ArrowLeft, CreditCard, CheckCircle2, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -22,6 +22,8 @@ interface CartDrawerProps {
 
 export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemove, onClear }: CartDrawerProps) {
   const [step, setStep] = useState<"cart" | "checkout" | "payment" | "done">("cart");
+  const stepRef = useRef(step);
+  stepRef.current = step;
   const [form, setForm] = useState<CheckoutData>({ firstName: "", lastName: "", phone: undefined, email: undefined });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
@@ -50,6 +52,20 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
       document.body.style.overflow = originalOverflow;
     };
   }, [open]);
+
+  /**
+   * Fermeture du tiroir : si on quitte l’écran « Merci », le stepper repart sur « Panier »
+   * pour la prochaine ouverture (bouton Fermer, X ou clic sur l’overlay).
+   */
+  const closeDrawer = useCallback(() => {
+    if (stepRef.current === "done") {
+      setStep("cart");
+      setClientSecret(null);
+      setError(null);
+      setErrors({});
+    }
+    onClose();
+  }, [onClose]);
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,7 +116,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={closeDrawer}
           />
           <motion.aside
             key="drawer"
@@ -148,7 +164,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   )}
                   <motion.button
                     aria-label="Fermer le panier"
-                    onClick={onClose}
+                    onClick={closeDrawer}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="rounded-xl p-2 hover:bg-gray-100 cursor-pointer transition-colors"
@@ -201,7 +217,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                         <p className="mt-1 text-sm text-gray-600">Ajoutez des articles depuis la boutique pour commencer.</p>
                         <div className="mt-4">
                         <button
-                          onClick={onClose}
+                          onClick={closeDrawer}
                           className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-white text-sm font-semibold hover:shadow-lg cursor-pointer transition-all"
                         >
                           Continuer mes achats
@@ -401,7 +417,9 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                 </motion.div>
                 <h4 className="mt-3 text-lg font-semibold">Merci pour votre soutien !</h4>
                 <p className="text-sm text-gray-600 mt-2">Votre commande simulée a été enregistrée localement. Un membre de l&apos;association pourra vous contacter si besoin.</p>
-                <button onClick={onClose} className="mt-6 rounded-md bg-gray-900 text-white px-4 py-2 text-sm cursor-pointer">Fermer</button>
+                <button type="button" onClick={closeDrawer} className="mt-6 rounded-md bg-gray-900 text-white px-4 py-2 text-sm cursor-pointer">
+                  Fermer
+                </button>
               </div>
             )}
           </motion.aside>
