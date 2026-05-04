@@ -231,7 +231,7 @@ export type MemberShipGroupByOutputType = {
   _max: MemberShipMaxAggregateOutputType | null
 }
 
-type GetMemberShipGroupByPayload<T extends MemberShipGroupByArgs> = Prisma.PrismaPromise<
+export type GetMemberShipGroupByPayload<T extends MemberShipGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MemberShipGroupByOutputType, T['by']> &
       {

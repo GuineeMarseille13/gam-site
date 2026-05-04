@@ -158,7 +158,7 @@ export type WelcomeSectionGroupByOutputType = {
   _max: WelcomeSectionMaxAggregateOutputType | null
 }
 
-type GetWelcomeSectionGroupByPayload<T extends WelcomeSectionGroupByArgs> = Prisma.PrismaPromise<
+export type GetWelcomeSectionGroupByPayload<T extends WelcomeSectionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<WelcomeSectionGroupByOutputType, T['by']> &
       {

@@ -213,7 +213,7 @@ export type DonationGroupByOutputType = {
   _max: DonationMaxAggregateOutputType | null
 }
 
-type GetDonationGroupByPayload<T extends DonationGroupByArgs> = Prisma.PrismaPromise<
+export type GetDonationGroupByPayload<T extends DonationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DonationGroupByOutputType, T['by']> &
       {

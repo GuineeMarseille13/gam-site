@@ -220,7 +220,7 @@ export type ReasonGroupByOutputType = {
   _max: ReasonMaxAggregateOutputType | null
 }
 
-type GetReasonGroupByPayload<T extends ReasonGroupByArgs> = Prisma.PrismaPromise<
+export type GetReasonGroupByPayload<T extends ReasonGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ReasonGroupByOutputType, T['by']> &
       {

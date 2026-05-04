@@ -186,7 +186,7 @@ export type DetailsPoleGroupByOutputType = {
   _max: DetailsPoleMaxAggregateOutputType | null
 }
 
-type GetDetailsPoleGroupByPayload<T extends DetailsPoleGroupByArgs> = Prisma.PrismaPromise<
+export type GetDetailsPoleGroupByPayload<T extends DetailsPoleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DetailsPoleGroupByOutputType, T['by']> &
       {

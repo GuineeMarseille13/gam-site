@@ -158,7 +158,7 @@ export type ReviewSectionGroupByOutputType = {
   _max: ReviewSectionMaxAggregateOutputType | null
 }
 
-type GetReviewSectionGroupByPayload<T extends ReviewSectionGroupByArgs> = Prisma.PrismaPromise<
+export type GetReviewSectionGroupByPayload<T extends ReviewSectionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ReviewSectionGroupByOutputType, T['by']> &
       {

@@ -186,7 +186,7 @@ export type PartnerGroupByOutputType = {
   _max: PartnerMaxAggregateOutputType | null
 }
 
-type GetPartnerGroupByPayload<T extends PartnerGroupByArgs> = Prisma.PrismaPromise<
+export type GetPartnerGroupByPayload<T extends PartnerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PartnerGroupByOutputType, T['by']> &
       {

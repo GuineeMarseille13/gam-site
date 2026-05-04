@@ -158,7 +158,7 @@ export type AchievementSectionGroupByOutputType = {
   _max: AchievementSectionMaxAggregateOutputType | null
 }
 
-type GetAchievementSectionGroupByPayload<T extends AchievementSectionGroupByArgs> = Prisma.PrismaPromise<
+export type GetAchievementSectionGroupByPayload<T extends AchievementSectionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AchievementSectionGroupByOutputType, T['by']> &
       {

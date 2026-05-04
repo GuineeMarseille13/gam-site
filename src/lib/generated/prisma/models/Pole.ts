@@ -179,7 +179,7 @@ export type PoleGroupByOutputType = {
   _max: PoleMaxAggregateOutputType | null
 }
 
-type GetPoleGroupByPayload<T extends PoleGroupByArgs> = Prisma.PrismaPromise<
+export type GetPoleGroupByPayload<T extends PoleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PoleGroupByOutputType, T['by']> &
       {
