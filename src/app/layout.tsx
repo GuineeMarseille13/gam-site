@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "GAM - Gestion Association Moderne",
-  description: "Application de gestion pour votre association",
+  title: "Guinée à Marseille",
+  description: "Guinée à Marseille - GAM",
   /** Scrollbars / UI natives : suivent le thème (next-themes + `dark`). */
   other: {
     "color-scheme": "light dark",
