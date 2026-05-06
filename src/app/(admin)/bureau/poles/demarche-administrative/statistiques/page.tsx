@@ -28,7 +28,6 @@ export default async function DemarcheAdministrativeStatistiquesPage() {
 
   const dto = await getDetailsPoleBureauContentByPublicSlug(POLE_SLUG)
   const savedText = getDetailsPoleSectionStored(dto, "statistics")
-  const fallbackBlurb = getStaticFallbackBlurbForSection(pole, "statistics")
 
   return (
     <BureauContent

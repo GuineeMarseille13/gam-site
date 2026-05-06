@@ -7,7 +7,6 @@ import {
   getDetailsPoleBureauContentByPublicSlug,
   getDetailsPoleSectionStored,
 } from "@/helpers/details-pole-bureau/queries"
-import { getStaticFallbackBlurbForSection } from "@/helpers/details-pole-bureau/static-fallback-blurb"
 
 import { saveDetailsPoleBureauSectionAction } from "../../_actions/save-details-pole-bureau-section"
 import { BureauPoleDetailsPageCard } from "../../_content/bureau-pole-details-page-card"
@@ -28,7 +27,6 @@ export default async function MiseEnRelationTitrePage() {
 
   const dto = await getDetailsPoleBureauContentByPublicSlug(POLE_SLUG)
   const savedText = getDetailsPoleSectionStored(dto, "about")
-  const fallbackBlurb = getStaticFallbackBlurbForSection(pole, "about")
 
   return (
     <BureauContent
