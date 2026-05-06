@@ -1,6 +1,6 @@
 "use client";
 import React, { ComponentPropsWithoutRef, useRef, useState, useId } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 
 interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
   /**

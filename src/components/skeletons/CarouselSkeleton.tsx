@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 
 export function CarouselSkeleton() {
   return (

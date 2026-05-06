@@ -6,7 +6,7 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { CalendarIcon, Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"

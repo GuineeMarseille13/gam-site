@@ -7,7 +7,7 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { CalendarIcon, Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
@@ -43,7 +43,7 @@ import {
   buildSubmitBeneficiaryPermanenceSchema,
   type DemandTypeOptionForValidation,
 } from "../_schemas/beneficiary-permanence.schema"
-import { dateToYmdLocal } from "@/lib/administrative-permanence/date-to-ymd-local"
+import { dateToYmdLocal } from "@/helpers/administrative-permanence/date-to-ymd-local"
 import {
   PAYMENT_RESPONSIBLE_LABELS,
   PAYMENT_RESPONSIBLE_VALUES,

@@ -24,7 +24,7 @@ import {
 } from "./beneficiary-suivi-form-classes"
 import { REQUEST_STATUS_LABELS, REQUEST_STATUS_VALUES } from "../_schemas/beneficiary-suivi-config"
 import type { BeneficiaryTrackingDetail } from "../_schemas/beneficiary-tracking.schema"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 interface BeneficiaryTrackingStatusFormProps {
   detail: BeneficiaryTrackingDetail

@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, Clock, Info } from "lucide-react";
 
-import type { PermanenceSlotDisplay } from "@/lib/administrative-permanence/build-pole-slots";
-import { formatSlotRangeFr } from "@/lib/administrative-permanence/format-hm-fr";
+import type { PermanenceSlotDisplay } from "@/helpers/administrative-permanence/build-pole-slots";
+import { formatSlotRangeFr } from "@/helpers/administrative-permanence/format-hm-fr";
 
 // Composant pour l'icône avec tooltip
 function NextPermanenceIcon() {

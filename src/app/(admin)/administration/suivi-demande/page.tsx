@@ -7,7 +7,7 @@ import { BeneficiaryTrackingDemandTypeFilter } from "../_components/beneficiary-
 import { BeneficiaryTrackingList } from "../_components/beneficiary-tracking-list"
 import { beneficiaryTrackingOutlineButtonClassName } from "../_components/beneficiary-suivi-form-classes"
 import { suiviDemandeSearchParamsSchema } from "../_schemas/beneficiary-tracking.schema"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { getBeneficiariesForTracking } from "../_services/get-beneficiaries-for-tracking"
 import { getBeneficiaryDemandTypeFilterOptions } from "../_services/get-beneficiary-demand-type-filter-options"
 

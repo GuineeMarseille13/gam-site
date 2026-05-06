@@ -1,6 +1,6 @@
 import { GooeyText } from "./ui/gooey-text-morphing"
 import { SocialIcon } from "./SocialIcon"
-import { SOCIAL_PLATFORM_CONFIG, detectPlatform } from "@/lib/social-media-config"
+import { SOCIAL_PLATFORM_CONFIG, detectPlatform } from "@/helpers/social-media-config"
 
 export interface SocialMediaItem {
   id: string

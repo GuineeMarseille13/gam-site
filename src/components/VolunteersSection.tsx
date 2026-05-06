@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 import type { Volunteer } from "@/app/_services/home";
 
 interface FloatingVolunteer extends Volunteer {

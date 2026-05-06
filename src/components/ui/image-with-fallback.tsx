@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 
 interface ImageWithFallbackProps {
   src: string;

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { Button } from "@/components/ui/button"
 import { IconPlus, IconArrowLeft } from "@tabler/icons-react"
 

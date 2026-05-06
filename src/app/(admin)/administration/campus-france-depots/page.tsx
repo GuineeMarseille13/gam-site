@@ -4,7 +4,7 @@ import {
   administrationCardClassName,
   administrationIconBadgeClassName,
 } from "@/config/administration-dashboard-theme"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import { IconSchool } from "@tabler/icons-react"
 import { Card } from "@/components/ui/card"
 

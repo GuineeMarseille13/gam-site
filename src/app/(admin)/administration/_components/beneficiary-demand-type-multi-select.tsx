@@ -3,7 +3,7 @@
 import { useCallback, useId, useMemo, useState } from "react"
 import { ChevronDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import {
   beneficiarySuiviCheckboxClassName,
   beneficiarySuiviMultiSelectTriggerClassName,

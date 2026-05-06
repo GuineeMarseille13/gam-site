@@ -14,8 +14,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Pole } from "@/data/poles";
-import { buildSlotsFromLegacyPole } from "@/lib/administrative-permanence/build-pole-slots";
-import { ADMINISTRATIVE_POLE_SLUG } from "@/lib/administrative-permanence/constants";
+import { buildSlotsFromLegacyPole } from "@/helpers/administrative-permanence/build-pole-slots";
+import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants";
 import { CampuceFranceStudentForm } from "@/app/(public)/poles/_components/campuce-france-student-form";
 import PermanenceCalendar from "./PermanenceCalendar";
 

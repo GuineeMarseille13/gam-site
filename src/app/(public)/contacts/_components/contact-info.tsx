@@ -7,7 +7,7 @@ import { ContactMethod, SocialNetwork, DbContact, DbSocialMedia } from "../_type
 import ContactMethodCard from "@/components/contacts/ContactMethodCard";
 import SocialButton from "@/components/contacts/SocialButton";
 import { SocialIcon } from "@/components/SocialIcon";
-import { SOCIAL_PLATFORM_CONFIG, detectPlatform } from "@/lib/social-media-config";
+import { SOCIAL_PLATFORM_CONFIG, detectPlatform } from "@/helpers/social-media-config";
 
 // ── Fallback (si la DB est vide) ─────────────────────────────────────────────
 

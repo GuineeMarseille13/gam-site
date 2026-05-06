@@ -12,8 +12,8 @@ import {
   seedDefaultAdministrativePermanenceSlotsAction,
 } from "../_actions/manage-administrative-permanence"
 import { AdministrativePermanenceSlotDialog } from "./administrative-permanence-slot-dialog"
-import type { AdministrativePermanenceSlotRow } from "@/lib/administrative-permanence/administrative-permanence.schema"
-import { formatSlotRangeFr } from "@/lib/administrative-permanence/format-hm-fr"
+import type { AdministrativePermanenceSlotRow } from "@/helpers/administrative-permanence/administrative-permanence.schema"
+import { formatSlotRangeFr } from "@/helpers/administrative-permanence/format-hm-fr"
 import {
   administrationCardClassName,
   administrationIconBadgeClassName,
@@ -42,7 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 
 interface AdministrativePermanenceCalendarManagerProps {
   className?: string

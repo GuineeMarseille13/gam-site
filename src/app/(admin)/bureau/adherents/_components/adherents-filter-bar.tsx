@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import type { AdherentListRow } from "@/lib/schemas/adherent-list.schema"
 import { normalizeSearch, type StatusFilter } from "../_utils/adherent-list-filters"
 import { IconCalendar, IconSearch } from "@tabler/icons-react"

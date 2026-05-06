@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/(public)/boutique/_hooks/use-cart";

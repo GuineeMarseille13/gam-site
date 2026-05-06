@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { EventsClient } from "./_components/events-client"
 import type { EventsByYear } from "@/types/events"
-import { parseVideoUrl } from "@/lib/video-urls"
+import { parseVideoUrl } from "@/helpers/video-urls"
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 function buildImageUrl(publicId: string) {

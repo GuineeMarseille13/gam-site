@@ -6,7 +6,7 @@ import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
-import { getRoleIdByCode } from "@/lib/association-role-helpers"
+import { getRoleIdByCode } from "@/helpers/association-role-helpers"
 
 const BENEVOLES_LIST_PATHS = ["/bureau/benevoles", "/administration/benevoles"] as const
 

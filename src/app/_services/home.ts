@@ -2,7 +2,7 @@
  * Services pour récupérer les données de la page d'accueil
  */
 
-import { parseVideoUrl } from '@/lib/video-urls'
+import { parseVideoUrl } from '@/helpers/video-urls'
 import { cloudinaryImageUrl, cloudinaryVideoUrl } from '@/lib/cloudinary-delivery'
 
 export interface CarouselItem {

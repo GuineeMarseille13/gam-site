@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@/lib/generated/prisma/client"
+import type { PrismaClient } from '../lib/generated/prisma/client'
 
 type TransactionClient = Parameters<Parameters<PrismaClient['$transaction']>[0]>[0]
 

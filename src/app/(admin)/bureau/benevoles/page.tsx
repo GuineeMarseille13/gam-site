@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { getBenevolesForDashboard } from "@/lib/data/benevoles"
+import { getBenevolesForDashboard } from "@/helpers/benevoles"
 import { BenevolesListSection } from "@/components/bureau/benevoles-list-section"
 
 export const metadata: Metadata = { title: "Bénévoles" }

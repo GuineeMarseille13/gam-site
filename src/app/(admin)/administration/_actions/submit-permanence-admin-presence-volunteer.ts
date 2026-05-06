@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdministrationDashboard } from "@/lib/auth-guard"
-import { getPersonIdForAuthUserId } from "@/lib/get-person-id-for-auth-user"
+import { getPersonIdForAuthUserId } from "@/helpers/get-person-id-for-auth-user"
 import { submitPermanenceAdminPresenceVolunteerSchema } from "../_schemas/permanence-admin-presence-volunteer.schema"
 
 export type SubmitPermanenceAdminPresenceVolunteerResult =

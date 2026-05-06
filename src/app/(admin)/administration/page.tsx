@@ -8,7 +8,7 @@ import {
   administrationOutlineButtonClassName,
   administrationPrimaryButtonClassName,
 } from "@/config/administration-dashboard-theme"
-import { cn } from "@/lib/utils"
+import { cn } from "@/helpers/utils"
 import {
   IconHandStop,
   IconChartBar,
