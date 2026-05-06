@@ -3,6 +3,7 @@
 import * as React from "react"
 import { QueryProvider } from "@/providers/QueryProvider"
 import { ThemeProvider } from "@/providers/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 
 interface AppProvidersProps {
   children: React.ReactNode
@@ -14,7 +15,10 @@ interface AppProvidersProps {
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ThemeProvider>
-      <QueryProvider>{children}</QueryProvider>
+      <QueryProvider>
+        {children}
+        <Toaster richColors closeButton />
+      </QueryProvider>
     </ThemeProvider>
   )
 }

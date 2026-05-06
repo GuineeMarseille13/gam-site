@@ -218,6 +218,7 @@ export const PoleScalarFieldEnum = {
   imageId: 'imageId',
   poleSectionId: 'poleSectionId',
   detailsPoleId: 'detailsPoleId',
+  publicSlug: 'publicSlug',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -233,6 +234,10 @@ export const DetailsPoleScalarFieldEnum = {
   imageId: 'imageId',
   videoId: 'videoId',
   isActive: 'isActive',
+  aboutSectionText: 'aboutSectionText',
+  servicesSectionText: 'servicesSectionText',
+  statisticsSectionText: 'statisticsSectionText',
+  achievementsSectionText: 'achievementsSectionText',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -8,6 +8,8 @@ import {
   getAdministrativePermanenceSettings,
   getAdministrativePermanenceSlots,
 } from "@/helpers/administrative-permanence/queries";
+import { isBureauPoleContentSlug } from "@/config/bureau-poles-content";
+import { getDetailsPoleBureauContentByPublicSlug } from "@/helpers/details-pole-bureau/queries";
 
 /** Calendrier admin lu en base : pas de cache page statique indéfini. */
 export const revalidate = 0;
@@ -33,6 +35,8 @@ export default async function PoleDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  let pole = poleBase;
+
   if (slug === ADMINISTRATIVE_POLE_SLUG) {
     const [slots, settings] = await Promise.all([
       getAdministrativePermanenceSlots(),
@@ -43,14 +47,30 @@ export default async function PoleDetailPage({ params }: PageProps) {
       startTime: s.startTime,
       endTime: s.endTime,
     }));
-    const pole = mergeAdministrativePoleWithDb(
+    pole = mergeAdministrativePoleWithDb(
       poleBase,
       slotDisplays,
-      settings.horairesCardText
+      settings.horairesCardText,
     );
-    return <PolePage pole={pole} />;
   }
 
-  return <PolePage pole={poleBase} />;
+  if (isBureauPoleContentSlug(slug)) {
+    const details = await getDetailsPoleBureauContentByPublicSlug(slug);
+    if (details) {
+      pole = {
+        ...pole,
+        ...(details.aboutSectionText
+          ? { description: details.aboutSectionText }
+          : {}),
+        detailsNarratives: {
+          services: details.servicesSectionText,
+          statistics: details.statisticsSectionText,
+          achievements: details.achievementsSectionText,
+        },
+      };
+    }
+  }
+
+  return <PolePage pole={pole} />;
 }
 

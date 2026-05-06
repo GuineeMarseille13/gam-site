@@ -13,6 +13,13 @@ function isMissingTable(error: unknown): boolean {
   )
 }
 
+function isMissingColumn(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2022"
+  )
+}
+
 /**
  * Créneaux triés pour le site et le dashboard.
  * Retourne une liste vide si la table n’existe pas encore (build / migration en attente).
@@ -52,12 +59,16 @@ export async function getAdministrativePermanenceSettings(): Promise<Administrat
   try {
     const row = await prisma.administrativePermanenceSettings.findUnique({
       where: { id: "default" },
+      select: { horairesCardText: true },
     })
     return {
       horairesCardText: row?.horairesCardText ?? null,
     }
   } catch (error) {
     if (isMissingTable(error)) {
+      return { horairesCardText: null }
+    }
+    if (isMissingColumn(error)) {
       return { horairesCardText: null }
     }
     throw error

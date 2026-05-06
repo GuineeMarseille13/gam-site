@@ -43,6 +43,12 @@ export interface Pole {
     title?: string;
     description?: string;
   }[];
+  /** Textes `DetailsPole` (bureau) injectés sur la page publique. */
+  detailsNarratives?: {
+    services?: string | null;
+    statistics?: string | null;
+    achievements?: string | null;
+  };
 }
 
 export const poles: Pole[] = [

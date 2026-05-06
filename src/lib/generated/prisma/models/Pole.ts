@@ -31,6 +31,7 @@ export type PoleMinAggregateOutputType = {
   imageId: string | null
   poleSectionId: string | null
   detailsPoleId: string | null
+  publicSlug: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type PoleMaxAggregateOutputType = {
   imageId: string | null
   poleSectionId: string | null
   detailsPoleId: string | null
+  publicSlug: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type PoleCountAggregateOutputType = {
   imageId: number
   poleSectionId: number
   detailsPoleId: number
+  publicSlug: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +69,7 @@ export type PoleMinAggregateInputType = {
   imageId?: true
   poleSectionId?: true
   detailsPoleId?: true
+  publicSlug?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +81,7 @@ export type PoleMaxAggregateInputType = {
   imageId?: true
   poleSectionId?: true
   detailsPoleId?: true
+  publicSlug?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +93,7 @@ export type PoleCountAggregateInputType = {
   imageId?: true
   poleSectionId?: true
   detailsPoleId?: true
+  publicSlug?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type PoleGroupByOutputType = {
   imageId: string | null
   poleSectionId: string | null
   detailsPoleId: string
+  publicSlug: string | null
   createdAt: Date
   updatedAt: Date
   _count: PoleCountAggregateOutputType | null
@@ -204,9 +211,11 @@ export type PoleWhereInput = {
   imageId?: Prisma.StringNullableFilter<"Pole"> | string | null
   poleSectionId?: Prisma.StringNullableFilter<"Pole"> | string | null
   detailsPoleId?: Prisma.StringFilter<"Pole"> | string
+  publicSlug?: Prisma.StringNullableFilter<"Pole"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
   poleSection?: Prisma.XOR<Prisma.PoleSectionNullableScalarRelationFilter, Prisma.PoleSectionWhereInput> | null
+  detailsPole?: Prisma.XOR<Prisma.DetailsPoleScalarRelationFilter, Prisma.DetailsPoleWhereInput>
 }
 
 export type PoleOrderByWithRelationInput = {
@@ -216,14 +225,17 @@ export type PoleOrderByWithRelationInput = {
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   poleSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   detailsPoleId?: Prisma.SortOrder
+  publicSlug?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   poleSection?: Prisma.PoleSectionOrderByWithRelationInput
+  detailsPole?: Prisma.DetailsPoleOrderByWithRelationInput
 }
 
 export type PoleWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   detailsPoleId?: string
+  publicSlug?: string
   AND?: Prisma.PoleWhereInput | Prisma.PoleWhereInput[]
   OR?: Prisma.PoleWhereInput[]
   NOT?: Prisma.PoleWhereInput | Prisma.PoleWhereInput[]
@@ -234,7 +246,8 @@ export type PoleWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
   poleSection?: Prisma.XOR<Prisma.PoleSectionNullableScalarRelationFilter, Prisma.PoleSectionWhereInput> | null
-}, "id" | "detailsPoleId">
+  detailsPole?: Prisma.XOR<Prisma.DetailsPoleScalarRelationFilter, Prisma.DetailsPoleWhereInput>
+}, "id" | "detailsPoleId" | "publicSlug">
 
 export type PoleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -243,6 +256,7 @@ export type PoleOrderByWithAggregationInput = {
   imageId?: Prisma.SortOrderInput | Prisma.SortOrder
   poleSectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   detailsPoleId?: Prisma.SortOrder
+  publicSlug?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PoleCountOrderByAggregateInput
@@ -260,6 +274,7 @@ export type PoleScalarWhereWithAggregatesInput = {
   imageId?: Prisma.StringNullableWithAggregatesFilter<"Pole"> | string | null
   poleSectionId?: Prisma.StringNullableWithAggregatesFilter<"Pole"> | string | null
   detailsPoleId?: Prisma.StringWithAggregatesFilter<"Pole"> | string
+  publicSlug?: Prisma.StringNullableWithAggregatesFilter<"Pole"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Pole"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Pole"> | Date | string
 }
@@ -269,10 +284,11 @@ export type PoleCreateInput = {
   name: string
   description?: string | null
   imageId?: string | null
-  detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   poleSection?: Prisma.PoleSectionCreateNestedOneWithoutPolesInput
+  detailsPole: Prisma.DetailsPoleCreateNestedOneWithoutPoleInput
 }
 
 export type PoleUncheckedCreateInput = {
@@ -282,6 +298,7 @@ export type PoleUncheckedCreateInput = {
   imageId?: string | null
   poleSectionId?: string | null
   detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -291,10 +308,11 @@ export type PoleUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   poleSection?: Prisma.PoleSectionUpdateOneWithoutPolesNestedInput
+  detailsPole?: Prisma.DetailsPoleUpdateOneRequiredWithoutPoleNestedInput
 }
 
 export type PoleUncheckedUpdateInput = {
@@ -304,6 +322,7 @@ export type PoleUncheckedUpdateInput = {
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poleSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -315,6 +334,7 @@ export type PoleCreateManyInput = {
   imageId?: string | null
   poleSectionId?: string | null
   detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -324,7 +344,7 @@ export type PoleUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +356,7 @@ export type PoleUncheckedUpdateManyInput = {
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poleSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +378,7 @@ export type PoleCountOrderByAggregateInput = {
   imageId?: Prisma.SortOrder
   poleSectionId?: Prisma.SortOrder
   detailsPoleId?: Prisma.SortOrder
+  publicSlug?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -368,6 +390,7 @@ export type PoleMaxOrderByAggregateInput = {
   imageId?: Prisma.SortOrder
   poleSectionId?: Prisma.SortOrder
   detailsPoleId?: Prisma.SortOrder
+  publicSlug?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -379,8 +402,14 @@ export type PoleMinOrderByAggregateInput = {
   imageId?: Prisma.SortOrder
   poleSectionId?: Prisma.SortOrder
   detailsPoleId?: Prisma.SortOrder
+  publicSlug?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PoleNullableScalarRelationFilter = {
+  is?: Prisma.PoleWhereInput | null
+  isNot?: Prisma.PoleWhereInput | null
 }
 
 export type PoleCreateNestedManyWithoutPoleSectionInput = {
@@ -425,14 +454,47 @@ export type PoleUncheckedUpdateManyWithoutPoleSectionNestedInput = {
   deleteMany?: Prisma.PoleScalarWhereInput | Prisma.PoleScalarWhereInput[]
 }
 
+export type PoleCreateNestedOneWithoutDetailsPoleInput = {
+  create?: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+  connectOrCreate?: Prisma.PoleCreateOrConnectWithoutDetailsPoleInput
+  connect?: Prisma.PoleWhereUniqueInput
+}
+
+export type PoleUncheckedCreateNestedOneWithoutDetailsPoleInput = {
+  create?: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+  connectOrCreate?: Prisma.PoleCreateOrConnectWithoutDetailsPoleInput
+  connect?: Prisma.PoleWhereUniqueInput
+}
+
+export type PoleUpdateOneWithoutDetailsPoleNestedInput = {
+  create?: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+  connectOrCreate?: Prisma.PoleCreateOrConnectWithoutDetailsPoleInput
+  upsert?: Prisma.PoleUpsertWithoutDetailsPoleInput
+  disconnect?: Prisma.PoleWhereInput | boolean
+  delete?: Prisma.PoleWhereInput | boolean
+  connect?: Prisma.PoleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PoleUpdateToOneWithWhereWithoutDetailsPoleInput, Prisma.PoleUpdateWithoutDetailsPoleInput>, Prisma.PoleUncheckedUpdateWithoutDetailsPoleInput>
+}
+
+export type PoleUncheckedUpdateOneWithoutDetailsPoleNestedInput = {
+  create?: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+  connectOrCreate?: Prisma.PoleCreateOrConnectWithoutDetailsPoleInput
+  upsert?: Prisma.PoleUpsertWithoutDetailsPoleInput
+  disconnect?: Prisma.PoleWhereInput | boolean
+  delete?: Prisma.PoleWhereInput | boolean
+  connect?: Prisma.PoleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PoleUpdateToOneWithWhereWithoutDetailsPoleInput, Prisma.PoleUpdateWithoutDetailsPoleInput>, Prisma.PoleUncheckedUpdateWithoutDetailsPoleInput>
+}
+
 export type PoleCreateWithoutPoleSectionInput = {
   id?: string
   name: string
   description?: string | null
   imageId?: string | null
-  detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailsPole: Prisma.DetailsPoleCreateNestedOneWithoutPoleInput
 }
 
 export type PoleUncheckedCreateWithoutPoleSectionInput = {
@@ -441,6 +503,7 @@ export type PoleUncheckedCreateWithoutPoleSectionInput = {
   description?: string | null
   imageId?: string | null
   detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -481,8 +544,69 @@ export type PoleScalarWhereInput = {
   imageId?: Prisma.StringNullableFilter<"Pole"> | string | null
   poleSectionId?: Prisma.StringNullableFilter<"Pole"> | string | null
   detailsPoleId?: Prisma.StringFilter<"Pole"> | string
+  publicSlug?: Prisma.StringNullableFilter<"Pole"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Pole"> | Date | string
+}
+
+export type PoleCreateWithoutDetailsPoleInput = {
+  id?: string
+  name: string
+  description?: string | null
+  imageId?: string | null
+  publicSlug?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  poleSection?: Prisma.PoleSectionCreateNestedOneWithoutPolesInput
+}
+
+export type PoleUncheckedCreateWithoutDetailsPoleInput = {
+  id?: string
+  name: string
+  description?: string | null
+  imageId?: string | null
+  poleSectionId?: string | null
+  publicSlug?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PoleCreateOrConnectWithoutDetailsPoleInput = {
+  where: Prisma.PoleWhereUniqueInput
+  create: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+}
+
+export type PoleUpsertWithoutDetailsPoleInput = {
+  update: Prisma.XOR<Prisma.PoleUpdateWithoutDetailsPoleInput, Prisma.PoleUncheckedUpdateWithoutDetailsPoleInput>
+  create: Prisma.XOR<Prisma.PoleCreateWithoutDetailsPoleInput, Prisma.PoleUncheckedCreateWithoutDetailsPoleInput>
+  where?: Prisma.PoleWhereInput
+}
+
+export type PoleUpdateToOneWithWhereWithoutDetailsPoleInput = {
+  where?: Prisma.PoleWhereInput
+  data: Prisma.XOR<Prisma.PoleUpdateWithoutDetailsPoleInput, Prisma.PoleUncheckedUpdateWithoutDetailsPoleInput>
+}
+
+export type PoleUpdateWithoutDetailsPoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  poleSection?: Prisma.PoleSectionUpdateOneWithoutPolesNestedInput
+}
+
+export type PoleUncheckedUpdateWithoutDetailsPoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  poleSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PoleCreateManyPoleSectionInput = {
@@ -491,6 +615,7 @@ export type PoleCreateManyPoleSectionInput = {
   description?: string | null
   imageId?: string | null
   detailsPoleId: string
+  publicSlug?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -500,9 +625,10 @@ export type PoleUpdateWithoutPoleSectionInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailsPole?: Prisma.DetailsPoleUpdateOneRequiredWithoutPoleNestedInput
 }
 
 export type PoleUncheckedUpdateWithoutPoleSectionInput = {
@@ -511,6 +637,7 @@ export type PoleUncheckedUpdateWithoutPoleSectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -521,6 +648,7 @@ export type PoleUncheckedUpdateManyWithoutPoleSectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   detailsPoleId?: Prisma.StringFieldUpdateOperationsInput | string
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -534,9 +662,11 @@ export type PoleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   imageId?: boolean
   poleSectionId?: boolean
   detailsPoleId?: boolean
+  publicSlug?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pole"]>
 
 export type PoleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -546,9 +676,11 @@ export type PoleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   imageId?: boolean
   poleSectionId?: boolean
   detailsPoleId?: boolean
+  publicSlug?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pole"]>
 
 export type PoleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -558,9 +690,11 @@ export type PoleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   imageId?: boolean
   poleSectionId?: boolean
   detailsPoleId?: boolean
+  publicSlug?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pole"]>
 
 export type PoleSelectScalar = {
@@ -570,25 +704,30 @@ export type PoleSelectScalar = {
   imageId?: boolean
   poleSectionId?: boolean
   detailsPoleId?: boolean
+  publicSlug?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageId" | "poleSectionId" | "detailsPoleId" | "createdAt" | "updatedAt", ExtArgs["result"]["pole"]>
+export type PoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageId" | "poleSectionId" | "detailsPoleId" | "publicSlug" | "createdAt" | "updatedAt", ExtArgs["result"]["pole"]>
 export type PoleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }
 export type PoleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }
 export type PoleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   poleSection?: boolean | Prisma.Pole$poleSectionArgs<ExtArgs>
+  detailsPole?: boolean | Prisma.DetailsPoleDefaultArgs<ExtArgs>
 }
 
 export type $PolePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Pole"
   objects: {
     poleSection: Prisma.$PoleSectionPayload<ExtArgs> | null
+    detailsPole: Prisma.$DetailsPolePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -597,6 +736,10 @@ export type $PolePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     imageId: string | null
     poleSectionId: string | null
     detailsPoleId: string
+    /**
+     * Slug public (`/poles/{slug}`, `/bureau/poles/{slug}/…`), ex. `demarche-administrative`.
+     */
+    publicSlug: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["pole"]>
@@ -994,6 +1137,7 @@ readonly fields: PoleFieldRefs;
 export interface Prisma__PoleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   poleSection<T extends Prisma.Pole$poleSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Pole$poleSectionArgs<ExtArgs>>): Prisma.Prisma__PoleSectionClient<runtime.Types.Result.GetResult<Prisma.$PoleSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  detailsPole<T extends Prisma.DetailsPoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DetailsPoleDefaultArgs<ExtArgs>>): Prisma.Prisma__DetailsPoleClient<runtime.Types.Result.GetResult<Prisma.$DetailsPolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1029,6 +1173,7 @@ export interface PoleFieldRefs {
   readonly imageId: Prisma.FieldRef<"Pole", 'String'>
   readonly poleSectionId: Prisma.FieldRef<"Pole", 'String'>
   readonly detailsPoleId: Prisma.FieldRef<"Pole", 'String'>
+  readonly publicSlug: Prisma.FieldRef<"Pole", 'String'>
   readonly createdAt: Prisma.FieldRef<"Pole", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Pole", 'DateTime'>
 }

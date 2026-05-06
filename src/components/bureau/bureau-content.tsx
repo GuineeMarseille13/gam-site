@@ -47,9 +47,13 @@ export function BureauContent({
       {/* En-tête */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0 space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+          <h1 className="text-balance break-words text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {title}
+          </h1>
           {description && (
-            <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
+            <p className="text-pretty text-sm text-muted-foreground sm:text-base">
+              {description}
+            </p>
           )}
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">

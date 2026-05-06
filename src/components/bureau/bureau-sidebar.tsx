@@ -4,30 +4,21 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  IconCalendarEvent,
-  IconChartBar,
   IconDashboard,
   IconExternalLink,
   IconHandStop,
   IconHeart,
   IconHelp,
-  IconMail,
-  IconPackage,
   IconShoppingCart,
   IconUsers,
   IconBuildingStore,
   IconIdBadge2,
   IconLayoutGrid,
-  IconHandClick,
-  IconVideo,
-  IconQuote,
-  IconSlideshow,
-  IconSpeakerphone,
-  IconLayoutNavbar,
   IconUserCircle,
   IconUserCheck,
 } from "@tabler/icons-react"
 
+import { BureauContenuNav } from "@/components/bureau/bureau-contenu-nav"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -54,7 +45,6 @@ const navigation: {
   user: { name: string; email: string; avatar: string }
   main: NavItem[]
   paiements: NavItem[]
-  contenu: NavItem[]
   admin: NavItem[]
 } = {
   user: {
@@ -69,19 +59,6 @@ const navigation: {
     { title: "Adhésions", url: "/bureau/adhesions", icon: IconIdBadge2 },
     { title: "Dons", url: "/bureau/dons", icon: IconHeart },
     { title: "Commandes", url: "/bureau/commandes", icon: IconShoppingCart },
-  ],
-  contenu: [
-    { title: "Popup / Annonce", url: "/bureau/popup", icon: IconSpeakerphone },
-    { title: "Bandeau", url: "/bureau/bandeau", icon: IconLayoutNavbar },
-    { title: "Carousel", url: "/bureau/carousel", icon: IconSlideshow },
-    { title: "Événements", url: "/bureau/evenements", icon: IconCalendarEvent },
-    { title: "Pôles", url: "/bureau/poles", icon: IconLayoutGrid },
-    { title: "Partenaires", url: "/bureau/partenaires", icon: IconHandClick },
-    { title: "Produits", url: "/bureau/produits", icon: IconPackage },
-    { title: "Témoignages vidéo", url: "/bureau/temoignages-video", icon: IconVideo },
-    { title: "Avis", url: "/bureau/avis", icon: IconQuote },
-    { title: "Statistiques", url: "/bureau/statistiques", icon: IconChartBar },
-    { title: "Contact", url: "/bureau/contact", icon: IconMail },
   ],
   admin: [
     { title: "Tous les membres",   url: "/bureau/membres",   icon: IconUserCircle },
@@ -188,7 +165,7 @@ export function BureauSidebar({ currentUser, role, ...props }: BureauSidebarProp
         <SidebarSeparator className="mx-3" />
         <NavGroup label="Paiements" items={navigation.paiements} pathname={pathname} role={role} />
         <SidebarSeparator className="mx-3" />
-        <NavGroup label="Contenu du site" items={navigation.contenu} pathname={pathname} role={role} />
+        <BureauContenuNav role={role} />
         <SidebarSeparator className="mx-3" />
         <NavGroup label="Administration" items={navigation.admin} pathname={pathname} role={role} />
       </SidebarContent>

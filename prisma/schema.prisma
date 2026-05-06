@@ -168,10 +168,12 @@ model Pole {
   imageId     String?  // ID de l'image principale du pôle
   poleSectionId String?  // ID de la section de pôle
   detailsPoleId String @unique
+  /// Slug public (`/poles/{slug}`, `/bureau/poles/{slug}/…`), ex. `demarche-administrative`.
+  publicSlug  String?  @unique @map("public_slug")
 
   // Relations
   poleSection PoleSection? @relation(fields: [poleSectionId], references: [id])
-
+  detailsPole DetailsPole @relation("PoleDetailsLink", fields: [detailsPoleId], references: [id])
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -186,10 +188,16 @@ model DetailsPole {
   imageId     String?  // ID de l'image principale du détail du pôle
   videoId     String?  // ID de la vidéo principale du détail du pôle
   isActive    Boolean  @default(true) // Si le détail du pôle est actif
+  /// Contenus éditables depuis le bureau (sections communes page publique).
+  aboutSectionText        String? @db.Text
+  servicesSectionText     String? @db.Text
+  statisticsSectionText   String? @db.Text
+  achievementsSectionText String? @db.Text
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  pole Pole? @relation("PoleDetailsLink")
 
   @@map("details_poles")
 }

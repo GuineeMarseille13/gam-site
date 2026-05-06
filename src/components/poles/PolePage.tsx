@@ -40,6 +40,14 @@ export default function PolePage({ pole }: PolePageProps) {
     pole.contactInfo?.schedule ??
     "Permanences les samedis de 14h à 16h";
 
+  const servicesNarrative = pole.detailsNarratives?.services?.trim() ?? "";
+  const statisticsNarrative =
+    pole.detailsNarratives?.statistics?.trim() ?? "";
+  const achievementsNarrative =
+    pole.detailsNarratives?.achievements?.trim() ?? "";
+  const showAchievementsSection =
+    (pole.eventImages?.length ?? 0) > 0 || achievementsNarrative.length > 0;
+
   /** Pôle ADM : encadré coordonnées / horaires toujours visible ; calendrier seulement si créneaux en base. */
   const showPermanenceBlock =
     isAdministrativePole ||
@@ -555,6 +563,18 @@ export default function PolePage({ pole }: PolePageProps) {
               />
             </div>
 
+            {statisticsNarrative ? (
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="text-center text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed whitespace-pre-wrap"
+              >
+                {statisticsNarrative}
+              </motion.p>
+            ) : null}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
               {pole.statistics.items.map((stat, index) => (
                 <motion.div
@@ -758,6 +778,17 @@ export default function PolePage({ pole }: PolePageProps) {
               className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
             />
           </div>
+          {servicesNarrative ? (
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed whitespace-pre-wrap"
+            >
+              {servicesNarrative}
+            </motion.p>
+          ) : null}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             {pole.services.map((service, index) => (
               <motion.div
@@ -830,13 +861,14 @@ export default function PolePage({ pole }: PolePageProps) {
           </div>
         </motion.section>
 
-        {/* Galerie d'événements - Section pour mettre en valeur le travail du pôle */}
-        {pole.eventImages && pole.eventImages.length > 0 && (
+        {/* Galerie / texte — Nos réalisations */}
+        {showAchievementsSection ? (
           <EventGallery
-            images={pole.eventImages}
+            images={pole.eventImages ?? []}
             colorScheme={pole.colorScheme}
+            introOverride={achievementsNarrative || null}
           />
-        )}
+        ) : null}
       </div>
     </div>
   );
@@ -846,10 +878,18 @@ export default function PolePage({ pole }: PolePageProps) {
 interface EventGalleryProps {
   images: { url: string; title?: string; description?: string }[];
   colorScheme: Pole["colorScheme"];
+  introOverride?: string | null;
 }
 
-function EventGallery({ images, colorScheme }: EventGalleryProps) {
+function EventGallery({
+  images,
+  colorScheme,
+  introOverride,
+}: EventGalleryProps) {
   const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
+  const subtitle =
+    introOverride?.trim() ||
+    "Découvrez les moments forts de nos événements et l'impact de notre travail";
 
   return (
     <motion.section
@@ -874,10 +914,9 @@ function EventGallery({ images, colorScheme }: EventGalleryProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-xl text-gray-600 mb-6 font-medium max-w-3xl mx-auto"
+          className="text-lg md:text-xl text-gray-600 mb-6 font-medium max-w-3xl mx-auto whitespace-pre-wrap"
         >
-          Découvrez les moments forts de nos événements et l&apos;impact de
-          notre travail
+          {subtitle}
         </motion.p>
         <motion.div
           initial={{ scaleX: 0 }}
@@ -888,40 +927,42 @@ function EventGallery({ images, colorScheme }: EventGalleryProps) {
         />
       </div>
 
-      {/* Galerie en grid moderne avec hauteurs variables */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {images.map((image, index) => (
-          <EventImageCard
-            key={index}
-            image={image}
-            index={index}
-            colorScheme={colorScheme}
-            onClick={() => setSelectedImage(index)}
-          />
-        ))}
-      </div>
+      {images.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {images.map((image, index) => (
+              <EventImageCard
+                key={index}
+                image={image}
+                index={index}
+                colorScheme={colorScheme}
+                onClick={() => setSelectedImage(index)}
+              />
+            ))}
+          </div>
 
-      {/* Modal pour l'image sélectionnée */}
-      <AnimatePresence mode="wait">
-        {selectedImage !== null && (
-          <ImageModal
-            key={selectedImage}
-            images={images}
-            currentIndex={selectedImage}
-            onClose={() => setSelectedImage(null)}
-            onNext={() =>
-              setSelectedImage((prev) =>
-                prev !== null && prev < images.length - 1 ? prev + 1 : 0
-              )
-            }
-            onPrev={() =>
-              setSelectedImage((prev) =>
-                prev !== null && prev > 0 ? prev - 1 : images.length - 1
-              )
-            }
-          />
-        )}
-      </AnimatePresence>
+          <AnimatePresence mode="wait">
+            {selectedImage !== null && (
+              <ImageModal
+                key={selectedImage}
+                images={images}
+                currentIndex={selectedImage}
+                onClose={() => setSelectedImage(null)}
+                onNext={() =>
+                  setSelectedImage((prev) =>
+                    prev !== null && prev < images.length - 1 ? prev + 1 : 0
+                  )
+                }
+                onPrev={() =>
+                  setSelectedImage((prev) =>
+                    prev !== null && prev > 0 ? prev - 1 : images.length - 1
+                  )
+                }
+              />
+            )}
+          </AnimatePresence>
+        </>
+      ) : null}
     </motion.section>
   );
 }
