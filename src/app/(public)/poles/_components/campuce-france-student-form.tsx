@@ -23,6 +23,7 @@ import {
   CAMPUCE_MAX_FILES,
   CAMPUCE_MAX_FILE_BYTES,
   CAMPUCE_HELP_TYPES,
+  CAMPUCE_FRANCE_HONEYPOT_FIELD_NAME,
 } from "@/app/(public)/poles/_schemas/campuce-france-submission.schema"
 import { Button } from "@/components/ui/button"
 import {
@@ -65,6 +66,19 @@ const ACCEPT_FILE_TYPES = [
 /** Focus des champs : teal / émeraude (cohérent avec le bandeau du dialogue). */
 const CAMPUCE_FIELD_FOCUS =
   "focus-visible:border-teal-600 focus-visible:ring-[3px] focus-visible:ring-teal-600/35 dark:focus-visible:border-teal-400 dark:focus-visible:ring-teal-400/40"
+
+/**
+ * Panneau Radix Select : bordure teintée (le composant UI utilise du `sky` par défaut).
+ */
+const CAMPUCE_SELECT_CONTENT_CLASS =
+  "rounded-xl border-teal-200/60 bg-popover text-popover-foreground shadow-lg shadow-teal-900/[0.06] dark:border-teal-800/45"
+
+/**
+ * Options : surbrillance / sélection en teal–emerald, pas en bleu `sky`.
+ * Préfixes `!` pour gagner sur les utilitaires par défaut de `SelectItem`.
+ */
+const CAMPUCE_SELECT_ITEM_CLASS =
+  "rounded-lg data-[state=checked]:!bg-emerald-50 data-[state=checked]:!text-emerald-950 dark:data-[state=checked]:!bg-emerald-950/55 dark:data-[state=checked]:!text-emerald-50 focus:!bg-teal-600 focus:!text-white data-[highlighted]:!bg-teal-600 data-[highlighted]:!text-white dark:focus:!bg-teal-500 dark:data-[highlighted]:!bg-teal-500 data-[highlighted]:[&_svg]:!text-white focus:[&_svg]:!text-white"
 
 interface CampuceFranceStudentFormProps {
   colorScheme: Pole["colorScheme"]
@@ -173,8 +187,9 @@ export function CampuceFranceStudentForm({
                 Envoi de votre dossier
               </DialogTitle>
               <DialogDescription className="border-0 bg-transparent p-0 text-left text-sm leading-relaxed text-white/95 sm:text-base">
-                Prénom, nom, email, téléphone et pays sont requis ; jusqu’à{" "}
-                {CAMPUCE_MAX_FILES} fichiers facultatifs (PDF ou images).
+                Remplissez d’abord vos coordonnées et les informations universitaires (faites
+                défiler si besoin), puis joignez jusqu’à {CAMPUCE_MAX_FILES} fichiers facultatifs
+                (PDF ou images) pour une attestation d’hébergement.
               </DialogDescription>
             </div>
           </div>
@@ -233,16 +248,18 @@ function CampuceFranceDialogFormBody({
     setFiles((prev) => [...prev, ...allowed].slice(0, CAMPUCE_MAX_FILES))
   }, [])
 
-  const canUploadFiles = helpType === CAMPUCE_HELP_TYPES.hosting_attestation
+  /** Pièces jointes + date de visa optionnelle : uniquement pour attestation d’hébergement. */
+  const isHostingAttestationHelp =
+    helpType === CAMPUCE_HELP_TYPES.hosting_attestation
 
   const handlePickFiles = useCallback(() => {
-    if (!canUploadFiles) return
+    if (!isHostingAttestationHelp) return
     fileInputRef.current?.click()
-  }, [canUploadFiles])
+  }, [isHostingAttestationHelp])
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!canUploadFiles) {
+      if (!isHostingAttestationHelp) {
         e.target.value = ""
         return
       }
@@ -250,7 +267,7 @@ function CampuceFranceDialogFormBody({
       mergeFiles(picked)
       e.target.value = ""
     },
-    [mergeFiles, canUploadFiles],
+    [mergeFiles, isHostingAttestationHelp],
   )
 
   const handleRemoveFile = useCallback((index: number) => {
@@ -274,19 +291,23 @@ function CampuceFranceDialogFormBody({
       e.preventDefault()
       e.stopPropagation()
       setIsDragging(false)
-      if (isPending || !canUploadFiles) return
+      if (isPending || !isHostingAttestationHelp) return
       const dropped = Array.from(e.dataTransfer.files)
       mergeFiles(dropped)
     },
-    [isPending, mergeFiles, canUploadFiles],
+    [isPending, mergeFiles, isHostingAttestationHelp],
   )
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      const fd = new FormData(e.currentTarget)
+      const form = e.currentTarget
+      if (!form.reportValidity()) {
+        return
+      }
+      const fd = new FormData(form)
       fd.delete("files")
-      if (canUploadFiles) {
+      if (isHostingAttestationHelp) {
         for (const f of files) {
           fd.append("files", f)
         }
@@ -295,7 +316,7 @@ function CampuceFranceDialogFormBody({
         void formAction(fd)
       })
     },
-    [files, formAction, canUploadFiles],
+    [files, formAction, isHostingAttestationHelp],
   )
 
   const fileHintMb = Math.round(CAMPUCE_MAX_FILE_BYTES / (1024 * 1024))
@@ -310,14 +331,14 @@ function CampuceFranceDialogFormBody({
     >
       <input
         type="text"
-        name="website"
+        name={CAMPUCE_FRANCE_HONEYPOT_FIELD_NAME}
         tabIndex={-1}
         autoComplete="off"
         className="pointer-events-none absolute left-[-9999px] top-0 h-0 w-0 opacity-0"
         aria-hidden
       />
 
-      <div className="space-y-4">
+      <div className="space-y-4" id="campuce-coordonnees">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Vos coordonnées
         </p>
@@ -548,11 +569,17 @@ function CampuceFranceDialogFormBody({
               >
                 <SelectValue placeholder="Sélectionner…" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={CAMPUCE_HELP_TYPES.hosting_attestation}>
+              <SelectContent className={CAMPUCE_SELECT_CONTENT_CLASS}>
+                <SelectItem
+                  value={CAMPUCE_HELP_TYPES.hosting_attestation}
+                  className={CAMPUCE_SELECT_ITEM_CLASS}
+                >
                   Attestation d’hébergement
                 </SelectItem>
-                <SelectItem value={CAMPUCE_HELP_TYPES.housing}>
+                <SelectItem
+                  value={CAMPUCE_HELP_TYPES.housing}
+                  className={CAMPUCE_SELECT_ITEM_CLASS}
+                >
                   Logement
                 </SelectItem>
               </SelectContent>
@@ -560,24 +587,26 @@ function CampuceFranceDialogFormBody({
             <input type="hidden" name="helpType" value={helpType} />
           </div>
 
-          <div className="space-y-2 sm:col-span-2">
-            <Label
-              htmlFor="campuce-visaAppointmentDate"
-              className="text-sm font-medium text-foreground"
-            >
-              Date de rendez-vous pour la demande de visa (optionnel)
-            </Label>
-            <Input
-              id="campuce-visaAppointmentDate"
-              name="visaAppointmentDate"
-              type="date"
-              disabled={isPending}
-              className={cn(
-                "h-11 rounded-xl border-border/80 bg-background/80 shadow-sm transition-[color,box-shadow,border-color] focus-visible:bg-background",
-                CAMPUCE_FIELD_FOCUS,
-              )}
-            />
-          </div>
+          {isHostingAttestationHelp ? (
+            <div className="space-y-2 sm:col-span-2">
+              <Label
+                htmlFor="campuce-visaAppointmentDate"
+                className="text-sm font-medium text-foreground"
+              >
+                Date de rendez-vous pour la demande de visa (optionnel)
+              </Label>
+              <Input
+                id="campuce-visaAppointmentDate"
+                name="visaAppointmentDate"
+                type="date"
+                disabled={isPending}
+                className={cn(
+                  "h-11 rounded-xl border-border/80 bg-background/80 shadow-sm transition-[color,box-shadow,border-color] focus-visible:bg-background",
+                  CAMPUCE_FIELD_FOCUS,
+                )}
+              />
+            </div>
+          ) : null}
 
           <div className="space-y-2 sm:col-span-2">
             <Label
@@ -601,7 +630,7 @@ function CampuceFranceDialogFormBody({
         </div>
       </div>
 
-      {canUploadFiles ? (
+      {isHostingAttestationHelp ? (
         <div className="space-y-4">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>

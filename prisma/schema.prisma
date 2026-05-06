@@ -845,6 +845,8 @@ model AdministrativePermanenceSettings {
   id               String   @id @default("default")
   /// Si renseigné, remplace le texte généré automatiquement dans la carte Horaires.
   horairesCardText String?  @db.Text
+  /// Contrôle l’affichage du bloc « Campus France — votre dossier » sur la page publique.
+  showCampusFranceCard Boolean @default(true) @map("show_campus_france_card")
   updatedAt        DateTime @updatedAt
 
   @@map("administrative_permanence_settings")

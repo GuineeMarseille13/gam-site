@@ -53,6 +53,7 @@ export default async function PoleDetailPage({ params }: PageProps) {
       poleBase,
       slotDisplays,
       settings.horairesCardText,
+      settings.showCampusFranceCard,
     );
   }
 

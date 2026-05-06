@@ -15,6 +15,7 @@ export function mergeAdministrativePoleWithDb(
   pole: Pole,
   dbSlots: PermanenceSlotDisplay[],
   horairesCardText: string | null,
+  showCampusFranceCard: boolean,
 ): Pole {
   if (pole.slug !== ADMINISTRATIVE_POLE_SLUG) {
     return pole
@@ -37,5 +38,6 @@ export function mergeAdministrativePoleWithDb(
     permanenceSlots: dbSlots,
     permanenceDates: dbSlots.map((s) => s.date),
     permanenceScheduleSummary: summary,
+    showCampusFranceCard,
   }
 }

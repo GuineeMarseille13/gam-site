@@ -797,6 +797,7 @@ export type AdministrativePermanenceSlotScalarFieldEnum = (typeof Administrative
 export const AdministrativePermanenceSettingsScalarFieldEnum = {
   id: 'id',
   horairesCardText: 'horairesCardText',
+  showCampusFranceCard: 'showCampusFranceCard',
   updatedAt: 'updatedAt'
 } as const
 

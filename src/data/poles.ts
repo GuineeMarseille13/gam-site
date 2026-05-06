@@ -49,6 +49,8 @@ export interface Pole {
     statistics?: string | null;
     achievements?: string | null;
   };
+  /** Pôle administratif : contrôle affichage du bloc Campus France. */
+  showCampusFranceCard?: boolean;
 }
 
 export const poles: Pole[] = [

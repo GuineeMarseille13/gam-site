@@ -45,10 +45,10 @@ export async function submitCampuceFranceStudentApplication(
     visaAppointmentDate,
     comment,
     files,
-    website,
+    honeypot,
   } = parsed.data
 
-  if (website?.trim()) {
+  if (honeypot?.trim()) {
     return { kind: "success" }
   }
 

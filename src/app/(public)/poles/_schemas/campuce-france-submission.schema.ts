@@ -3,6 +3,13 @@ import { z } from "zod"
 export const CAMPUCE_MAX_FILES = 3
 export const CAMPUCE_MAX_FILE_BYTES = 5 * 1024 * 1024
 
+/**
+ * Nom du champ honeypot dans le FormData.
+ * Éviter `website` / `url` : les navigateurs et extensions préremplissent souvent ces noms
+ * et déclenchaient un « succès » silencieux sans écriture en base.
+ */
+export const CAMPUCE_FRANCE_HONEYPOT_FIELD_NAME = "campuce_hp_leave_blank" as const
+
 export const CAMPUCE_HELP_TYPES = {
   hosting_attestation: "hosting_attestation",
   housing: "housing",
@@ -62,8 +69,8 @@ export const campuceFranceSubmissionSchema = z
         "Date de rendez-vous invalide",
       ),
     comment: z.string().trim().max(2000).optional(),
-    /** Honeypot anti-bot — doit rester vide. */
-    website: z.string().optional(),
+    /** Honeypot anti-bot — doit rester vide (voir CAMPUCE_FRANCE_HONEYPOT_FIELD_NAME). */
+    honeypot: z.string().optional(),
     files: z.array(z.instanceof(File)),
   })
   .strict()
@@ -135,7 +142,7 @@ export function parseCampuceFranceFormData(formData: FormData) {
     helpType: formDataGetString(formData, "helpType"),
     visaAppointmentDate: formDataGetString(formData, "visaAppointmentDate"),
     comment: formDataGetString(formData, "comment"),
-    website: formDataGetString(formData, "website"),
+    honeypot: formDataGetString(formData, CAMPUCE_FRANCE_HONEYPOT_FIELD_NAME),
     files,
   })
 }

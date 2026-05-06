@@ -50,6 +50,7 @@ export async function getAdministrativePermanenceSlots(): Promise<
 
 export interface AdministrativePermanenceSettingsDto {
   horairesCardText: string | null
+  showCampusFranceCard: boolean
 }
 
 /**
@@ -59,17 +60,18 @@ export async function getAdministrativePermanenceSettings(): Promise<Administrat
   try {
     const row = await prisma.administrativePermanenceSettings.findUnique({
       where: { id: "default" },
-      select: { horairesCardText: true },
+      select: { horairesCardText: true, showCampusFranceCard: true },
     })
     return {
       horairesCardText: row?.horairesCardText ?? null,
+      showCampusFranceCard: row?.showCampusFranceCard ?? true,
     }
   } catch (error) {
     if (isMissingTable(error)) {
-      return { horairesCardText: null }
+      return { horairesCardText: null, showCampusFranceCard: true }
     }
     if (isMissingColumn(error)) {
-      return { horairesCardText: null }
+      return { horairesCardText: null, showCampusFranceCard: true }
     }
     throw error
   }

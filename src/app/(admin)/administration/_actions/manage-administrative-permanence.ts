@@ -168,17 +168,34 @@ export async function saveAdministrativePermanenceSettingsAction(
     }
   }
 
-  const { horairesCardText } = parsed.data
+  const { horairesCardText, showCampusFranceCard } = parsed.data
 
   try {
+    const existing = await prisma.administrativePermanenceSettings.findUnique({
+      where: { id: "default" },
+      select: { horairesCardText: true, showCampusFranceCard: true },
+    })
+
+    const nextHorairesCardText =
+      horairesCardText !== undefined
+        ? horairesCardText
+        : (existing?.horairesCardText ?? null)
+
+    const nextShowCampusFranceCard =
+      showCampusFranceCard !== undefined
+        ? showCampusFranceCard
+        : (existing?.showCampusFranceCard ?? true)
+
     await prisma.administrativePermanenceSettings.upsert({
       where: { id: "default" },
       create: {
         id: "default",
-        horairesCardText,
+        horairesCardText: nextHorairesCardText,
+        showCampusFranceCard: nextShowCampusFranceCard,
       },
       update: {
-        horairesCardText,
+        horairesCardText: nextHorairesCardText,
+        showCampusFranceCard: nextShowCampusFranceCard,
       },
     })
     revalidatePublicAndAdmin()

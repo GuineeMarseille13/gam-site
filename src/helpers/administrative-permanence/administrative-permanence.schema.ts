@@ -32,7 +32,8 @@ export const deleteAdministrativePermanenceSlotInputSchema = z
 
 export const administrativePermanenceSettingsInputSchema = z
   .object({
-    horairesCardText: z.union([z.string().max(2000), z.null()]),
+    horairesCardText: z.union([z.string().max(2000), z.null()]).optional(),
+    showCampusFranceCard: z.coerce.boolean().optional(),
   })
   .strict()
 

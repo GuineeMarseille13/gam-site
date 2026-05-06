@@ -516,7 +516,7 @@ export default function PolePage({ pole }: PolePageProps) {
           />
         )}
 
-        {isAdministrativePole && (
+        {isAdministrativePole && pole.showCampusFranceCard !== false && (
           <CampuceFranceStudentForm colorScheme={pole.colorScheme} />
         )}
 

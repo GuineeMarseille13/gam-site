@@ -9,7 +9,9 @@ import { IconSchool } from "@tabler/icons-react"
 import { Card } from "@/components/ui/card"
 
 import { CampuceFranceDepotsView } from "../_components/campuce-france-depots-view"
+import { CampusFrancePublicToggleCard } from "../_components/campus-france-public-toggle-card"
 import { getCampuceFranceSubmissionsAdmin } from "../_services/get-campuce-france-submissions-admin"
+import { getAdministrativePermanenceSettings } from "@/helpers/administrative-permanence/queries"
 
 export const metadata: Metadata = {
   title: "Campus France — dépôts étudiants",
@@ -18,7 +20,10 @@ export const metadata: Metadata = {
 }
 
 export default async function CampusFranceDepotsAdminPage() {
-  const submissions = await getCampuceFranceSubmissionsAdmin()
+  const [submissions, settings] = await Promise.all([
+    getCampuceFranceSubmissionsAdmin(),
+    getAdministrativePermanenceSettings(),
+  ])
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -32,6 +37,10 @@ export default async function CampusFranceDepotsAdminPage() {
           (images ou PDF).
         </p>
       </div>
+
+      <CampusFrancePublicToggleCard
+        initialShowCampusFranceCard={settings.showCampusFranceCard}
+      />
 
       <Card className={cn(administrationCardClassName, "min-w-0 overflow-hidden p-0")}>
         <div className="flex flex-wrap items-start gap-3 border-b border-border/60 px-4 py-4 md:px-6 md:py-5">
