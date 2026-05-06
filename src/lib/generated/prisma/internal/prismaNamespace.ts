@@ -391,6 +391,7 @@ export const ModelName = {
   PoleSection: 'PoleSection',
   Pole: 'Pole',
   DetailsPole: 'DetailsPole',
+  DetailsPoleStat: 'DetailsPoleStat',
   PartnerSection: 'PartnerSection',
   Partner: 'Partner',
   EventSection: 'EventSection',
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -971,6 +972,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DetailsPoleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DetailsPoleCountAggregateOutputType> | number
+        }
+      }
+    }
+    DetailsPoleStat: {
+      payload: Prisma.$DetailsPoleStatPayload<ExtArgs>
+      fields: Prisma.DetailsPoleStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DetailsPoleStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DetailsPoleStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        findFirst: {
+          args: Prisma.DetailsPoleStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DetailsPoleStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        findMany: {
+          args: Prisma.DetailsPoleStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>[]
+        }
+        create: {
+          args: Prisma.DetailsPoleStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        createMany: {
+          args: Prisma.DetailsPoleStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DetailsPoleStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>[]
+        }
+        delete: {
+          args: Prisma.DetailsPoleStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        update: {
+          args: Prisma.DetailsPoleStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.DetailsPoleStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DetailsPoleStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DetailsPoleStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.DetailsPoleStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DetailsPoleStatPayload>
+        }
+        aggregate: {
+          args: Prisma.DetailsPoleStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDetailsPoleStat>
+        }
+        groupBy: {
+          args: Prisma.DetailsPoleStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DetailsPoleStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DetailsPoleStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DetailsPoleStatCountAggregateOutputType> | number
         }
       }
     }
@@ -4531,13 +4606,28 @@ export const DetailsPoleScalarFieldEnum = {
   isActive: 'isActive',
   aboutSectionText: 'aboutSectionText',
   servicesSectionText: 'servicesSectionText',
-  statisticsSectionText: 'statisticsSectionText',
   achievementsSectionText: 'achievementsSectionText',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type DetailsPoleScalarFieldEnum = (typeof DetailsPoleScalarFieldEnum)[keyof typeof DetailsPoleScalarFieldEnum]
+
+
+export const DetailsPoleStatScalarFieldEnum = {
+  id: 'id',
+  detailsPoleId: 'detailsPoleId',
+  label: 'label',
+  value: 'value',
+  unit: 'unit',
+  helperText: 'helperText',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DetailsPoleStatScalarFieldEnum = (typeof DetailsPoleStatScalarFieldEnum)[keyof typeof DetailsPoleStatScalarFieldEnum]
 
 
 export const PartnerSectionScalarFieldEnum = {
@@ -5537,6 +5627,7 @@ export type GlobalOmitConfig = {
   poleSection?: Prisma.PoleSectionOmit
   pole?: Prisma.PoleOmit
   detailsPole?: Prisma.DetailsPoleOmit
+  detailsPoleStat?: Prisma.DetailsPoleStatOmit
   partnerSection?: Prisma.PartnerSectionOmit
   partner?: Prisma.PartnerOmit
   eventSection?: Prisma.EventSectionOmit

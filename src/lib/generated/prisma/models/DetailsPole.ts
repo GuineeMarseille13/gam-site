@@ -34,7 +34,6 @@ export type DetailsPoleMinAggregateOutputType = {
   isActive: boolean | null
   aboutSectionText: string | null
   servicesSectionText: string | null
-  statisticsSectionText: string | null
   achievementsSectionText: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,7 +49,6 @@ export type DetailsPoleMaxAggregateOutputType = {
   isActive: boolean | null
   aboutSectionText: string | null
   servicesSectionText: string | null
-  statisticsSectionText: string | null
   achievementsSectionText: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -66,7 +64,6 @@ export type DetailsPoleCountAggregateOutputType = {
   isActive: number
   aboutSectionText: number
   servicesSectionText: number
-  statisticsSectionText: number
   achievementsSectionText: number
   createdAt: number
   updatedAt: number
@@ -84,7 +81,6 @@ export type DetailsPoleMinAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   servicesSectionText?: true
-  statisticsSectionText?: true
   achievementsSectionText?: true
   createdAt?: true
   updatedAt?: true
@@ -100,7 +96,6 @@ export type DetailsPoleMaxAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   servicesSectionText?: true
-  statisticsSectionText?: true
   achievementsSectionText?: true
   createdAt?: true
   updatedAt?: true
@@ -116,7 +111,6 @@ export type DetailsPoleCountAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   servicesSectionText?: true
-  statisticsSectionText?: true
   achievementsSectionText?: true
   createdAt?: true
   updatedAt?: true
@@ -205,7 +199,6 @@ export type DetailsPoleGroupByOutputType = {
   isActive: boolean
   aboutSectionText: string | null
   servicesSectionText: string | null
-  statisticsSectionText: string | null
   achievementsSectionText: string | null
   createdAt: Date
   updatedAt: Date
@@ -242,10 +235,10 @@ export type DetailsPoleWhereInput = {
   isActive?: Prisma.BoolFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   servicesSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
-  statisticsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   createdAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatListRelationFilter
   pole?: Prisma.XOR<Prisma.PoleNullableScalarRelationFilter, Prisma.PoleWhereInput> | null
 }
 
@@ -259,10 +252,10 @@ export type DetailsPoleOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   servicesSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
-  statisticsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  detailsPoleStats?: Prisma.DetailsPoleStatOrderByRelationAggregateInput
   pole?: Prisma.PoleOrderByWithRelationInput
 }
 
@@ -279,10 +272,10 @@ export type DetailsPoleWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   servicesSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
-  statisticsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   createdAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatListRelationFilter
   pole?: Prisma.XOR<Prisma.PoleNullableScalarRelationFilter, Prisma.PoleWhereInput> | null
 }, "id">
 
@@ -296,7 +289,6 @@ export type DetailsPoleOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   servicesSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
-  statisticsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -318,7 +310,6 @@ export type DetailsPoleScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
   servicesSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
-  statisticsSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DetailsPole"> | Date | string
@@ -334,10 +325,10 @@ export type DetailsPoleCreateInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   servicesSectionText?: string | null
-  statisticsSectionText?: string | null
   achievementsSectionText?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
   pole?: Prisma.PoleCreateNestedOneWithoutDetailsPoleInput
 }
 
@@ -351,10 +342,10 @@ export type DetailsPoleUncheckedCreateInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   servicesSectionText?: string | null
-  statisticsSectionText?: string | null
   achievementsSectionText?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
   pole?: Prisma.PoleUncheckedCreateNestedOneWithoutDetailsPoleInput
 }
 
@@ -368,10 +359,10 @@ export type DetailsPoleUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
   pole?: Prisma.PoleUpdateOneWithoutDetailsPoleNestedInput
 }
 
@@ -385,10 +376,10 @@ export type DetailsPoleUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
   pole?: Prisma.PoleUncheckedUpdateOneWithoutDetailsPoleNestedInput
 }
 
@@ -402,7 +393,6 @@ export type DetailsPoleCreateManyInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   servicesSectionText?: string | null
-  statisticsSectionText?: string | null
   achievementsSectionText?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -418,7 +408,6 @@ export type DetailsPoleUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -434,7 +423,6 @@ export type DetailsPoleUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,7 +443,6 @@ export type DetailsPoleCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   servicesSectionText?: Prisma.SortOrder
-  statisticsSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -471,7 +458,6 @@ export type DetailsPoleMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   servicesSectionText?: Prisma.SortOrder
-  statisticsSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -487,7 +473,6 @@ export type DetailsPoleMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   servicesSectionText?: Prisma.SortOrder
-  statisticsSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -507,6 +492,20 @@ export type DetailsPoleUpdateOneRequiredWithoutPoleNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DetailsPoleUpdateToOneWithWhereWithoutPoleInput, Prisma.DetailsPoleUpdateWithoutPoleInput>, Prisma.DetailsPoleUncheckedUpdateWithoutPoleInput>
 }
 
+export type DetailsPoleCreateNestedOneWithoutDetailsPoleStatsInput = {
+  create?: Prisma.XOR<Prisma.DetailsPoleCreateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput>
+  connectOrCreate?: Prisma.DetailsPoleCreateOrConnectWithoutDetailsPoleStatsInput
+  connect?: Prisma.DetailsPoleWhereUniqueInput
+}
+
+export type DetailsPoleUpdateOneRequiredWithoutDetailsPoleStatsNestedInput = {
+  create?: Prisma.XOR<Prisma.DetailsPoleCreateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput>
+  connectOrCreate?: Prisma.DetailsPoleCreateOrConnectWithoutDetailsPoleStatsInput
+  upsert?: Prisma.DetailsPoleUpsertWithoutDetailsPoleStatsInput
+  connect?: Prisma.DetailsPoleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DetailsPoleUpdateToOneWithWhereWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUpdateWithoutDetailsPoleStatsInput>, Prisma.DetailsPoleUncheckedUpdateWithoutDetailsPoleStatsInput>
+}
+
 export type DetailsPoleCreateWithoutPoleInput = {
   id?: string
   title: string
@@ -517,10 +516,10 @@ export type DetailsPoleCreateWithoutPoleInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   servicesSectionText?: string | null
-  statisticsSectionText?: string | null
   achievementsSectionText?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
 }
 
 export type DetailsPoleUncheckedCreateWithoutPoleInput = {
@@ -533,10 +532,10 @@ export type DetailsPoleUncheckedCreateWithoutPoleInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   servicesSectionText?: string | null
-  statisticsSectionText?: string | null
   achievementsSectionText?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
 }
 
 export type DetailsPoleCreateOrConnectWithoutPoleInput = {
@@ -565,10 +564,10 @@ export type DetailsPoleUpdateWithoutPoleInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
 }
 
 export type DetailsPoleUncheckedUpdateWithoutPoleInput = {
@@ -581,12 +580,121 @@ export type DetailsPoleUncheckedUpdateWithoutPoleInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statisticsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
 }
 
+export type DetailsPoleCreateWithoutDetailsPoleStatsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  reason?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  isActive?: boolean
+  aboutSectionText?: string | null
+  servicesSectionText?: string | null
+  achievementsSectionText?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pole?: Prisma.PoleCreateNestedOneWithoutDetailsPoleInput
+}
+
+export type DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  reason?: string | null
+  imageId?: string | null
+  videoId?: string | null
+  isActive?: boolean
+  aboutSectionText?: string | null
+  servicesSectionText?: string | null
+  achievementsSectionText?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  pole?: Prisma.PoleUncheckedCreateNestedOneWithoutDetailsPoleInput
+}
+
+export type DetailsPoleCreateOrConnectWithoutDetailsPoleStatsInput = {
+  where: Prisma.DetailsPoleWhereUniqueInput
+  create: Prisma.XOR<Prisma.DetailsPoleCreateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput>
+}
+
+export type DetailsPoleUpsertWithoutDetailsPoleStatsInput = {
+  update: Prisma.XOR<Prisma.DetailsPoleUpdateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedUpdateWithoutDetailsPoleStatsInput>
+  create: Prisma.XOR<Prisma.DetailsPoleCreateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput>
+  where?: Prisma.DetailsPoleWhereInput
+}
+
+export type DetailsPoleUpdateToOneWithWhereWithoutDetailsPoleStatsInput = {
+  where?: Prisma.DetailsPoleWhereInput
+  data: Prisma.XOR<Prisma.DetailsPoleUpdateWithoutDetailsPoleStatsInput, Prisma.DetailsPoleUncheckedUpdateWithoutDetailsPoleStatsInput>
+}
+
+export type DetailsPoleUpdateWithoutDetailsPoleStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pole?: Prisma.PoleUpdateOneWithoutDetailsPoleNestedInput
+}
+
+export type DetailsPoleUncheckedUpdateWithoutDetailsPoleStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  servicesSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pole?: Prisma.PoleUncheckedUpdateOneWithoutDetailsPoleNestedInput
+}
+
+
+/**
+ * Count Type DetailsPoleCountOutputType
+ */
+
+export type DetailsPoleCountOutputType = {
+  detailsPoleStats: number
+}
+
+export type DetailsPoleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  detailsPoleStats?: boolean | DetailsPoleCountOutputTypeCountDetailsPoleStatsArgs
+}
+
+/**
+ * DetailsPoleCountOutputType without action
+ */
+export type DetailsPoleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DetailsPoleCountOutputType
+   */
+  select?: Prisma.DetailsPoleCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * DetailsPoleCountOutputType without action
+ */
+export type DetailsPoleCountOutputTypeCountDetailsPoleStatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DetailsPoleStatWhereInput
+}
 
 
 export type DetailsPoleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -599,11 +707,12 @@ export type DetailsPoleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   isActive?: boolean
   aboutSectionText?: boolean
   servicesSectionText?: boolean
-  statisticsSectionText?: boolean
   achievementsSectionText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  detailsPoleStats?: boolean | Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs>
   pole?: boolean | Prisma.DetailsPole$poleArgs<ExtArgs>
+  _count?: boolean | Prisma.DetailsPoleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["detailsPole"]>
 
 export type DetailsPoleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -616,7 +725,6 @@ export type DetailsPoleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   isActive?: boolean
   aboutSectionText?: boolean
   servicesSectionText?: boolean
-  statisticsSectionText?: boolean
   achievementsSectionText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -632,7 +740,6 @@ export type DetailsPoleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   isActive?: boolean
   aboutSectionText?: boolean
   servicesSectionText?: boolean
-  statisticsSectionText?: boolean
   achievementsSectionText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -648,15 +755,16 @@ export type DetailsPoleSelectScalar = {
   isActive?: boolean
   aboutSectionText?: boolean
   servicesSectionText?: boolean
-  statisticsSectionText?: boolean
   achievementsSectionText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DetailsPoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "reason" | "imageId" | "videoId" | "isActive" | "aboutSectionText" | "servicesSectionText" | "statisticsSectionText" | "achievementsSectionText" | "createdAt" | "updatedAt", ExtArgs["result"]["detailsPole"]>
+export type DetailsPoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "reason" | "imageId" | "videoId" | "isActive" | "aboutSectionText" | "servicesSectionText" | "achievementsSectionText" | "createdAt" | "updatedAt", ExtArgs["result"]["detailsPole"]>
 export type DetailsPoleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  detailsPoleStats?: boolean | Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs>
   pole?: boolean | Prisma.DetailsPole$poleArgs<ExtArgs>
+  _count?: boolean | Prisma.DetailsPoleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DetailsPoleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type DetailsPoleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -664,6 +772,7 @@ export type DetailsPoleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $DetailsPolePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DetailsPole"
   objects: {
+    detailsPoleStats: Prisma.$DetailsPoleStatPayload<ExtArgs>[]
     pole: Prisma.$PolePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -679,7 +788,6 @@ export type $DetailsPolePayload<ExtArgs extends runtime.Types.Extensions.Interna
      */
     aboutSectionText: string | null
     servicesSectionText: string | null
-    statisticsSectionText: string | null
     achievementsSectionText: string | null
     createdAt: Date
     updatedAt: Date
@@ -1077,6 +1185,7 @@ readonly fields: DetailsPoleFieldRefs;
  */
 export interface Prisma__DetailsPoleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  detailsPoleStats<T extends Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DetailsPoleStatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pole<T extends Prisma.DetailsPole$poleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DetailsPole$poleArgs<ExtArgs>>): Prisma.Prisma__PoleClient<runtime.Types.Result.GetResult<Prisma.$PolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1116,7 +1225,6 @@ export interface DetailsPoleFieldRefs {
   readonly isActive: Prisma.FieldRef<"DetailsPole", 'Boolean'>
   readonly aboutSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
   readonly servicesSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
-  readonly statisticsSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
   readonly achievementsSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
   readonly createdAt: Prisma.FieldRef<"DetailsPole", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DetailsPole", 'DateTime'>
@@ -1510,6 +1618,30 @@ export type DetailsPoleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many DetailsPoles to delete.
    */
   limit?: number
+}
+
+/**
+ * DetailsPole.detailsPoleStats
+ */
+export type DetailsPole$detailsPoleStatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DetailsPoleStat
+   */
+  select?: Prisma.DetailsPoleStatSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DetailsPoleStat
+   */
+  omit?: Prisma.DetailsPoleStatOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DetailsPoleStatInclude<ExtArgs> | null
+  where?: Prisma.DetailsPoleStatWhereInput
+  orderBy?: Prisma.DetailsPoleStatOrderByWithRelationInput | Prisma.DetailsPoleStatOrderByWithRelationInput[]
+  cursor?: Prisma.DetailsPoleStatWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DetailsPoleStatScalarFieldEnum | Prisma.DetailsPoleStatScalarFieldEnum[]
 }
 
 /**

@@ -13,7 +13,6 @@ const createPoleDetailSchema = z.object({
   isActive: z.boolean().default(true),
   aboutSectionText: z.string().max(12_000).optional().nullable(),
   servicesSectionText: z.string().max(12_000).optional().nullable(),
-  statisticsSectionText: z.string().max(12_000).optional().nullable(),
   achievementsSectionText: z.string().max(12_000).optional().nullable(),
 })
 

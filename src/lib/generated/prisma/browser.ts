@@ -53,6 +53,11 @@ export type Pole = Prisma.PoleModel
  */
 export type DetailsPole = Prisma.DetailsPoleModel
 /**
+ * Model DetailsPoleStat
+ * 
+ */
+export type DetailsPoleStat = Prisma.DetailsPoleStatModel
+/**
  * Model PartnerSection
  * 
  */

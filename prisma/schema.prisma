@@ -191,8 +191,9 @@ model DetailsPole {
   /// Contenus éditables depuis le bureau (sections communes page publique).
   aboutSectionText        String? @db.Text
   servicesSectionText     String? @db.Text
-  statisticsSectionText   String? @db.Text
   achievementsSectionText String? @db.Text
+
+  detailsPoleStats DetailsPoleStat[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -200,6 +201,26 @@ model DetailsPole {
   pole Pole? @relation("PoleDetailsLink")
 
   @@map("details_poles")
+}
+
+model DetailsPoleStat {
+  id            String @id @default(cuid())
+  detailsPoleId String
+  label      String
+  value      Int
+  unit       String? // Unité de la valeur (ex: "personnes", "€", "%)")
+  helperText String? // E-KAIDI
+  order      Int @default(0)
+  isActive    Boolean @default(true)
+  
+  detailsPole DetailsPole @relation(fields: [detailsPoleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([detailsPoleId, order])
+  @@index([detailsPoleId])
+  @@map("details_pole_stats")
 }
 
 model PartnerSection {

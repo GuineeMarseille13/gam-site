@@ -18,12 +18,10 @@ const sectionToPrismaField: Record<
   BureauPoleDetailsSection,
   | "aboutSectionText"
   | "servicesSectionText"
-  | "statisticsSectionText"
   | "achievementsSectionText"
 > = {
   about: "aboutSectionText",
   services: "servicesSectionText",
-  statistics: "statisticsSectionText",
   achievements: "achievementsSectionText",
 }
 

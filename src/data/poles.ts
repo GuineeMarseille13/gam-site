@@ -97,18 +97,6 @@ export const poles: Pole[] = [
       email: "evenementiel@gam-marseille.fr",
       schedule: "Réunions chaque premier samedi du mois à 14h",
     },
-    statistics: {
-      items: [
-        {
-          value: 14,
-          label: "ÉVÉNEMENTS ORGANISÉS PAR GAM EN 2024",
-        },
-        {
-          value: 11,
-          label: "ÉVÉNEMENTS AUXQUELS GAM A PARTICIPÉ EN 2024",
-        },
-      ],
-    },
     colorScheme: {
       primary: "from-blue-400 to-indigo-500",
       secondary: "from-indigo-400 to-purple-500",
@@ -180,47 +168,6 @@ export const poles: Pole[] = [
       schedule:
         "Permanences régulières : horaires et dates précises sont affichés sur cette page (mis à jour depuis notre espace d’administration).",
       address: "93 La Canebière, 13001 Marseille",
-    },
-    // Calendrier des permanences : exclusivement depuis PostgreSQL (voir administration).
-    statistics: {
-      title: "Accompagnements administratifs faits par nos bénévoles",
-      items: [
-        {
-          value: 122,
-          label: "Accompagnements administratifs faits par nos bénévoles",
-        },
-        {
-          value: 27,
-          label: "Permanences administratives",
-        },
-        {
-          value: 22,
-          label: "Faire venir des actes de naissance",
-        },
-        {
-          value: 6,
-          label: "Conseil juridique",
-        },
-        {
-          value: 12,
-          label: "Accompagnement visa étudiant",
-        },
-        {
-          value: 49,
-          label: "Demande de cartes consulaires",
-          description: "(plateforme EKADI)",
-        },
-        {
-          value: 29,
-          label: "Demande de sur-légalisation d'actes de naissance",
-          description: "(plateforme EKADI)",
-        },
-        {
-          value: 6,
-          label: "Autres demandes",
-          description: "(livrets de famille, carte AME,..) (plateforme EKADI)",
-        },
-      ],
     },
     colorScheme: {
       primary: "from-emerald-400 to-teal-500",
@@ -310,22 +257,6 @@ export const poles: Pole[] = [
     contactInfo: {
       email: "relation@gam-marseille.fr",
       schedule: "Événements de networking mensuels",
-    },
-    statistics: {
-      items: [
-        {
-          value: 14,
-          label: "Bénévoles HEBERGEANTS SOLIDAIRES",
-        },
-        {
-          value: 19,
-          label: "PERSONNES HEBERGEES",
-        },
-        {
-          value: 1468,
-          label: "NUITS D'HEBERGEMENT OFFERTES",
-        },
-      ],
     },
     colorScheme: {
       primary: "from-amber-400 to-orange-500",

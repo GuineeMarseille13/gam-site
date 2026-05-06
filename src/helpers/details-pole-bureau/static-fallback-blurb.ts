@@ -21,13 +21,5 @@ export function getStaticFallbackBlurbForSection(
     return pole.shortDescription
   }
 
-  if (section === "statistics") {
-    const first = pole.statistics?.items[0]
-    if (first) {
-      return `${first.label} (${first.value})`
-    }
-    return pole.shortDescription
-  }
-
   return "Découvrez les moments forts de nos événements et l'impact de notre travail."
 }

@@ -17,11 +17,6 @@ export const BUREAU_POLE_DETAILS_SECTION_UI: Record<
     editorHelper:
       "S’affiche au-dessus de la grille des cartes services. Vide = pas de texte libre, seules les cartes statiques s’affichent.",
   },
-  statistics: {
-    fieldLabel: "Texte d’introduction « Statistiques »",
-    editorHelper:
-      "S’affiche sous le titre de section, avant les chiffres. Les valeurs des cartes restent celles des données statiques.",
-  },
   achievements: {
     fieldLabel: "Texte d’introduction « Nos réalisations »",
     editorHelper:
