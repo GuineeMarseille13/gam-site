@@ -13,13 +13,5 @@ export function getStaticFallbackBlurbForSection(
     return pole.description
   }
 
-  if (section === "services") {
-    const first = pole.services[0]
-    if (first) {
-      return `${first.title} — ${first.description}`
-    }
-    return pole.shortDescription
-  }
-
   return "Découvrez les moments forts de nos événements et l'impact de notre travail."
 }

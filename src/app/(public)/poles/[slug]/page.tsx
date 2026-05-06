@@ -11,6 +11,7 @@ import {
 import { isBureauPoleContentSlug } from "@/config/bureau-poles-content";
 import { getDetailsPoleBureauContentByPublicSlug } from "@/helpers/details-pole-bureau/queries";
 import { getActivePoleStatsByPublicSlug } from "@/helpers/details-pole-stats/queries";
+import { getActivePoleServicesByPublicSlug } from "@/helpers/details-pole-services/queries";
 
 /** Calendrier admin lu en base : pas de cache page statique indéfini. */
 export const revalidate = 0;
@@ -56,9 +57,10 @@ export default async function PoleDetailPage({ params }: PageProps) {
   }
 
   if (isBureauPoleContentSlug(slug)) {
-    const [details, dbStats] = await Promise.all([
+    const [details, dbStats, dbServices] = await Promise.all([
       getDetailsPoleBureauContentByPublicSlug(slug),
       getActivePoleStatsByPublicSlug(slug),
+      getActivePoleServicesByPublicSlug(slug),
     ]);
     if (details) {
       pole = {
@@ -67,10 +69,11 @@ export default async function PoleDetailPage({ params }: PageProps) {
           ? { description: details.aboutSectionText }
           : {}),
         detailsNarratives: {
-          services: details.servicesSectionText,
+          services: null,
           statistics: null,
           achievements: details.achievementsSectionText,
         },
+        ...(dbServices && dbServices.length > 0 ? { services: dbServices } : {}),
         ...(dbStats && dbStats.length > 0
           ? {
               statistics: {

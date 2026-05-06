@@ -59,6 +59,7 @@ export const ModelName = {
   Pole: 'Pole',
   DetailsPole: 'DetailsPole',
   DetailsPoleStat: 'DetailsPoleStat',
+  DetailsPoleService: 'DetailsPoleService',
   PartnerSection: 'PartnerSection',
   Partner: 'Partner',
   EventSection: 'EventSection',
@@ -236,7 +237,6 @@ export const DetailsPoleScalarFieldEnum = {
   videoId: 'videoId',
   isActive: 'isActive',
   aboutSectionText: 'aboutSectionText',
-  servicesSectionText: 'servicesSectionText',
   achievementsSectionText: 'achievementsSectionText',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -259,6 +259,21 @@ export const DetailsPoleStatScalarFieldEnum = {
 } as const
 
 export type DetailsPoleStatScalarFieldEnum = (typeof DetailsPoleStatScalarFieldEnum)[keyof typeof DetailsPoleStatScalarFieldEnum]
+
+
+export const DetailsPoleServiceScalarFieldEnum = {
+  id: 'id',
+  detailsPoleId: 'detailsPoleId',
+  title: 'title',
+  description: 'description',
+  icon: 'icon',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DetailsPoleServiceScalarFieldEnum = (typeof DetailsPoleServiceScalarFieldEnum)[keyof typeof DetailsPoleServiceScalarFieldEnum]
 
 
 export const PartnerSectionScalarFieldEnum = {

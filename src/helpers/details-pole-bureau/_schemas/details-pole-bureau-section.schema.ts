@@ -6,7 +6,6 @@ export const bureauPoleContentSlugSchema = z.enum(BUREAU_POLE_CONTENT_SLUGS)
 
 export const bureauPoleDetailsSectionSchema = z.enum([
   "about",
-  "services",
   "achievements",
 ])
 

@@ -190,10 +190,10 @@ model DetailsPole {
   isActive    Boolean  @default(true) // Si le détail du pôle est actif
   /// Contenus éditables depuis le bureau (sections communes page publique).
   aboutSectionText        String? @db.Text
-  servicesSectionText     String? @db.Text
   achievementsSectionText String? @db.Text
 
   detailsPoleStats DetailsPoleStat[]
+  detailsPoleServices DetailsPoleService[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -219,8 +219,25 @@ model DetailsPoleStat {
   updatedAt DateTime @updatedAt
 
   @@unique([detailsPoleId, order])
-  @@index([detailsPoleId])
   @@map("details_pole_stats")
+}
+
+model DetailsPoleService {
+  id            String   @id @default(cuid())
+  detailsPoleId String
+  title       String
+  description String   @db.Text
+  icon        String?  // ex: "🤝" (emoji) ou clé d’icône si vous préférez
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  detailsPole DetailsPole @relation(fields: [detailsPoleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([detailsPoleId, order])
+  @@map("details_pole_services")
 }
 
 model PartnerSection {

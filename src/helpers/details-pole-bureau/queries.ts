@@ -13,13 +13,11 @@ function isMissingColumn(error: unknown): boolean {
 
 export interface DetailsPoleBureauContentDto {
   aboutSectionText: string | null
-  servicesSectionText: string | null
   achievementsSectionText: string | null
 }
 
 const emptyDto: DetailsPoleBureauContentDto = {
   aboutSectionText: null,
-  servicesSectionText: null,
   achievementsSectionText: null,
 }
 
@@ -39,7 +37,6 @@ export async function getDetailsPoleBureauContentByPublicSlug(
       where: { id: pole.detailsPoleId },
       select: {
         aboutSectionText: true,
-        servicesSectionText: true,
         achievementsSectionText: true,
       },
     })
@@ -50,7 +47,6 @@ export async function getDetailsPoleBureauContentByPublicSlug(
 
     return {
       aboutSectionText: normalizeText(row.aboutSectionText),
-      servicesSectionText: normalizeText(row.servicesSectionText),
       achievementsSectionText: normalizeText(row.achievementsSectionText),
     }
   } catch (error) {
@@ -80,7 +76,6 @@ function sectionToKey(
 ): keyof DetailsPoleBureauContentDto {
   const map = {
     about: "aboutSectionText",
-    services: "servicesSectionText",
     achievements: "achievementsSectionText",
   } as const satisfies Record<
     BureauPoleDetailsSection,

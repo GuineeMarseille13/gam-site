@@ -17,11 +17,9 @@ export type SaveDetailsPoleBureauSectionState =
 const sectionToPrismaField: Record<
   BureauPoleDetailsSection,
   | "aboutSectionText"
-  | "servicesSectionText"
   | "achievementsSectionText"
 > = {
   about: "aboutSectionText",
-  services: "servicesSectionText",
   achievements: "achievementsSectionText",
 }
 

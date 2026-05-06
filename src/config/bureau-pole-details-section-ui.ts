@@ -12,11 +12,6 @@ export const BUREAU_POLE_DETAILS_SECTION_UI: Record<
     editorHelper:
       "Remplace le paragraphe sous le badge « À propos » sur la page publique. Laissez vide et enregistrez pour revenir au texte statique du site.",
   },
-  services: {
-    fieldLabel: "Texte d’introduction « Nos services »",
-    editorHelper:
-      "S’affiche au-dessus de la grille des cartes services. Vide = pas de texte libre, seules les cartes statiques s’affichent.",
-  },
   achievements: {
     fieldLabel: "Texte d’introduction « Nos réalisations »",
     editorHelper:
