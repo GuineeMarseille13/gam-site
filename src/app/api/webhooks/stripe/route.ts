@@ -50,8 +50,6 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log(`[Webhook] Événement reçu: ${event.type}`)
-
     // Succès : enregistrer le paiement + l'action selon le type (don, adhésion, commande)
     if (event.type === 'payment_intent.succeeded') {
       const paymentIntent = event.data.object as Stripe.PaymentIntent

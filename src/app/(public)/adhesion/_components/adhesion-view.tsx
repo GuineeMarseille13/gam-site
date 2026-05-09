@@ -7,6 +7,7 @@ import { z } from "zod";
 import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_schemas/adhesion.schema";
 import { useCreateAdhesionPaymentIntent } from "../_hooks/use-create-adhesion-payment-intent";
 import StripePaymentForm from "./stripe-payment-form";
+import { formatCurrency } from "@/helpers/format-currency";
 
 export default function MembershipView() {
   const [members, setMembers] = useState<Member[]>([
@@ -139,7 +140,7 @@ export default function MembershipView() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto"
         >
-          Votre paiement a été effectué avec succès. Nous vous recontacterons rapidement. Total réglé: <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(total)}</span>
+          Votre paiement a été effectué avec succès. Nous vous recontacterons rapidement. Total réglé: <span className="font-semibold text-emerald-600">{formatCurrency(total)}</span>
         </motion.p>
       </div>
     );
@@ -168,7 +169,7 @@ export default function MembershipView() {
             <div className="mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Finaliser le paiement</h2>
               <p className="text-sm sm:text-base text-gray-600">
-                Total à payer: <span className="font-semibold text-gray-900">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(total)}</span>
+                Total à payer: <span className="font-semibold text-gray-900">{formatCurrency(total)}</span>
               </p>
             </div>
 
@@ -264,7 +265,7 @@ export default function MembershipView() {
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Formulaire d&apos;adhésion</h2>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg shadow-amber-200/50">
               <span className="inline-flex items-center justify-center px-2 py-1 rounded-full bg-white/20 text-sm font-semibold">{members.length} personne{members.length>1?'s':''}</span>
-              <span className="font-bold text-base sm:text-lg">{new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(total)}</span>
+              <span className="font-bold text-base sm:text-lg">{formatCurrency(total)}</span>
             </div>
           </motion.div>
 
@@ -318,7 +319,7 @@ export default function MembershipView() {
             </motion.button>
             <div className="text-center sm:text-right space-y-1">
               <div className="text-xs sm:text-sm text-gray-600">{members.length} x {PRICE_PER_MEMBER_EUR.toFixed(0)} €</div>
-              <div className="text-lg sm:text-xl font-bold text-gray-900">Total: {new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(total)}</div>
+              <div className="text-lg sm:text-xl font-bold text-gray-900">Total: {formatCurrency(total)}</div>
             </div>
           </motion.div>
 

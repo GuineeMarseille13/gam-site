@@ -14,6 +14,7 @@ import {
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
 import { deleteProduit } from "./_actions/actions"
+import { formatCurrency } from "@/helpers/format-currency"
 
 export const metadata: Metadata = { title: "Produits" }
 
@@ -22,10 +23,6 @@ async function getProduits() {
     orderBy: { createdAt: "desc" },
     include: { productCategory: true },
   })
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(amount / 100)
 }
 
 export default async function ProduitsPage() {
@@ -77,7 +74,7 @@ export default async function ProduitsPage() {
                       {produit.productCategory?.title ?? "—"}
                     </TableCell>
                     <TableCell className="font-medium tabular-nums">
-                      {formatCurrency(produit.price)}
+                      {formatCurrency(produit.price, { unit: "cent", maximumFractionDigits: 0 })}
                     </TableCell>
                     <TableCell className="tabular-nums">{produit.stock}</TableCell>
                     <TableCell>

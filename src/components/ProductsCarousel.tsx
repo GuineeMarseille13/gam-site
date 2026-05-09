@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Eye, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/helpers/format-currency";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Product {
@@ -159,14 +160,6 @@ export default function ProductsCarousel({
   const handleMouseLeave = () => {
     setIsPaused(false);
     startTimer();
-  };
-
-  // Formatage du prix
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-    }).format(price);
   };
 
   // Protection si pas de produits
@@ -401,12 +394,12 @@ export default function ProductsCarousel({
                                 isMobile ? "text-lg" : "text-xl"
                               } font-bold text-theme-red`}
                             >
-                              {formatPrice(product.price)}
+                              {formatCurrency(product.price)}
                             </span>
                             {product.originalPrice &&
                               product.originalPrice > product.price && (
                                 <span className="text-xs text-gray-500 line-through">
-                                  {formatPrice(product.originalPrice)}
+                                  {formatCurrency(product.originalPrice)}
                                 </span>
                               )}
                           </div>

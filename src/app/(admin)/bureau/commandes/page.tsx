@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { formatCurrency } from "@/helpers/format-currency"
 
 export const metadata: Metadata = { title: "Commandes" }
 
@@ -31,13 +32,6 @@ function formatDate(date: Date): string {
     month: "2-digit",
     year: "numeric",
   }).format(date)
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(amount / 100)
 }
 
 function getInitials(first: string, last: string) {
@@ -65,7 +59,7 @@ export default async function CommandesPage() {
   return (
     <BureauContent
       title="Commandes"
-      description={`${commandes.length} commande${commandes.length > 1 ? "s" : ""} · ${formatCurrency(totalCA)} de chiffre d'affaires`}
+      description={`${commandes.length} commande${commandes.length > 1 ? "s" : ""} · ${formatCurrency(totalCA, { maximumFractionDigits: 0 })} de chiffre d'affaires`}
     >
       <Card>
         <CardContent className="px-0">
@@ -108,7 +102,7 @@ export default async function CommandesPage() {
                       {commande.items.length} article{commande.items.length > 1 ? "s" : ""}
                     </TableCell>
                     <TableCell className="font-medium tabular-nums">
-                      {formatCurrency(commande.totalAmount)}
+                      {formatCurrency(commande.totalAmount, { maximumFractionDigits: 0 })}
                     </TableCell>
                     <TableCell>
                       {(() => {

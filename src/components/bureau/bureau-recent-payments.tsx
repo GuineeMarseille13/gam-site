@@ -15,16 +15,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { Payment, Person } from "@/lib/generated/prisma/client"
+import { formatCurrency } from "@/helpers/format-currency"
 
 interface PaymentWithPerson extends Payment {
   person: Person
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(amount / 100)
 }
 
 function formatDate(date: Date): string {
@@ -132,7 +126,7 @@ export function BureauRecentPayments({ payments }: { payments: PaymentWithPerson
                       </Badge>
                     </TableCell>
                     <TableCell className="font-semibold tabular-nums text-sm">
-                      {formatCurrency(payment.amount)}
+                      {formatCurrency(payment.amount, { maximumFractionDigits: 0 })}
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className={`text-xs ${status?.className ?? ""}`}>

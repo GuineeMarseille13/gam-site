@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { formatCurrency } from "@/helpers/format-currency"
 
 export const metadata: Metadata = { title: "Dons" }
 
@@ -26,13 +27,6 @@ function formatDate(date: Date): string {
     month: "2-digit",
     year: "numeric",
   }).format(date)
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(amount / 100)
 }
 
 function getInitials(first: string, last: string) {
@@ -52,7 +46,7 @@ export default async function DonsPage() {
   return (
     <BureauContent
       title="Dons"
-      description={`${dons.length} don${dons.length > 1 ? "s" : ""} — ${formatCurrency(totalDons)} collectés au total`}
+      description={`${dons.length} don${dons.length > 1 ? "s" : ""} — ${formatCurrency(totalDons, { maximumFractionDigits: 0 })} collectés au total`}
     >
       <Card>
         <CardContent className="px-0">
@@ -96,7 +90,7 @@ export default async function DonsPage() {
                     </TableCell>
                     <TableCell>{don.title}</TableCell>
                     <TableCell className="font-medium tabular-nums">
-                      {formatCurrency(don.amount)}
+                      {formatCurrency(don.amount, { maximumFractionDigits: 0 })}
                     </TableCell>
                     <TableCell className="max-w-[200px] truncate text-muted-foreground text-sm">
                       {don.message ?? "—"}

@@ -6,6 +6,7 @@ import { Heart, CheckCircle2, DollarSign, Target, Sparkles, Loader2, ArrowLeft }
 import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT_EUR, type Don } from "../_schemas/don.schema";
 import { useCreateDonPaymentIntent } from "../_hooks/use-create-don-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
+import { formatCurrency } from "@/helpers/format-currency";
 
 export default function DonationView() {
   const [formData, setFormData] = useState<Partial<Don>>({
@@ -124,7 +125,7 @@ export default function DonationView() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto"
         >
-          Votre paiement a été effectué avec succès. Votre don de <span className="font-semibold text-emerald-600">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
+          Votre paiement a été effectué avec succès. Votre don de <span className="font-semibold text-emerald-600">{formatCurrency(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
           Votre soutien fait toute la différence.
         </motion.p>
       </div>
@@ -154,7 +155,7 @@ export default function DonationView() {
             <div className="mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Finaliser le paiement</h2>
               <p className="text-sm sm:text-base text-gray-600">
-                Total à payer: <span className="font-semibold text-gray-900">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(validatedFormData.amount)}</span>
+                Total à payer: <span className="font-semibold text-gray-900">{formatCurrency(validatedFormData.amount)}</span>
               </p>
             </div>
 
@@ -260,7 +261,7 @@ export default function DonationView() {
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Formulaire de don</h2>
             {formData.amount && (
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-200/50">
-                <span className="font-bold text-base sm:text-lg">{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(formData.amount)}</span>
+                <span className="font-bold text-base sm:text-lg">{formatCurrency(formData.amount)}</span>
               </div>
             )}
           </motion.div>

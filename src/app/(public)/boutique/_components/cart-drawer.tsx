@@ -9,6 +9,7 @@ import type { CartItem, CheckoutData } from "../_schemas/product.schema";
 import { checkoutDataSchema } from "../_schemas/product.schema";
 import { useCreateOrderPaymentIntent } from "../_hooks/use-create-order-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
+import { formatCurrency } from "@/helpers/format-currency";
 
 interface CartDrawerProps {
   open: boolean;
@@ -32,10 +33,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
 
   const { mutateAsync: createPaymentIntent, isPending: isLoading } = useCreateOrderPaymentIntent();
 
-  const formattedTotal = useMemo(
-    () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalPrice),
-    [totalPrice]
-  );
+  const formattedTotal = formatCurrency(totalPrice);
 
   const totalQty = useMemo(() => items.reduce((acc, it) => acc + it.quantity, 0), [items]);
 
@@ -245,7 +243,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                           </div>
                           <div className="flex-1">
                             <div className="font-medium text-gray-900 leading-snug">{it.product.name}</div>
-                            <div className="text-xs text-gray-500 mt-0.5">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(it.product.price)} / unité</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{formatCurrency(it.product.price)} / unité</div>
                           </div>
                         </div>
 
@@ -270,7 +268,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                             </button>
                           </div>
                           <div className="text-sm font-semibold text-gray-900">
-                            {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(it.quantity * it.product.price)}
+                            {formatCurrency(it.quantity * it.product.price)}
                           </div>
                           <button
                             aria-label="Retirer l'article"

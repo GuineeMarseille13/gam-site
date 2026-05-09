@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Check, ShoppingBag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/helpers/format-currency";
 import type { Product } from "../_schemas/product.schema";
 import { usePathname } from "next/navigation";
 
@@ -15,9 +16,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCardProps) {
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(price);
-
   const pathname = usePathname();
   const isBoutique = pathname === "/boutique";
 
@@ -101,11 +99,11 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
                 <div className="flex flex-col">
                   {product.originalPrice && product.originalPrice > product.price && (
                     <span className="text-xs text-gray-400 line-through leading-none mb-0.5">
-                      {formatPrice(product.originalPrice)}
+                      {formatCurrency(product.originalPrice)}
                     </span>
                   )}
                   <span className={`text-lg sm:text-xl font-extrabold leading-tight ${product.discount ? "text-emerald-600" : "bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent"}`}>
-                    {formatPrice(product.price)}
+                    {formatCurrency(product.price)}
                   </span>
                 </div>
 

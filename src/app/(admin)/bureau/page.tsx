@@ -7,6 +7,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 import { BureauRecentPayments } from "@/components/bureau/bureau-recent-payments"
+import { formatCurrency } from "@/helpers/format-currency"
 
 export const metadata: Metadata = { title: "Vue d'ensemble" }
 
@@ -39,14 +40,6 @@ async function getRecentPayments() {
     orderBy: { paymentDate: "desc" },
     include: { person: true },
   })
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(amount / 100)
 }
 
 const kpiConfig = [
@@ -92,9 +85,9 @@ export default async function BureauOverviewPage() {
   const [stats, recentPayments] = await Promise.all([getStats(), getRecentPayments()])
 
   const subValues: Record<string, string> = {
-    adhesions: formatCurrency(stats.montantAdhesions) + " collectés",
-    dons: formatCurrency(stats.montantDons) + " collectés",
-    commandes: formatCurrency(stats.montantCommandes) + " de ventes",
+    adhesions: formatCurrency(stats.montantAdhesions, { maximumFractionDigits: 0 }) + " collectés",
+    dons: formatCurrency(stats.montantDons, { maximumFractionDigits: 0 }) + " collectés",
+    commandes: formatCurrency(stats.montantCommandes, { maximumFractionDigits: 0 }) + " de ventes",
     personnes: "dans la base de données",
   }
 
