@@ -15,7 +15,7 @@ export function AdhesionsBoard({ adhesions }: AdhesionsBoardProps) {
     return (
       <Card>
         <CardContent className="flex min-h-[12rem] items-center justify-center px-6 py-10 text-center text-sm text-muted-foreground">
-          Aucune adhésion enregistrée
+          Aucune adhésion trouvée
         </CardContent>
       </Card>
     )

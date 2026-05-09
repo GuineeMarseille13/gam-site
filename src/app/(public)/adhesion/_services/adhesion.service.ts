@@ -84,11 +84,23 @@ export async function saveAdhesionFromPaymentIntent(
           email: member.email || undefined,
         })
 
+        // Règle métier : une seule adhésion active par personne.
+        // On désactive toute adhésion active existante avant de créer la nouvelle.
+        await tx.memberShip.updateMany({
+          where: {
+            personId: memberId,
+            isActive: true,
+          },
+          data: { isActive: false },
+        })
+
         await tx.memberShip.create({
           data: {
             title: 'Adhésion',
             amount: totalAmount / members.length,
-            year: new Date().getFullYear(),
+            year: Number.isFinite(Number(paymentIntent.metadata.membership_year))
+              ? Number(paymentIntent.metadata.membership_year)
+              : new Date().getFullYear(),
             isActive: true,
             personId: memberId,
             paymentId: payment.id,
@@ -198,11 +210,24 @@ export async function saveAdhesionFromStripeSession(
           email: member.email || undefined,
         })
 
+        // Règle métier : une seule adhésion active par personne.
+        await tx.memberShip.updateMany({
+          where: {
+            personId: memberId,
+            isActive: true,
+          },
+          data: { isActive: false },
+        })
+
         await tx.memberShip.create({
           data: {
             title: 'Adhésion',
             amount: totalAmount / members.length,
-            year: new Date().getFullYear(),
+            year:
+              typeof session.metadata?.membership_year === "string" &&
+              Number.isFinite(Number(session.metadata.membership_year))
+                ? Number(session.metadata.membership_year)
+                : new Date().getFullYear(),
             isActive: true,
             personId: memberId,
             paymentId: payment.id,

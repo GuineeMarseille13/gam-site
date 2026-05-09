@@ -17,6 +17,7 @@ import {
 } from "../_utils/adhesion-display"
 import { AdhesionPaymentRef } from "./adhesion-payment-ref"
 import { AdhesionStatusBadge } from "./adhesion-status-badge"
+import { AdhesionRenewalDialog } from "./adhesion-renewal-dialog"
 
 interface AdhesionsDesktopTableProps {
   adhesions: AdhesionWithRelations[]
@@ -39,6 +40,7 @@ export function AdhesionsDesktopTable({ adhesions }: AdhesionsDesktopTableProps)
               <TableHead className="text-center">Statut</TableHead>
               <TableHead className="text-right">Date d&apos;adhésion</TableHead>
               <TableHead className="pr-6 text-right">Fin d&apos;adhésion</TableHead>
+              <TableHead className="pr-6 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -82,6 +84,9 @@ export function AdhesionsDesktopTable({ adhesions }: AdhesionsDesktopTableProps)
                     {formatAdhesionDate(start)}
                   </TableCell>
                   <TableCell className="pr-6 text-right tabular-nums">{formatAdhesionDate(end)}</TableCell>
+                  <TableCell className="pr-6 text-right">
+                    <AdhesionRenewalDialog adhesion={adhesion} />
+                  </TableCell>
                 </TableRow>
               )
             })}

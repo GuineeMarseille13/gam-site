@@ -8,6 +8,7 @@ import {
 } from "../_utils/adhesion-display"
 import { AdhesionPaymentRef } from "./adhesion-payment-ref"
 import { AdhesionStatusBadge } from "./adhesion-status-badge"
+import { AdhesionRenewalDialog } from "./adhesion-renewal-dialog"
 
 interface AdhesionsMobileCardsProps {
   adhesions: AdhesionWithRelations[]
@@ -78,6 +79,10 @@ export function AdhesionsMobileCards({ adhesions }: AdhesionsMobileCardsProps) {
                 </dd>
               </div>
             </dl>
+
+            <div className="mt-4 flex justify-end">
+              <AdhesionRenewalDialog adhesion={adhesion} />
+            </div>
           </article>
         )
       })}
