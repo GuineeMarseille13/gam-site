@@ -9,33 +9,42 @@ import Header from "@/components/Header"
 import { EventMediaPreviewProvider } from "@/contexts/event-media-preview-context"
 
 async function getActivePopup(): Promise<PopupData | null> {
-  const popup = await prisma.popup.findFirst({ where: { isActive: true } })
-  if (!popup) return null
-  return {
-    id:            popup.id,
-    type:          popup.type,
-    isActive:      popup.isActive,
-    badge:         popup.badge,
-    title:         popup.title,
-    subtitle:      popup.subtitle,
-    description:   popup.description,
-    date:          popup.date,
-    location:      popup.location,
-    imageId:       popup.imageId,
-    ctaLabel:      popup.ctaLabel,
-    ctaUrl:        popup.ctaUrl,
-    prospectusIds: popup.prospectusIds,
+  try {
+    const popup = await prisma.popup.findFirst({ where: { isActive: true } })
+    if (!popup) return null
+    return {
+      id:            popup.id,
+      type:          popup.type,
+      isActive:      popup.isActive,
+      badge:         popup.badge,
+      title:         popup.title,
+      subtitle:      popup.subtitle,
+      description:   popup.description,
+      date:          popup.date,
+      location:      popup.location,
+      imageId:       popup.imageId,
+      ctaLabel:      popup.ctaLabel,
+      ctaUrl:        popup.ctaUrl,
+      prospectusIds: popup.prospectusIds,
+    }
+  } catch {
+    // Base injoignable (ex. mauvaise DATABASE_URL, réseau) : pas de popup plutôt que crash du layout.
+    return null
   }
 }
 
 async function getActiveBanner(): Promise<BannerData | null> {
-  const banner = await prisma.banner.findFirst({ where: { isActive: true } })
-  if (!banner) return null
-  return {
-    badge:    banner.badge,
-    title:    banner.title,
-    date:     banner.date,
-    location: banner.location,
+  try {
+    const banner = await prisma.banner.findFirst({ where: { isActive: true } })
+    if (!banner) return null
+    return {
+      badge:    banner.badge,
+      title:    banner.title,
+      date:     banner.date,
+      location: banner.location,
+    }
+  } catch {
+    return null
   }
 }
 

@@ -157,7 +157,7 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   {step === "checkout" && (
                     <div className="hidden sm:flex items-center gap-1 text-xs font-medium text-gray-600">
                       <CreditCard className="w-4 h-4" />
-                      <span>Paiement simulé</span>
+                      <span>Paiement sécurisé</span>
                     </div>
                   )}
                   <motion.button
@@ -414,7 +414,9 @@ export function CartDrawer({ open, onClose, items, totalPrice, onUpdate, onRemov
                   <CheckCircle2 className="w-14 h-14" />
                 </motion.div>
                 <h4 className="mt-3 text-lg font-semibold">Merci pour votre soutien !</h4>
-                <p className="text-sm text-gray-600 mt-2">Votre commande simulée a été enregistrée localement. Un membre de l&apos;association pourra vous contacter si besoin.</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Votre paiement a bien été pris en compte et votre commande est enregistrée. Un membre de l&apos;association pourra vous contacter si besoin.
+                </p>
                 <button type="button" onClick={closeDrawer} className="mt-6 rounded-md bg-gray-900 text-white px-4 py-2 text-sm cursor-pointer">
                   Fermer
                 </button>

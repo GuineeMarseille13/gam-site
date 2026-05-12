@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     // 3. Échec / annulation : supprimer le paiement et l’entité liée s’ils avaient été enregistrés
     if (event.type === 'payment_intent.payment_failed' || event.type === 'payment_intent.canceled') {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
-      await rollbackPaymentIfRecorded(paymentIntent.id, paymentIntent.metadata?.type )
+      await rollbackPaymentIfRecorded(paymentIntent.id)
       return NextResponse.json({ received: true })
     }
 
@@ -88,6 +88,7 @@ export async function POST(request: Request) {
 }
 
 async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+  console.log(`[Webhook] handlePaymentSuccess: paymentIntent=${paymentIntent}`)
   const type = paymentIntent.metadata?.type ?? ''
   try {
     switch (type) {

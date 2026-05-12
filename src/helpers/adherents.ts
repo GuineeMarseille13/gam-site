@@ -36,6 +36,23 @@ export async function getAdherentsForDashboard(): Promise<AdherentListRow[]> {
     const latestMembershipCreatedAt = memberships[0]?.createdAt
     if (!latestMembershipCreatedAt) continue
 
+    const byYear = new Map<
+      number,
+      { year: number; isActive: boolean; createdAt: string }
+    >()
+    for (const m of memberships) {
+      const createdAtIso = m.createdAt.toISOString()
+      const prev = byYear.get(m.year)
+      if (!prev || createdAtIso > prev.createdAt) {
+        byYear.set(m.year, {
+          year: m.year,
+          isActive: m.isActive,
+          createdAt: createdAtIso,
+        })
+      }
+    }
+    const membershipsByYear = [...byYear.values()].sort((a, b) => b.year - a.year)
+
     const parsed = adherentListRowSchema.safeParse({
       personId: p.id,
       firstName: p.firstName,
@@ -48,6 +65,7 @@ export async function getAdherentsForDashboard(): Promise<AdherentListRow[]> {
       latestMembershipCreatedAt: latestMembershipCreatedAt.toISOString(),
       hasActiveMembership: memberships.some((m) => m.isActive),
       years,
+      membershipsByYear,
     })
 
     if (parsed.success) {

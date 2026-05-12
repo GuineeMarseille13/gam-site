@@ -13,6 +13,7 @@ import {
   filterAdherentRows,
   type StatusFilter,
 } from "../_utils/adherent-list-filters"
+import { AdherentDetailSheet } from "./adherent-detail-sheet"
 import { AdherentsFilterBar } from "./adherents-filter-bar"
 import { AdherentsRows } from "./adherents-rows"
 
@@ -25,10 +26,11 @@ export function AdherentsList() {
   const { data, isPending, isError, error, refetch } = useAdherentsDashboard()
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("tous")
+  const [detailPersonId, setDetailPersonId] = useState<string | null>(null)
 
   const adherents = data ?? EMPTY_ADHERENT_ROWS
 
-  const { yearFilter, setYearFilter, availableYears } =
+  const { yearFilter, setYearFilter, yearSelectOptions } =
     useAdherentYearFromUrl(adherents)
 
   const filtered = useMemo(
@@ -50,12 +52,12 @@ export function AdherentsList() {
   if (isPending && data === undefined) {
     return (
       <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 xl:p-10">
-        <div className="space-y-2">
-          <div className="h-9 w-48 animate-pulse rounded-lg bg-muted/60 sm:w-56" />
-          <div className="h-4 w-full max-w-md animate-pulse rounded bg-muted/40" />
+        <div className="space-y-3">
+          <div className="h-9 w-52 animate-pulse rounded-xl bg-gradient-to-r from-muted/50 to-muted/20 sm:w-60" />
+          <div className="h-4 w-full max-w-md animate-pulse rounded-lg bg-muted/35" />
         </div>
-        <div className="h-11 max-w-md animate-pulse rounded-xl bg-muted/30" />
-        <div className="min-h-[12rem] animate-pulse rounded-2xl bg-muted/20" />
+        <div className="h-24 max-w-full animate-pulse rounded-3xl bg-gradient-to-br from-muted/40 via-muted/25 to-transparent ring-1 ring-border/30" />
+        <div className="min-h-[14rem] animate-pulse rounded-3xl bg-gradient-to-br from-muted/30 to-muted/10 ring-1 ring-border/20" />
       </div>
     )
   }
@@ -81,6 +83,10 @@ export function AdherentsList() {
 
   return (
     <BureauContent title="Adhérents" description={description} dashboard="bureau">
+      <AdherentDetailSheet
+        personId={detailPersonId}
+        onClose={() => setDetailPersonId(null)}
+      />
       {adherents.length > 0 && (
         <AdherentsFilterBar
           adherents={adherents}
@@ -88,7 +94,7 @@ export function AdherentsList() {
           onSearchChange={setSearch}
           yearFilter={yearFilter}
           onYearFilterChange={setYearFilter}
-          yearOptions={availableYears}
+          yearOptions={yearSelectOptions}
           statusFilter={statusFilter}
           onStatusFilterChange={setStatusFilter}
           onResetFilters={handleResetFilters}
@@ -96,32 +102,36 @@ export function AdherentsList() {
       )}
 
       {adherents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-muted/20 py-16 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-muted/60">
-            <IconIdBadge2 className="size-5 text-muted-foreground/50" />
+        <div className="flex flex-col items-center justify-center gap-5 rounded-3xl border border-dashed border-border/60 bg-gradient-to-b from-muted/25 to-transparent py-16 text-center ring-1 ring-white/[0.02]">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 shadow-inner ring-1 ring-amber-500/20">
+            <IconIdBadge2 className="size-6 text-amber-600/80 dark:text-amber-400/90" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground">Aucun adhérent</p>
-            <p className="mt-0.5 max-w-sm text-xs text-muted-foreground">
+          <div className="max-w-sm px-4">
+            <p className="text-base font-semibold tracking-tight text-foreground">Aucun adhérent</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
               Les adhérents apparaissent ici lorsqu&apos;ils ont payé leur adhésion.
             </p>
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/15 py-14 text-center">
-          <p className="text-sm font-medium text-foreground">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-amber-500/25 bg-amber-500/[0.06] py-16 text-center dark:bg-amber-500/[0.05]">
+          <p className="text-sm font-semibold text-foreground">
             Aucun résultat pour ces filtres
           </p>
           <button
             type="button"
             onClick={handleResetFilters}
-            className="text-xs font-semibold text-amber-700 underline-offset-4 hover:underline dark:text-amber-400"
+            className="rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-amber-900/25 transition hover:from-amber-400 hover:to-amber-500"
           >
             Réinitialiser les filtres
           </button>
         </div>
       ) : (
-        <AdherentsRows rows={filtered} />
+        <AdherentsRows
+          rows={filtered}
+          yearFilter={yearFilter}
+          onOpenDetail={setDetailPersonId}
+        />
       )}
     </BureauContent>
   )

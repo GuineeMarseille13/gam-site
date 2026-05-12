@@ -23,14 +23,26 @@ export function useAdherentYearFromUrl(adherents: AdherentListRow[]) {
     return [...unique].sort((a, b) => b - a)
   }, [adherents])
 
+  /**
+   * Année active : uniquement dérivée de l’URL validée (Zod).
+   * Ne pas exiger que l’année soit déjà dans `availableYears` : sinon au premier rendu
+   * (liste vide) ou avec des données qui ne contiennent pas encore cette année, le filtre
+   * était ignoré (`null`) et la liste ne se restreignait jamais.
+   */
   const yearFilter = useMemo((): number | null => {
     const raw = searchParams.get(ANNEE_PARAM)
     if (!raw) return null
     const parsed = adherentYearQuerySchema.safeParse(raw)
     if (!parsed.success) return null
-    if (!availableYears.includes(parsed.data)) return null
     return parsed.data
-  }, [searchParams, availableYears])
+  }, [searchParams])
+
+  /** Options du select : années présentes dans les données + année courante de l’URL (lien direct). */
+  const yearSelectOptions = useMemo(() => {
+    const set = new Set<number>(availableYears)
+    if (yearFilter !== null) set.add(yearFilter)
+    return [...set].sort((a, b) => b - a)
+  }, [availableYears, yearFilter])
 
   const setYearFilter = useCallback(
     (year: number | null) => {
@@ -46,5 +58,5 @@ export function useAdherentYearFromUrl(adherents: AdherentListRow[]) {
     [pathname, router, searchParams],
   )
 
-  return { yearFilter, setYearFilter, availableYears }
+  return { yearFilter, setYearFilter, availableYears, yearSelectOptions }
 }

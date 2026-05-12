@@ -1,116 +1,160 @@
-import Stripe from 'stripe'
-import { prisma } from '@/lib/prisma'
-import { PaymentStatus } from '@/types/paiement-status'
-import { findOrCreatePerson } from '@/helpers/person.utils'
+import Stripe from "stripe";
+
+import { prisma } from "@/lib/prisma";
+import { findOrCreatePerson } from "@/helpers/person.utils";
+import { PaymentStatus } from "@/types/paiement-status";
+
+import { checkoutDataSchema } from "../_schemas/product.schema";
+import { orderCartCompactSchema } from "../_schemas/order-cart-compact.schema";
+import {
+  CheckoutValidationError,
+  resolveOrderCartLines,
+} from "./resolve-order-cart";
+
+const AMOUNT_TOLERANCE_CENTS = 1;
+
+function extractPaymentMethodLabel(paymentIntent: Stripe.PaymentIntent): string {
+  const types = paymentIntent.payment_method_types;
+  if (types?.length) return types[0] ?? "card";
+  return "card";
+}
 
 /**
- * Sauvegarde une commande à partir d'un PaymentIntent Stripe complété
- * @param paymentIntent - Le PaymentIntent Stripe complété
+ * Persiste commande, lignes, paiement et historique après succès Stripe (webhook).
+ * Recalcule prix/stock depuis la base à partir du panier compact dans les métadonnées.
+ *
+ * @param paymentIntent — PaymentIntent au statut `succeeded`
  */
 export async function saveOrderFromPaymentIntent(
-  paymentIntent: Stripe.PaymentIntent
+  paymentIntent: Stripe.PaymentIntent,
 ): Promise<void> {
+  const meta = paymentIntent.metadata ?? {};
+  const rawCart = meta.cart;
+  const rawCustomer = meta.customer;
+
+  if (!rawCart || !rawCustomer) {
+    throw new Error("Métadonnées panier ou client manquantes pour la commande.");
+  }
+
+  let cartLines;
+  let customer;
+
   try {
-    // Vérifier que le PaymentIntent a les métadonnées nécessaires
-    if (!paymentIntent.metadata) {
-      throw new Error('Métadonnées manquantes dans le PaymentIntent Stripe')
-    }
+    cartLines = orderCartCompactSchema.parse(JSON.parse(rawCart));
+    customer = checkoutDataSchema.parse(JSON.parse(rawCustomer));
+  } catch {
+    throw new Error("Format des métadonnées commande invalide.");
+  }
 
-    const { items, customer, itemsCount } = paymentIntent.metadata
+  const existingPayment = await prisma.payment.findFirst({
+    where: { paymentReference: paymentIntent.id },
+    select: { id: true },
+  });
 
-    if (!items || !customer || !itemsCount) {
-      throw new Error('Données manquantes dans les métadonnées')
-    }
+  if (existingPayment) {
+    return;
+  }
 
-    // Parser les données
-    let parsedItems: Array<{ productId: string; productName: string; quantity: number; price: number }>
-    let parsedCustomer: { firstName: string; lastName: string; phone?: string; email?: string }
+  const orderNumber = `CMD-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 9)
+    .toUpperCase()}`;
 
-    try {
-      parsedItems = JSON.parse(items) as Array<{ productId: string; productName: string; quantity: number; price: number }>
-      parsedCustomer = JSON.parse(customer) as { firstName: string; lastName: string; phone?: string; email?: string }
-    } catch (err) {
-      throw new Error(`Erreur lors du parsing des données: ${err instanceof Error ? err.message : 'Erreur inconnue'}`)
-    }
-
-    // Calculer le montant total
-    const totalAmount = paymentIntent.amount / 100
-
-    // Vérifier si la commande existe déjà (éviter les doublons)
-    const existingPayment = await prisma.payment.findFirst({
-      where: {
-        paymentReference: paymentIntent.id,
-      },
-    })
-
-    if (existingPayment) {
-      console.log(`Commande déjà enregistrée pour le PaymentIntent: ${paymentIntent.id}`)
-      return
-    }
-
-    // Générer un numéro de commande unique
-    const orderNumber = `CMD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
-
-    // Créer la commande
+  try {
     await prisma.$transaction(async (tx) => {
-      // Trouver ou créer la personne
-      const personId = await findOrCreatePerson(tx, {
-        firstName: parsedCustomer.firstName,
-        lastName: parsedCustomer.lastName,
-        phone: parsedCustomer.phone,
-        email: parsedCustomer.email,
-      })
+      const { lines, totalAmountCents } = await resolveOrderCartLines(tx, cartLines);
 
-      // Sauvegarder un paiement dans la base de données
+      const delta = Math.abs(totalAmountCents - paymentIntent.amount);
+      if (delta > AMOUNT_TOLERANCE_CENTS) {
+        throw new CheckoutValidationError(
+          "Le montant Stripe ne correspond pas au panier calculé côté serveur.",
+        );
+      }
+
+      const metaTotal = meta.totalAmountCents;
+      if (
+        typeof metaTotal === "string" &&
+        metaTotal.length > 0 &&
+        Number.parseInt(metaTotal, 10) !== paymentIntent.amount
+      ) {
+        throw new CheckoutValidationError("Montant total incohérent dans les métadonnées.");
+      }
+
+      for (const line of lines) {
+        const stockUpdate = await tx.product.updateMany({
+          where: {
+            id: line.productId,
+            stock: { gte: line.quantity },
+          },
+          data: {
+            stock: { decrement: line.quantity },
+          },
+        });
+
+        if (stockUpdate.count !== 1) {
+          throw new CheckoutValidationError(
+            `Stock insuffisant ou produit modifié pour « ${line.productName} ».`,
+          );
+        }
+      }
+
+      const personId = await findOrCreatePerson(tx, {
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        phone: customer.phone,
+        email: customer.email,
+      });
+
       const payment = await tx.payment.create({
         data: {
           paymentReference: paymentIntent.id,
-          amount: totalAmount,
+          amount: totalAmountCents,
           status: PaymentStatus.PAID,
-          type: 'order',
-          paymentMethod: paymentIntent.payment_method_types[0],
+          type: "order",
+          paymentMethod: extractPaymentMethodLabel(paymentIntent),
           personId,
         },
-      })
+      });
 
-      // Sauvegarder la commande dans la base de données
       await tx.order.create({
         data: {
           orderNumber,
           personId,
-          totalAmount,
+          totalAmount: totalAmountCents,
           paymentId: payment.id,
           items: {
             createMany: {
-              data: parsedItems.map((item) => ({
+              data: lines.map((item) => ({
                 productId: item.productId,
                 quantity: item.quantity,
-                price: item.price,
-                subtotal: item.quantity * item.price,
+                price: item.unitAmountCents,
+                subtotal: item.lineTotalCents,
               })),
             },
           },
         },
-      })
+      });
 
-      // Sauvegarder l'historique de paiement
       await tx.paymentHistory.create({
         data: {
           paymentId: paymentIntent.id,
           personId,
           status: PaymentStatus.PAID,
-          type: 'order',
+          type: "order",
         },
-      })
-    })
-
-    console.log(`Commande sauvegardée: ${orderNumber}, montant: ${totalAmount}€, ${parsedItems.length} article(s)`)
+      });
+    });
   } catch (err) {
-    if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2002') {
-      console.log(`Commande déjà enregistrée (doublon détecté) pour le PaymentIntent: ${paymentIntent.id}`)
-      return
+    if (
+      err instanceof Error &&
+      "code" in err &&
+      (err as { code: string }).code === "P2002"
+    ) {
+      return;
     }
-    console.error('Erreur dans saveOrderFromPaymentIntent:', err)
-    throw err
+    if (err instanceof CheckoutValidationError) {
+      throw err;
+    }
+    throw err;
   }
 }

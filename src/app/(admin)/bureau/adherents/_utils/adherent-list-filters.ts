@@ -28,6 +28,14 @@ function matchesSearch(row: AdherentListRow, q: string): boolean {
   return haystack.includes(q)
 }
 
+function isActiveForFilteredYear(row: AdherentListRow, year: number | null): boolean {
+  if (year === null) {
+    return row.hasActiveMembership
+  }
+  const snap = row.membershipsByYear.find((m) => m.year === year)
+  return snap?.isActive ?? false
+}
+
 export function filterAdherentRows(
   rows: AdherentListRow[],
   search: string,
@@ -38,8 +46,8 @@ export function filterAdherentRows(
   return rows.filter((row) => {
     if (!matchesSearch(row, q)) return false
     if (year !== null && !row.years.includes(year)) return false
-    if (status === "actif" && !row.hasActiveMembership) return false
-    if (status === "inactif" && row.hasActiveMembership) return false
+    if (status === "actif" && !isActiveForFilteredYear(row, year)) return false
+    if (status === "inactif" && isActiveForFilteredYear(row, year)) return false
     return true
   })
 }

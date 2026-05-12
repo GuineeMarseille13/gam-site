@@ -177,7 +177,7 @@ function PaymentForm(props: StripePaymentFormProps) {
             {isProcessing ? (
               <>
                 <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> 
-                <span className="text-xs sm:text-sm md:text-base">Traitement du paiement...</span>
+                <span className="text-xs sm:text-sm md:text-base">Paiement en cours...</span>
               </>
             ) : (
               <>
