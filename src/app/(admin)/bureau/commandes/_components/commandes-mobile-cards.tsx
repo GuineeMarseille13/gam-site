@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import type { OrderWithRelations } from "../_types/order-with-relations.type"
 import { formatCurrency } from "@/helpers/format-currency"
 import {
@@ -6,15 +7,20 @@ import {
   getCommandeInitials,
 } from "../_utils/commande-display"
 import { CommandeStatusBadge } from "./commande-status-badge"
+import { IconListDetails } from "@tabler/icons-react"
 
 interface CommandesMobileCardsProps {
   readonly commandes: OrderWithRelations[]
+  readonly onOpenDetail: (commande: OrderWithRelations) => void
 }
 
 /**
  * Cartes empilées pour viewport &lt; md.
  */
-export function CommandesMobileCards({ commandes }: CommandesMobileCardsProps) {
+export function CommandesMobileCards({
+  commandes,
+  onOpenDetail,
+}: CommandesMobileCardsProps) {
   return (
     <div className="space-y-3 md:hidden" aria-label="Liste des commandes">
       {commandes.map((commande) => {
@@ -72,6 +78,17 @@ export function CommandesMobileCards({ commandes }: CommandesMobileCardsProps) {
                 </dd>
               </div>
             </dl>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-4 w-full gap-2 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
+              onClick={() => onOpenDetail(commande)}
+              aria-label={`Détail commande ${commande.orderNumber}`}
+            >
+              <IconListDetails className="size-4" aria-hidden />
+              Voir le détail des articles
+            </Button>
           </article>
         )
       })}

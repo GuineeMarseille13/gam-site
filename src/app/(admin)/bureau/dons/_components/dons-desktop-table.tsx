@@ -14,6 +14,7 @@ import {
   getDonAvatarClass,
   getDonInitials,
 } from "../_utils/don-display"
+import { DonMessagePreview } from "./don-message-preview"
 
 interface DonsDesktopTableProps {
   readonly dons: DonWithRelations[]
@@ -26,13 +27,14 @@ export function DonsDesktopTable({ dons }: DonsDesktopTableProps) {
   return (
     <Card className="hidden md:block">
       <CardContent className="overflow-x-auto px-0">
-        <Table className="min-w-[56rem]">
+        <Table className="min-w-[44rem]">
           <TableHeader>
             <TableRow>
               <TableHead className="pl-6">Donateur</TableHead>
-              <TableHead>Titre</TableHead>
               <TableHead className="text-right">Montant</TableHead>
-              <TableHead>Message</TableHead>
+              <TableHead className="min-w-[12rem] max-w-[min(28rem,40vw)]">
+                Message
+              </TableHead>
               <TableHead className="pr-6 text-right">Date</TableHead>
             </TableRow>
           </TableHeader>
@@ -73,14 +75,12 @@ export function DonsDesktopTable({ dons }: DonsDesktopTableProps) {
                     </div>
                   </TableCell>
 
-                  <TableCell className="text-sm">{don.title}</TableCell>
-
                   <TableCell className="text-right font-semibold tabular-nums text-sm">
                     {formatCurrency(don.amount, { maximumFractionDigits: 0 })}
                   </TableCell>
 
-                  <TableCell className="max-w-[240px] truncate text-muted-foreground text-sm">
-                    {don.message ?? "—"}
+                  <TableCell className="max-w-[min(28rem,40vw)] align-top">
+                    <DonMessagePreview message={don.message} variant="table" />
                   </TableCell>
 
                   <TableCell className="pr-6 text-right tabular-nums text-muted-foreground">

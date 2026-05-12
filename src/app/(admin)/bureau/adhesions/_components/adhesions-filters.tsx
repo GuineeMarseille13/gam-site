@@ -3,9 +3,8 @@
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Search } from "lucide-react"
+import { RotateCcw, Search } from "lucide-react"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -87,63 +86,98 @@ export function AdhesionsFilters({ availableYears }: AdhesionsFiltersProps) {
     [applyFilters, q],
   )
 
+  const hasActiveFilters =
+    q.trim() !== "" || year !== ALL_YEARS_VALUE
+
   return (
-    <Card className="mb-4">
-      <CardContent className="p-4 sm:p-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
-          <div className="grid flex-1 gap-4 md:grid-cols-2">
-            <div className="grid gap-1.5">
-              <label
-                htmlFor="q"
-                className="text-xs font-semibold text-muted-foreground"
-              >
-                Recherche
-              </label>
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="q"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Nom, prénom ou téléphone"
-                  className="pl-9"
-                  autoComplete="off"
-                  inputMode="search"
-                />
-              </div>
-            </div>
+    <div
+      className="
+        mb-4 flex flex-col gap-2 rounded-xl border border-border/40 bg-muted/15 px-3 py-2
+        sm:flex-row sm:items-center sm:gap-3 sm:py-2.5
+      "
+      role="search"
+      aria-label="Filtrer les adhésions"
+    >
+      <div className="relative min-w-0 w-full sm:flex-1">
+        <label htmlFor="q" className="sr-only">
+          Recherche par nom, prénom ou téléphone
+        </label>
+        <Search
+          className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
+        />
+        <Input
+          id="q"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Rechercher…"
+          className="h-9 w-full border-border/50 bg-background/80 pl-9 text-sm shadow-sm dark:bg-background/50"
+          autoComplete="off"
+          inputMode="search"
+        />
+      </div>
 
-            <div className="grid gap-1.5">
-              <label
-                htmlFor="annee"
-                className="text-xs font-semibold text-muted-foreground"
-              >
-                Année
-              </label>
-              <Select value={year} onValueChange={handleYearChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Toutes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={ALL_YEARS_VALUE}>Toutes</SelectItem>
-                  {years.map((y) => (
-                    <SelectItem key={y} value={String(y)}>
-                      {y}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <div
+        className="
+          flex min-w-0 flex-row flex-nowrap items-center gap-2
+          sm:w-auto sm:shrink-0
+        "
+      >
+        <label htmlFor="annee-select" className="sr-only">
+          Filtrer par année
+        </label>
+        <Select value={year} onValueChange={handleYearChange}>
+          <SelectTrigger
+            id="annee-select"
+            className="
+              h-9 min-w-0 flex-1 border-border/50 bg-background/80 text-sm shadow-sm
+              sm:w-[8.5rem] sm:flex-none sm:shrink-0
+              dark:bg-background/50
+            "
+            aria-label="Année d'adhésion"
+          >
+            <SelectValue placeholder="Année" />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectItem value={ALL_YEARS_VALUE}>Toutes</SelectItem>
+            {years.map((y) => (
+              <SelectItem key={y} value={String(y)}>
+                {y}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button asChild variant="outline" className="w-full sm:w-auto">
-              <Link href="/bureau/adhesions">Réinitialiser</Link>
+        {hasActiveFilters ? (
+          <>
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="hidden h-9 shrink-0 px-2 text-xs font-semibold sm:inline-flex"
+            >
+              <Link href="/bureau/adhesions" scroll={false}>
+                Réinitialiser
+              </Link>
             </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 shrink-0 sm:hidden"
+            >
+              <Link
+                href="/bureau/adhesions"
+                scroll={false}
+                aria-label="Réinitialiser les filtres"
+              >
+                <RotateCcw className="size-4" aria-hidden />
+              </Link>
+            </Button>
+          </>
+        ) : null}
+      </div>
+    </div>
   )
 }
 

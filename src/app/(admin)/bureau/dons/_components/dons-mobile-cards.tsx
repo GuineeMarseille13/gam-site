@@ -5,6 +5,7 @@ import {
   getDonAvatarClass,
   getDonInitials,
 } from "../_utils/don-display"
+import { DonMessagePreview } from "./don-message-preview"
 
 interface DonsMobileCardsProps {
   readonly dons: DonWithRelations[]
@@ -60,25 +61,17 @@ export function DonsMobileCards({ dons }: DonsMobileCardsProps) {
               </div>
             </div>
 
-            <dl className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-              <div className="flex justify-between gap-2 sm:block sm:gap-0">
-                <dt className="text-muted-foreground shrink-0">Titre</dt>
-                <dd className="font-medium text-right sm:text-left">
-                  {don.title}
-                </dd>
+            <section
+              className="mt-3 border-border border-t pt-3"
+              aria-label="Message du don"
+            >
+              <h3 className="text-muted-foreground text-xs font-medium tracking-wide">
+                Message
+              </h3>
+              <div className="mt-2 text-foreground">
+                <DonMessagePreview message={don.message} variant="card" />
               </div>
-
-              <div className="flex justify-between gap-2 sm:block sm:gap-0">
-                <dt className="text-muted-foreground shrink-0">Message</dt>
-                <dd className="text-muted-foreground text-right sm:text-left">
-                  {don.message ? (
-                    <span className="line-clamp-2">{don.message}</span>
-                  ) : (
-                    "—"
-                  )}
-                </dd>
-              </div>
-            </dl>
+            </section>
           </article>
         )
       })}

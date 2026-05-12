@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -15,19 +16,24 @@ import {
   getCommandeInitials,
 } from "../_utils/commande-display"
 import { CommandeStatusBadge } from "./commande-status-badge"
+import { IconListDetails } from "@tabler/icons-react"
 
 interface CommandesDesktopTableProps {
   readonly commandes: OrderWithRelations[]
+  readonly onOpenDetail: (commande: OrderWithRelations) => void
 }
 
 /**
  * Tableau à partir de md, défilement horizontal si besoin.
  */
-export function CommandesDesktopTable({ commandes }: CommandesDesktopTableProps) {
+export function CommandesDesktopTable({
+  commandes,
+  onOpenDetail,
+}: CommandesDesktopTableProps) {
   return (
     <Card className="hidden md:block">
       <CardContent className="overflow-x-auto px-0">
-        <Table className="min-w-[56rem]">
+        <Table className="min-w-[62rem]">
           <TableHeader>
             <TableRow>
               <TableHead className="pl-6">Numéro</TableHead>
@@ -35,7 +41,8 @@ export function CommandesDesktopTable({ commandes }: CommandesDesktopTableProps)
               <TableHead className="text-center">Articles</TableHead>
               <TableHead className="text-right">Total</TableHead>
               <TableHead className="text-center">Statut</TableHead>
-              <TableHead className="pr-6 text-right">Date</TableHead>
+              <TableHead className="text-right">Date</TableHead>
+              <TableHead className="pr-6 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -74,8 +81,21 @@ export function CommandesDesktopTable({ commandes }: CommandesDesktopTableProps)
                   <TableCell className="text-center">
                     <CommandeStatusBadge paymentStatus={commande.payment?.status} />
                   </TableCell>
-                  <TableCell className="pr-6 text-right tabular-nums text-muted-foreground">
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
                     {formatCommandeDate(commande.createdAt)}
+                  </TableCell>
+                  <TableCell className="pr-6 text-right">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
+                      onClick={() => onOpenDetail(commande)}
+                      aria-label={`Détail commande ${commande.orderNumber}`}
+                    >
+                      <IconListDetails className="size-4" aria-hidden />
+                      Détails
+                    </Button>
                   </TableCell>
                 </TableRow>
               )
