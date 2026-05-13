@@ -1,7 +1,8 @@
 // Services API pour l'association
 // Fonctions pures pour les appels API (sans logique React)
 
-import { PresidentSectionData, AboutUsData, TeamData } from "@/types/association";
+import { publicTeamResponseSchema } from "@/lib/schemas/association-public-team.schema"
+import { PresidentSectionData, AboutUsData, TeamData } from "@/types/association"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
@@ -62,13 +63,13 @@ export async function fetchAboutUsDataAPI(): Promise<AboutUsData> {
  */
 export async function fetchTeamDataAPI(): Promise<TeamData> {
   const response = await fetch(`${API_BASE_URL}/association/team`, {
-    next: { revalidate: 300 },
-  });
+    cache: "no-store",
+  })
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const data = await response.json();
-  return data;
+  const json: unknown = await response.json()
+  return publicTeamResponseSchema.parse(json)
 }

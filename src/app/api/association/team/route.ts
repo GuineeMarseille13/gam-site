@@ -27,6 +27,7 @@ export async function GET() {
         id: true,
         firstName: true,
         lastName: true,
+        description: true,
         role: { select: { labelFr: true } },
       },
     })
@@ -36,12 +37,16 @@ export async function GET() {
       .filter((m) => teamPersonsById[m.personId])
       .map((m) => {
         const person = teamPersonsById[m.personId]
+        const bioFromTeam = m.description?.trim()
+        const bioFromPerson = person.description?.trim()
+        const description = bioFromTeam || bioFromPerson || undefined
         return {
           id:    m.id,
           name:  `${person.firstName} ${person.lastName}`,
           role:  person.role?.labelFr ?? "Membre du bureau",
           image: m.imageId ? cloudinaryImageUrl(m.imageId) : "",
           order: m.order,
+          ...(description !== undefined ? { description } : {}),
         }
       })
 
@@ -60,13 +65,22 @@ export async function GET() {
       orderBy: { createdAt: "asc" },
     })
 
-    const bureauResults = bureauPersons.map((p, i) => ({
-      id:    p.id,
-      name:  `${p.firstName} ${p.lastName}`,
-      role:  p.role?.labelFr ?? p.description ?? "Membre du bureau",
-      image: p.image ?? "",
-      order: 100 + i,  // Après les membres explicitement ordonnés via Équipe
-    }))
+    const bureauResults = bureauPersons.map((p, i) => {
+      const rawDesc = p.description?.trim()
+      const roleLabel = p.role?.labelFr ?? rawDesc ?? "Membre du bureau"
+      /** Biographie distincte seulement si un libellé de rôle existe déjà (sinon `rawDesc` sert de rôle, comme avant). */
+      const description =
+        p.role?.labelFr && rawDesc !== undefined && rawDesc.length > 0 ? rawDesc : undefined
+
+      return {
+        id:    p.id,
+        name:  `${p.firstName} ${p.lastName}`,
+        role:  roleLabel,
+        image: p.image ?? "",
+        order: 100 + i, // Après les membres explicitement ordonnés via Équipe
+        ...(description !== undefined ? { description } : {}),
+      }
+    })
 
     return NextResponse.json([...teamResults, ...bureauResults])
   } catch (error) {

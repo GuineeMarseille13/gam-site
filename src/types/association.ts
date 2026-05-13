@@ -40,6 +40,7 @@ export interface TeamMember {
   role: string;
   image: string;
   order: number; // Pour l'ordre d'affichage (1 = président, 2-3 = vice-présidents, etc.)
+  description?: string;
 }
 
 export type TeamData = TeamMember[];

@@ -45,11 +45,11 @@ export default function AboutUsSection() {
   }
 
   return (
-    <div className="w-full relative overflow-hidden py-6 sm:py-10 md:py-12">
+    <div className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12">
       {/* Éléments décoratifs de fond */}
       <BackgroundDecorations />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16 md:space-y-20">
+      <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-10 px-0 sm:space-y-16 md:space-y-20">
         {/* Section "Qui sommes-nous ?" */}
         <WhoWeAreSection data={data.whoWeAre} />
 
@@ -95,7 +95,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
       {/* Titre de section */}
       <SectionTitle title={data.title} icon={Users} delay={ANIMATION_CONFIG.delays.title} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -156,7 +156,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
                       delay: ANIMATION_CONFIG.delays.content + 0.1 + index * 0.1,
                       duration: ANIMATION_CONFIG.durations.normal,
                     }}
-                    className="text-gray-700 leading-relaxed sm:leading-loose text-justify text-base sm:text-lg"
+                    className="text-left text-base text-gray-700 leading-relaxed sm:text-justify sm:text-lg"
                   >
                     {paragraph}
                   </motion.p>
@@ -211,7 +211,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
       {/* Titre de section */}
       <SectionTitle title={data.title} icon={Target} delay={ANIMATION_CONFIG.delays.title + 0.1} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
         {/* Contenu */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -236,7 +236,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
                     delay: ANIMATION_CONFIG.delays.content + 0.3,
                     duration: ANIMATION_CONFIG.durations.normal,
                   }}
-                  className="text-gray-700 leading-relaxed sm:leading-loose text-justify text-base sm:text-lg mb-6 sm:mb-8"
+                  className="mb-6 text-left text-base text-gray-700 leading-relaxed sm:mb-8 sm:text-justify sm:text-lg"
                 >
                   {intro}
                 </motion.p>
@@ -279,7 +279,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
                     delay: ANIMATION_CONFIG.delays.content + 0.8,
                     duration: ANIMATION_CONFIG.durations.normal,
                   }}
-                  className="text-gray-700 leading-relaxed sm:leading-loose text-justify text-base sm:text-lg mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200"
+                  className="mt-6 border-t border-gray-200 pt-5 text-left text-base text-gray-700 leading-relaxed sm:mt-8 sm:pt-6 sm:text-justify sm:text-lg"
                 >
                   {conclusion}
                 </motion.p>
@@ -345,14 +345,14 @@ function SectionTitle({
         delay,
         duration: ANIMATION_CONFIG.durations.normal,
       }}
-      className="flex items-center gap-4 mb-6 sm:mb-8 md:mb-10"
+      className="mb-8 flex flex-row items-start gap-3 sm:mb-10 md:mb-12 sm:items-center sm:gap-4"
     >
       <div className="h-10 sm:h-12 md:h-14 w-1 bg-gradient-to-b from-green-600 via-green-500 to-green-400 rounded-full flex-shrink-0" />
-      <div className="flex items-center gap-3 sm:gap-4">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg">
-          <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+      <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 md:gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg sm:h-12 sm:w-12 md:h-14 md:w-14">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
         </div>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900">
+        <h2 className="min-w-0 flex-1 text-balance break-words text-2xl font-extrabold text-gray-900 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
           <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
             {title}
           </span>
@@ -370,10 +370,10 @@ function LoadingState({ data }: { data: AboutUsData }) {
   const whatWeOfferPoints = whatWeOfferParts[1]?.split("\n").filter((line) => line.trim().startsWith("•")) || [];
 
   return (
-    <div className="w-full relative overflow-hidden py-6 sm:py-10 md:py-12">
+    <div className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12">
       <BackgroundDecorations />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-16 md:space-y-20">
+      <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-10 px-0 sm:space-y-16 md:space-y-20">
         {/* Skeleton pour "Qui sommes-nous ?" */}
         <SectionSkeleton 
           paragraphs={whoWeAreParagraphs}
@@ -429,7 +429,7 @@ function SectionSkeleton({
         </div>
       </div>
 
-      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10`}>
+      <div className={`grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10`}>
         {/* Skeleton pour l'image */}
         <div className={`relative ${reverse ? "order-1 lg:order-2" : ""}`}>
           <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-green-50 via-green-100 to-green-50">

@@ -1,282 +1,577 @@
-"use client";
+"use client"
 
-import { motion } from "motion/react";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { Users } from "lucide-react";
-import { teamMembers } from "@/data/association";
-import { useTeamData } from "@/hooks/use-association";
-import { TeamMember } from "@/types/association";
+import { useMemo, type ReactNode } from "react"
+import { motion } from "motion/react"
+import { ImageWithFallback } from "@/components/ui/image-with-fallback"
+import { Button } from "@/components/ui/button"
+import { Users } from "lucide-react"
+import { useTeamData } from "@/hooks/use-association"
+import { cn } from "@/helpers/utils"
+import type { TeamMember } from "@/types/association"
+import { partitionTeamByHierarchy } from "@/components/association/_utils/team-hierarchy"
+import { TeamMemberDescription } from "@/components/association/team-member-description"
 
 // Configuration des animations
 const ANIMATION_CONFIG = {
   delays: {
     title: 0.1,
     president: 0.2,
-    vicePresidents: 0.3,
-    others: 0.4,
+    vicePresidents: 0.28,
+    bureauTail: 0.36,
+    overflow: 0.48,
   },
   duration: 0.6,
-} as const;
+} as const
 
-// Configuration des variantes de cartes
+type TeamAnimationBand = keyof Omit<typeof ANIMATION_CONFIG.delays, "title">
+
+const MOTION_EASE = [0.22, 1, 0.36, 1] as const
+const MOTION_SPRING = { type: "spring" as const, stiffness: 420, damping: 30, mass: 0.85 }
+
+/** Fond de section : profondeur, halo vert discret, grain léger (singularité vs autres onglets). */
+const TEAM_SECTION_SHELL =
+  "relative isolate overflow-hidden bg-gradient-to-b from-background via-muted/15 to-muted/35 dark:from-background dark:via-muted/8 dark:to-muted/20"
+const TEAM_SECTION_AMBIENT =
+  "pointer-events-none absolute inset-x-0 top-0 h-[min(55vh,26rem)] -translate-y-[18%] bg-[radial-gradient(ellipse_85%_55%_at_50%_0%,var(--theme-green)/0.14,transparent_68%)] dark:bg-[radial-gradient(ellipse_85%_55%_at_50%_0%,var(--theme-green)/0.22,transparent_62%)]"
+const TEAM_SECTION_GRID =
+  "pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,var(--border)/0.35_50%,transparent_100%)] bg-size-[min(100%,48rem)_100%] bg-top bg-no-repeat opacity-[0.45] dark:opacity-[0.35]"
+const TEAM_SECTION_DOTS =
+  "pointer-events-none absolute inset-0 text-muted-foreground/25 opacity-[0.5] bg-[radial-gradient(circle_at_center,currentColor_1px,transparent_1px)] [background-size:22px_22px] dark:text-muted-foreground/35 dark:opacity-[0.45]"
+
+/** Carte président : contraste, anneau, léger dégradé (effet « mise en lumière »). */
+const SURFACE_FEATURED =
+  "relative overflow-hidden border border-theme-green/25 bg-gradient-to-br from-card via-card to-muted/30 shadow-[0_18px_48px_-26px_rgba(0,0,0,0.12),inset_0_1px_0_0_rgba(255,255,255,0.07)] ring-1 ring-black/[0.04] backdrop-blur-xl dark:from-card/90 dark:via-card/80 dark:to-muted/20 dark:shadow-[0_24px_56px_-22px_rgba(0,0,0,0.5)] dark:ring-white/[0.06]"
+const SURFACE_CABINET =
+  "relative overflow-hidden border border-border/50 bg-card/85 shadow-[0_1px_0_0_rgba(255,255,255,0.68)_inset,0_1px_2px_rgba(15,23,42,0.04),0_10px_24px_-6px_rgba(15,23,42,0.07),0_24px_48px_-14px_rgba(15,23,42,0.06)] ring-1 ring-black/[0.04] backdrop-blur-md dark:border-border/70 dark:bg-card/58 dark:shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_8px_26px_-4px_rgba(0,0,0,0.52),0_22px_50px_-12px_rgba(0,0,0,0.42)] dark:ring-white/[0.06]"
+const SURFACE_TAIL =
+  "relative overflow-hidden border border-border/45 bg-card/82 shadow-[0_1px_0_0_rgba(255,255,255,0.62)_inset,0_1px_2px_rgba(15,23,42,0.035),0_8px_20px_-6px_rgba(15,23,42,0.065),0_18px_40px_-12px_rgba(15,23,42,0.05)] ring-1 ring-black/[0.035] backdrop-blur-sm dark:border-border/60 dark:bg-card/52 dark:shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_6px_22px_-4px_rgba(0,0,0,0.48),0_18px_44px_-10px_rgba(0,0,0,0.38)] dark:ring-white/[0.05]"
+/** Autres membres : ton neutre, discret. */
+const SURFACE_OVERFLOW =
+  "relative overflow-hidden border border-border/40 bg-muted/30 shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_1px_2px_rgba(15,23,42,0.03),0_6px_16px_-4px_rgba(15,23,42,0.055),0_14px_32px_-10px_rgba(15,23,42,0.045)] ring-1 ring-black/[0.03] backdrop-blur-sm dark:bg-muted/18 dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_8px_24px_-6px_rgba(0,0,0,0.48),0_16px_36px_-10px_rgba(0,0,0,0.38)] dark:ring-white/[0.04]"
+
+/** Variantes : président (mise en page horizontale ≥ sm), autres fiches verticales. */
 const CARD_VARIANTS = {
   president: {
-    photoSize: "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32",
-    photoTop: "-top-12 sm:-top-14 md:-top-16",
-    paddingTop: "pt-20 sm:pt-24 md:pt-28",
-    padding: "p-6 sm:p-8",
+    shell: "w-full max-w-md sm:max-w-lg md:max-w-xl",
     rounded: "rounded-2xl sm:rounded-3xl",
-    shadow: "shadow-xl group-hover:shadow-2xl",
-    nameSize: "text-xl sm:text-2xl md:text-3xl",
-    roleSize: "text-sm sm:text-base md:text-lg",
-    ringSize: "ring-4",
-    marginTop: "mt-4",
-    nameMargin: "mb-2",
-    imageSizes: "(max-width: 640px) 100px, (max-width: 768px) 120px, 140px",
+    padding:
+      "gap-5 px-5 pb-6 pt-9 sm:flex-row sm:items-center sm:gap-6 sm:px-7 sm:pb-6 sm:pt-7 md:gap-7",
+    photo: "size-[5.25rem] shrink-0 sm:size-24 md:size-28",
+    name: "text-lg font-bold tracking-tight sm:text-xl md:text-2xl",
+    role: "text-xs font-semibold leading-snug sm:text-sm",
+    imageSizes: "(max-width: 640px) 88px, (max-width: 768px) 112px, 112px",
   },
   vicePresident: {
-    photoSize: "w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28",
-    photoTop: "-top-10 sm:-top-12 md:-top-14",
-    paddingTop: "pt-16 sm:pt-20 md:pt-24",
-    padding: "p-5 sm:p-6",
+    shell: "w-full",
     rounded: "rounded-2xl",
-    shadow: "shadow-lg group-hover:shadow-xl",
-    nameSize: "text-lg sm:text-xl md:text-2xl",
-    roleSize: "text-sm sm:text-base",
-    ringSize: "ring-4",
-    marginTop: "mt-2",
-    nameMargin: "mb-1.5",
-    imageSizes: "(max-width: 640px) 80px, (max-width: 768px) 100px, 120px",
+    padding: "gap-4 px-5 pb-5 pt-8 sm:gap-4 sm:px-6 sm:pb-6 sm:pt-9",
+    photo: "size-20 sm:size-24 md:size-28",
+    name: "text-base font-bold tracking-tight sm:text-lg md:text-xl",
+    role: "text-[11px] font-semibold leading-snug sm:text-xs",
+    imageSizes: "(max-width: 640px) 80px, (max-width: 768px) 96px, 112px",
   },
   other: {
-    photoSize: "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24",
-    photoTop: "-top-8 sm:-top-10 md:-top-12",
-    paddingTop: "pt-14 sm:pt-16 md:pt-18",
-    padding: "p-4 sm:p-5",
+    shell: "w-full",
     rounded: "rounded-xl sm:rounded-2xl",
-    shadow: "shadow-md group-hover:shadow-lg",
-    nameSize: "text-base sm:text-lg md:text-xl",
-    roleSize: "text-xs sm:text-sm",
-    ringSize: "ring-3",
-    marginTop: "mt-1",
-    nameMargin: "mb-1",
-    imageSizes: "(max-width: 640px) 65px, (max-width: 768px) 80px, 100px",
+    padding: "gap-3 px-4 pb-4 pt-8 sm:gap-3 sm:px-5 sm:pb-5 sm:pt-9",
+    photo: "size-[4.5rem] sm:size-20 md:size-24",
+    name: "text-sm font-semibold sm:text-base md:text-lg",
+    role: "text-[10px] font-semibold leading-snug sm:text-[11px]",
+    imageSizes: "(max-width: 640px) 72px, (max-width: 768px) 80px, 96px",
   },
-} as const;
+} as const
 
-// Classes CSS communes
-const COMMON_STYLES = {
-  card: "relative bg-gradient-to-br from-green-700 via-green-800 to-green-900 text-white",
-  photoContainer: "absolute left-1/2 -translate-x-1/2 z-10 rounded-full overflow-hidden bg-white",
-  photo: "object-cover transition-transform duration-700 ease-out group-hover:scale-110",
-  content: "text-center",
-} as const;
+/** Grille 2 colonnes (vice-présidence). */
+const TEAM_TWO_COL_GRID_CLASS =
+  "mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5"
+/** Trésorerie + secrétariat : une ligne à partir de md (4 colonnes). */
+const TEAM_FOUR_COL_GRID_CLASS =
+  "mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 md:gap-4 lg:max-w-7xl lg:gap-5"
+const TEAM_BAND_SPACING_CLASS = "mb-8 sm:mb-10 md:mb-11"
+/** Encadrement type « vitrine » pour les rangées de cartes. */
+const TEAM_BAND_FRAME =
+  "relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/85 to-muted/20 p-4 shadow-sm backdrop-blur-md sm:rounded-3xl sm:p-5 md:p-6 dark:border-border/80 dark:from-card/60 dark:to-muted/10 dark:shadow-[0_12px_40px_-28px_rgba(0,0,0,0.35)]"
+const TEAM_BAND_FRAME_ACCENT =
+  "pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-theme-green/40 to-transparent sm:inset-x-14 dark:via-theme-green/50"
 
+/**
+ * Résout la surface de carte selon la bande hiérarchique (effet visuel distinct par rangée).
+ */
+function resolveCardSurface(band: TeamAnimationBand, isPresident: boolean): string {
+  if (isPresident || band === "president") return SURFACE_FEATURED
+  if (band === "overflow") return SURFACE_OVERFLOW
+  if (band === "bureauTail") return SURFACE_TAIL
+  return SURFACE_CABINET
+}
+
+/**
+ * Enveloppe commune : fond atmosphérique de la section équipe.
+ */
+function TeamSectionScaffold({ children }: { children: ReactNode }) {
+  return (
+    <div className={cn(TEAM_SECTION_SHELL, "py-6 sm:py-9 md:py-11")}>
+      <div className={TEAM_SECTION_AMBIENT} aria-hidden />
+      <div className={TEAM_SECTION_GRID} aria-hidden />
+      <div className={TEAM_SECTION_DOTS} aria-hidden />
+      <div className="relative z-10 mx-auto max-w-7xl min-w-0 px-3 sm:px-5 lg:px-8">{children}</div>
+    </div>
+  )
+}
+
+/**
+ * Onglet « Notre équipe » : hiérarchie bureau, palette sobre (neutre + vert marque).
+ */
 export default function TeamSection() {
-  const { data: teamData, isLoading, error } = useTeamData();
-  const members = teamData || teamMembers;
+  const { data: teamData, isLoading, error, refetch, isFetching } = useTeamData()
 
-  // Grouper les membres par rôle
-  const president = members.find((m) => m.order === 1);
-  const vicePresidents = members.filter((m) => m.order >= 2 && m.order <= 3);
-  const others = members.filter((m) => m.order > 3);
+  const { president, vicePresidents, treasury, secretary, overflow } = useMemo(
+    () => partitionTeamByHierarchy(teamData ?? []),
+    [teamData],
+  )
+
+  const tailBureauFour = useMemo(
+    () => [...treasury, ...secretary],
+    [treasury, secretary],
+  )
 
   if (isLoading) {
-    return <LoadingState />;
+    return (
+      <TeamSectionScaffold>
+        <LoadingStateInner />
+      </TeamSectionScaffold>
+    )
   }
 
   if (error) {
-    console.warn("Error loading team data, using fallback:", error);
+    return (
+      <TeamSectionScaffold>
+        <SectionTitle />
+        <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-2 text-center">
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Impossible de charger les membres du bureau. Vérifiez votre connexion puis réessayez.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isFetching}
+              onClick={() => {
+                void refetch()
+              }}
+            >
+              {isFetching ? "Chargement…" : "Réessayer"}
+            </Button>
+          </div>
+      </TeamSectionScaffold>
+    )
   }
 
+  const hasMembers =
+    president != null ||
+    vicePresidents.length > 0 ||
+    tailBureauFour.length > 0 ||
+    overflow.length > 0
+
   return (
-    <div className="w-full py-8 sm:py-12 md:py-16 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <TeamSectionScaffold>
         <SectionTitle />
 
-        {president && (
-          <div className="flex justify-center mb-12 sm:mb-16 md:mb-20">
-            <MemberCard member={president} variant="president" index={0} />
+        {!hasMembers ? (
+          <div className="mx-auto max-w-xl px-2 text-center sm:px-4">
+            <p className="text-pretty text-muted-foreground text-sm leading-relaxed sm:text-base">
+              Aucun membre du bureau n&apos;est affiché pour le moment. Dans le tableau de bord,
+              renseignez l&apos;équipe sur le site (menu Équipe) ou activez « Afficher sur le site »
+              sur les fiches concernées. Sur le site, l&apos;ordre des blocs suit le rôle de chaque
+              personne (présidence, vice-présidence, puis trésorerie et secrétariat sur une même ligne).
+            </p>
           </div>
-        )}
+        ) : (
+          <>
+            {president ? (
+              <section
+                aria-labelledby="team-band-president"
+                className={cn(TEAM_BAND_SPACING_CLASS, "flex justify-center px-3 sm:px-0")}
+              >
+                <h3 id="team-band-president" className="sr-only">
+                  Présidence
+                </h3>
+                <div className="w-full max-w-md sm:max-w-lg md:max-w-xl">
+                  <MemberCard
+                    member={president}
+                    variant="president"
+                    animationBand="president"
+                    index={0}
+                  />
+                </div>
+              </section>
+            ) : null}
 
-        {vicePresidents.length > 0 && (
-          <div className="mb-12 sm:mb-16 md:mb-20">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 max-w-4xl mx-auto">
-              {vicePresidents.map((member, index) => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  variant="vicePresident"
-                  index={index}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+            {vicePresidents.length > 0 ? (
+              <section aria-labelledby="team-band-vice" className={TEAM_BAND_SPACING_CLASS}>
+                <h3 id="team-band-vice" className="sr-only">
+                  Vice-présidence
+                </h3>
+                <div className={cn(TEAM_BAND_FRAME, "mx-auto max-w-3xl")}>
+                  <div className={TEAM_BAND_FRAME_ACCENT} aria-hidden />
+                  <div className={TEAM_TWO_COL_GRID_CLASS}>
+                  {vicePresidents.map((member, index) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      variant="vicePresident"
+                      animationBand="vicePresidents"
+                      index={index}
+                    />
+                  ))}
+                  </div>
+                </div>
+              </section>
+            ) : null}
 
-        {others.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {others.map((member, index) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                variant="other"
-                index={index}
-              />
-            ))}
-          </div>
+            {tailBureauFour.length > 0 ? (
+              <section
+                aria-labelledby="team-band-treasury-secretary"
+                className={TEAM_BAND_SPACING_CLASS}
+              >
+                <h3 id="team-band-treasury-secretary" className="sr-only">
+                  Trésorerie et secrétariat
+                </h3>
+                <div className={cn(TEAM_BAND_FRAME, "mx-auto max-w-7xl")}>
+                  <div className={TEAM_BAND_FRAME_ACCENT} aria-hidden />
+                  <div className={TEAM_FOUR_COL_GRID_CLASS}>
+                  {tailBureauFour.map((member, index) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      variant="vicePresident"
+                      animationBand="bureauTail"
+                      index={index}
+                    />
+                  ))}
+                  </div>
+                </div>
+              </section>
+            ) : null}
+
+            {overflow.length > 0 ? (
+              <section aria-labelledby="team-band-overflow" className="mt-6 sm:mt-8">
+                <div className="mb-5 flex flex-col items-center gap-2">
+                  <span className="h-px w-16 bg-gradient-to-r from-transparent via-border to-transparent sm:w-24" />
+                  <h3
+                    id="team-band-overflow"
+                    className="text-center font-semibold text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm"
+                  >
+                    Autres membres
+                  </h3>
+                  <span className="h-px w-16 bg-gradient-to-r from-transparent via-border to-transparent sm:w-24" />
+                </div>
+                <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+                  {overflow.map((member, index) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      variant="other"
+                      animationBand="overflow"
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : null}
+          </>
         )}
-      </div>
-    </div>
-  );
+    </TeamSectionScaffold>
+  )
 }
 
-// Titre de section
+/** En-tête : typographie forte, une seule couleur d’accent (vert marque). */
 function SectionTitle() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: ANIMATION_CONFIG.delays.title, duration: ANIMATION_CONFIG.duration }}
-      className="text-center mb-12 sm:mb-16 md:mb-20"
+      transition={{
+        delay: ANIMATION_CONFIG.delays.title,
+        duration: 0.55,
+        ease: MOTION_EASE,
+      }}
+      className="relative mb-8 text-center sm:mb-10 md:mb-12"
     >
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <div className="h-10 sm:h-12 md:h-14 w-1 bg-gradient-to-b from-green-600 via-green-500 to-green-400 rounded-full" />
-        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-xl">
-          <Users className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
-        </div>
-        <div className="h-10 sm:h-12 md:h-14 w-1 bg-gradient-to-b from-green-600 via-green-500 to-green-400 rounded-full" />
-      </div>
+     
 
-      <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4">
-        <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
-          Notre Équipe
-        </span>
-      </h2>
 
       <motion.div
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.2, duration: ANIMATION_CONFIG.duration }}
-        className="h-1.5 w-32 sm:w-40 mx-auto bg-gradient-to-r from-transparent via-green-500 to-transparent rounded-full"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.1, duration: 0.55, ease: MOTION_EASE }}
+        className="relative mb-4 flex flex-col items-center gap-3 sm:mb-5 sm:flex-row sm:justify-center sm:gap-4"
+      >
+        <span className="hidden h-px w-12 shrink-0 bg-gradient-to-r from-transparent to-border sm:block md:w-16" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-theme-green to-theme-green-dark text-white shadow-md ring-1 ring-black/5 dark:ring-white/10 sm:h-14 sm:w-14 md:h-[3.75rem] md:w-[3.75rem]">
+          <Users className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
+        </div>
+        <span className="hidden h-px w-12 shrink-0 bg-gradient-to-l from-transparent to-border sm:block md:w-16" />
+      </motion.div>
+
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.14, duration: 0.55, ease: MOTION_EASE }}
+        className="relative text-balance px-2 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
+      >
+        <span className="text-foreground">Notre </span>
+        <span className="bg-gradient-to-br from-theme-green via-theme-green-dark to-theme-green bg-clip-text text-transparent">
+          équipe
+        </span>
+      </motion.h2>
+
+      <motion.div
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: 1 }}
+        transition={{
+          delay: ANIMATION_CONFIG.delays.title + 0.22,
+          duration: 0.6,
+          ease: MOTION_EASE,
+        }}
+        className="mx-auto mt-5 h-1 max-w-[10rem] origin-center rounded-full bg-gradient-to-r from-transparent via-theme-green/75 to-transparent sm:mt-6 sm:max-w-[12rem]"
       />
 
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.3, duration: ANIMATION_CONFIG.duration }}
-        className="mt-6 text-gray-600 text-base sm:text-lg max-w-2xl mx-auto"
+        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.28, duration: 0.55, ease: MOTION_EASE }}
+        className="mx-auto mt-5 max-w-lg text-pretty px-2 text-center text-muted-foreground text-sm leading-relaxed sm:mt-6 sm:max-w-xl sm:text-base"
       >
-        Découvrez les membres dévoués qui font vivre notre association
+        Les membres du bureau qui portent les projets et la vie de l&apos;association.
       </motion.p>
     </motion.div>
-  );
+  )
 }
 
-// Composant générique pour les cartes de membres
 interface MemberCardProps {
-  member: TeamMember;
-  variant: keyof typeof CARD_VARIANTS;
-  index: number;
+  member: TeamMember
+  variant: keyof typeof CARD_VARIANTS
+  index: number
+  /** Bande hiérarchique (délais d’animation), indépendante du gabarit visuel (`variant`). */
+  animationBand?: TeamAnimationBand
 }
 
-function MemberCard({ member, variant, index }: MemberCardProps) {
-  const config = CARD_VARIANTS[variant];
-  const delay = ANIMATION_CONFIG.delays[variant === "president" ? "president" : variant === "vicePresident" ? "vicePresidents" : "others"];
-  const cardDelay = delay + (variant === "president" ? 0 : variant === "vicePresident" ? 0.1 + index * 0.15 : 0.1 + index * 0.1);
-  const contentDelay = delay + (variant === "president" ? 0.2 : variant === "vicePresident" ? 0.2 + index * 0.15 : 0.2 + index * 0.1);
+/** Fiche membre : surface selon la bande, pastille rôle sobre (vert seul). */
+function MemberCard({ member, variant, index, animationBand }: MemberCardProps) {
+  const v = CARD_VARIANTS[variant]
+  const isPresident = variant === "president"
+  const band: TeamAnimationBand =
+    animationBand ??
+    (variant === "president" ? "president" : variant === "vicePresident" ? "vicePresidents" : "overflow")
+
+  const baseDelay = ANIMATION_CONFIG.delays[band]
+  const cardDelay =
+    baseDelay +
+    (band === "president" ? 0 : 0.06 + index * (band === "bureauTail" ? 0.05 : 0.1))
+  const contentDelay =
+    baseDelay +
+    (band === "president" ? 0.08 : 0.08 + index * (band === "bureauTail" ? 0.05 : 0.1))
+
+  const surface = resolveCardSurface(band, isPresident)
+  const isTail = band === "bureauTail"
+
+  /** Survol : élévation multicouche (plus marquée pour le cabinet, plus douce pour overflow). */
+  const cardHoverShadow =
+    isPresident || band === "president"
+      ? "hover:shadow-[0_22px_56px_-24px_rgba(15,23,42,0.14),0_0_0_1px_rgba(22,163,74,0.12),0_36px_72px_-28px_rgba(15,23,42,0.08)] dark:hover:shadow-[0_28px_64px_-20px_rgba(0,0,0,0.58),0_0_0_1px_rgba(34,197,94,0.18)]"
+      : band === "bureauTail"
+        ? "hover:shadow-[0_1px_0_0_rgba(255,255,255,0.72)_inset,0_4px_12px_-2px_rgba(15,23,42,0.06),0_16px_36px_-8px_rgba(15,23,42,0.1),0_28px_52px_-14px_rgba(15,23,42,0.07)] dark:hover:shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_36px_-6px_rgba(0,0,0,0.58),0_26px_56px_-12px_rgba(0,0,0,0.48)]"
+        : band === "overflow"
+          ? "hover:shadow-[0_1px_0_0_rgba(255,255,255,0.6)_inset,0_3px_10px_-2px_rgba(15,23,42,0.05),0_14px_32px_-10px_rgba(15,23,42,0.09),0_24px_44px_-16px_rgba(15,23,42,0.06)] dark:hover:shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_10px_30px_-6px_rgba(0,0,0,0.52),0_22px_44px_-12px_rgba(0,0,0,0.42)]"
+          : "hover:shadow-[0_1px_0_0_rgba(255,255,255,0.75)_inset,0_4px_14px_-2px_rgba(15,23,42,0.07),0_20px_44px_-10px_rgba(15,23,42,0.11),0_36px_64px_-18px_rgba(15,23,42,0.08)] dark:hover:shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_14px_40px_-6px_rgba(0,0,0,0.6),0_32px_64px_-14px_rgba(0,0,0,0.5)]"
+
+  const photoShape = cn(
+    "relative z-[1] shrink-0 overflow-hidden bg-muted shadow-inner ring-2 ring-background transition-[transform,box-shadow] duration-300 group-hover:shadow-lg group-hover:ring-theme-green/35 dark:ring-card",
+    isPresident
+      ? "mx-auto rounded-full sm:mx-0 sm:rounded-[1.35rem]"
+      : "rounded-full",
+    v.photo,
+  )
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: cardDelay, duration: ANIMATION_CONFIG.duration }}
-      className="relative group"
+      initial={{ opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: cardDelay, ...MOTION_SPRING }}
+      whileHover={{ y: -5 }}
+      className={cn("relative", v.shell)}
     >
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: contentDelay, duration: ANIMATION_CONFIG.duration }}
-        className={`${COMMON_STYLES.card} ${config.rounded} ${config.padding} ${config.paddingTop} ${config.shadow} transition-all duration-500`}
+        transition={{ delay: contentDelay, ...MOTION_SPRING }}
+        className={cn(
+          "group relative flex overflow-hidden",
+          isPresident ? "flex-col items-center text-center sm:items-stretch sm:text-left" : "flex-col items-center text-center",
+          surface,
+          "transition-[box-shadow,transform,border-color] duration-300 ease-out",
+          isPresident || band === "president"
+            ? "hover:border-theme-green/40"
+            : "hover:border-border/80 dark:hover:border-border",
+          cardHoverShadow,
+          v.rounded,
+          v.padding,
+          isTail && "md:!gap-3 md:!px-3 md:!pb-4 md:!pt-7",
+        )}
       >
-        {/* Photo circulaire superposée */}
-        <div className={`${COMMON_STYLES.photoContainer} ${config.photoTop} ${config.photoSize} ${config.ringSize} ring-green-800 ${config.shadow.replace("group-hover:", "")}`}>
+        {isPresident ? (
+          <>
+            <div
+              className="pointer-events-none absolute -right-16 -top-28 h-56 w-56 rounded-full bg-theme-green/18 blur-3xl dark:bg-theme-green/25"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute -bottom-20 -left-12 h-44 w-44 rounded-full bg-theme-green/8 blur-3xl dark:bg-theme-green/12"
+              aria-hidden
+            />
+          </>
+        ) : (
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/55 to-transparent opacity-55 dark:via-white/12"
+            aria-hidden
+          />
+        )}
+
+        <div className={photoShape}>
           <ImageWithFallback
             src={member.image}
             alt={member.name}
             fill
-            className={COMMON_STYLES.photo}
-            sizes={config.imageSizes}
-            priority={variant === "president"}
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            sizes={v.imageSizes}
+            priority={isPresident}
           />
         </div>
 
-        {/* Nom et rôle */}
-        <div className={`${COMMON_STYLES.content} ${config.marginTop}`}>
-          <h3 className={`${config.nameSize} font-bold text-white ${config.nameMargin} ${variant === "other" ? "line-clamp-2" : ""}`}>
+        <div
+          className={cn(
+            "relative z-[1] flex min-w-0 flex-1 flex-col",
+            isPresident ? "w-full items-center sm:items-start" : "items-center",
+          )}
+        >
+          <h3
+            className={cn(
+              "text-balance text-foreground",
+              v.name,
+              variant === "other" ? "line-clamp-2" : "",
+            )}
+          >
             {member.name}
           </h3>
-          <p className={`${config.roleSize} text-green-100 font-medium ${variant === "other" ? "line-clamp-2" : ""}`}>
-            {member.role}
-          </p>
+          <div
+            className={cn(
+              "mt-2.5 flex w-full min-w-0",
+              isPresident ? "justify-center sm:justify-start" : "justify-center",
+            )}
+          >
+            <p
+              className={cn(
+                "inline-flex max-w-full items-center justify-center rounded-full border border-theme-green/22 bg-theme-green/[0.07] px-2.5 py-1 text-balance font-semibold text-theme-green shadow-none backdrop-blur-sm dark:border-theme-green/30 dark:bg-theme-green/12 dark:text-theme-green-light",
+                "sm:px-3 sm:py-1.5",
+                v.role,
+                variant === "other" ? "line-clamp-2" : "",
+              )}
+            >
+              {member.role}
+            </p>
+          </div>
         </div>
+
+        {member.description ? (
+          <TeamMemberDescription
+            memberName={member.name}
+            roleLabel={member.role}
+            description={member.description}
+          />
+        ) : null}
       </motion.div>
     </motion.div>
-  );
+  )
 }
 
-// État de chargement optimisé
-function LoadingState() {
-  const SkeletonCard = ({ variant }: { variant: keyof typeof CARD_VARIANTS }) => {
-    const config = CARD_VARIANTS[variant];
-    const spaceY = variant === "president" ? "space-y-3" : "space-y-2";
-    const nameHeight = variant === "president" ? "h-6" : variant === "vicePresident" ? "h-5" : "h-4";
-    const nameWidth = variant === "president" ? "w-40" : variant === "vicePresident" ? "w-36" : "w-32";
-    const roleHeight = variant === "president" ? "h-5" : variant === "vicePresident" ? "h-4" : "h-3";
-    const roleWidth = variant === "president" ? "w-32" : variant === "vicePresident" ? "w-28" : "w-24";
+// État de chargement optimisé (même atmosphère que le contenu chargé).
+function LoadingStateInner() {
+  const SkeletonCard = ({
+    variant,
+    surface,
+  }: {
+    variant: keyof typeof CARD_VARIANTS
+    surface?: string
+  }) => {
+    const v = CARD_VARIANTS[variant]
+    const shellSurface =
+      surface ??
+      (variant === "president"
+        ? SURFACE_FEATURED
+        : variant === "vicePresident"
+          ? SURFACE_CABINET
+          : SURFACE_OVERFLOW)
+    const spaceY = variant === "president" ? "space-y-3" : "space-y-2"
+    const nameHeight = variant === "president" ? "h-6" : variant === "vicePresident" ? "h-5" : "h-4"
+    const nameWidth = variant === "president" ? "w-40" : variant === "vicePresident" ? "w-36" : "w-32"
+    const roleHeight = variant === "president" ? "h-4" : variant === "vicePresident" ? "h-3.5" : "h-3"
+    const roleWidth = variant === "president" ? "w-28" : variant === "vicePresident" ? "w-24" : "w-20"
+
+    const isPresidentSkeleton = variant === "president"
 
     return (
-      <div className={`${COMMON_STYLES.card} ${config.rounded} ${config.padding} ${config.paddingTop} ${config.shadow.replace("group-hover:", "")}`}>
-        <div className={`${COMMON_STYLES.photoContainer} ${config.photoTop} ${config.photoSize} ${config.ringSize} ring-green-800 bg-gray-300 animate-pulse`} />
-        <div className={`${COMMON_STYLES.content} ${config.marginTop} ${spaceY}`}>
-          <div className={`${nameHeight} ${nameWidth} bg-green-700 rounded animate-pulse mx-auto`} />
-          <div className={`${roleHeight} ${roleWidth} bg-green-700 rounded animate-pulse mx-auto`} />
+      <div
+        className={cn(
+          "flex animate-pulse flex-col items-center",
+          shellSurface,
+          v.rounded,
+          v.padding,
+        )}
+      >
+        <div className={cn("rounded-full bg-muted/90", v.photo, isPresidentSkeleton ? "mx-auto sm:mx-0" : "")} />
+        <div
+          className={cn(
+            "w-full min-w-0 text-center",
+            isPresidentSkeleton ? "sm:text-left" : "",
+            spaceY,
+          )}
+        >
+          <div className={cn(nameHeight, nameWidth, "mx-auto rounded-lg bg-muted/90 sm:mx-0", isPresidentSkeleton && "sm:mx-0")} />
+          <div className={cn(roleHeight, roleWidth, "mx-auto rounded-full bg-muted/70 sm:mx-0", isPresidentSkeleton && "sm:mx-0")} />
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
-    <div className="w-full py-8 sm:py-12 md:py-16 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Skeleton titre */}
-        <div className="text-center mb-12 sm:mb-16 md:mb-20">
-          <div className="h-12 w-64 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse mx-auto mb-6" />
-          <div className="h-1 w-32 bg-gray-200 rounded-full animate-pulse mx-auto" />
+    <>
+        <div className="mb-8 text-center sm:mb-10 md:mb-11">
+          <div className="mx-auto mb-4 h-10 w-52 animate-pulse rounded-lg bg-gradient-to-r from-muted via-muted-foreground/15 to-muted sm:w-60" />
+          <div className="mx-auto h-1 w-24 animate-pulse rounded-full bg-muted-foreground/20 sm:w-28" />
         </div>
 
-        {/* Skeleton président */}
-        <div className="flex justify-center mb-12 sm:mb-16 md:mb-20">
-          <div className="w-full max-w-xs sm:max-w-sm">
+        <div className="mb-8 flex justify-center px-2 sm:mb-10 sm:px-0 md:mb-11">
+          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl">
             <SkeletonCard variant="president" />
           </div>
         </div>
 
-        {/* Skeleton vice-présidents */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto mb-12">
-          <SkeletonCard variant="vicePresident" />
-          <SkeletonCard variant="vicePresident" />
+        <div className={cn(TEAM_BAND_SPACING_CLASS, TEAM_BAND_FRAME, "mx-auto max-w-3xl")}>
+          <div className={TEAM_BAND_FRAME_ACCENT} aria-hidden />
+          <div className={TEAM_TWO_COL_GRID_CLASS}>
+            <SkeletonCard variant="vicePresident" />
+            <SkeletonCard variant="vicePresident" />
+          </div>
         </div>
 
-        {/* Skeleton autres membres */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          <SkeletonCard variant="other" />
-          <SkeletonCard variant="other" />
-          <SkeletonCard variant="other" />
-          <SkeletonCard variant="other" />
+        <div className={cn(TEAM_BAND_SPACING_CLASS, TEAM_BAND_FRAME, "mx-auto max-w-7xl")}>
+          <div className={TEAM_BAND_FRAME_ACCENT} aria-hidden />
+          <div className={TEAM_FOUR_COL_GRID_CLASS}>
+            <SkeletonCard variant="vicePresident" surface={SURFACE_TAIL} />
+            <SkeletonCard variant="vicePresident" surface={SURFACE_TAIL} />
+            <SkeletonCard variant="vicePresident" surface={SURFACE_TAIL} />
+            <SkeletonCard variant="vicePresident" surface={SURFACE_TAIL} />
+          </div>
         </div>
-      </div>
-    </div>
-  );
+    </>
+  )
 }

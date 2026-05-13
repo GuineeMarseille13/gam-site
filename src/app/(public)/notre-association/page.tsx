@@ -1,127 +1,158 @@
-"use client";
+"use client"
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { motion } from "motion/react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import PresidentSection from "@/components/association/PresidentSection";
-import AboutUsSection from "@/components/association/AboutUsSection";
-import ActivityReportsSection from "@/components/association/ActivityReportsSection";
-import TeamSection from "@/components/association/TeamSection";
+import { Suspense, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { motion } from "motion/react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import AboutUsSection from "@/components/association/AboutUsSection"
+import ActivityReportsSection from "@/components/association/ActivityReportsSection"
+import PresidentSection from "@/components/association/PresidentSection"
+import TeamSection from "@/components/association/TeamSection"
 
-const DEFAULT_TAB = "president";
-const VALID_TABS = ["president", "about", "reports", "team"];
+const DEFAULT_TAB = "president"
+const VALID_TABS = ["president", "about", "reports", "team"]
 
 function NotreAssociationContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const tabFromUrl = searchParams.get("tab");
-  
-  // Valider et initialiser l'onglet depuis l'URL
-  const initialTab = tabFromUrl && VALID_TABS.includes(tabFromUrl) 
-    ? tabFromUrl 
-    : DEFAULT_TAB;
-  
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const tabFromUrl = searchParams.get("tab")
 
-  // Mettre à jour l'URL quand l'onglet change
+  const initialTab =
+    tabFromUrl && VALID_TABS.includes(tabFromUrl) ? tabFromUrl : DEFAULT_TAB
+
+  const [activeTab, setActiveTab] = useState(initialTab)
+
   const handleTabChange = (newTab: string) => {
-    setActiveTab(newTab);
-    const params = new URLSearchParams(searchParams.toString());
+    setActiveTab(newTab)
+    const params = new URLSearchParams(searchParams.toString())
     if (newTab === DEFAULT_TAB) {
-      // Supprimer le paramètre si c'est l'onglet par défaut
-      params.delete("tab");
+      params.delete("tab")
     } else {
-      params.set("tab", newTab);
+      params.set("tab", newTab)
     }
-    router.push(`/notre-association?${params.toString()}`, { scroll: false });
-  };
+    router.push(`/notre-association?${params.toString()}`, { scroll: false })
+  }
 
-  // Synchroniser avec l'URL au chargement initial
   useEffect(() => {
     if (tabFromUrl && VALID_TABS.includes(tabFromUrl) && tabFromUrl !== activeTab) {
-      setActiveTab(tabFromUrl);
+      setActiveTab(tabFromUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabFromUrl]);
+  }, [tabFromUrl])
 
   const tabs = [
     { id: "president", label: "Le Président" },
     { id: "about", label: "Qui sommes-nous ?" },
     { id: "reports", label: "Rapport d'activité" },
     { id: "team", label: "Notre équipe" },
-  ];
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/50 to-white py-8 sm:py-12 md:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_-15%,var(--theme-green)/14%,transparent_55%)] dark:bg-[radial-gradient(ellipse_90%_55%_at_50%_-12%,var(--theme-green)/18%,transparent_52%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8 sm:mb-12"
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mb-12 max-w-3xl text-center sm:mb-16"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-balance bg-gradient-to-br from-theme-green via-theme-green-dark to-theme-green bg-clip-text font-bold text-3xl text-transparent leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
             Notre Association
           </h1>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="h-1.5 w-32 mx-auto bg-gradient-to-r from-transparent via-green-500 to-transparent rounded-full"
-          />
-          <p className="mt-6 text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-            Découvrez notre histoire, nos valeurs et les personnes qui font vivre l&apos;association
+          <p className="mx-auto mt-5 max-w-2xl text-pretty text-base text-muted-foreground leading-relaxed sm:mt-6 sm:text-lg">
+            Découvrez notre histoire, nos valeurs et les personnes qui font vivre
+            l&apos;association
           </p>
         </motion.div>
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 h-auto p-1.5 sm:p-2 bg-gray-100/80 backdrop-blur-sm">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="text-xs sm:text-sm md:text-base font-medium px-2 sm:px-4 py-2 sm:py-3 data-[state=active]:bg-white data-[state=active]:text-green-700 data-[state=active]:shadow-md transition-all duration-300 cursor-pointer"
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full min-w-0">
+          <div className="min-w-0">
+            <div className="relative border-border/50 border-b">
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-theme-green/20 to-transparent"
+                aria-hidden
+              />
+              <TabsList
+                variant="line"
+                className="
+                  flex h-auto w-full max-w-5xl snap-x snap-mandatory flex-nowrap justify-start gap-0 overflow-x-auto overflow-y-hidden rounded-none border-0 bg-transparent px-0 pb-0 pt-0
+                  [-ms-overflow-style:none] [scrollbar-width:none]
+                  sm:mx-auto sm:max-w-4xl sm:justify-center
+                  [&::-webkit-scrollbar]:hidden
+                "
               >
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+                {tabs.map((tab) => (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className="
+                      shrink-0 snap-center rounded-none border-0 px-3 py-3 font-medium text-muted-foreground text-xs shadow-none
+                      transition-colors duration-200
+                      after:h-0.5 after:rounded-full
+                      hover:text-foreground
+                      data-[state=active]:text-theme-green data-[state=active]:shadow-none
+                      data-[state=active]:after:bg-theme-green
+                      dark:data-[state=active]:text-theme-green-light
+                      dark:data-[state=active]:after:bg-theme-green-light
+                      sm:px-5 sm:py-4 sm:text-sm lg:text-lg
+                    "
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
 
-          <TabsContent value="president" className="mt-8 sm:mt-12">
-            <PresidentSection />
-          </TabsContent>
+            <div className="min-w-0 px-0 pt-10 sm:pt-12 md:pt-14">
+              <TabsContent value="president" className="mt-0 outline-none">
+                <PresidentSection />
+              </TabsContent>
 
-          <TabsContent value="about" className="mt-8 sm:mt-12">
-            <AboutUsSection />
-          </TabsContent>
+              <TabsContent value="about" className="mt-0 outline-none">
+                <AboutUsSection />
+              </TabsContent>
 
-          <TabsContent value="reports" className="mt-8 sm:mt-12">
-            <ActivityReportsSection />
-          </TabsContent>
+              <TabsContent value="reports" className="mt-0 outline-none">
+                <ActivityReportsSection />
+              </TabsContent>
 
-          <TabsContent value="team" className="mt-8 sm:mt-12">
-            <TeamSection />
-          </TabsContent>
+              <TabsContent value="team" className="mt-0 outline-none">
+                <TeamSection />
+              </TabsContent>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>
-  );
+  )
 }
 
 export default function NotreAssociationPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/50 to-white py-8 sm:py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="h-12 w-64 bg-gray-200 rounded-lg animate-pulse mx-auto mb-4" />
-            <div className="h-6 w-96 bg-gray-200 rounded animate-pulse mx-auto" />
+    <Suspense
+      fallback={
+        <div className="relative min-h-screen bg-background py-10 sm:py-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl animate-pulse text-center">
+              <div className="mx-auto mb-5 h-7 w-28 rounded-full bg-muted" />
+              <div className="mx-auto mb-6 h-14 max-w-md rounded-2xl bg-muted" />
+              <div className="mx-auto h-16 max-w-lg rounded-xl bg-muted/70" />
+            </div>
+            <div className="mx-auto mt-14 min-h-[18rem] max-w-5xl animate-pulse rounded-xl bg-muted/40 sm:mt-16" />
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <NotreAssociationContent />
     </Suspense>
-  );
+  )
 }

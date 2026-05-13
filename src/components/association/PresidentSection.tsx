@@ -83,7 +83,7 @@ export default function PresidentSection() {
   }
 
   return (
-    <div className="w-full relative overflow-hidden py-8 sm:py-12 md:py-16">
+    <div className="relative w-full min-w-0 overflow-hidden py-8 sm:py-12 md:py-16">
       {/* Éléments décoratifs de fond */}
       <BackgroundDecorations />
 
@@ -91,11 +91,11 @@ export default function PresidentSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: ANIMATION_CONFIG.durations.normal }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        className="max-w-7xl mx-auto min-w-0 px-0 relative z-10"
       >
         <HeaderSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 xl:gap-16">
+        <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12 xl:gap-16">
           <PresidentInfoCard president={presidentInfo} />
           <MessageCard
             paragraphs={messageParagraphs}
@@ -130,7 +130,7 @@ function BackgroundDecorations() {
 // Composant pour l'en-tête
 function HeaderSection() {
   return (
-    <header className="text-center mb-12 sm:mb-16 md:mb-20">
+    <header className="mb-10 text-center sm:mb-14 md:mb-16">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -138,7 +138,7 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.header,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="inline-flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8"
+        className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-4 mb-5 sm:mb-8"
       >
         <div className="h-px w-12 sm:w-20 md:w-24 bg-gradient-to-r from-transparent via-green-400 to-green-500" />
         <motion.div
@@ -157,7 +157,7 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.title,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6"
+        className="text-balance break-words text-3xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-3 sm:mb-6"
       >
         <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
           {CONTENT.title}
@@ -171,7 +171,7 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.subtitle,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="text-gray-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+        className="mx-auto max-w-2xl text-pretty px-1 text-muted-foreground text-base leading-relaxed sm:text-lg md:text-xl"
       >
         {CONTENT.subtitle}
       </motion.p>
@@ -326,7 +326,7 @@ function MessageCard({
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-50/20 to-transparent animate-shimmer opacity-30" />
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-400 via-green-500 to-green-400" />
 
-        <CardContent className="p-8 sm:p-10 md:p-12 lg:p-14 relative z-10">
+        <CardContent className="relative z-10 p-5 sm:p-8 md:p-10 lg:p-12 xl:p-14">
           <motion.div
             initial={{ opacity: 0, scale: 0, rotate: -10 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -351,7 +351,7 @@ function MessageCard({
                   delay: ANIMATION_CONFIG.delays.quote + 0.1 + index * 0.12,
                   duration: ANIMATION_CONFIG.durations.normal,
                 }}
-                className="text-gray-700 leading-relaxed sm:leading-loose text-justify text-base sm:text-lg md:text-xl"
+                className="text-left text-base text-muted-foreground leading-relaxed sm:text-justify sm:text-lg md:text-xl"
               >
                 {paragraph}
               </motion.p>
@@ -420,15 +420,15 @@ function SignatureSection({
 // Composant d'état de chargement avec skeletons modernes
 function LoadingState() {
   return (
-    <div className="w-full relative overflow-hidden py-8 sm:py-12 md:py-16">
+    <div className="relative w-full min-w-0 overflow-hidden py-8 sm:py-12 md:py-16">
       {/* Décorations de fond */}
       <BackgroundDecorations />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto min-w-0 px-0 relative z-10">
         {/* Skeleton pour l'en-tête */}
         <HeaderSkeleton />
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 xl:gap-16">
+        <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12 xl:gap-16">
           {/* Skeleton pour la colonne gauche (photo + info) */}
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             <PhotoSkeleton />
@@ -448,7 +448,7 @@ function LoadingState() {
 // Skeleton pour l'en-tête
 function HeaderSkeleton() {
   return (
-    <header className="text-center mb-12 sm:mb-16 md:mb-20">
+    <header className="mb-10 text-center sm:mb-14 md:mb-16">
       {/* Skeleton pour l'icône et les lignes décoratives - structure identique */}
       <div className="inline-flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="h-px w-12 sm:w-20 md:w-24 bg-gradient-to-r from-transparent via-gray-200 to-gray-300 rounded-full" />
@@ -555,7 +555,7 @@ function MessageCardSkeleton() {
       {/* Bordure décorative - même que le vrai */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-200 via-green-300 to-green-200" />
 
-      <CardContent className="p-8 sm:p-10 md:p-12 lg:p-14 relative z-10">
+      <CardContent className="relative z-10 p-5 sm:p-8 md:p-10 lg:p-12 xl:p-14">
         {/* Skeleton pour l'icône de citation - même taille et position */}
         <div className="mb-8 sm:mb-10">
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-gradient-to-br from-green-200/30 to-green-300/30 animate-pulse" />
