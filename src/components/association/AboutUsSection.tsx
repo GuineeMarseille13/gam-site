@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Users, Heart, Globe, Target, Handshake, Sparkles, Eye } from "lucide-re
 import { useAboutUsData } from "@/hooks/use-association";
 import { aboutUsContent } from "@/data/association";
 import { AboutUsData } from "@/types/association";
+import { cn } from "@/helpers/utils";
 
 // Constantes d'animation
 const ANIMATION_CONFIG = {
@@ -63,17 +65,27 @@ export default function AboutUsSection() {
 // Composant pour les décorations de fond
 function BackgroundDecorations() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.div
         animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-br from-green-100/20 via-green-200/15 to-transparent rounded-full blur-3xl"
+        className="absolute top-1/4 left-0 h-96 w-96 rounded-full bg-gradient-to-br from-green-100/20 via-green-200/15 to-transparent blur-3xl"
       />
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-1/4 right-0 w-96 h-96 bg-gradient-to-tl from-green-100/20 via-green-200/15 to-transparent rounded-full blur-3xl"
+        className="absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-gradient-to-tl from-green-100/20 via-green-200/15 to-transparent blur-3xl"
       />
+    </div>
+  );
+}
+
+/** Halos discrets sans mouvement — utilisé pendant le chargement pour éviter le bruit visuel. */
+function LoadingBackgroundDecorations() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      <div className="absolute top-1/4 left-0 h-96 w-96 rounded-full bg-gradient-to-br from-green-100/12 via-green-200/8 to-transparent blur-3xl dark:from-green-950/25 dark:via-green-900/10" />
+      <div className="absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-gradient-to-tl from-green-100/12 via-green-200/8 to-transparent blur-3xl dark:from-green-950/25 dark:via-green-900/10" />
     </div>
   );
 }
@@ -362,189 +374,252 @@ function SectionTitle({
   );
 }
 
-// Composant d'état de chargement avec skeletons
+/** ~15 mots par ligne — aligné sur la largeur du texte réel pour la densité des barres */
+function estimateLinesFromText(text: string, wordsPerLine: number): number {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return 3;
+  return Math.max(2, Math.ceil(words.length / wordsPerLine));
+}
+
 function LoadingState({ data }: { data: AboutUsData }) {
-  // Préparer les données pour les skeletons
   const whoWeAreParagraphs = data.whoWeAre.text.split("\n\n").filter((p) => p.trim());
   const whatWeOfferParts = data.whatWeOffer.text.split("\n\n");
-  const whatWeOfferPoints = whatWeOfferParts[1]?.split("\n").filter((line) => line.trim().startsWith("•")) || [];
+  const whatWeOfferPoints =
+    whatWeOfferParts[1]?.split("\n").filter((line) => line.trim().startsWith("•")) || [];
 
   return (
-    <div className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12">
-      <BackgroundDecorations />
+    <div
+      className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12"
+      role="status"
+      aria-busy="true"
+      aria-label="Chargement du contenu"
+    >
+      <LoadingBackgroundDecorations />
 
       <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-10 px-0 sm:space-y-16 md:space-y-20">
-        {/* Skeleton pour "Qui sommes-nous ?" */}
-        <SectionSkeleton 
-          paragraphs={whoWeAreParagraphs}
-          hasBadge={true}
-        />
-
-        {/* Skeleton pour "Que propose l'association ?" */}
-        <SectionSkeleton 
-          paragraphs={whatWeOfferParts[0] ? [whatWeOfferParts[0]] : []}
+        <WhoWeAreSkeleton paragraphs={whoWeAreParagraphs} />
+        <WhatWeOfferSkeleton
+          intro={whatWeOfferParts[0] || ""}
           points={whatWeOfferPoints}
           conclusion={whatWeOfferParts[2] || ""}
-          reverse
         />
       </div>
     </div>
   );
 }
 
-// Skeleton pour une section
-function SectionSkeleton({ 
-  reverse = false,
-  paragraphs = [],
-  points = [],
-  conclusion = "",
-  hasBadge = false,
-}: { 
-  reverse?: boolean;
-  paragraphs?: string[];
-  points?: string[];
-  conclusion?: string;
-  hasBadge?: boolean;
-}) {
-  // Calculer le nombre de lignes approximatif pour chaque paragraphe
-  const getParagraphLines = (text: string) => {
-    const words = text.split(" ");
-    return Math.ceil(words.length / 15); // ~15 mots par ligne
-  };
+const SKELETON_PULSE = "animate-pulse bg-muted dark:bg-muted/70";
 
+/** Barre de texte — hauteur alignée sur `text-base` / `sm:text-lg` */
+function SkeletonTextLine({ className }: { className?: string }) {
   return (
-    <div className="relative">
-      {/* Skeleton pour le titre */}
-      <div className="flex items-center gap-4 mb-6 sm:mb-8 md:mb-10">
-        <div className="h-10 sm:h-12 md:h-14 w-1 bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 rounded-full">
-          <div className="h-full w-full bg-gradient-to-b from-green-200 via-green-300 to-green-200 rounded-full animate-shimmer" />
-        </div>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200">
-            <div className="h-full w-full bg-gradient-to-br from-green-200 via-green-300 to-green-200 rounded-xl animate-shimmer" />
-          </div>
-          <div className="h-8 sm:h-10 md:h-12 w-48 sm:w-64 md:w-80 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg overflow-hidden">
-            <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-          </div>
-        </div>
-      </div>
+    <div
+      className={cn(
+        "h-4 rounded-md sm:h-[1.35rem]",
+        SKELETON_PULSE,
+        className,
+      )}
+    />
+  );
+}
 
-      <div className={`grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10`}>
-        {/* Skeleton pour l'image */}
-        <div className={`relative ${reverse ? "order-1 lg:order-2" : ""}`}>
-          <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-green-50 via-green-100 to-green-50">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
-          </div>
-        </div>
+/** Accent vertical — même gabarit que `SectionTitle` (barre à gauche) */
+function SkeletonTitleAccentBar() {
+  return (
+    <div
+      className={cn(
+        "h-10 w-1 shrink-0 rounded-full sm:h-12 md:h-14",
+        SKELETON_PULSE,
+      )}
+      aria-hidden
+    />
+  );
+}
 
-        {/* Skeleton pour le contenu */}
-        <div className={`flex items-center ${reverse ? "order-2 lg:order-1" : ""}`}>
-          <Card className="w-full border-0 shadow-xl bg-white/90 backdrop-blur-sm relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-50/10 to-transparent animate-shimmer opacity-20" />
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-200 via-green-300 to-green-200" />
+/** Tuile icône — mêmes dimensions que le carré du titre réel */
+function SkeletonTitleIconTile() {
+  return (
+    <div
+      className={cn(
+        "flex h-10 w-10 shrink-0 rounded-xl shadow-lg sm:h-12 sm:w-12 md:h-14 md:w-14",
+        SKELETON_PULSE,
+      )}
+    />
+  );
+}
 
-            <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
-              {/* Paragraphes skeleton */}
-              {paragraphs.length > 0 ? (
-                <div className="space-y-5 sm:space-y-6">
-                  {paragraphs.map((paragraph, index) => {
-                    const lines = getParagraphLines(paragraph);
-                    return (
-                      <div key={index} className="space-y-3">
-                        {Array.from({ length: lines }).map((_, lineIndex) => (
-                          <div
-                            key={lineIndex}
-                            className={`h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden ${
-                              lineIndex === lines - 1 ? "w-5/6" : "w-full"
-                            }`}
-                          >
-                            <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="space-y-5 sm:space-y-6">
-                  {[1, 2].map((index) => (
-                    <div key={index} className="space-y-3">
-                      <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden w-full">
-                        <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                      </div>
-                      <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden w-full">
-                        <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                      </div>
-                      <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden w-5/6">
-                        <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Points skeleton (pour la deuxième section) */}
-              {points.length > 0 && (
-                <div className="space-y-3 sm:space-y-4 mt-6 sm:mt-8">
-                  {points.map((point, index) => {
-                    const words = point.replace("•", "").trim().split(" ");
-                    const lines = Math.ceil(words.length / 12);
-                    return (
-                      <div key={index} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-green-50/30 to-transparent">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 flex-shrink-0 overflow-hidden">
-                          <div className="h-full w-full bg-gradient-to-br from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                        </div>
-                        <div className="flex-1 space-y-2 pt-1">
-                          {Array.from({ length: lines }).map((_, lineIndex) => (
-                            <div
-                              key={lineIndex}
-                              className={`h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden ${
-                                lineIndex === lines - 1 ? "w-4/5" : "w-full"
-                              }`}
-                            >
-                              <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Conclusion skeleton */}
-              {conclusion && (
-                <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200 space-y-3">
-                  {Array.from({ length: getParagraphLines(conclusion) }).map((_, index) => (
-                    <div
-                      key={index}
-                      className={`h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden ${
-                        index === getParagraphLines(conclusion) - 1 ? "w-5/6" : "w-full"
-                      }`}
-                    >
-                      <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Badge skeleton */}
-              {hasBadge && (
-                <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200">
-                  <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full border border-gray-300 overflow-hidden">
-                    <div className="w-4 h-4 rounded bg-gradient-to-br from-gray-200 to-gray-300">
-                      <div className="h-full w-full bg-gradient-to-br from-green-200 to-green-300 animate-shimmer" />
-                    </div>
-                    <div className="h-4 w-32 sm:w-40 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded overflow-hidden">
-                      <div className="h-full w-full bg-gradient-to-r from-green-200 via-green-300 to-green-200 animate-shimmer" />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+/**
+ * Titre de section — structure identique à `SectionTitle` : barre | (icône + titre responsive).
+ */
+function SectionTitleSkeleton() {
+  return (
+    <div className="mb-8 flex flex-row items-start gap-3 sm:mb-10 md:mb-12 sm:items-center sm:gap-4">
+      <SkeletonTitleAccentBar />
+      <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 md:gap-4">
+        <SkeletonTitleIconTile />
+        <div className="min-w-0 flex-1 space-y-2 sm:space-y-0">
+          <SkeletonTextLine className="h-8 w-full max-w-[min(100%,14rem)] sm:h-10 sm:max-w-xl md:h-12 md:max-w-2xl" />
+          <SkeletonTextLine className="h-7 w-[82%] max-w-[11rem] sm:hidden" />
         </div>
       </div>
     </div>
+  );
+}
+
+/** Bloc média — `aspect-video`, `rounded-3xl`, comme la zone image réelle */
+function AboutMediaSkeleton({ orderClass }: { orderClass?: string }) {
+  return (
+    <div className={cn("relative", orderClass)}>
+      <div
+        className={cn(
+          "aspect-video w-full overflow-hidden rounded-3xl shadow-xl ring-1 ring-border/40 dark:ring-border/50",
+          SKELETON_PULSE,
+        )}
+      />
+    </div>
+  );
+}
+
+/** Carte avec filet supérieur vert — cohérente avec `Card` + barre du contenu chargé */
+function AboutCardShell({ children }: { children: ReactNode }) {
+  return (
+    <Card className="relative w-full overflow-hidden border-0 bg-white/90 shadow-xl backdrop-blur-sm dark:bg-card/85">
+      <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-theme-green/40 via-theme-green to-theme-green/70 dark:from-theme-green/50 dark:via-theme-green dark:to-theme-green/80" />
+      {children}
+    </Card>
+  );
+}
+
+function ParagraphSkeletonGroup({ lines }: { lines: number }) {
+  return (
+    <div className="space-y-2.5 sm:space-y-3">
+      {Array.from({ length: lines }).map((_, i) => (
+        <SkeletonTextLine
+          key={i}
+          className={cn(
+            "w-full",
+            i === lines - 1 && "w-[92%]",
+            i === lines - 1 && lines > 1 && "max-w-xl",
+          )}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** Section « Qui sommes-nous ? » — grille image gauche / carte droite, badge bas comme le rendu final */
+function WhoWeAreSkeleton({ paragraphs }: { paragraphs: string[] }) {
+  const blocks =
+    paragraphs.length > 0
+      ? paragraphs.map((p) => estimateLinesFromText(p, 15))
+      : [4, 3];
+
+  return (
+    <section className="relative">
+      <SectionTitleSkeleton />
+
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
+        <AboutMediaSkeleton />
+
+        <div className="flex items-center">
+          <AboutCardShell>
+            <CardContent className="relative z-10 p-6 sm:p-8 md:p-10">
+              <div className="space-y-5 sm:space-y-6">
+                {blocks.map((lineCount, index) => (
+                  <ParagraphSkeletonGroup key={index} lines={lineCount} />
+                ))}
+              </div>
+
+              <div className="mt-6 border-t border-gray-200 pt-5 sm:mt-8 sm:pt-6 dark:border-border/80">
+                <div className="inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full border border-green-200 bg-gradient-to-r from-green-50 to-green-100 py-2.5 pr-5 pl-4 sm:py-3 sm:pl-5 dark:border-theme-green/25 dark:from-theme-green/10 dark:to-theme-green/5">
+                  <div className={cn("size-4 shrink-0 rounded-sm", SKELETON_PULSE)} />
+                  <SkeletonTextLine className="h-4 w-36 sm:w-44" />
+                </div>
+              </div>
+            </CardContent>
+          </AboutCardShell>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Section « Que propose… » — carte gauche (desktop), image droite ; intro + liste à icônes + conclusion */
+function WhatWeOfferSkeleton({
+  intro,
+  points,
+  conclusion,
+}: {
+  intro: string;
+  points: string[];
+  conclusion: string;
+}) {
+  const introLines = intro.trim() ? estimateLinesFromText(intro, 14) : 3;
+  const pointRows = points.length > 0 ? points.length : 4;
+  const conclusionLines = conclusion.trim() ? estimateLinesFromText(conclusion, 15) : 0;
+
+  return (
+    <section className="relative">
+      <SectionTitleSkeleton />
+
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
+        <div className="order-2 flex items-center lg:order-1">
+          <AboutCardShell>
+            <CardContent className="relative z-10 space-y-6 p-6 sm:space-y-8 sm:p-8 md:p-10">
+              <ParagraphSkeletonGroup lines={introLines} />
+
+              <div className="space-y-3 sm:space-y-4">
+                {Array.from({ length: pointRows }).map((_, index) => {
+                  const src = points[index];
+                  const lines = src
+                    ? estimateLinesFromText(src.replace("•", "").trim(), 12)
+                    : 2;
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-start gap-3 rounded-xl bg-gradient-to-r from-green-50/50 to-transparent p-3 sm:gap-4 sm:p-4 dark:from-theme-green/[0.08] dark:to-transparent"
+                    >
+                      <div
+                        className={cn(
+                          "h-10 w-10 shrink-0 rounded-xl shadow-lg sm:h-12 sm:w-12",
+                          SKELETON_PULSE,
+                        )}
+                      />
+                      <div className="min-w-0 flex-1 space-y-2 pt-0.5 sm:space-y-2.5 sm:pt-1">
+                        {Array.from({ length: lines }).map((__, lineIndex) => (
+                          <SkeletonTextLine
+                            key={lineIndex}
+                            className={cn(
+                              lineIndex === lines - 1 ? "w-[86%]" : "w-full",
+                              lineIndex === lines - 1 && lines > 1 && "max-w-lg",
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {conclusionLines > 0 ? (
+                <div className="space-y-2.5 border-t border-gray-200 pt-5 sm:space-y-3 sm:pt-6 dark:border-border/80">
+                  {Array.from({ length: conclusionLines }).map((_, i) => (
+                    <SkeletonTextLine
+                      key={i}
+                      className={cn(
+                        "w-full",
+                        i === conclusionLines - 1 && "w-[90%]",
+                      )}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </CardContent>
+          </AboutCardShell>
+        </div>
+
+        <AboutMediaSkeleton orderClass="order-1 lg:order-2" />
+      </div>
+    </section>
   );
 }
