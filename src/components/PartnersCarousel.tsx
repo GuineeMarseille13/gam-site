@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { PartnerCard } from "@/components/partner-card";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { SectionSplitHeading } from "@/components/section-split-heading";
 
 interface Partner {
@@ -27,6 +26,34 @@ interface PartnersCarouselProps {
   title?: string;
 }
 
+const GAP_PX = 40;
+/** Largeur cible d’une carte (design desktop / max). */
+const CARD_IDEAL_WIDTH_PX = 300;
+/** En dessous, la carte est trop étroite : on affiche moins de colonnes. */
+const CARD_MIN_WIDTH_PX = 280;
+const TRACK_MIN_WIDTH_FALLBACK = 320;
+
+function slidesToShowForTrackWidth(width: number): number {
+  let slides = Math.max(
+    1,
+    Math.min(8, Math.floor(width / CARD_IDEAL_WIDTH_PX)),
+  );
+  while (slides > 1) {
+    const slotWidth =
+      (width - GAP_PX * (slides - 1)) / slides;
+    if (slotWidth >= CARD_MIN_WIDTH_PX) {
+      break;
+    }
+    slides -= 1;
+  }
+  return slides;
+}
+
+/**
+ * Section d’accueil : partenaires en carrousel horizontal.
+ * Sur mobile (une carte visible), la largeur de slide = largeur mesurée de la piste
+ * pour qu’une étape fasse défiler exactement une carte entière.
+ */
 export default function PartnersCarousel({
   partners,
   autoPlay = true,
@@ -42,37 +69,53 @@ export default function PartnersCarousel({
   const [, setHoveredCard] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const isMobile = useIsMobile();
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [trackWidth, setTrackWidth] = useState(0);
 
-  // Gestion sécurisée des partenaires
   const safePartners = partners?.length > 0 ? partners : [];
   const totalPartners = safePartners.length;
 
-  // Responsive slidesToShow basé sur la largeur du conteneur (fluide)
-  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(3);
-  useEffect(() => {
-    setIsClient(true);
-    const el = containerRef.current;
-    if (!el) return;
-    const compute = (width: number) => {
-      // Cartes ~300px min, max 8 sur très grands écrans
-      const computed = Math.max(1, Math.min(8, Math.floor(width / 300)));
-      setResponsiveSlidesToShow(computed);
-    };
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) compute(entry.contentRect.width);
-    });
-    ro.observe(el);
-    // Initial compute
-    compute(el.clientWidth);
-    return () => ro.disconnect();
-  }, [isClient]);
+  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(1);
 
-  // Calcul du nombre de slides disponibles (pour navigation par groupe)
-  const effectiveSlidesToShow = isMounted ? responsiveSlidesToShow : 3;
+  useLayoutEffect(() => {
+    setIsClient(true);
+    const el = trackRef.current;
+    if (!el) return;
+
+    const compute = (width: number) => {
+      setTrackWidth(width);
+      setResponsiveSlidesToShow(slidesToShowForTrackWidth(width));
+    };
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        compute(entry.contentRect.width);
+      }
+    });
+
+    ro.observe(el);
+    compute(el.clientWidth);
+
+    return () => ro.disconnect();
+  }, []);
+
+  const effectiveSlidesToShow = responsiveSlidesToShow;
+  const effectiveTrackWidth =
+    trackWidth > 0 ? trackWidth : TRACK_MIN_WIDTH_FALLBACK;
+
+  const slideWidthPx =
+    effectiveSlidesToShow <= 1
+      ? effectiveTrackWidth
+      : Math.min(
+          CARD_IDEAL_WIDTH_PX,
+          Math.floor(
+            (effectiveTrackWidth -
+              GAP_PX * (effectiveSlidesToShow - 1)) /
+              effectiveSlidesToShow,
+          ),
+        );
+
+  const slideStridePx = slideWidthPx + GAP_PX;
 
   const nextSlide = useCallback(() => {
     if (totalPartners === 0) return;
@@ -86,10 +129,8 @@ export default function PartnersCarousel({
     });
   }, [totalPartners, loop]);
 
-  // Gestion du timer d'autoplay
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    // Ne scroller que si les partenaires dépassent les slides visibles
     if (isPlaying && !isPaused && totalPartners > effectiveSlidesToShow) {
       timerRef.current = setInterval(nextSlide, interval);
     }
@@ -102,13 +143,11 @@ export default function PartnersCarousel({
     }
   }, []);
 
-  // Démarrage/arrêt du timer
   useEffect(() => {
     startTimer();
     return stopTimer;
   }, [startTimer, stopTimer]);
 
-  // Pause au survol
   const handleMouseEnter = () => {
     setIsPaused(true);
     stopTimer();
@@ -119,7 +158,6 @@ export default function PartnersCarousel({
     startTimer();
   };
 
-  // Protection si pas de partenaires
   if (totalPartners === 0) {
     return (
       <div className={`relative w-full py-10 md:py-12 ${className}`}>
@@ -135,27 +173,23 @@ export default function PartnersCarousel({
     );
   }
 
-  // Largeur fixe d'une card (px) + gap (40px = gap-10)
-  const cardWidthPx = isMounted && isMobile ? 300 : 300;
-  const gapPx = 40;
+  const translateXPx =
+    totalPartners > effectiveSlidesToShow
+      ? -currentIndex * slideStridePx
+      : 0;
 
-  // Calculer le décalage en px
-  const translateXPx = -(currentIndex * (cardWidthPx + gapPx));
-
-  // Créer un tableau étendu pour la boucle infinie (seulement s'il y a plus de partenaires que de slides visibles)
-  const extendedPartners = loop && totalPartners > effectiveSlidesToShow
-    ? [...safePartners, ...safePartners.slice(0, effectiveSlidesToShow)]
-    : safePartners;
+  const extendedPartners =
+    loop && totalPartners > effectiveSlidesToShow
+      ? [...safePartners, ...safePartners.slice(0, effectiveSlidesToShow)]
+      : safePartners;
 
   return (
     <section
-      className={`relative w-full py-10 sm:py-12 md:py-14 bg-gradient-to-b from-white via-gray-50/50 to-white overflow-x-hidden ${className}`}
+      className={`relative w-full py-10 sm:py-12 md:py-14 bg-gradient-to-b from-white via-gray-50/50 to-white ${className}`}
     >
-      {/* Effet de fond décoratif */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* En-tête de section amélioré */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -178,19 +212,16 @@ export default function PartnersCarousel({
           </motion.p>
         </motion.div>
 
-        {/* Carousel Container */}
-        <div
-          ref={containerRef}
-          className="relative max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8"
-        >
-          {/* Cards Container avec espace pour le hover */}
+        <div className="relative max-w-[100rem] mx-auto px-0 sm:px-2 lg:px-4">
           <div
-            className="relative overflow-visible py-6 sm:py-8 md:py-10"
+            ref={trackRef}
+            className="relative w-full overflow-hidden px-3 py-8 sm:px-4 sm:py-10 md:py-12"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <motion.div
-              className={`flex gap-10 ${totalPartners <= effectiveSlidesToShow ? "justify-center" : ""}`}
+              className={`flex ${totalPartners <= effectiveSlidesToShow ? "justify-center" : ""}`}
+              style={{ gap: GAP_PX }}
               animate={{
                 x: totalPartners > effectiveSlidesToShow ? translateXPx : 0,
               }}
@@ -204,17 +235,23 @@ export default function PartnersCarousel({
               {extendedPartners.map((partner, index) => (
                 <motion.div
                   key={`${partner.id}-${index}`}
-                  className="flex-shrink-0 w-full max-w-[300px] sm:w-[280px] md:w-[300px]"
+                  className="box-border min-w-0 shrink-0 grow-0"
                   style={{
-                    opacity: isClient ? 1 : 0, // Masquer pendant l'hydratation
+                    width: slideWidthPx,
+                    minWidth: slideWidthPx,
+                    maxWidth: slideWidthPx,
+                    opacity: isClient ? 1 : 0,
                   }}
                   initial={{ opacity: 0, y: 20, scale: 0.95 }}
                   animate={{ opacity: isClient ? 1 : 0, y: 0, scale: 1 }}
-                  transition={{ delay: (index % responsiveSlidesToShow) * 0.1 }}
+                  transition={{
+                    delay: (index % Math.max(responsiveSlidesToShow, 1)) * 0.1,
+                  }}
                   onMouseEnter={() => setHoveredCard(partner.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                 >
                   <PartnerCard
+                    disableHoverLift
                     id={partner.id}
                     name={partner.name}
                     logo={partner.logo}
@@ -225,35 +262,6 @@ export default function PartnersCarousel({
               ))}
             </motion.div>
           </div>
-
-          {/* Dots Indicator amélioré */}
-          {/* {showDots && totalPartners > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="flex justify-center items-center mt-10 sm:mt-12 gap-2 sm:gap-3"
-            >
-              {safePartners.map((partner, index) => {
-                const isActive = index === currentIndex % totalPartners;
-                return (
-                  <motion.button
-                    key={`partner-dot-${partner.id || index}`}
-                    onClick={() => goToSlide(index)}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={`relative transition-all duration-300 rounded-full ${
-                      isActive
-                        ? "w-12 h-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-lg shadow-blue-200/50"
-                        : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Aller au partenaire ${index + 1}`}
-                  />
-                );
-              })}
-            </motion.div>
-          )} */}
         </div>
       </div>
     </section>

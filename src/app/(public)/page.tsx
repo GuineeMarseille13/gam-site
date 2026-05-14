@@ -273,15 +273,13 @@ export default function Home() {
         <PartnersCarouselSkeleton />
       ) : (
         transformedPartners.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PartnersCarousel
-              partners={transformedPartners}
-              {...CAROUSEL_CONFIG}
-              showArrows={true}
-              title="Nos Partenaires de Confiance"
-              className="bg-white"
-            />
-          </div>
+          <PartnersCarousel
+            partners={transformedPartners}
+            {...CAROUSEL_CONFIG}
+            showArrows={true}
+            title="Nos Partenaires de Confiance"
+            className="bg-white"
+          />
         )
       )}
 

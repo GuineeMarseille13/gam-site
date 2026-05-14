@@ -17,6 +17,11 @@ interface PartnerCardProps {
   website?: string;
   /** Accent de couleur tailwind arbitraire (ex: 'from-theme-red to-theme-yellow') */
   accentGradientClassName?: string;
+  /**
+   * Désactive translate + scale au survol (ex. carrousel avec `overflow-hidden`)
+   * pour éviter de rogner la carte et les halos `-inset-2`.
+   */
+  disableHoverLift?: boolean;
 }
 
 /**
@@ -30,6 +35,7 @@ export function PartnerCard({
   description,
   website,
   accentGradientClassName = "from-blue-500 via-indigo-500 to-purple-500",
+  disableHoverLift = false,
 }: PartnerCardProps) {
   const hasWebsite = typeof website === "string" && website.length > 0;
 
@@ -37,9 +43,13 @@ export function PartnerCard({
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      whileHover={{ y: -8, scale: 1.02 }}
+      {...(disableHoverLift
+        ? {}
+        : {
+            whileHover: { y: -8, scale: 1.02 },
+          })}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="group relative"
+      className="group relative min-w-0 w-full"
     >
       {/* Ombres flottantes en couches */}
       <motion.div
@@ -56,7 +66,7 @@ export function PartnerCard({
       />
 
       <div
-        className="relative h-[420px] sm:h-[450px] overflow-hidden rounded-xl border border-gray-200/60 bg-white transition-all duration-500"
+        className="relative h-[420px] w-full min-w-0 sm:h-[450px] overflow-hidden rounded-xl border border-gray-200/60 bg-white transition-all duration-500"
         style={{
           boxShadow: `
             0 4px 6px -1px rgba(0, 0, 0, 0.05),
@@ -106,7 +116,7 @@ export function PartnerCard({
             <div>
               <motion.h3
                 id={`partner-${id}-title`}
-                className="mb-2 bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-xl font-extrabold text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:mb-3 sm:text-2xl"
+                className="mb-2 min-w-0 break-words bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-xl font-extrabold text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:mb-3 sm:text-2xl"
               >
                 {name}
               </motion.h3>

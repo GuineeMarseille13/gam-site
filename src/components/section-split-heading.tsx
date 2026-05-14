@@ -140,6 +140,7 @@ export function SectionSplitHeading({
         className={cn(
           HEADING_SIZE,
           showSeparator ? HEADING_TO_SEPARATOR : "mb-0",
+          "mx-auto max-w-full px-1 sm:px-2",
           palette.headingGlow,
           palette.headingGlowDark,
           headingClassName
