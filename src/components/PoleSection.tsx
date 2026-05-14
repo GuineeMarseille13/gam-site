@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PoleCard } from "@/components/PoleCard";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 import { poles as staticPoles } from "@/data/poles";
 import type { PoleItem } from "@/app/_services/home";
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
@@ -61,28 +62,13 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
           transition={{ duration: 0.5 }}
           className="text-center sm:mb-8 md:mb-10"
         >
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4"
-          >
-            Nos pôles d&apos;activités
-          </motion.h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full mb-4"
-          />
+          <SectionSplitHeading title="Nos pôles d'activités" tone="poles" />
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto"
+            className="mt-3 max-w-3xl mx-auto text-base text-gray-600 leading-relaxed sm:mt-4 sm:text-lg"
           >
             Découvrez nos différents domaines d&apos;action et d&apos;engagement
             pour la communauté

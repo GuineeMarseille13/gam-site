@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/helpers/utils";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 interface Statistic {
   id?: string;
@@ -208,20 +209,14 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
       <div className="container mx-auto relative">
         {/* Titre de section */}
         <div className="text-center mb-8 md:mb-10">
-          <h2
-            className={cn(
-              "text-4xl md:text-5xl font-bold mb-4 transition-all duration-1000",
-              "bg-gradient-to-r from-red-600 via-yellow-500 to-green-600 bg-clip-text text-transparent",
-              isVisible
-                ? "animate-in slide-in-from-top-5 fade-in"
-                : "opacity-0 -translate-y-5"
-            )}
-          >
-            Nos Réalisations
-          </h2>
+          <SectionSplitHeading
+            showAmbient={false}
+            title="Nos Réalisations"
+            tone="stats"
+          />
           <p
             className={cn(
-              "text-xl text-slate-600 max-w-2xl mx-auto transition-all duration-1000 delay-300",
+              "mx-auto mt-3 max-w-2xl text-xl text-slate-600 transition-all duration-1000 delay-300 sm:mt-4",
               isVisible
                 ? "animate-in slide-in-from-top-3 fade-in"
                 : "opacity-0 -translate-y-3"

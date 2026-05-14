@@ -3,61 +3,55 @@
 import { motion } from "framer-motion";
 import { Heart, Users, GraduationCap, Globe } from "lucide-react";
 import { useIsMobile } from "@/hooks/useIsMobile";
-const PresentationSection = () => {
+import { SectionSplitHeading } from "@/components/section-split-heading";
+
+/** Courbe sortie douce (scroll + apparitions). */
+const EASE_OUT_SMOOTH: [number, number, number, number] = [0.16, 1, 0.32, 1];
+
+function PresentationSection() {
   const isMobile = useIsMobile();
 
   const features = [
     {
       icon: Users,
       text: "Réseau de soutien",
-      color: "from-blue-500 to-indigo-500",
+      color: "from-theme-blue-dark to-theme-blue",
     },
     {
       icon: GraduationCap,
       text: "Intégration universitaire",
-      color: "from-purple-500 to-pink-500",
+      color: "from-theme-blue to-sky-400",
     },
     {
       icon: Globe,
       text: "Culture guinéenne",
-      color: "from-amber-500 to-orange-500",
+      color: "from-sky-500 to-theme-blue",
     },
     {
       icon: Heart,
       text: "Actions solidaires",
-      color: "from-red-500 to-rose-500",
+      color: "from-indigo-600 to-theme-blue-light",
     },
   ];
 
   return (
-    <section className="w-full sm:py-6 md:py-8 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
-      {/* Effet de fond décoratif */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-white via-slate-50/90 to-blue-50/40 sm:py-6 md:py-8 dark:via-slate-950/80 dark:to-slate-900/90">
+      {/* Voile radial froid (profondeur douce) */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,color-mix(in_srgb,var(--theme-blue)_10%,transparent),transparent_55%)] dark:bg-[radial-gradient(circle_at_50%_42%,color-mix(in_srgb,var(--theme-blue)_16%,transparent),transparent_55%)]" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* En-tête */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-4 sm:mb-8"
+          transition={{ duration: 0.58, ease: EASE_OUT_SMOOTH }}
+          className="relative text-center"
         >
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4"
-          >
-            Bienvenue
-          </motion.h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full mb-6"
+          <SectionSplitHeading
+            as="h1"
+            headingClassName="text-4xl sm:text-5xl md:text-6xl"
+            title="Bienvenue"
           />
         </motion.div>
 
@@ -66,14 +60,23 @@ const PresentationSection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+          transition={{
+            delay: 0.22,
+            duration: 0.68,
+            ease: EASE_OUT_SMOOTH,
+          }}
           className="relative"
         >
           {/* Carte principale avec effet de flottement */}
           <motion.div
             whileHover={{ y: -8 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="group relative rounded-3xl bg-gradient-to-br from-white via-gray-50/80 to-white p-6 sm:p-8 md:p-10 border border-gray-200/60 backdrop-blur-sm"
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 22,
+              mass: 0.75,
+            }}
+            className="group relative rounded-3xl border border-theme-blue/10 bg-gradient-to-br from-white via-blue-50/35 to-white p-6 backdrop-blur-sm sm:p-8 md:p-10 dark:border-theme-blue/20 dark:via-slate-900/40 dark:to-slate-950"
             style={{
               boxShadow: `
                 0 4px 6px -1px rgba(0, 0, 0, 0.05),
@@ -114,9 +117,12 @@ const PresentationSection = () => {
             )}
 
             {/* Effet de brillance au survol */}
-            <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out rounded-3xl opacity-0 hover:opacity-100 pointer-events-none" />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 -translate-x-full rounded-3xl bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-[transform,opacity] duration-[880ms] ease-[cubic-bezier(0.33,1,0.68,1)] group-hover:translate-x-full group-hover:opacity-100 dark:via-white/15"
+            />
 
-            <p className="relative text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed text-center max-w-4xl mx-auto z-10">
+            <p className="relative z-10 mx-auto max-w-4xl text-center text-base leading-relaxed text-slate-700 sm:text-lg md:text-xl dark:text-slate-300">
               L&apos;Association des Guinéens à Marseille (GAM) est une
               association mixte à but non lucratif qui a pour objectif de
               regrouper, informer et accompagner les Guinéens vivant à Marseille
@@ -135,7 +141,11 @@ const PresentationSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            transition={{
+              delay: 0.32,
+              duration: 0.68,
+              ease: EASE_OUT_SMOOTH,
+            }}
             className="mt-10 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
           >
             {features.map((feature, index) => {
@@ -147,9 +157,11 @@ const PresentationSection = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{
-                    delay: 0.5 + index * 0.1,
+                    delay: 0.42 + index * 0.08,
                     type: "spring",
-                    stiffness: 200,
+                    stiffness: 150,
+                    damping: 20,
+                    mass: 0.72,
                   }}
                   className="relative"
                 >
@@ -200,6 +212,6 @@ const PresentationSection = () => {
       </div>
     </section>
   );
-};
+}
 
 export default PresentationSection;

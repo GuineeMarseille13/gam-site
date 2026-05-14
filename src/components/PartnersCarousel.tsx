@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PartnerCard } from "@/components/partner-card";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 interface Partner {
   id: number;
@@ -123,8 +124,12 @@ export default function PartnersCarousel({
     return (
       <div className={`relative w-full py-10 md:py-12 ${className}`}>
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-6">{title}</h2>
-          <p className="text-muted-foreground">Aucun partenaire à afficher</p>
+          <SectionSplitHeading
+            showAmbient={false}
+            title={title}
+            tone="partners"
+          />
+          <p className="mt-3 text-muted-foreground sm:mt-4">Aucun partenaire à afficher</p>
         </div>
       </div>
     );
@@ -158,28 +163,13 @@ export default function PartnersCarousel({
           transition={{ duration: 0.5 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4"
-          >
-            {title}
-          </motion.h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full mb-4"
-          />
+          <SectionSplitHeading title={title} tone="partners" />
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto px-4"
+            className="mx-auto mt-3 max-w-3xl px-4 text-base text-gray-600 leading-relaxed sm:mt-4 sm:text-lg"
           >
             Nous collaborons avec des partenaires de confiance qui partagent nos valeurs
             et notre engagement en faveur de la communauté guinéenne à Marseille.

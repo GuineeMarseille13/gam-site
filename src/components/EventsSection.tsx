@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import Image from "next/image";
 import EventMediaPreview from "@/components/events/EventMediaPreview";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 export interface EventMedia {
   id: number;
   type: "image" | "video";
@@ -122,28 +123,13 @@ export default function EventsSection({
           transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-10"
         >
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-4"
-          >
-            Nos Événements
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            whileInView={{ opacity: 1, scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full"
-          />
+          <SectionSplitHeading title="Nos Événements" tone="events" />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-6 text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto"
+            className="mt-3 text-base sm:mt-4 sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto"
           >
             Découvrez les derniers événements organisés par l&apos;association
             GAM

@@ -2,6 +2,7 @@ import { Marquee } from "@/components/Marquee";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 /** Données avis (API / service accueil). */
 interface ApiReviewLike {
@@ -133,11 +134,12 @@ function ReviewsSection({ reviews }: ReviewsSectionProps) {
     <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-amber-50/30 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3">
-            Les avis des personnes qui nous ont fait confiance
-          </h2>
-          <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          <SectionSplitHeading
+            headingClassName="max-w-5xl mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
+            title="Les avis des personnes qui nous ont fait confiance"
+            tone="reviews"
+          />
+          <p className="mt-3 text-base sm:mt-4 sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Découvrez ce que nos membres, bénévoles et partenaires pensent de notre association
           </p>
         </div>

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/helpers/format-currency";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 interface Product {
   id: number;
@@ -167,8 +168,8 @@ export default function ProductsCarousel({
     return (
       <div className={`relative w-full py-16 ${className}`}>
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-8">{title}</h2>
-          <p className="text-muted-foreground">Aucun produit à afficher</p>
+          <SectionSplitHeading showAmbient={false} title={title} tone="shop" />
+          <p className="mt-3 text-muted-foreground sm:mt-4">Aucun produit à afficher</p>
         </div>
       </div>
     );
@@ -209,25 +210,18 @@ export default function ProductsCarousel({
     >
       {/* Titre de la section */}
       <div className="text-center mb-6 md:mb-8 px-4">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-xl md:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-theme-red via-theme-yellow to-theme-green bg-clip-text text-transparent mb-4"
-        >
-          {title}
-        </motion.h2>
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-16 md:w-24 h-1 bg-gradient-to-r from-theme-red to-theme-green mx-auto rounded-full"
+        <SectionSplitHeading
+          showAmbient={false}
+          headingClassName="text-xl md:text-2xl lg:text-4xl"
+          title={title}
+          tone="shop"
         />
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm md:text-base px-4"
+          className="mx-auto mt-3 max-w-2xl px-4 text-sm text-gray-600 md:mt-4 md:text-base"
         >
           Découvrez nos produits artisanaux et soutenez notre association
         </motion.p>

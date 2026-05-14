@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { VideoTestimonial } from "@/app/_services/home";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -227,16 +228,12 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-           
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-              Témoignages
-            </h2>
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-red-400/70" />
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-red-400/70" />
-            </div>
-            <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
+            <SectionSplitHeading
+              showAmbient={false}
+              title="Témoignages"
+              tone="video"
+            />
+            <p className="mt-3 text-base sm:mt-4 sm:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
               Découvrez les témoignages de ceux qui font vivre l&apos;association au quotidien.
             </p>
           </motion.div>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/app/(public)/boutique/_components/product-card";
 import type { Product } from "@/app/(public)/boutique/_schemas/product.schema";
+import { SectionSplitHeading } from "@/components/section-split-heading";
 
 // ============================================================================
 // CONFIGURATION
@@ -285,10 +286,8 @@ export function ProductsCircularCarousel({
     return (
       <section className={`w-full py-10 sm:py-12 ${className}`}>
         <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
-            {title}
-          </h2>
-          <p className="mt-4 text-base sm:text-lg text-gray-700 max-w-3xl mx-auto px-4">
+          <SectionSplitHeading showAmbient={false} title={title} tone="shop" />
+          <p className="mt-3 text-base sm:mt-4 sm:text-lg text-gray-700 max-w-3xl mx-auto px-4">
             Aucun produit à afficher pour le moment.
           </p>
         </div>
@@ -300,11 +299,8 @@ export function ProductsCircularCarousel({
     <section className={`w-full py-10 sm:py-12 overflow-hidden ${className}`}>
       {/* En-tête */}
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent">
-          {title}
-        </h2>
-        <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-primary/35 to-transparent rounded-full" />
-        <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto px-4">
+        <SectionSplitHeading showAmbient={false} title={title} tone="shop" />
+        <p className="mt-3 text-base sm:mt-4 sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto px-4">
           {subtitle}
         </p>
       </div>
