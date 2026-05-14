@@ -59,10 +59,12 @@ export async function PUT(
       year?: number
       label?: string
       pdfUrl?: string
+      isPublished?: boolean
     } = {}
     if (validatedData.year !== undefined) data.year = validatedData.year
     if (validatedData.title !== undefined) data.label = validatedData.title
     if (validatedData.pdfUrl !== undefined) data.pdfUrl = validatedData.pdfUrl
+    if (validatedData.isPublished !== undefined) data.isPublished = validatedData.isPublished
 
     const report = await prisma.reportActivity.update({
       where: { id },

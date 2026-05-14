@@ -9,6 +9,7 @@ const createActivityReportSchema = z
     year: z.number().int(),
     title: z.string().min(1),
     pdfUrl: z.string().url(),
+    isPublished: z.boolean().optional(),
   })
   .strict()
 
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
         year: validatedData.year,
         label: validatedData.title,
         pdfUrl: validatedData.pdfUrl,
+        ...(validatedData.isPublished !== undefined ? { isPublished: validatedData.isPublished } : {}),
       },
     })
 

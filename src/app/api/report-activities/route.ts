@@ -9,6 +9,7 @@ const createReportActivitySchema = z.object({
   year: z.number().int().min(2000).max(2100),
   pdfUrl: z.string().url('Invalid URL').min(1, 'PDF URL is required'),
   reportActivitySectionId: z.string().optional().nullable(),
+  isPublished: z.boolean().optional(),
 })
 
 const updateReportActivitySchema = createReportActivitySchema.partial()

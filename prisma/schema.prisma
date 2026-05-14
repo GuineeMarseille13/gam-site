@@ -568,6 +568,8 @@ model ReportActivity {
   label String?  // Label du rapport
   year        Int      // Année du rapport
   pdfUrl      String   // URL du rapport
+  /// Si false, le rapport n’apparaît pas sur la page publique « Notre association ».
+  isPublished Boolean  @default(true)
   reportActivitySectionId String?  // ID de la section de rapport d'activité
 
   // Relations

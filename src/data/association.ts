@@ -2,13 +2,6 @@
 
 import type { TeamMember } from "@/types/association";
 
-export interface ActivityReport {
-  id: string;
-  year: number;
-  title: string;
-  pdfUrl: string;
-}
-
 // Message du président
 export const presidentMessage = `Chers membres, bénévoles et partenaires de l'association Guinée À Marseille,
 
@@ -81,34 +74,6 @@ export const teamMembers: TeamMember[] = [
     role: "Trésorière adjointe",
     image: "/images/team/aminata-fofana.jpg",
     order: 7,
-  },
-];
-
-// Rapports d'activité
-export const activityReports: ActivityReport[] = [
-  {
-    id: "1",
-    year: 2024,
-    title: "Rapport d'activités 2024",
-    pdfUrl: "/reports/rapport-activites-2024.pdf",
-  },
-  {
-    id: "2",
-    year: 2023,
-    title: "Rapport d'activités 2023",
-    pdfUrl: "/reports/rapport-activites-2023.pdf",
-  },
-  {
-    id: "3",
-    year: 2022,
-    title: "Rapport d'activités 2022",
-    pdfUrl: "/reports/rapport-activites-2022.pdf",
-  },
-  {
-    id: "4",
-    year: 2021,
-    title: "Rapport d'activités 2021",
-    pdfUrl: "/reports/rapport-activites-2021.pdf",
   },
 ];
 

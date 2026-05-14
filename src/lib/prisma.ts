@@ -5,6 +5,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
+/**
+ * Incrémenter quand le schéma Prisma impose un client régénéré (`prisma generate`) :
+ * évite de garder un singleton obsolète après HMR / sans redémarrage du serveur Next.
+ */
+const PRISMA_CLIENT_CACHE_REVISION = 2
+
+type GlobalWithPrismaCacheRevision = typeof globalThis & {
+  __prismaClientCacheRevision?: number
+}
+
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 })
@@ -25,12 +35,14 @@ type PrismaWithDelegates = PrismaClient & {
 
 /**
  * En dev, le singleton global peut rester une ancienne instance après `prisma generate`
- * (HMR sans redémarrage) : les nouveaux modèles ne sont pas sur le client → délégués `undefined`.
+ * (HMR sans redémarrage) : les nouveaux champs / modèles ne sont pas sur le client.
  */
 function getPrismaClient(): PrismaClient {
+  const g = globalThis as GlobalWithPrismaCacheRevision
   const existing = globalForPrisma.prisma
+  const cacheRevisionOk = g.__prismaClientCacheRevision === PRISMA_CLIENT_CACHE_REVISION
 
-  if (existing) {
+  if (existing && cacheRevisionOk) {
     const withDelegates = existing as PrismaWithDelegates
     const hasPermanenceAdminPresenceVolunteer =
       typeof withDelegates.permanenceAdminPresenceVolunteer?.findMany === "function"
@@ -53,10 +65,15 @@ function getPrismaClient(): PrismaClient {
     void existing.$disconnect().catch(() => {
       /* ignore */
     })
+  } else if (existing && !cacheRevisionOk) {
+    void existing.$disconnect().catch(() => {
+      /* ignore */
+    })
   }
 
   const client = createPrismaClient()
   globalForPrisma.prisma = client
+  g.__prismaClientCacheRevision = PRISMA_CLIENT_CACHE_REVISION
   return client
 }
 

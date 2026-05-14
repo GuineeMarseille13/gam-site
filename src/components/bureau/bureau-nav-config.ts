@@ -2,6 +2,7 @@ import type { Icon } from "@tabler/icons-react"
 import {
   IconCalendarEvent,
   IconChartBar,
+  IconFileDescription,
   IconHandClick,
   IconLayoutGrid,
   IconLayoutNavbar,
@@ -31,6 +32,7 @@ export const bureauNavContenuBeforeAccompagnement: BureauNavItem[] = [
 
 /** Suite du bloc « Contenu du site » après les accordéons des pôles (contenu public). */
 export const bureauNavContenuAfterAccompagnement: BureauNavItem[] = [
+  { title: "Rapports d'activité", url: "/bureau/rapports-activite", icon: IconFileDescription },
   { title: "Partenaires", url: "/bureau/partenaires", icon: IconHandClick },
   { title: "Produits", url: "/bureau/produits", icon: IconPackage },
   { title: "Témoignages vidéo", url: "/bureau/temoignages-video", icon: IconVideo },

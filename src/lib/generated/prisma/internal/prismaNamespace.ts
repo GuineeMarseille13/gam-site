@@ -5009,6 +5009,7 @@ export const ReportActivityScalarFieldEnum = {
   label: 'label',
   year: 'year',
   pdfUrl: 'pdfUrl',
+  isPublished: 'isPublished',
   reportActivitySectionId: 'reportActivitySectionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

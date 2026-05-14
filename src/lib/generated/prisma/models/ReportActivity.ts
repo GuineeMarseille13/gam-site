@@ -39,6 +39,7 @@ export type ReportActivityMinAggregateOutputType = {
   label: string | null
   year: number | null
   pdfUrl: string | null
+  isPublished: boolean | null
   reportActivitySectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +50,7 @@ export type ReportActivityMaxAggregateOutputType = {
   label: string | null
   year: number | null
   pdfUrl: string | null
+  isPublished: boolean | null
   reportActivitySectionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +61,7 @@ export type ReportActivityCountAggregateOutputType = {
   label: number
   year: number
   pdfUrl: number
+  isPublished: number
   reportActivitySectionId: number
   createdAt: number
   updatedAt: number
@@ -79,6 +82,7 @@ export type ReportActivityMinAggregateInputType = {
   label?: true
   year?: true
   pdfUrl?: true
+  isPublished?: true
   reportActivitySectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +93,7 @@ export type ReportActivityMaxAggregateInputType = {
   label?: true
   year?: true
   pdfUrl?: true
+  isPublished?: true
   reportActivitySectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +104,7 @@ export type ReportActivityCountAggregateInputType = {
   label?: true
   year?: true
   pdfUrl?: true
+  isPublished?: true
   reportActivitySectionId?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +202,7 @@ export type ReportActivityGroupByOutputType = {
   label: string | null
   year: number
   pdfUrl: string
+  isPublished: boolean
   reportActivitySectionId: string | null
   createdAt: Date
   updatedAt: Date
@@ -229,6 +236,7 @@ export type ReportActivityWhereInput = {
   label?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   year?: Prisma.IntFilter<"ReportActivity"> | number
   pdfUrl?: Prisma.StringFilter<"ReportActivity"> | string
+  isPublished?: Prisma.BoolFilter<"ReportActivity"> | boolean
   reportActivitySectionId?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
@@ -240,6 +248,7 @@ export type ReportActivityOrderByWithRelationInput = {
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   year?: Prisma.SortOrder
   pdfUrl?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   reportActivitySectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -254,6 +263,7 @@ export type ReportActivityWhereUniqueInput = Prisma.AtLeast<{
   label?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   year?: Prisma.IntFilter<"ReportActivity"> | number
   pdfUrl?: Prisma.StringFilter<"ReportActivity"> | string
+  isPublished?: Prisma.BoolFilter<"ReportActivity"> | boolean
   reportActivitySectionId?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
@@ -265,6 +275,7 @@ export type ReportActivityOrderByWithAggregationInput = {
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   year?: Prisma.SortOrder
   pdfUrl?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   reportActivitySectionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -283,6 +294,7 @@ export type ReportActivityScalarWhereWithAggregatesInput = {
   label?: Prisma.StringNullableWithAggregatesFilter<"ReportActivity"> | string | null
   year?: Prisma.IntWithAggregatesFilter<"ReportActivity"> | number
   pdfUrl?: Prisma.StringWithAggregatesFilter<"ReportActivity"> | string
+  isPublished?: Prisma.BoolWithAggregatesFilter<"ReportActivity"> | boolean
   reportActivitySectionId?: Prisma.StringNullableWithAggregatesFilter<"ReportActivity"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReportActivity"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ReportActivity"> | Date | string
@@ -293,6 +305,7 @@ export type ReportActivityCreateInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   reportActivitySection?: Prisma.ReportActivitySectionCreateNestedOneWithoutReportsInput
@@ -303,6 +316,7 @@ export type ReportActivityUncheckedCreateInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   reportActivitySectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -313,6 +327,7 @@ export type ReportActivityUpdateInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reportActivitySection?: Prisma.ReportActivitySectionUpdateOneWithoutReportsNestedInput
@@ -323,6 +338,7 @@ export type ReportActivityUncheckedUpdateInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reportActivitySectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,6 +349,7 @@ export type ReportActivityCreateManyInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   reportActivitySectionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -343,6 +360,7 @@ export type ReportActivityUpdateManyMutationInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -352,6 +370,7 @@ export type ReportActivityUncheckedUpdateManyInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reportActivitySectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,6 +391,7 @@ export type ReportActivityCountOrderByAggregateInput = {
   label?: Prisma.SortOrder
   year?: Prisma.SortOrder
   pdfUrl?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   reportActivitySectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -386,6 +406,7 @@ export type ReportActivityMaxOrderByAggregateInput = {
   label?: Prisma.SortOrder
   year?: Prisma.SortOrder
   pdfUrl?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   reportActivitySectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -396,6 +417,7 @@ export type ReportActivityMinOrderByAggregateInput = {
   label?: Prisma.SortOrder
   year?: Prisma.SortOrder
   pdfUrl?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   reportActivitySectionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -452,6 +474,7 @@ export type ReportActivityCreateWithoutReportActivitySectionInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -461,6 +484,7 @@ export type ReportActivityUncheckedCreateWithoutReportActivitySectionInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -499,6 +523,7 @@ export type ReportActivityScalarWhereInput = {
   label?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   year?: Prisma.IntFilter<"ReportActivity"> | number
   pdfUrl?: Prisma.StringFilter<"ReportActivity"> | string
+  isPublished?: Prisma.BoolFilter<"ReportActivity"> | boolean
   reportActivitySectionId?: Prisma.StringNullableFilter<"ReportActivity"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ReportActivity"> | Date | string
@@ -509,6 +534,7 @@ export type ReportActivityCreateManyReportActivitySectionInput = {
   label?: string | null
   year: number
   pdfUrl: string
+  isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -518,6 +544,7 @@ export type ReportActivityUpdateWithoutReportActivitySectionInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -527,6 +554,7 @@ export type ReportActivityUncheckedUpdateWithoutReportActivitySectionInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -536,6 +564,7 @@ export type ReportActivityUncheckedUpdateManyWithoutReportActivitySectionInput =
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   year?: Prisma.IntFieldUpdateOperationsInput | number
   pdfUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -547,6 +576,7 @@ export type ReportActivitySelect<ExtArgs extends runtime.Types.Extensions.Intern
   label?: boolean
   year?: boolean
   pdfUrl?: boolean
+  isPublished?: boolean
   reportActivitySectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -558,6 +588,7 @@ export type ReportActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Type
   label?: boolean
   year?: boolean
   pdfUrl?: boolean
+  isPublished?: boolean
   reportActivitySectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -569,6 +600,7 @@ export type ReportActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   label?: boolean
   year?: boolean
   pdfUrl?: boolean
+  isPublished?: boolean
   reportActivitySectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -580,12 +612,13 @@ export type ReportActivitySelectScalar = {
   label?: boolean
   year?: boolean
   pdfUrl?: boolean
+  isPublished?: boolean
   reportActivitySectionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ReportActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "year" | "pdfUrl" | "reportActivitySectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["reportActivity"]>
+export type ReportActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "year" | "pdfUrl" | "isPublished" | "reportActivitySectionId" | "createdAt" | "updatedAt", ExtArgs["result"]["reportActivity"]>
 export type ReportActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reportActivitySection?: boolean | Prisma.ReportActivity$reportActivitySectionArgs<ExtArgs>
 }
@@ -606,6 +639,10 @@ export type $ReportActivityPayload<ExtArgs extends runtime.Types.Extensions.Inte
     label: string | null
     year: number
     pdfUrl: string
+    /**
+     * Si false, le rapport n’apparaît pas sur la page publique « Notre association ».
+     */
+    isPublished: boolean
     reportActivitySectionId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1037,6 +1074,7 @@ export interface ReportActivityFieldRefs {
   readonly label: Prisma.FieldRef<"ReportActivity", 'String'>
   readonly year: Prisma.FieldRef<"ReportActivity", 'Int'>
   readonly pdfUrl: Prisma.FieldRef<"ReportActivity", 'String'>
+  readonly isPublished: Prisma.FieldRef<"ReportActivity", 'Boolean'>
   readonly reportActivitySectionId: Prisma.FieldRef<"ReportActivity", 'String'>
   readonly createdAt: Prisma.FieldRef<"ReportActivity", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ReportActivity", 'DateTime'>
