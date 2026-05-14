@@ -13,6 +13,14 @@ import {
   MAGIC_HERO_DONATION_COLOR,
   MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES,
 } from "@/config/magic-hero-page-title";
+import {
+  DON_BENEFIT_CARD_CLASSNAME,
+  DON_BENEFIT_ICON_CLASSNAME,
+  DON_FORM_GRADIENT_WRAPPER_CLASSNAME,
+  DON_FORM_INNER_SURFACE_CLASSNAME,
+  DON_PAYMENT_INNER_SURFACE_CLASSNAME,
+  DON_PAYMENT_PANEL_GRADIENT_WRAPPER_CLASSNAME,
+} from "../_config/don-ui-styles";
 
 export default function DonationView() {
   const [formData, setFormData] = useState<Partial<Don>>({
@@ -145,9 +153,9 @@ export default function DonationView() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-pink-200 via-rose-200 to-red-200 shadow-xl shadow-pink-100/50"
+          className={DON_PAYMENT_PANEL_GRADIENT_WRAPPER_CLASSNAME}
         >
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-4 sm:p-6 md:p-8 shadow-inner">
+          <div className={`${DON_PAYMENT_INNER_SURFACE_CLASSNAME} p-4 sm:p-6 md:p-8`}>
             <motion.button
               onClick={handleBackToForm}
               whileHover={{ scale: 1.02 }}
@@ -225,17 +233,18 @@ export default function DonationView() {
             initial={{ opacity: 0, y: 16 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ delay: i * 0.08, duration: 0.4 }} 
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="group rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-sm p-4 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-pink-100/50 transition-all duration-300"
+            whileHover={{
+              y: -6,
+              transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+            }}
+            className={DON_BENEFIT_CARD_CLASSNAME}
           >
-            <div className="flex items-start gap-4">
-              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 text-pink-700 shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-md">
-                <IconComponent className="w-6 h-6 sm:w-7 sm:h-7" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-1.5">{b.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{b.desc}</p>
-              </div>
+            <div className={DON_BENEFIT_ICON_CLASSNAME}>
+              <IconComponent className="w-6 h-6 sm:w-7 sm:h-7" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-1.5">{b.title}</h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{b.desc}</p>
             </div>
           </motion.div>
           );
@@ -247,9 +256,12 @@ export default function DonationView() {
         initial={{ opacity: 0, y: 16 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ delay: 0.3, duration: 0.5 }} 
-        className="rounded-3xl p-[2px] bg-gradient-to-br from-pink-200 via-rose-200 to-red-200 shadow-xl shadow-pink-100/50"
+        className={DON_FORM_GRADIENT_WRAPPER_CLASSNAME}
       >
-        <form onSubmit={handleSubmit} className="rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-5 sm:p-8 shadow-inner space-y-5 sm:space-y-7">
+        <form
+          onSubmit={handleSubmit}
+          className={`${DON_FORM_INNER_SURFACE_CLASSNAME} space-y-5 p-5 sm:space-y-7 sm:p-8`}
+        >
           <motion.div 
             initial={{ opacity: 0, y: 8 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -280,10 +292,10 @@ export default function DonationView() {
                   onClick={() => handleAmountSelect(amount)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-3 rounded-xl border-2 text-sm sm:text-base font-semibold transition-all duration-200 cursor-pointer ${
+                  className={`px-4 py-3 rounded-xl border-2 text-sm sm:text-base font-semibold transition-[box-shadow,transform,colors,border-color] duration-200 cursor-pointer ${
                     formData.amount === amount
-                      ? "bg-gradient-to-br from-pink-500 to-rose-500 text-white border-pink-500 shadow-lg shadow-pink-200/50 scale-105"
-                      : "bg-white text-gray-700 border-gray-300 hover:border-pink-400 hover:bg-pink-50 hover:shadow-md"
+                      ? "bg-gradient-to-br from-pink-500 to-rose-500 text-white border-pink-500 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.25),0_4px_14px_-2px_rgb(219_39_119/0.45),0_12px_28px_-8px_rgb(15_23_42/0.15)] scale-105"
+                      : "border-gray-300 bg-white text-gray-700 shadow-[inset_0_1px_0_0_rgb(255_255_255/1),0_1px_2px_rgb(15_23_42/0.05),0_6px_16px_-6px_rgb(244_114_182/0.1)] hover:border-pink-400 hover:bg-pink-50 hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/1),0_2px_6px_-2px_rgb(15_23_42/0.06),0_10px_24px_-8px_rgb(244_114_182/0.16)]"
                   }`}
                 >
                   {amount} €

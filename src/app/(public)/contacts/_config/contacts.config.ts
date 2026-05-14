@@ -31,10 +31,17 @@ export const ANIMATION_CONFIG = {
       transition: { delay: 0.3, duration: 0.4 },
     },
     card: {
-      whileHover: { y: -4, transition: { duration: 0.2 } },
+      whileHover: {
+        y: -6,
+        transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+      },
     },
     socialButton: {
-      whileHover: { scale: 1.1, y: -2 },
+      whileHover: {
+        scale: 1.08,
+        y: -5,
+        transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+      },
       whileTap: { scale: 0.95 },
     },
   },
@@ -101,17 +108,18 @@ export const STYLE_CONFIG = {
     grid:
       "mx-auto grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 mb-8 sm:mb-12",
     card:
-      "group flex h-full w-full flex-col rounded-2xl border border-gray-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-100/50 sm:p-5",
-    icon: "inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-md mb-3",
+      "group relative flex h-full w-full flex-col rounded-3xl bg-white p-4 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.9),0_0_0_1px_rgb(148_163_184/0.07),0_1px_2px_-1px_rgb(15_23_42/0.04),0_8px_24px_-6px_rgb(59_130_246/0.08),0_24px_56px_-14px_rgb(15_23_42/0.07),0_48px_96px_-28px_rgb(99_102_241/0.06)] transition-[box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.95),0_0_0_1px_rgb(148_163_184/0.1),0_2px_6px_-2px_rgb(15_23_42/0.05),0_14px_36px_-8px_rgb(59_130_246/0.14),0_36px_72px_-16px_rgb(15_23_42/0.1),0_64px_120px_-32px_rgb(79_70_229/0.09)] sm:p-6",
+    icon:
+      "mb-3 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br shadow-[inset_0_1px_0_0_rgb(255_255_255/0.65),0_1px_2px_rgb(15_23_42/0.04),0_6px_16px_-4px_rgb(59_130_246/0.12),0_14px_32px_-8px_rgb(15_23_42/0.08)] transition-transform duration-300 group-hover:scale-110 sm:h-14 sm:w-14",
     socialGrid: "flex flex-wrap items-center justify-center gap-3 sm:gap-4",
     socialButton:
-      "group relative inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br text-white shadow-lg hover:shadow-xl transition-all duration-300",
+      "group relative inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br text-white transition-[box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.28),0_0_0_1px_rgb(255_255_255/0.1),0_2px_4px_-1px_rgb(15_23_42/0.14),0_8px_18px_-4px_rgb(59_130_246/0.22),0_16px_36px_-10px_rgb(15_23_42/0.14),0_28px_56px_-14px_rgb(99_102_241/0.12)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.38),0_0_0_1px_rgb(255_255_255/0.14),0_4px_8px_-2px_rgb(15_23_42/0.12),0_12px_28px_-6px_rgb(59_130_246/0.32),0_24px_48px_-12px_rgb(15_23_42/0.18),0_40px_72px_-18px_rgb(79_70_229/0.16)] sm:h-14 sm:w-14",
   },
   form: {
     wrapper:
-      "mx-auto w-full min-w-0 max-w-3xl rounded-3xl bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 p-[2px] shadow-xl shadow-blue-100/50",
+      "mx-auto w-full min-w-0 max-w-3xl rounded-3xl bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 p-[2px] transition-[box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.35),0_0_0_1px_rgb(99_102_241/0.12),0_2px_4px_-2px_rgb(15_23_42/0.05),0_12px_32px_-8px_rgb(59_130_246/0.12),0_32px_72px_-16px_rgb(15_23_42/0.08),0_56px_112px_-28px_rgb(99_102_241/0.1)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.45),0_0_0_1px_rgb(99_102_241/0.16),0_4px_8px_-4px_rgb(15_23_42/0.06),0_18px_48px_-10px_rgb(59_130_246/0.18),0_44px_88px_-18px_rgb(15_23_42/0.11),0_72px_140px_-32px_rgb(79_70_229/0.12)]",
     container:
-      "rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-5 sm:p-8 shadow-inner space-y-5 sm:space-y-7",
+      "rounded-3xl bg-white p-5 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.9)] sm:p-8 space-y-5 sm:space-y-7",
     header:
       "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200/60",
     badge:
