@@ -10,6 +10,7 @@ import { cn } from "@/helpers/utils"
 import type { TeamMember } from "@/types/association"
 import { partitionTeamByHierarchy } from "@/components/association/_utils/team-hierarchy"
 import { TeamMemberDescription } from "@/components/association/team-member-description"
+import { AssociationMagicTitle } from "@/components/association/association-magic-title"
 
 // Configuration des animations
 const ANIMATION_CONFIG = {
@@ -287,7 +288,7 @@ export default function TeamSection() {
 function SectionTitle() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -18 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
         delay: ANIMATION_CONFIG.delays.title,
@@ -296,9 +297,6 @@ function SectionTitle() {
       }}
       className="relative mb-8 text-center sm:mb-10 md:mb-12"
     >
-     
-
-
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -316,11 +314,15 @@ function SectionTitle() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: ANIMATION_CONFIG.delays.title + 0.14, duration: 0.55, ease: MOTION_EASE }}
-        className="relative text-balance px-2 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
+        className="relative flex flex-wrap items-center justify-center gap-x-[0.2em] px-2 text-balance font-black tracking-tight"
       >
-        <span className="text-foreground">Notre </span>
-        <span className="bg-gradient-to-br from-theme-green via-theme-green-dark to-theme-green bg-clip-text text-transparent">
-          équipe
+        <span className="text-foreground text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Notre </span>
+        <span className="inline-flex shrink-0 items-center">
+          <AssociationMagicTitle
+            text="équipe"
+            variant="display"
+            className="justify-center overflow-visible"
+          />
         </span>
       </motion.h2>
 

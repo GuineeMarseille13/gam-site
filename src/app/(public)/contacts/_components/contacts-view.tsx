@@ -17,7 +17,11 @@ export default function ContactsView({ contact, socialMedias }: ContactsViewProp
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
-    return <SuccessMessage />;
+    return (
+      <div className={STYLE_CONFIG.container}>
+        <SuccessMessage />
+      </div>
+    );
   }
 
   return (

@@ -95,7 +95,7 @@ export default function ContactInfo({ contact, socialMedias }: ContactInfoProps)
   const networks = socialMedias.length > 0 ? buildSocialNetworks(socialMedias) : [];
 
   return (
-    <div className="mb-8 sm:mb-12">
+    <div className="flex w-full min-w-0 flex-col items-center mb-8 sm:mb-12">
       <motion.div
         {...ANIMATION_CONFIG.contactInfo.container}
         className={STYLE_CONFIG.contactInfo.grid}

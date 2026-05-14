@@ -3,6 +3,8 @@
  * Tous les styles, animations et messages sont définis ici pour faciliter la maintenance
  */
 
+import { MAGIC_HERO_PAGE_TITLE_TYPOGRAPHY_CLASSES } from "@/config/magic-hero-page-title";
+
 // Configuration des animations
 export const ANIMATION_CONFIG = {
   hero: {
@@ -15,11 +17,6 @@ export const ANIMATION_CONFIG = {
       initial: { opacity: 0, y: 8 },
       animate: { opacity: 1, y: 0 },
       transition: { delay: 0.1, duration: 0.4 },
-    },
-    divider: {
-      initial: { scaleX: 0 },
-      animate: { scaleX: 1 },
-      transition: { delay: 0.3, duration: 0.5 },
     },
   },
   contactInfo: {
@@ -92,20 +89,19 @@ export const ANIMATION_CONFIG = {
 
 // Configuration des styles (classes CSS)
 export const STYLE_CONFIG = {
-  container: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10",
+  container:
+    "mx-auto flex w-full min-w-0 max-w-5xl flex-col items-center gap-8 px-4 py-6 sm:gap-10 sm:px-6 sm:py-10 lg:px-8",
   hero: {
-    wrapper: "text-center mb-8 sm:mb-12",
-    title:
-      "text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent mb-3 sm:mb-4",
+    wrapper: "mx-auto w-full min-w-0 max-w-4xl text-center mb-8 sm:mb-12",
+    title: MAGIC_HERO_PAGE_TITLE_TYPOGRAPHY_CLASSES,
     description:
-      "mt-2 sm:mt-3 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4",
-    divider:
-      "mt-6 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-blue-300 to-transparent rounded-full",
+      "mt-2 sm:mt-3 max-w-3xl text-pretty text-base leading-relaxed text-gray-700 sm:text-lg mx-auto",
   },
   contactInfo: {
-    grid: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-8 sm:mb-12",
+    grid:
+      "mx-auto grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 mb-8 sm:mb-12",
     card:
-      "group rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-sm p-4 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-blue-100/50 transition-all duration-300",
+      "group flex h-full w-full flex-col rounded-2xl border border-gray-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-100/50 sm:p-5",
     icon: "inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-md mb-3",
     socialGrid: "flex flex-wrap items-center justify-center gap-3 sm:gap-4",
     socialButton:
@@ -113,7 +109,7 @@ export const STYLE_CONFIG = {
   },
   form: {
     wrapper:
-      "rounded-3xl p-[2px] bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 shadow-xl shadow-blue-100/50",
+      "mx-auto w-full min-w-0 max-w-3xl rounded-3xl bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 p-[2px] shadow-xl shadow-blue-100/50",
     container:
       "rounded-3xl border border-gray-200/50 bg-white/90 backdrop-blur-sm p-5 sm:p-8 shadow-inner space-y-5 sm:space-y-7",
     header:

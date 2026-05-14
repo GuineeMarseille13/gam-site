@@ -62,7 +62,7 @@ export default function HeaderNavigation() {
                 >
                   <Link
                     href="/"
-                    className="px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 hover:shadow-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                    className="rounded-full border border-gray-300 bg-white px-3 py-1.5 font-medium text-xs text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:shadow-md md:px-3.5 md:py-2 md:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     🏠 Accueil
                   </Link>
@@ -79,12 +79,12 @@ export default function HeaderNavigation() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 hover:shadow-md",
+                      "rounded-full border px-3 py-1.5 font-medium text-xs transition-all duration-200 hover:shadow-md md:px-3.5 md:py-2 md:text-sm",
                       item.label === "Faire un don" &&
                         "donate-button-animated hover:scale-105",
                       isActive(item.href)
-                        ? "bg-red-500 text-white ring-2 ring-red-300 border-2 border-white"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                        ? "border-2 border-white bg-red-500 text-white ring-2 ring-red-300"
+                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700",
                     )}
                   >
                     {item.icon} {item.label}
@@ -98,8 +98,8 @@ export default function HeaderNavigation() {
 
       {/* Indicateur de page mobile - conditionnellement rendu */}
       {isMobile && (
-        <div className="bg-gray-50/50 dark:bg-gray-900 py-2 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg">
-          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="border-b border-gray-200 bg-gray-50/50 py-1.5 backdrop-blur-lg dark:border-gray-700 dark:bg-gray-900">
+          <div className="container mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
             {currentPath === "/boutique" ? (
               <div
                 className="flex w-full flex-wrap items-center justify-center gap-3 sm:gap-4"

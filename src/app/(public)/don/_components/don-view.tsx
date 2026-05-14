@@ -7,6 +7,12 @@ import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT
 import { useCreateDonPaymentIntent } from "../_hooks/use-create-don-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 import { formatCurrency } from "@/helpers/format-currency";
+import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
+import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
+import {
+  MAGIC_HERO_DONATION_COLOR,
+  MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES,
+} from "@/config/magic-hero-page-title";
 
 export default function DonationView() {
   const [formData, setFormData] = useState<Partial<Don>>({
@@ -177,14 +183,12 @@ export default function DonationView() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {/* Hero */}
       <div className="text-center mb-8 sm:mb-12">
-        <motion.h1 
-          initial={{ opacity: 0, y: 12 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 bg-clip-text text-transparent mb-3 sm:mb-4"
-        >
-          Faire un don
-        </motion.h1>
+        <PageHeroMagicTitle
+          text="Faire un don"
+          magicColor={MAGIC_HERO_DONATION_COLOR}
+          titleTypographyClassName={MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES}
+        />
+        <SectionSplitTitleSeparator tone="video" className="mt-2 sm:mt-3" />
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -193,12 +197,6 @@ export default function DonationView() {
         >
           Votre don est essentiel pour notre association. Il nous permet de financer nos projets, d&apos;organiser nos événements et d&apos;amplifier notre impact au service de notre communauté.
         </motion.p>
-        <motion.div 
-          initial={{ scaleX: 0 }} 
-          animate={{ scaleX: 1 }} 
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mt-6 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent rounded-full"
-        />
       </div>
 
       {/* Benefits */}

@@ -51,6 +51,52 @@ export interface SectionSplitHeadingProps {
   showSeparator?: boolean;
 }
 
+const SECTION_SEPARATOR_WRAPPER =
+  "relative mx-auto max-w-md pb-0.5 mb-5 sm:mb-6 md:mb-7 sm:max-w-lg";
+
+export interface SectionSplitTitleSeparatorProps {
+  /** Palette du filet (identique aux titres `SectionSplitHeading`). */
+  tone?: SectionSplitTone;
+  /** Classes fusionnées sur le conteneur du filet (marges, largeur). */
+  className?: string;
+}
+
+/**
+ * Filet sous-titre aligné sur `SectionSplitHeading` (halos + barre + ombres).
+ * À placer juste sous le titre, avant le paragraphe ou le contenu de section.
+ */
+export function SectionSplitTitleSeparator({
+  tone = "hero",
+  className,
+}: SectionSplitTitleSeparatorProps) {
+  const palette = SECTION_SPLIT_TONE_STYLES[tone];
+
+  return (
+    <div className={cn(SECTION_SEPARATOR_WRAPPER, className)}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-8 top-1/2 h-10 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/45 to-transparent blur-2xl dark:via-white/12"
+      />
+      <div aria-hidden className={palette.separatorVeil} />
+      <motion.div
+        initial={{ opacity: 0, scaleX: 0 }}
+        whileInView={{ opacity: 1, scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{
+          delay: 0.14,
+          duration: 0.72,
+          ease: SECTION_TITLE_EASE,
+        }}
+        className={cn(
+          palette.separatorBar,
+          palette.separatorShadow,
+          palette.separatorShadowDark
+        )}
+      />
+    </div>
+  );
+}
+
 /**
  * Titre de section avec TextSplit (effet moitiés + trait blanc inter‑glyphes) et filet sous le titre.
  * Le `tone` adapte dégradés, halos et reflet du séparateur au contexte de la section.
@@ -111,28 +157,7 @@ export function SectionSplitHeading({
       </MotionHeading>
 
       {showSeparator ? (
-        <div className="relative mx-auto max-w-md pb-0.5 mb-5 sm:mb-6 md:mb-7 sm:max-w-lg">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-x-8 top-1/2 h-10 -translate-y-1/2 bg-gradient-to-r from-transparent via-white/45 to-transparent blur-2xl dark:via-white/12"
-          />
-          <div aria-hidden className={palette.separatorVeil} />
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            whileInView={{ opacity: 1, scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.14,
-              duration: 0.72,
-              ease: SECTION_TITLE_EASE,
-            }}
-            className={cn(
-              palette.separatorBar,
-              palette.separatorShadow,
-              palette.separatorShadowDark
-            )}
-          />
-        </div>
+        <SectionSplitTitleSeparator tone={tone} />
       ) : null}
     </div>
   );

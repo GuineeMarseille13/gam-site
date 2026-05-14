@@ -8,6 +8,7 @@ import AboutUsSection from "@/components/association/AboutUsSection"
 import ActivityReportsSection from "@/components/association/ActivityReportsSection"
 import PresidentSection from "@/components/association/PresidentSection"
 import TeamSection from "@/components/association/TeamSection"
+import { AssociationMagicTitle } from "@/components/association/association-magic-title"
 
 const DEFAULT_TAB = "president"
 const VALID_TABS = ["president", "about", "reports", "team"]
@@ -58,17 +59,21 @@ function NotreAssociationContent() {
         aria-hidden
       />
 
-      <div className="relative mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+      <div className="relative mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-9 lg:px-8 lg:py-11">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto mb-12 max-w-3xl text-center sm:mb-16"
+          className="mx-auto mb-7 max-w-3xl text-center sm:mb-9 md:mb-10"
         >
-          <h1 className="text-balance bg-gradient-to-br from-theme-green via-theme-green-dark to-theme-green bg-clip-text font-bold text-3xl text-transparent leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-            Notre Association
+          <h1 className="flex w-full min-w-0 justify-center px-1 text-balance font-bold leading-[1.06] tracking-tight sm:px-2">
+            <AssociationMagicTitle
+              text="Notre Association"
+              variant="hero"
+              className="max-w-full justify-center"
+            />
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-pretty text-base text-muted-foreground leading-relaxed sm:mt-6 sm:text-lg">
+          <p className="mx-auto max-w-2xl text-pretty text-base text-muted-foreground leading-relaxed sm:mt-4 sm:text-lg">
             Découvrez notre histoire, nos valeurs et les personnes qui font vivre
             l&apos;association
           </p>
@@ -95,7 +100,7 @@ function NotreAssociationContent() {
                     key={tab.id}
                     value={tab.id}
                     className="
-                      shrink-0 snap-center rounded-none border-0 px-3 py-3 font-medium text-muted-foreground text-xs shadow-none
+                      shrink-0 snap-center rounded-none border-0 px-2.5 py-2 font-medium text-muted-foreground text-xs shadow-none
                       transition-colors duration-200
                       after:h-0.5 after:rounded-full
                       hover:text-foreground
@@ -103,7 +108,7 @@ function NotreAssociationContent() {
                       data-[state=active]:after:bg-theme-green
                       dark:data-[state=active]:text-theme-green-light
                       dark:data-[state=active]:after:bg-theme-green-light
-                      sm:px-5 sm:py-4 sm:text-sm lg:text-lg
+                      sm:px-4 sm:py-3 sm:text-sm lg:px-5 lg:py-3.5 lg:text-base
                     "
                   >
                     {tab.label}
@@ -112,7 +117,7 @@ function NotreAssociationContent() {
               </TabsList>
             </div>
 
-            <div className="min-w-0 px-0 pt-10 sm:pt-12 md:pt-14">
+            <div className="min-w-0 px-0 pt-7 sm:pt-9 md:pt-11">
               <TabsContent value="president" className="mt-0 outline-none">
                 <PresidentSection />
               </TabsContent>
@@ -140,14 +145,14 @@ export default function NotreAssociationPage() {
   return (
     <Suspense
       fallback={
-        <div className="relative min-h-screen bg-background py-10 sm:py-14">
+        <div className="relative min-h-screen bg-background py-7 sm:py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl animate-pulse text-center">
-              <div className="mx-auto mb-5 h-7 w-28 rounded-full bg-muted" />
-              <div className="mx-auto mb-6 h-14 max-w-md rounded-2xl bg-muted" />
-              <div className="mx-auto h-16 max-w-lg rounded-xl bg-muted/70" />
+              <div className="mx-auto mb-3 h-6 w-24 rounded-full bg-muted sm:mb-4" />
+              <div className="mx-auto mb-4 h-11 max-w-md rounded-2xl bg-muted sm:mb-5" />
+              <div className="mx-auto h-14 max-w-lg rounded-xl bg-muted/70" />
             </div>
-            <div className="mx-auto mt-14 min-h-[18rem] max-w-5xl animate-pulse rounded-xl bg-muted/40 sm:mt-16" />
+            <div className="mx-auto mt-9 min-h-[14rem] max-w-5xl animate-pulse rounded-xl bg-muted/40 sm:mt-11 md:min-h-[16rem]" />
           </div>
         </div>
       }

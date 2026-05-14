@@ -6,26 +6,20 @@
 
 import { motion } from "framer-motion";
 import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "@/app/(public)/contacts/_config/contacts.config";
+import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
+import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
 
 export default function ContactsHero() {
   return (
     <div className={STYLE_CONFIG.hero.wrapper}>
-      <motion.h1
-        {...ANIMATION_CONFIG.hero.title}
-        className={STYLE_CONFIG.hero.title}
-      >
-        {MESSAGES.hero.title}
-      </motion.h1>
+      <PageHeroMagicTitle text={MESSAGES.hero.title} />
+      <SectionSplitTitleSeparator tone="hero" className="mt-2 sm:mt-3" />
       <motion.p
         {...ANIMATION_CONFIG.hero.description}
         className={STYLE_CONFIG.hero.description}
       >
         {MESSAGES.hero.description}
       </motion.p>
-      <motion.div
-        {...ANIMATION_CONFIG.hero.divider}
-        className={STYLE_CONFIG.hero.divider}
-      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default async function ContactsPage() {
   ])
 
   return (
-    <section className="py-6">
+    <section className="flex w-full min-w-0 justify-center">
       <ContactsView contact={contact} socialMedias={socialMedias} />
     </section>
   )

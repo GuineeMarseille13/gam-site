@@ -9,6 +9,7 @@ import { useAboutUsData } from "@/hooks/use-association";
 import { aboutUsContent } from "@/data/association";
 import { AboutUsData } from "@/types/association";
 import { cn } from "@/helpers/utils";
+import { AssociationMagicTitle } from "@/components/association/association-magic-title";
 
 // Constantes d'animation
 const ANIMATION_CONFIG = {
@@ -47,7 +48,7 @@ export default function AboutUsSection() {
   }
 
   return (
-    <div className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12">
+    <div className="relative w-full min-w-0 py-6 sm:py-10 md:py-12">
       {/* Éléments décoratifs de fond */}
       <BackgroundDecorations />
 
@@ -357,17 +358,19 @@ function SectionTitle({
         delay,
         duration: ANIMATION_CONFIG.durations.normal,
       }}
-      className="mb-8 flex flex-row items-start gap-3 sm:mb-10 md:mb-12 sm:items-center sm:gap-4"
+      className="mb-8 flex w-full min-w-0 flex-row items-center gap-2 sm:mb-10 sm:gap-3 md:mb-12 md:gap-4"
     >
-      <div className="h-10 sm:h-12 md:h-14 w-1 bg-gradient-to-b from-green-600 via-green-500 to-green-400 rounded-full flex-shrink-0" />
-      <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 md:gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg sm:h-12 sm:w-12 md:h-14 md:w-14">
-          <Icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+      <div className="w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-green-600 via-green-500 to-green-400 min-h-9 sm:min-h-10 sm:h-12 sm:min-h-0 sm:self-auto md:h-14" />
+      <div className="flex min-w-0 w-full flex-1 flex-row items-center gap-1.5 sm:gap-3 md:gap-4">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg sm:size-12 md:size-14">
+          <Icon className="h-4 w-4 sm:h-6 sm:w-6 md:h-7 md:w-7" />
         </div>
-        <h2 className="min-w-0 flex-1 text-balance break-words text-2xl font-extrabold text-gray-900 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-          <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
-            {title}
-          </span>
+        <h2 className="min-w-0 flex-1 text-balance break-words">
+          <AssociationMagicTitle
+            text={title}
+            variant="section"
+            className="max-w-full min-w-0 justify-start"
+          />
         </h2>
       </div>
     </motion.div>
@@ -389,7 +392,7 @@ function LoadingState({ data }: { data: AboutUsData }) {
 
   return (
     <div
-      className="relative w-full min-w-0 overflow-hidden py-6 sm:py-10 md:py-12"
+      className="relative w-full min-w-0 py-6 sm:py-10 md:py-12"
       role="status"
       aria-busy="true"
       aria-label="Chargement du contenu"
@@ -428,7 +431,7 @@ function SkeletonTitleAccentBar() {
   return (
     <div
       className={cn(
-        "h-10 w-1 shrink-0 rounded-full sm:h-12 md:h-14",
+        "w-1 shrink-0 self-stretch rounded-full min-h-9 sm:min-h-10 sm:h-12 sm:min-h-0 sm:self-auto md:h-14",
         SKELETON_PULSE,
       )}
       aria-hidden
@@ -441,7 +444,7 @@ function SkeletonTitleIconTile() {
   return (
     <div
       className={cn(
-        "flex h-10 w-10 shrink-0 rounded-xl shadow-lg sm:h-12 sm:w-12 md:h-14 md:w-14",
+        "flex size-9 shrink-0 rounded-xl shadow-lg sm:size-12 md:size-14",
         SKELETON_PULSE,
       )}
     />
@@ -453,13 +456,12 @@ function SkeletonTitleIconTile() {
  */
 function SectionTitleSkeleton() {
   return (
-    <div className="mb-8 flex flex-row items-start gap-3 sm:mb-10 md:mb-12 sm:items-center sm:gap-4">
+    <div className="mb-8 flex w-full min-w-0 flex-row items-center gap-2 sm:mb-10 sm:gap-3 md:mb-12 md:gap-4">
       <SkeletonTitleAccentBar />
-      <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 md:gap-4">
+      <div className="flex min-w-0 w-full flex-1 flex-row items-center gap-1.5 sm:gap-3 md:gap-4">
         <SkeletonTitleIconTile />
-        <div className="min-w-0 flex-1 space-y-2 sm:space-y-0">
-          <SkeletonTextLine className="h-8 w-full max-w-[min(100%,14rem)] sm:h-10 sm:max-w-xl md:h-12 md:max-w-2xl" />
-          <SkeletonTextLine className="h-7 w-[82%] max-w-[11rem] sm:hidden" />
+        <div className="min-w-0 flex-1">
+          <SkeletonTextLine className="h-7 w-full max-w-[min(100%,18rem)] sm:h-10 sm:max-w-xl md:h-12 md:max-w-2xl" />
         </div>
       </div>
     </div>

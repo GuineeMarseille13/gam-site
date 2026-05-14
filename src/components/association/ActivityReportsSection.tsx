@@ -5,6 +5,7 @@ import { Download, FileText } from "lucide-react"
 import { activityReports } from "@/data/association"
 import { cn } from "@/helpers/utils"
 import Link from "next/link"
+import { AssociationMagicTitle } from "@/components/association/association-magic-title"
 
 /**
  * Liste des rapports d’activité (PDF) : bloc lisible, lignes aérées,
@@ -21,12 +22,12 @@ export default function ActivityReportsSection() {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto w-full min-w-0 max-w-7xl px-0"
       >
-        <header className="mb-10 text-center sm:mb-14 md:mb-16">
+        <header className="mb-8 text-center sm:mb-11 md:mb-14">
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.08, duration: 0.5 }}
-            className="mb-5 flex flex-col items-center justify-center gap-3 sm:mb-6 sm:flex-row sm:gap-4"
+            className="mb-4 flex flex-col items-center justify-center gap-3 sm:mb-5 sm:flex-row sm:gap-4"
           >
             <div className="hidden h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-green-600 via-green-500 to-green-400 sm:block sm:h-12 md:h-14" />
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-xl sm:h-14 sm:w-14 md:h-16 md:w-16">
@@ -39,11 +40,13 @@ export default function ActivityReportsSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.5 }}
-            className="mb-4 text-balance break-words text-3xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+            className="mb-4 flex w-full min-w-0 justify-center px-1 text-balance break-words sm:px-2"
           >
-            <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
-              Rapport d&apos;activité
-            </span>
+            <AssociationMagicTitle
+              text="Rapport d'activité"
+              variant="hero"
+              className="max-w-full justify-center"
+            />
           </motion.h2>
 
           <motion.div

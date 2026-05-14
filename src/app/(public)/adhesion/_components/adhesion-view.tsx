@@ -8,6 +8,12 @@ import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_sc
 import { useCreateAdhesionPaymentIntent } from "../_hooks/use-create-adhesion-payment-intent";
 import StripePaymentForm from "./stripe-payment-form";
 import { formatCurrency } from "@/helpers/format-currency";
+import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
+import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
+import {
+  MAGIC_HERO_MEMBERSHIP_SHOP_COLOR,
+  MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES,
+} from "@/config/magic-hero-page-title";
 
 export default function MembershipView() {
   const [members, setMembers] = useState<Member[]>([
@@ -191,14 +197,12 @@ export default function MembershipView() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {/* Hero */}
       <div className="text-center mb-8 sm:mb-12">
-        <motion.h1 
-          initial={{ opacity: 0, y: 12 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3 sm:mb-4"
-        >
-          Adhérer à l&apos;association
-        </motion.h1>
+        <PageHeroMagicTitle
+          text="Adhérer à l'association"
+          magicColor={MAGIC_HERO_MEMBERSHIP_SHOP_COLOR}
+          titleTypographyClassName={MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES}
+        />
+        <SectionSplitTitleSeparator tone="events" className="mt-2 sm:mt-3" />
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -207,12 +211,6 @@ export default function MembershipView() {
         >
           Votre adhésion soutient nos actions, renforce notre impact et finance nos projets. Elle nous aide à organiser des évènements, à équiper nos équipes et à développer des initiatives concrètes au service de notre communauté.
         </motion.p>
-        <motion.div 
-          initial={{ scaleX: 0 }} 
-          animate={{ scaleX: 1 }} 
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mt-6 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full"
-        />
       </div>
 
       {/* Benefits */}

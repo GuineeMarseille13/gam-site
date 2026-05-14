@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Award, Heart } from "lucide-react";
 import { usePresidentData, usePresidentImage } from "@/hooks/use-association";
 import { presidentInfo as defaultPresidentInfo, presidentMessage } from "@/data/association";
+import { AssociationMagicTitle } from "@/components/association/association-magic-title";
 
 // Constantes d'animation centralisées
 const ANIMATION_CONFIG = {
@@ -138,7 +139,7 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.header,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-4 mb-5 sm:mb-8"
+        className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-4"
       >
         <div className="h-px w-12 sm:w-20 md:w-24 bg-gradient-to-r from-transparent via-green-400 to-green-500" />
         <motion.div
@@ -157,11 +158,13 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.title,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="text-balance break-words text-3xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-3 sm:mb-6"
+        className="flex w-full min-w-0 justify-center px-1 text-balance break-words px-2"
       >
-        <span className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 bg-clip-text text-transparent">
-          {CONTENT.title}
-        </span>
+        <AssociationMagicTitle
+          text={CONTENT.title}
+          variant="hero"
+          className="max-w-full justify-center"
+        />
       </motion.h1>
 
       <motion.p
