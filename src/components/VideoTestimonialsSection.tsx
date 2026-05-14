@@ -175,8 +175,12 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
   const [paused, setPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Liste doublée pour le loop circulaire seamless
-  const loopVideos = useMemo(() => [...videos, ...videos], [videos]);
+  // Doublon uniquement s’il y a au moins 2 vidéos : le défilement infini a besoin d’une 2e copie.
+  // Avec une seule vidéo, on affiche exactement une carte (aligné sur la base).
+  const displayVideos = useMemo(
+    () => (videos.length > 1 ? [...videos, ...videos] : videos),
+    [videos],
+  );
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -199,7 +203,7 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
     };
     animId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animId);
-  }, [videos.length, loopVideos.length, paused, activeIndex]);
+  }, [videos.length, displayVideos.length, paused, activeIndex]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIndex(null); };
@@ -251,7 +255,7 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
             className="overflow-hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-4"
           >
             <div className="flex gap-4 sm:gap-6">
-              {loopVideos.map((v, i) => (
+              {displayVideos.map((v, i) => (
                 <div key={`${v.id}-${i}`} className="shrink-0">
                   <VideoCard video={v} index={i % videos.length} onClick={() => setActiveIndex(i % videos.length)} />
                 </div>
