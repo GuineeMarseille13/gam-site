@@ -1,45 +1,52 @@
 "use client";
 
 import { cn } from "@/helpers/utils";
+const overlayLine =
+  "animate-pulse rounded-md bg-white/20 dark:bg-white/15";
 
+/** Aligné sur `Carousel` : h-[60vh] md:h-[70vh] lg:h-[75vh], overlay bas, points, badge index, piste fine. */
 export function CarouselSkeleton() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] rounded-xl overflow-hidden shadow-2xl">
-        {/* Background gradient with shimmer effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        className={cn(
+          "relative w-full overflow-hidden rounded-xl bg-muted dark:bg-muted/50",
+          "h-[60vh] md:h-[70vh] lg:h-[75vh]",
+        )}
+      >
+        <div className="absolute inset-0 animate-pulse bg-muted/90 dark:bg-muted/40" />
+
+        <div className="absolute top-4 left-4 z-10 rounded-full border border-white/20 bg-black/20 px-3 py-1 backdrop-blur-md">
+          <div className="h-4 w-14 animate-pulse rounded-full bg-white/30" />
         </div>
-        
-        {/* Content overlay skeleton */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 space-y-4 z-10">
-          {/* Title skeleton with gradient */}
-          <div className="h-8 sm:h-10 md:h-12 w-3/4 max-w-2xl bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 rounded-lg animate-pulse shadow-lg" />
-          
-          {/* Description skeleton */}
-          <div className="space-y-2 w-2/3 max-w-xl">
-            <div className="h-4 bg-white/70 rounded w-full backdrop-blur-sm" />
-            <div className="h-4 bg-white/70 rounded w-5/6 backdrop-blur-sm" />
-            <div className="h-4 bg-white/70 rounded w-4/6 backdrop-blur-sm" />
+
+        <div className="absolute right-0 bottom-0 left-0 z-10 p-6 md:p-8">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+          <div className="relative space-y-3">
+            <div
+              className={cn(
+                "h-8 max-w-lg sm:h-10 md:h-12 md:max-w-2xl",
+                overlayLine,
+              )}
+            />
+            <div className="max-w-3xl space-y-2">
+              <div className={cn("h-4 w-full", overlayLine)} />
+              <div className={cn("h-4 w-[92%]", overlayLine)} />
+              <div className={cn("hidden h-4 w-[70%] md:block", overlayLine)} />
+            </div>
           </div>
         </div>
 
-        {/* Dots skeleton with modern style */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 z-10">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className={cn(
-                "rounded-full transition-all duration-300",
-                i === 1
-                  ? "w-16 h-4 bg-white rounded-full"
-                  : "w-4 h-4 bg-white/50 rounded-full hover:bg-white/70"
-              )}
-            />
-          ))}
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 space-x-3 rounded-full border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-md">
+          <div className="h-4 w-16 animate-pulse rounded-full bg-white/70" />
+          <div className="size-4 animate-pulse rounded-full bg-white/45" />
+          <div className="size-4 animate-pulse rounded-full bg-white/45" />
+        </div>
+
+        <div className="absolute right-0 bottom-0 left-0 z-10 h-1 bg-white/10">
+          <div className="h-full w-[35%] animate-pulse bg-gradient-to-r from-theme-red/90 via-theme-yellow/90 to-theme-green/90" />
         </div>
       </div>
     </div>
   );
 }
-

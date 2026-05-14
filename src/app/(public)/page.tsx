@@ -319,9 +319,11 @@ export default function Home() {
         )
       )}
 
-      {/* Section Témoignages texte */}
+      {/* Section Témoignages texte — pas de skeleton « avis » tant que les produits chargent, pour éviter qu’il soit confondu avec la section Nos produits */}
       {isLoadingReviews ? (
-        <ReviewsSectionSkeleton />
+        isLoadingProducts ? null : (
+          <ReviewsSectionSkeleton />
+        )
       ) : (
         <ReviewsSection reviews={reviews} />
       )}

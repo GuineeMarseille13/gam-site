@@ -1,46 +1,72 @@
 "use client";
 
+import { PulseBar } from "@/components/skeletons/home-skeleton-primitives";
+
+const FLOAT_POSITIONS = [
+  { left: "8%", top: "12%" },
+  { left: "58%", top: "18%" },
+  { left: "28%", top: "42%" },
+  { left: "72%", top: "48%" },
+  { left: "18%", top: "68%" },
+  { left: "62%", top: "72%" },
+  { left: "42%", top: "28%" },
+  { left: "38%", top: "82%" },
+]
+
+/** Aligné sur `VolunteersSection` : grille lg:2, gauche texte + pile d’avatars, droite zone nuage. */
 export function VolunteersSectionSkeleton() {
   return (
-    <section className="relative w-full py-12 md:py-16 bg-gradient-to-b from-white via-blue-50/30 to-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header skeleton */}
-        <div className="text-center mb-10 md:mb-12">
-          <div className="h-10 sm:h-12 md:h-14 w-96 mx-auto bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse mb-4" />
-          <div className="h-1 w-24 mx-auto bg-gray-200 rounded-full mb-6" />
-          <div className="space-y-2 max-w-2xl mx-auto">
-            <div className="h-4 bg-gray-200 rounded w-full" />
-            <div className="h-4 bg-gray-200 rounded w-4/5 mx-auto" />
-          </div>
-        </div>
+    <section className="relative w-full overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 w-full">
+        <div className="grid min-h-[75vh] items-stretch gap-4 lg:grid-cols-2">
+          <div className="flex flex-col justify-center space-y-8 py-10 lg:py-0">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-muted px-4 py-1.5">
+              <PulseBar className="size-1.5 rounded-full" />
+              <PulseBar className="h-3 w-40 rounded-full" />
+            </div>
 
-        {/* Volunteers container skeleton */}
-        <div className="relative min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
-          {/* Floating volunteers skeleton - using grid for better distribution */}
-          <div className="relative w-full h-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-8 sm:gap-12">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center space-y-2"
-              >
-                {/* Avatar skeleton */}
-                <div className="relative">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 animate-pulse border-4 border-white shadow-lg" />
-                  {/* Badge skeleton */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gray-300 border-2 border-white animate-pulse" />
-                </div>
-                
-                {/* Name skeleton */}
-                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
-                
-                {/* Role skeleton */}
-                <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
+            <div className="space-y-4">
+              <PulseBar className="h-10 w-full max-w-md rounded-lg lg:h-12" />
+              <PulseBar className="h-10 w-[92%] max-w-sm rounded-lg lg:h-12" />
+              <div className="flex items-center gap-2 pt-1">
+                <PulseBar className="h-0.5 w-10 rounded-full" />
+                <PulseBar className="h-0.5 w-4 rounded-full" />
               </div>
-            ))}
+            </div>
+
+            <div className="space-y-3">
+              <PulseBar className="h-4 w-full max-w-lg" />
+              <PulseBar className="h-4 w-[96%] max-w-md" />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <PulseBar
+                    key={i}
+                    className="size-10 rounded-full border-2 border-background ring-2 ring-white/40"
+                  />
+                ))}
+              </div>
+              <PulseBar className="h-4 w-36" />
+            </div>
+          </div>
+
+          <div className="relative min-h-[600px] w-full md:min-h-[650px]">
+            <div className="absolute inset-0 overflow-hidden rounded-3xl border border-border/60 bg-muted/25 dark:bg-muted/15">
+              {FLOAT_POSITIONS.map((pos, i) => (
+                <div
+                  key={i}
+                  className="absolute"
+                  style={{ left: pos.left, top: pos.top }}
+                >
+                  <PulseBar className="size-16 rounded-full border-4 border-white shadow-lg sm:size-[68px]" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
-

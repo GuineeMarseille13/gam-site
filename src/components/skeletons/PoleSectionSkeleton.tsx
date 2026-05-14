@@ -1,53 +1,50 @@
 "use client";
 
+import { PulseBar } from "@/components/skeletons/home-skeleton-primitives";
+
+/** Carte alignée sur `PoleCard` : wrapper pt-8 pb-4, carte ~300×420–450px, image h-[280px], corps flex-col + CTA. */
+function PoleCardSkeleton() {
+  return (
+    <div className="overflow-hidden px-4 pt-8 pb-4 sm:px-6 sm:pt-10 sm:pb-6">
+      <div
+        className="mx-auto flex h-[420px] w-full max-w-[300px] flex-col overflow-hidden rounded-2xl border border-gray-200/60 bg-white shadow-[0_10px_15px_-3px_rgba(0,0,0,0.08)] sm:h-[450px] sm:w-[280px] md:w-[300px]"
+      >
+        <div className="h-[280px] w-full shrink-0 animate-pulse bg-muted dark:bg-muted/60" />
+        <div className="flex flex-1 flex-col justify-between bg-gradient-to-b from-white to-gray-50/50 p-5 sm:p-6">
+          <div className="space-y-2">
+            <PulseBar className="h-7 w-[88%] rounded-lg sm:h-8" />
+            <PulseBar className="h-4 w-full" />
+            <PulseBar className="h-4 w-[92%]" />
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <PulseBar className="h-4 w-28 rounded-md" />
+            <PulseBar className="size-4 shrink-0 rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function PoleSectionSkeleton() {
   return (
-    <section className="w-full py-5 sm:py-8 md:py-10 bg-gradient-to-b from-white via-gray-50/30 to-white overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header skeleton */}
+    <section className="w-full overflow-x-hidden bg-gradient-to-b from-white via-gray-50/30 to-white py-5 sm:py-8 md:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center sm:mb-8 md:mb-10">
-          <div className="h-10 sm:h-12 md:h-14 w-80 mx-auto bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse mb-4" />
-          <div className="h-1 w-24 mx-auto bg-gray-200 rounded-full mb-4" />
-          <div className="space-y-2 max-w-3xl mx-auto">
-            <div className="h-4 bg-gray-200 rounded w-full" />
-            <div className="h-4 bg-gray-200 rounded w-4/5 mx-auto" />
+          <PulseBar className="mx-auto mb-4 h-9 max-w-[280px] rounded-lg sm:h-11 md:h-12 md:max-w-[340px]" />
+          <div className="mx-auto mb-4 h-1 w-24 rounded-full bg-muted animate-pulse dark:bg-muted/60" />
+          <div className="mx-auto max-w-3xl space-y-2">
+            <PulseBar className="mx-auto h-4 w-full max-w-2xl sm:h-5" />
+            <PulseBar className="mx-auto h-4 w-[90%] max-w-xl sm:h-5" />
           </div>
         </div>
 
-        {/* Poles grid skeleton */}
-        <div className="flex flex-wrap gap-6 sm:gap-8 justify-center items-stretch">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-2rem)] lg:w-[calc(25%-2rem)] max-w-sm"
-            >
-              <div className="h-full rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
-                {/* Image skeleton */}
-                <div className="relative h-48 sm:h-56 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 animate-pulse">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                </div>
-
-                {/* Content skeleton */}
-                <div className="p-5 sm:p-6 space-y-4">
-                  {/* Title skeleton */}
-                  <div className="h-6 bg-gray-200 rounded w-3/4 animate-pulse" />
-
-                  {/* Description skeleton */}
-                  <div className="space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-full" />
-                    <div className="h-4 bg-gray-200 rounded w-full" />
-                    <div className="h-4 bg-gray-200 rounded w-2/3" />
-                  </div>
-
-                  {/* Button skeleton */}
-                  <div className="h-10 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse mt-4" />
-                </div>
-              </div>
-            </div>
+        <div className="flex flex-wrap items-stretch justify-center gap-4 sm:gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <PoleCardSkeleton key={i} />
           ))}
         </div>
       </div>
     </section>
   );
 }
-

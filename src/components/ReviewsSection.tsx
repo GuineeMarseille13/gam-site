@@ -118,6 +118,7 @@ function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
 
 /**
  * Section témoignages page d’accueil — alimentée par le bureau (avis actifs).
+ * Ne rend rien s’il n’y a aucun avis.
  */
 function ReviewsSection({ reviews }: ReviewsSectionProps) {
   const list = reviews?.length
@@ -125,22 +126,7 @@ function ReviewsSection({ reviews }: ReviewsSectionProps) {
     : []
 
   if (list.length === 0) {
-    return (
-      <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-amber-50/30 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-yellow-500 to-lime-500 bg-clip-text text-transparent mb-3">
-              Les avis des personnes qui nous ont fait confiance
-            </h2>
-            <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-300 to-transparent rounded-full" />
-            <p className="mt-6 text-muted-foreground max-w-lg mx-auto text-base">
-              Les témoignages seront affichés ici dès que des avis actifs seront publiés depuis le
-              bureau.
-            </p>
-          </div>
-        </div>
-      </section>
-    )
+    return null
   }
 
   return (

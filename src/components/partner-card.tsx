@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 interface PartnerCardProps {
@@ -20,9 +21,7 @@ interface PartnerCardProps {
 
 /**
  * Component: PartnerCard
- * Rôle: Présenter un partenaire avec un design distinct des produits
- * Spécificités UI: accent diagonal, fond doux, badge catégorie, CTA site web,
- *                  hover animé (scale, subtle tilt), focus a11y, ligne d’accent.
+ * Rôle: Présenter un partenaire ; titre, description et CTA alignés sur `PoleCard`.
  */
 export function PartnerCard({
   id,
@@ -102,52 +101,40 @@ export function PartnerCard({
             )}
           </div>
 
-          {/* Contenu */}
-          <div className="flex-1 p-5 flex flex-col gap-3">
-            <h3
-              id={`partner-${id}-title`}
-              className="text-lg font-semibold text-gray-900 tracking-tight"
-            >
-              {name}
-            </h3>
-            {description && (
-              <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                {description}
-              </p>
-            )}
-
-            {/* CTA */}
-            <div className="mt-auto pt-2">
-              {hasWebsite ? (
-                <motion.a
-                  href={website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group/btn inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-200/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-300/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  aria-label={`Visiter le site de ${name}`}
-                >
-                  <span>Visiter le site</span>
-                  <motion.span
-                    aria-hidden
-                    className="inline-block"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    ↗
-                  </motion.span>
-                </motion.a>
-              ) : (
-                <span className="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2.5 text-xs font-medium text-gray-500">
-                  Site non disponible
-                </span>
-              )}
+          {/* Contenu — mêmes styles titre / description / action que `PoleCard` */}
+          <div className="flex flex-1 flex-col justify-between bg-gradient-to-b from-white to-gray-50/50 p-5 sm:p-6">
+            <div>
+              <motion.h3
+                id={`partner-${id}-title`}
+                className="mb-2 bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-xl font-extrabold text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:mb-3 sm:text-2xl"
+              >
+                {name}
+              </motion.h3>
+              {description ? (
+                <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+                  {description}
+                </p>
+              ) : null}
             </div>
+
+            {hasWebsite ? (
+              <motion.a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center gap-2 text-blue-600 transition-colors duration-300 group-hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                aria-label={`Visiter le site de ${name}`}
+                whileHover={{ x: 4 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <span className="text-sm font-semibold">Visiter le site</span>
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </motion.a>
+            ) : (
+              <div className="mt-4 flex items-center gap-2 text-gray-400">
+                <span className="text-sm font-semibold">Site non disponible</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
