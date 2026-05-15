@@ -33,12 +33,7 @@ export function getAdhesionAvatarClass(seedName: string): string {
   return AVATAR_VARIANTS[idx] ?? AVATAR_VARIANTS[0]
 }
 
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  card: "Carte bancaire",
-  espece: "Espèces",
-  espèces: "Espèces",
-  virement: "Virement",
-}
+import { formatPaymentMethodLabel } from "@/config/bureau-payment-methods"
 
 /**
  * Libellé lisible du mode de règlement (Stripe ou saisie manuelle bureau).
@@ -46,21 +41,5 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
 export function formatAdhesionPaymentMethodLabel(
   paymentMethod?: string | null,
 ): string {
-  if (!paymentMethod?.trim()) {
-    return "—"
-  }
-
-  const trimmed = paymentMethod.trim()
-  const normalized = trimmed.toLowerCase()
-
-  const mapped = PAYMENT_METHOD_LABELS[normalized]
-  if (mapped) {
-    return mapped
-  }
-
-  if (trimmed === "Espèces" || trimmed === "Virement") {
-    return trimmed
-  }
-
-  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+  return formatPaymentMethodLabel(paymentMethod)
 }

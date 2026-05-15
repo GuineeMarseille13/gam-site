@@ -2,15 +2,27 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import { createDonPaymentIntent } from "../_services/create-don-payment-intent";
+import {
+  createDonPaymentIntent,
+  type DonPaymentIntentChannel,
+} from "../_services/create-don-payment-intent";
+import type { DonPayload } from "../_schemas/don.schema";
+
+interface UseCreateDonPaymentIntentOptions {
+  readonly channel?: DonPaymentIntentChannel;
+}
 
 /**
- * Hook: useCreateDonPaymentIntent
- * Rôle: Mutation TanStack Query pour créer un PaymentIntent de don.
+ * Mutation TanStack Query : PaymentIntent de don (public ou bureau).
  */
-export function useCreateDonPaymentIntent() {
+export function useCreateDonPaymentIntent(
+  options?: UseCreateDonPaymentIntentOptions,
+) {
+  const channel = options?.channel;
+
   return useMutation({
-    mutationFn: createDonPaymentIntent,
+    mutationFn: (payload: DonPayload) =>
+      createDonPaymentIntent(payload, { channel }),
   });
 }
 

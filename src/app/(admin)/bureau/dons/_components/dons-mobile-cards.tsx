@@ -5,6 +5,7 @@ import {
   getDonAvatarClass,
   getDonInitials,
 } from "../_utils/don-display"
+import { AdhesionPaymentRef } from "@/app/(admin)/bureau/adhesions/_components/adhesion-payment-ref"
 import { DonMessagePreview } from "./don-message-preview"
 
 interface DonsMobileCardsProps {
@@ -60,6 +61,21 @@ export function DonsMobileCards({ dons }: DonsMobileCardsProps) {
                 </p>
               </div>
             </div>
+
+            <section
+              className="mt-3 border-border border-t pt-3"
+              aria-label="Mode de paiement"
+            >
+              <h3 className="text-muted-foreground text-xs font-medium tracking-wide">
+                Paiement
+              </h3>
+              <div className="mt-2">
+                <AdhesionPaymentRef
+                  paymentMethod={don.payment?.paymentMethod}
+                  paymentReference={don.payment?.paymentReference}
+                />
+              </div>
+            </section>
 
             <section
               className="mt-3 border-border border-t pt-3"

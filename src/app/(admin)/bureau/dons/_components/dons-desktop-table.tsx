@@ -14,6 +14,7 @@ import {
   getDonAvatarClass,
   getDonInitials,
 } from "../_utils/don-display"
+import { AdhesionPaymentRef } from "@/app/(admin)/bureau/adhesions/_components/adhesion-payment-ref"
 import { DonMessagePreview } from "./don-message-preview"
 
 interface DonsDesktopTableProps {
@@ -32,6 +33,7 @@ export function DonsDesktopTable({ dons }: DonsDesktopTableProps) {
             <TableRow>
               <TableHead className="pl-6">Donateur</TableHead>
               <TableHead className="text-right">Montant</TableHead>
+              <TableHead className="min-w-[8rem]">Paiement</TableHead>
               <TableHead className="min-w-[12rem] max-w-[min(28rem,40vw)]">
                 Message
               </TableHead>
@@ -77,6 +79,13 @@ export function DonsDesktopTable({ dons }: DonsDesktopTableProps) {
 
                   <TableCell className="text-right font-semibold tabular-nums text-sm">
                     {formatCurrency(don.amount, { maximumFractionDigits: 0 })}
+                  </TableCell>
+
+                  <TableCell>
+                    <AdhesionPaymentRef
+                      paymentMethod={don.payment?.paymentMethod}
+                      paymentReference={don.payment?.paymentReference}
+                    />
                   </TableCell>
 
                   <TableCell className="max-w-[min(28rem,40vw)] align-top">

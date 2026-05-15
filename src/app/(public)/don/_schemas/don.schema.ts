@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { manualPaymentMethodSchema } from "@/config/bureau-payment-methods";
+
 // Validation téléphone français : 10 chiffres (peut commencer par 0 ou +33)
 const frenchPhoneRegex = /^(?:(?:\+|00)33|0)[1-9](?:[0-9]{2}){4}$/;
 
@@ -59,6 +61,14 @@ export const donPayloadSchema = z.object({
 });
 
 export type DonPayload = z.infer<typeof donPayloadSchema>;
+
+export const manualDonPayloadSchema = donPayloadSchema
+  .extend({
+    paymentMethod: manualPaymentMethodSchema,
+  })
+  .strict();
+
+export type ManualDonPayload = z.infer<typeof manualDonPayloadSchema>;
 
 export const MIN_DON_AMOUNT_EUR = 1;
 export const MAX_DON_AMOUNT_EUR = 10000;

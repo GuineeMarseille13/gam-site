@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { formatCurrency } from "@/helpers/format-currency"
 import type { DonWithRelations } from "./_types/don-with-relations.type"
+import { CreateDonDialog } from "./_components/create-don-dialog"
 import { DonsBoard } from "./_components/dons-board"
 
 export const metadata: Metadata = { title: "Dons" }
@@ -23,6 +24,7 @@ export default async function DonsPage() {
     <BureauContent
       title="Dons"
       description={`${dons.length} don${dons.length > 1 ? "s" : ""} — ${formatCurrency(totalDons, { maximumFractionDigits: 0 })} collectés au total`}
+      actions={<CreateDonDialog />}
     >
       <DonsBoard dons={dons} />
     </BureauContent>
