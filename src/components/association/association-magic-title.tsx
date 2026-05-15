@@ -39,7 +39,8 @@ export function AssociationMagicTitle({
       spread={typography.spread}
       titleLayout={variant}
       speed={0.5}
-      density={4}
+      density={variant === "hero" ? 2 : 4}
+      particleIntensity={variant === "hero" ? 1.5 : 1.2}
       resetOnMouseLeave
       style={{
         backgroundColor: "transparent",

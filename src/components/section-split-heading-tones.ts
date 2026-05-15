@@ -11,6 +11,7 @@ export const SECTION_SPLIT_TONE = {
   partners: "partners",
   video: "video",
   shop: "shop",
+  don: "don",
 } as const;
 
 export type SectionSplitTone = keyof typeof SECTION_SPLIT_TONE;
@@ -207,5 +208,27 @@ export const SECTION_SPLIT_TONE_STYLES: Record<
       "drop-shadow-[0_1px_2px_rgba(255,255,255,0.55)] drop-shadow-[0_10px_22px_rgb(251_191_36_/_0.09)]",
     headingGlowDark:
       "dark:drop-shadow-[0_8px_20px_rgb(52_211_153_/_0.1)]",
+  },
+  don: {
+    splitTop:
+      "bg-gradient-to-br from-zinc-500 via-slate-600 to-zinc-800 bg-clip-text font-extrabold text-transparent",
+    splitBottom:
+      "bg-gradient-to-br from-zinc-800 via-slate-900 to-zinc-950 bg-clip-text font-extrabold text-transparent dark:from-zinc-200 dark:via-neutral-300 dark:to-zinc-400",
+    ambientPrimary:
+      "pointer-events-none absolute left-1/2 top-[40%] h-44 w-[min(100%,24rem)] -translate-x-1/2 -translate-y-1/2 rounded-[100%] bg-gradient-to-r from-zinc-400/10 via-slate-400/12 to-zinc-500/10 blur-3xl dark:from-zinc-500/8 dark:via-slate-500/8 dark:to-zinc-600/6",
+    ambientHighlight:
+      "pointer-events-none absolute left-1/2 top-[48%] h-28 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-zinc-50/55 blur-2xl dark:bg-zinc-950/20",
+    separatorVeil:
+      "pointer-events-none absolute -inset-x-2 top-1/2 h-4 -translate-y-1/2 rounded-full bg-gradient-to-r from-zinc-400/0 via-slate-500/10 to-zinc-400/0 dark:via-zinc-500/14",
+    separatorBar:
+      "relative mx-auto h-[2px] max-w-xs origin-center rounded-full bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.18)_10%,#ffffff_48%,#ffffff_52%,rgba(255,255,255,0.18)_90%,transparent_100%)] sm:max-w-sm",
+    separatorShadow:
+      "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_0_1px_rgba(255,255,255,0.65),0_0_20px_rgb(113_113_122_/_0.14),0_10px_32px_-8px_rgb(15_23_42_/_0.1)]",
+    separatorShadowDark:
+      "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.26),0_0_18px_rgb(161_161_170_/_0.1),0_8px_28px_-6px_rgb(15_23_42_/_0.14)]",
+    headingGlow:
+      "drop-shadow-[0_1px_2px_rgba(255,255,255,0.55)] drop-shadow-[0_10px_24px_rgb(15_23_42_/_0.1)]",
+    headingGlowDark:
+      "dark:drop-shadow-[0_8px_22px_rgb(161_161_170_/_0.12)]",
   },
 };

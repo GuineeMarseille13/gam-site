@@ -187,7 +187,6 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
                 className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200"
               >
                 <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-green-50 to-green-100 rounded-full border border-green-200">
-                  <Sparkles className="w-4 h-4 text-green-600" />
                   <span className="text-sm font-medium text-green-700">
                     Fondée le 17 mai 2021
                   </span>

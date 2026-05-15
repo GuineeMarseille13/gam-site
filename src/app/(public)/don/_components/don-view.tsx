@@ -20,6 +20,12 @@ import {
   DON_FORM_INNER_SURFACE_CLASSNAME,
   DON_PAYMENT_INNER_SURFACE_CLASSNAME,
   DON_PAYMENT_PANEL_GRADIENT_WRAPPER_CLASSNAME,
+  DON_FIELD_INPUT_CLASSNAME,
+  DON_AMOUNT_SELECTED_CLASSNAME,
+  DON_AMOUNT_DEFAULT_CLASSNAME,
+  DON_AMOUNT_BADGE_CLASSNAME,
+  DON_CUSTOM_AMOUNT_INPUT_CLASSNAME,
+  DON_SUBMIT_BUTTON_CLASSNAME,
 } from "../_config/don-ui-styles";
 
 export default function DonationView() {
@@ -117,19 +123,19 @@ export default function DonationView() {
   if (submitted) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16 text-center">
-        <motion.div 
-          initial={{ scale: 0, opacity: 0 }} 
-          animate={{ scale: 1, opacity: 1 }} 
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-600 shadow-lg shadow-emerald-100"
+          className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-blue-100 to-sky-50 text-blue-600 shadow-lg shadow-blue-100"
         >
           <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
         </motion.div>
-        <motion.h2 
-          initial={{ opacity: 0, y: 12 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.4 }}
-          className="mt-6 text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent"
+          className="mt-6 text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent"
         >
           Merci pour votre générosité !
         </motion.h2>
@@ -139,7 +145,7 @@ export default function DonationView() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="mt-4 text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto"
         >
-          Votre paiement a été effectué avec succès. Votre don de <span className="font-semibold text-emerald-600">{formatCurrency(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
+          Votre paiement a été effectué avec succès. Votre don de <span className="font-semibold text-blue-600">{formatCurrency(formData.amount || 0)}</span> nous permet de poursuivre nos actions et de développer nos projets. 
           Votre soutien fait toute la différence.
         </motion.p>
       </div>
@@ -196,7 +202,7 @@ export default function DonationView() {
           magicColor={MAGIC_HERO_DONATION_COLOR}
           titleTypographyClassName={MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES}
         />
-        <SectionSplitTitleSeparator tone="video" className="mt-2 sm:mt-3" />
+        <SectionSplitTitleSeparator tone="hero" className="mt-2 sm:mt-3" />
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -270,9 +276,9 @@ export default function DonationView() {
           >
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Formulaire de don</h2>
             {formData.amount && (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-200/50">
+              <motion.div className={DON_AMOUNT_BADGE_CLASSNAME}>
                 <span className="font-bold text-base sm:text-lg">{formatCurrency(formData.amount)}</span>
-              </div>
+              </motion.div>
             )}
           </motion.div>
 
@@ -294,8 +300,8 @@ export default function DonationView() {
                   whileTap={{ scale: 0.95 }}
                   className={`px-4 py-3 rounded-xl border-2 text-sm sm:text-base font-semibold transition-[box-shadow,transform,colors,border-color] duration-200 cursor-pointer ${
                     formData.amount === amount
-                      ? "bg-gradient-to-br from-pink-500 to-rose-500 text-white border-pink-500 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.25),0_4px_14px_-2px_rgb(219_39_119/0.45),0_12px_28px_-8px_rgb(15_23_42/0.15)] scale-105"
-                      : "border-gray-300 bg-white text-gray-700 shadow-[inset_0_1px_0_0_rgb(255_255_255/1),0_1px_2px_rgb(15_23_42/0.05),0_6px_16px_-6px_rgb(244_114_182/0.1)] hover:border-pink-400 hover:bg-pink-50 hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/1),0_2px_6px_-2px_rgb(15_23_42/0.06),0_10px_24px_-8px_rgb(244_114_182/0.16)]"
+                      ? DON_AMOUNT_SELECTED_CLASSNAME
+                      : DON_AMOUNT_DEFAULT_CLASSNAME
                   }`}
                 >
                   {amount} €
@@ -310,7 +316,7 @@ export default function DonationView() {
                   value={customAmount}
                   onChange={(e) => handleCustomAmountChange(e.target.value)}
                   placeholder="Montant en €"
-                  className="flex-1 max-w-[220px] rounded-xl border-2 border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-colors"
+                  className={DON_CUSTOM_AMOUNT_INPUT_CLASSNAME}
                   inputMode="decimal"
                 />
                 <span className="text-sm text-gray-500">€</span>
@@ -326,28 +332,28 @@ export default function DonationView() {
             className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           >
             <input
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-all duration-200 bg-white"
+              className={DON_FIELD_INPUT_CLASSNAME}
               placeholder="Prénom *"
               value={formData.firstName || ""}
               onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))}
               required
             />
             <input
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-all duration-200 bg-white"
+              className={DON_FIELD_INPUT_CLASSNAME}
               placeholder="Nom *"
               value={formData.lastName || ""}
               onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))}
               required
             />
             <input
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-all duration-200 bg-white"
+              className={DON_FIELD_INPUT_CLASSNAME}
               placeholder="Téléphone (optionnel)"
               value={formData.phone || ""}
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               inputMode="tel"
             />
             <input
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-all duration-200 bg-white"
+              className={DON_FIELD_INPUT_CLASSNAME}
               placeholder="Email (optionnel)"
               value={formData.email || ""}
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
@@ -365,7 +371,7 @@ export default function DonationView() {
           >
             <label className="text-sm sm:text-base font-semibold text-gray-900">Message (optionnel)</label>
             <textarea
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 hover:border-pink-300 transition-all duration-200 bg-white resize-none"
+              className={`${DON_FIELD_INPUT_CLASSNAME} resize-none`}
               rows={4}
               value={formData.message || ""}
               onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
@@ -395,7 +401,7 @@ export default function DonationView() {
               disabled={isLoading}
               whileHover={!isLoading ? { scale: 1.02 } : {}}
               whileTap={!isLoading ? { scale: 0.98 } : {}}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 ring-1 ring-white/10 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={DON_SUBMIT_BUTTON_CLASSNAME}
             >
               {isLoading ? (
                 <>

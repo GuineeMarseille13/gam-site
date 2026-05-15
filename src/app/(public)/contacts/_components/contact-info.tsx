@@ -2,7 +2,12 @@
 
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { STYLE_CONFIG, ANIMATION_CONFIG, MESSAGES } from "../_config/contacts.config";
+import {
+  STYLE_CONFIG,
+  ANIMATION_CONFIG,
+  MESSAGES,
+  CONTACT_METHOD_ICON_COLOR,
+} from "../_config/contacts.config";
 import { ContactMethod, SocialNetwork, DbContact, DbSocialMedia } from "../_types/contacts.types";
 import ContactMethodCard from "@/components/contacts/ContactMethodCard";
 import SocialButton from "@/components/contacts/SocialButton";
@@ -17,20 +22,20 @@ const FALLBACK_METHODS: ContactMethod[] = [
     label: "Email",
     value: "guineeamarseille13@gmail.com",
     href: "mailto:guineeamarseille13@gmail.com",
-    color: "from-blue-100 to-indigo-100 text-blue-700",
+    color: CONTACT_METHOD_ICON_COLOR,
   },
   {
     icon: Phone,
     label: "Téléphone",
     value: "+33 7 67 13 39 28",
     href: "tel:+33767133928",
-    color: "from-green-100 to-emerald-100 text-green-700",
+    color: CONTACT_METHOD_ICON_COLOR,
   },
   {
     icon: MapPin,
     label: "Adresse",
     value: "2 Boulevard Louis Frangin, 13005 Marseille",
-    color: "from-amber-100 to-yellow-100 text-amber-700",
+    color: CONTACT_METHOD_ICON_COLOR,
   },
 ];
 
@@ -44,7 +49,7 @@ function buildContactMethods(contact: DbContact): ContactMethod[] {
       label: "Email",
       value: contact.email,
       href: `mailto:${contact.email}`,
-      color: "from-blue-100 to-indigo-100 text-blue-700",
+      color: CONTACT_METHOD_ICON_COLOR,
     });
   }
   if (contact.phone) {
@@ -53,7 +58,7 @@ function buildContactMethods(contact: DbContact): ContactMethod[] {
       label: "Téléphone",
       value: contact.phone,
       href: `tel:${contact.phone.replace(/\s/g, "")}`,
-      color: "from-green-100 to-emerald-100 text-green-700",
+      color: CONTACT_METHOD_ICON_COLOR,
     });
   }
   if (contact.address) {
@@ -61,7 +66,7 @@ function buildContactMethods(contact: DbContact): ContactMethod[] {
       icon: MapPin,
       label: "Adresse",
       value: [contact.address, contact.zipCode, contact.city].filter(Boolean).join(", "),
-      color: "from-amber-100 to-yellow-100 text-amber-700",
+      color: CONTACT_METHOD_ICON_COLOR,
     });
   }
   return methods;

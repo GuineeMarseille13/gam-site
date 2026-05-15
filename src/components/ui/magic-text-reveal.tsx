@@ -72,6 +72,8 @@ interface MagicTextRevealProps {
   spread?: number;
   speed?: number;
   density?: number;
+  /** Multiplicateur d’opacité des particules (défaut 1). */
+  particleIntensity?: number;
   resetOnMouseLeave?: boolean;
   /** Réduit la hauteur du canvas / wrapper selon le contexte du titre. */
   titleLayout?: MagicTextRevealVariant;
@@ -88,6 +90,7 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
   spread = 40,
   speed = 0.5,
   density = 4,
+  particleIntensity = 1,
   resetOnMouseLeave = true,
   titleLayout = "hero",
   className = "",
@@ -186,6 +189,7 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
     color: string,
     transformedDensity: number,
     resolutionScale: number,
+    intensity: number,
   ): Particle[] => {
     const particles: Particle[] = [];
     
@@ -255,8 +259,8 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
             originalX: x,
             originalY: y,
             color: `rgba(${data[index]}, ${data[index + 1]}, ${data[index + 2]}, ${originalAlpha})`,
-            opacity: originalAlpha * 0.3,
-            originalAlpha,
+            opacity: Math.min(1, originalAlpha * 0.65 * intensity),
+            originalAlpha: Math.min(1, originalAlpha * intensity),
             velocityX: 0,
             velocityY: 0,
             angle: Math.random() * Math.PI * 2,
@@ -265,7 +269,10 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
             floatingOffsetY: 0,
             floatingSpeed: Math.random() * 2 + 1,
             floatingAngle: Math.random() * Math.PI * 2,
-            targetOpacity: Math.random() * originalAlpha * 0.5,
+            targetOpacity: Math.min(
+              1,
+              (Math.random() * 0.45 + 0.35) * originalAlpha * intensity,
+            ),
             sparkleSpeed: Math.random() * 2 + 1
           };
           particles.push(particle);
@@ -367,9 +374,9 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
         
         // When particle reaches its target opacity, set a new random target
         if (Math.abs(opacityDiff) < 0.01) {
-          particle.targetOpacity = Math.random() < 0.5 
-            ? Math.random() * 0.1 * particle.originalAlpha
-            : particle.originalAlpha * 3;
+          particle.targetOpacity = Math.random() < 0.5
+            ? Math.min(1, Math.random() * 0.4 * particle.originalAlpha + 0.2 * particle.originalAlpha)
+            : Math.min(1, particle.originalAlpha * 1.15);
           particle.sparkleSpeed = Math.random() * 3 + 1;
         }
       }
@@ -411,7 +418,7 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
     particlesByColor.forEach((positions, color) => {
       ctx.fillStyle = color;
       positions.forEach(({ x, y }) => {
-        ctx.fillRect(x, y, 1, 1);
+        ctx.fillRect(x - 0.5, y - 0.5, 2, 2);
       });
     });
     
@@ -451,6 +458,7 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
       color,
       transformedDensity,
       canvasResolutionScale,
+      particleIntensity,
     );
     
     // Store particles for later use
@@ -458,7 +466,7 @@ export const MagicTextReveal: React.FC<MagicTextRevealProps> = ({
     
     // Render particles
     renderParticles(ctx, particles, canvasResolutionScale);
-  }, [wrapperSize, canvasResolutionScale, text, fontSize, fontFamily, fontWeight, color, transformedDensity, createParticles, renderParticles]);
+  }, [wrapperSize, canvasResolutionScale, text, fontSize, fontFamily, fontWeight, color, transformedDensity, particleIntensity, createParticles, renderParticles]);
 
   // Animation loop
   useEffect(() => {

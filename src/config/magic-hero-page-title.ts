@@ -1,6 +1,6 @@
 /**
  * Styles des titres hero « MagicTextReveal » : défaut contacts (indigo),
- * variantes adhésion/boutique (ambre / jaune / citron) et don (rose / rouge).
+ * variantes adhésion/boutique (ambre / jaune / citron) et don (bleu moderne).
  * La typo responsive reste gérée par `useMagicTextRevealTypography("hero")` dans `AssociationMagicTitle`.
  */
 
@@ -29,9 +29,15 @@ export const MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES =
 /** Canvas MagicTextReveal : jaune-500 (cœur du dégradé ambre / jaune / citron). */
 export const MAGIC_HERO_MEMBERSHIP_SHOP_COLOR = "rgb(234 179 8)" as const;
 
-/** Don — dégradé rose / framboise / rouge (titre d’origine). */
+/** Don — dégradé bleu moderne (aligné sur le hero contacts). */
 export const MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES =
-  "text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 bg-clip-text text-transparent" as const;
+  "text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500 bg-clip-text text-transparent" as const;
 
-/** Canvas MagicTextReveal : rose-500 (cœur du dégradé don). */
-export const MAGIC_HERO_DONATION_COLOR = "rgb(244 63 94)" as const;
+/** Canvas MagicTextReveal : indigo-600 (cœur du dégradé don). */
+export const MAGIC_HERO_DONATION_COLOR = "rgb(79 70 229)" as const;
+
+/** Contacts — noir moderne (zinc / ardoise). */
+export const MAGIC_HERO_CONTACT_TYPOGRAPHY_CLASSES =
+  "text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-600 via-slate-800 to-zinc-950 bg-clip-text text-transparent" as const;
+
+export const MAGIC_HERO_CONTACT_COLOR = "rgb(39 39 42)" as const;
