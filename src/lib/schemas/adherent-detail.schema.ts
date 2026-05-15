@@ -5,6 +5,7 @@ export const adherentMembershipPaymentSchema = z
   .object({
     id: z.string(),
     paymentReference: z.string(),
+    paymentMethod: z.string(),
     paymentDate: z.string(),
     status: z.string(),
     amount: z.number().int(),

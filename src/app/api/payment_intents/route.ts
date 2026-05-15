@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server"
 
-import { stripe } from '@/lib/stripe'
-import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR } from '@/app/(public)/adhesion/_schemas/adhesion.schema'
+import { adhesionPayloadSchema } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
+import { createAdhesionStripePaymentIntent } from "@/app/(public)/adhesion/_services/create-adhesion-stripe-payment-intent"
 
 export async function POST(request: Request) {
   try {
@@ -10,39 +10,23 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Données invalides', details: parsed.error.flatten() },
-        { status: 400 }
+        { error: "Données invalides", details: parsed.error.flatten() },
+        { status: 400 },
       )
     }
 
     const { members, message } = parsed.data
-    const quantity = members.length
-    const amount = quantity * PRICE_PER_MEMBER_EUR * 100 // Montant en centimes
-
-    // Créer un PaymentIntent avec uniquement les cartes
-    // Permet de preparer stripe pour un paiement
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: 'eur',
-      metadata: {
-        type: 'adhesion',
-        members_count: quantity.toString(),
-        members: JSON.stringify(members),
-        message: message || '',
-      },
-      payment_method_types: ['card'],
-    })
+    const result = await createAdhesionStripePaymentIntent({ members, message })
 
     return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
+      clientSecret: result.clientSecret,
+      paymentIntentId: result.paymentIntentId,
     })
   } catch (err) {
-    console.error('Erreur lors de la création du PaymentIntent:', err)
+    console.error("Erreur lors de la création du PaymentIntent:", err)
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Erreur inconnue' },
-      { status: 500 }
+      { error: err instanceof Error ? err.message : "Erreur inconnue" },
+      { status: 500 },
     )
   }
 }
-

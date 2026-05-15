@@ -36,7 +36,7 @@ export function AdhesionsDesktopTable({ adhesions }: AdhesionsDesktopTableProps)
               <TableHead className="pl-6">Adhérent</TableHead>
               <TableHead className="text-center">Année</TableHead>
               <TableHead className="text-center">Montant</TableHead>
-              <TableHead>Paiement</TableHead>
+              <TableHead>Type de paiement</TableHead>
               <TableHead className="text-center">Statut</TableHead>
               <TableHead className="text-right">Date d&apos;adhésion</TableHead>
               <TableHead className="pr-6 text-right">Fin d&apos;adhésion</TableHead>
@@ -75,7 +75,10 @@ export function AdhesionsDesktopTable({ adhesions }: AdhesionsDesktopTableProps)
                     {formatCurrency(adhesion.amount)}
                   </TableCell>
                   <TableCell>
-                    <AdhesionPaymentRef paymentReference={adhesion.payment?.paymentReference} />
+                    <AdhesionPaymentRef
+                      paymentMethod={adhesion.payment?.paymentMethod}
+                      paymentReference={adhesion.payment?.paymentReference}
+                    />
                   </TableCell>
                   <TableCell className="text-center">
                     <AdhesionStatusBadge isActive={adhesion.isActive} />

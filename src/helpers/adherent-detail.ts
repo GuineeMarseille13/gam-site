@@ -38,6 +38,7 @@ export async function getAdherentDetailForDashboard(
             select: {
               id: true,
               paymentReference: true,
+              paymentMethod: true,
               paymentDate: true,
               status: true,
               amount: true,
@@ -72,6 +73,7 @@ export async function getAdherentDetailForDashboard(
       payment: {
         id: m.payment.id,
         paymentReference: m.payment.paymentReference,
+        paymentMethod: m.payment.paymentMethod,
         paymentDate: m.payment.paymentDate.toISOString(),
         status: m.payment.status,
         amount: m.payment.amount,

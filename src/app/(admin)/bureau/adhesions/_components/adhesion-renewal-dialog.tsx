@@ -6,8 +6,11 @@ import { Loader2, RefreshCcw } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import type { AdhesionWithRelations } from "../_types/adhesion-with-relations.type"
-import type { Member } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
-import { PRICE_PER_MEMBER_EUR } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
+import {
+  computeAdhesionTotalEur,
+  type Member,
+} from "@/app/(public)/adhesion/_schemas/adhesion.schema"
+import { fetchAdhesionApiError } from "@/app/(public)/adhesion/_services/fetch-adhesion-api-error"
 import StripePaymentForm from "@/app/(public)/adhesion/_components/stripe-payment-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -37,11 +40,9 @@ async function createRenewalPaymentIntent(
 
   const json: unknown = await res.json().catch(() => null)
   if (!res.ok) {
-    const message =
-      typeof json === "object" && json !== null && "error" in json
-        ? String((json as { error?: unknown }).error ?? "")
-        : ""
-    throw new Error(message || "Erreur lors de la création du paiement")
+    throw new Error(
+      fetchAdhesionApiError(json, "Erreur lors de la création du paiement"),
+    )
   }
 
   if (
@@ -96,7 +97,7 @@ export function AdhesionRenewalDialog({ adhesion }: AdhesionRenewalDialogProps) 
     [person],
   )
 
-  const total = PRICE_PER_MEMBER_EUR
+  const total = computeAdhesionTotalEur(1)
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: async () => createRenewalPaymentIntent(adhesion.id),

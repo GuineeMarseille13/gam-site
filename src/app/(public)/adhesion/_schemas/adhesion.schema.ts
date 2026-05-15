@@ -33,6 +33,53 @@ export const adhesionPayloadSchema = z.object({
 
 export type AdhesionPayload = z.infer<typeof adhesionPayloadSchema>;
 
+export const adhesionPayloadWithYearSchema = adhesionPayloadSchema
+  .extend({
+    membershipYear: z.number().int().min(2000).max(2100).optional(),
+  })
+  .strict();
+
+export type AdhesionPayloadWithYear = z.infer<typeof adhesionPayloadWithYearSchema>;
+
+export const manualAdhesionPaymentMethodSchema = z.enum(["espece", "virement"]);
+
+export type ManualAdhesionPaymentMethod = z.infer<
+  typeof manualAdhesionPaymentMethodSchema
+>;
+
+export const MANUAL_ADHESION_PAYMENT_METHOD_LABELS: Record<
+  ManualAdhesionPaymentMethod,
+  string
+> = {
+  espece: "Espèces",
+  virement: "Virement",
+};
+
+export const manualAdhesionPayloadSchema = adhesionPayloadWithYearSchema
+  .extend({
+    paymentMethod: manualAdhesionPaymentMethodSchema,
+  })
+  .strict();
+
+export type ManualAdhesionPayload = z.infer<typeof manualAdhesionPayloadSchema>;
+
 export const PRICE_PER_MEMBER_EUR = 10;
+
+/** Année de cotisation : valeur explicite ou année civile en cours. */
+export function resolveMembershipYear(explicit?: number): number {
+  if (
+    explicit !== undefined &&
+    Number.isFinite(explicit) &&
+    explicit >= 2000 &&
+    explicit <= 2100
+  ) {
+    return explicit;
+  }
+  return new Date().getFullYear();
+}
+
+export function computeAdhesionTotalEur(memberCount: number): number {
+  return memberCount * PRICE_PER_MEMBER_EUR;
+}
 
 

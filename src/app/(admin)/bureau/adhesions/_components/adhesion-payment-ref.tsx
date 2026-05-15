@@ -1,18 +1,38 @@
+import { formatAdhesionPaymentMethodLabel } from "../_utils/adhesion-display"
+
+interface AdhesionPaymentRefProps {
+  readonly paymentMethod?: string | null
+  readonly paymentReference?: string | null
+}
+
 /**
- * Référence de paiement tronquée avec titre complet au survol.
+ * Mode de règlement + référence technique (tronquée, titre au survol).
  */
 export function AdhesionPaymentRef({
+  paymentMethod,
   paymentReference,
-}: {
-  paymentReference?: string | null
-}) {
-  if (!paymentReference) {
+}: AdhesionPaymentRefProps) {
+  const methodLabel = formatAdhesionPaymentMethodLabel(paymentMethod)
+
+  if (methodLabel === "—" && !paymentReference) {
     return <span className="text-muted-foreground">—</span>
   }
-  const shortened = `${paymentReference.slice(0, 20)}…`
+
+  const shortenedReference = paymentReference
+    ? `${paymentReference.slice(0, 18)}…`
+    : null
+
   return (
-    <span className="font-mono text-xs text-muted-foreground" title={paymentReference}>
-      {shortened}
-    </span>
+    <div className="flex min-w-0 flex-col gap-0.5">
+      <span className="text-sm font-medium text-foreground">{methodLabel}</span>
+      {paymentReference ? (
+        <span
+          className="truncate font-mono text-xs text-muted-foreground"
+          title={paymentReference}
+        >
+          {shortenedReference}
+        </span>
+      ) : null}
+    </div>
   )
 }

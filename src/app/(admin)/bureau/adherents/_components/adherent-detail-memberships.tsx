@@ -76,9 +76,10 @@ export function AdherentDetailMemberships({
                 </dd>
               </div>
               <div className="flex flex-col gap-1 border-t border-border/60 pt-2">
-                <dt className="text-xs text-muted-foreground">Paiement</dt>
-                <dd className="font-mono text-xs">
+                <dt className="text-xs text-muted-foreground">Type de paiement</dt>
+                <dd>
                   <AdhesionPaymentRef
+                    paymentMethod={m.payment.paymentMethod}
                     paymentReference={m.payment.paymentReference}
                   />
                 </dd>
@@ -101,8 +102,8 @@ export function AdherentDetailMemberships({
               <TableHead className="text-center">Cotisation</TableHead>
               <TableHead>Date d&apos;adhésion</TableHead>
               <TableHead>Fin d&apos;adhésion</TableHead>
-              <TableHead>Réf. Stripe</TableHead>
-              <TableHead className="pr-4 text-right">Paiement</TableHead>
+              <TableHead>Type de paiement</TableHead>
+              <TableHead className="pr-4 text-right">Statut paiement</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -125,6 +126,7 @@ export function AdherentDetailMemberships({
                 </TableCell>
                 <TableCell>
                   <AdhesionPaymentRef
+                    paymentMethod={m.payment.paymentMethod}
                     paymentReference={m.payment.paymentReference}
                   />
                 </TableCell>

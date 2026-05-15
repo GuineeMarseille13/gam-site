@@ -2,12 +2,11 @@ import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 import { z } from "zod"
 
-import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
-import { PRICE_PER_MEMBER_EUR } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
 import { adhesionRenewalPayloadSchema } from "@/app/(admin)/bureau/adhesions/_schemas/adhesion-renewal.schema"
+import { createAdhesionStripePaymentIntent } from "@/app/(public)/adhesion/_services/create-adhesion-stripe-payment-intent"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -50,9 +49,6 @@ export async function POST(request: Request) {
   }
 
   const nextYear = getNextMembershipYear(membership.year)
-
-  // Re-use le flow existant (PaymentIntent + webhook) : 1 membre = 1 adhésion.
-  const amount = PRICE_PER_MEMBER_EUR * 100
   const members = [
     {
       firstName: membership.person.firstName,
@@ -62,34 +58,43 @@ export async function POST(request: Request) {
     },
   ]
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount,
-    currency: "eur",
-    metadata: {
-      type: "adhesion",
-      membership_year: String(nextYear),
-      members_count: "1",
-      members: JSON.stringify(members),
+  try {
+    const result = await createAdhesionStripePaymentIntent({
+      members,
       message: buildRenewalMessage(nextYear),
-      renewal_from_membership_id: membership.id,
-    },
-    payment_method_types: ["card"],
-  })
-
-  const responseSchema = z
-    .object({
-      clientSecret: z.string().min(1),
-      paymentIntentId: z.string().min(1),
-      nextYear: z.number().int(),
+      membershipYear: nextYear,
+      extraMetadata: {
+        renewal_from_membership_id: membership.id,
+      },
     })
-    .strict()
 
-  return NextResponse.json(
-    responseSchema.parse({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-      nextYear,
-    }),
-  )
+    const responseSchema = z
+      .object({
+        clientSecret: z.string().min(1),
+        paymentIntentId: z.string().min(1),
+        nextYear: z.number().int(),
+      })
+      .strict()
+
+    if (!result.clientSecret) {
+      return NextResponse.json(
+        { error: "Secret de paiement indisponible" },
+        { status: 500 },
+      )
+    }
+
+    return NextResponse.json(
+      responseSchema.parse({
+        clientSecret: result.clientSecret,
+        paymentIntentId: result.paymentIntentId,
+        nextYear,
+      }),
+    )
+  } catch (err) {
+    console.error("[payment_intents/adhesion-renewal]", err)
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Erreur inconnue" },
+      { status: 500 },
+    )
+  }
 }
-

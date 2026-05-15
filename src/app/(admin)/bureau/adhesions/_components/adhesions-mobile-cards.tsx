@@ -61,9 +61,12 @@ export function AdhesionsMobileCards({ adhesions }: AdhesionsMobileCardsProps) {
                 </dd>
               </div>
               <div className="flex flex-col gap-1 sm:col-span-2">
-                <dt className="text-muted-foreground">Paiement</dt>
+                <dt className="text-muted-foreground">Type de paiement</dt>
                 <dd className="min-w-0 break-all">
-                  <AdhesionPaymentRef paymentReference={adhesion.payment?.paymentReference} />
+                  <AdhesionPaymentRef
+                    paymentMethod={adhesion.payment?.paymentMethod}
+                    paymentReference={adhesion.payment?.paymentReference}
+                  />
                 </dd>
               </div>
               <div className="flex justify-between gap-2 sm:block sm:gap-0">

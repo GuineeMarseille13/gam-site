@@ -9,6 +9,7 @@ import {
   type AdhesionsSearchParams,
 } from "./_schemas/adhesions-search-params.schema"
 import { AdhesionsFilters } from "./_components/adhesions-filters"
+import { CreateAdhesionDialog } from "./_components/create-adhesion-dialog"
 
 export const metadata: Metadata = { title: "Adhésions" }
 
@@ -108,6 +109,7 @@ export default async function AdhesionsPage({
     <BureauContent
       title="Adhésions"
       description={`${adhesions.length} adhésion${adhesions.length > 1 ? "s" : ""} enregistrée${adhesions.length > 1 ? "s" : ""}`}
+      actions={<CreateAdhesionDialog />}
     >
       <AdhesionsFilters availableYears={availableYears} />
       <AdhesionsBoard adhesions={adhesions} />
