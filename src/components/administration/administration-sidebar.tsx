@@ -13,7 +13,6 @@ import {
   IconHandStop,
   IconBuildingStore,
   IconBriefcase,
-  IconList,
   IconListDetails,
   IconSchool,
   IconUsers,
@@ -41,7 +40,6 @@ type NavItem = {
 
 const BASE = "/administration"
 const DEMANDE_BENEFICIAIRE = `${BASE}/demande-beneficiaire`
-const DEMANDE_BENEFICIAIRE_CONFIG = `${DEMANDE_BENEFICIAIRE}/configuration`
 const SUIVI_DEMANDE = `${BASE}/suivi-demande`
 const CAMPUS_FRANCE_DEPOTS = `${BASE}/campus-france-depots`
 
@@ -56,11 +54,6 @@ const mainNav: NavItem[] = [
     icon: IconSchool,
   },
   { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
-  {
-    title: "Paramètres demande",
-    url: DEMANDE_BENEFICIAIRE_CONFIG,
-    icon: IconList,
-  },
   { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
   { title: "Statistiques", url: `${BASE}/statistiques`, icon: IconChartBar },
   {
@@ -85,11 +78,9 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
                   ? pathname === CAMPUS_FRANCE_DEPOTS ||
                     pathname.startsWith(`${CAMPUS_FRANCE_DEPOTS}/`)
                   : item.url === DEMANDE_BENEFICIAIRE
-                    ? pathname === DEMANDE_BENEFICIAIRE
-                    : item.url === DEMANDE_BENEFICIAIRE_CONFIG
-                      ? pathname === DEMANDE_BENEFICIAIRE_CONFIG ||
-                        pathname.startsWith(`${DEMANDE_BENEFICIAIRE_CONFIG}/`)
-                      : item.url === SUIVI_DEMANDE
+                    ? pathname === DEMANDE_BENEFICIAIRE ||
+                      pathname.startsWith(`${DEMANDE_BENEFICIAIRE}/`)
+                    : item.url === SUIVI_DEMANDE
                         ? pathname === SUIVI_DEMANDE ||
                           pathname.startsWith(`${SUIVI_DEMANDE}/`)
                         : pathname.startsWith(item.url)
