@@ -18,6 +18,7 @@ import {
 import { AdhesionPaymentRef } from "./adhesion-payment-ref"
 import { AdhesionStatusBadge } from "./adhesion-status-badge"
 import { AdhesionRenewalDialog } from "./adhesion-renewal-dialog"
+import { InvoiceLinkButton } from "@/app/(admin)/bureau/factures/_components/invoice-link-button"
 
 interface AdhesionsDesktopTableProps {
   adhesions: AdhesionWithRelations[]
@@ -88,7 +89,10 @@ export function AdhesionsDesktopTable({ adhesions }: AdhesionsDesktopTableProps)
                   </TableCell>
                   <TableCell className="pr-6 text-right tabular-nums">{formatAdhesionDate(end)}</TableCell>
                   <TableCell className="pr-6 text-right">
-                    <AdhesionRenewalDialog adhesion={adhesion} />
+                    <div className="flex items-center justify-end gap-1">
+                      <InvoiceLinkButton paymentId={adhesion.payment?.id} bureauSection="adhesions" />
+                      <AdhesionRenewalDialog adhesion={adhesion} />
+                    </div>
                   </TableCell>
                 </TableRow>
               )

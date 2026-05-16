@@ -6,6 +6,7 @@ import {
   getDonInitials,
 } from "../_utils/don-display"
 import { AdhesionPaymentRef } from "@/app/(admin)/bureau/adhesions/_components/adhesion-payment-ref"
+import { InvoiceLinkButton } from "@/app/(admin)/bureau/factures/_components/invoice-link-button"
 import { DonMessagePreview } from "./don-message-preview"
 
 interface DonsMobileCardsProps {
@@ -52,13 +53,16 @@ export function DonsMobileCards({ dons }: DonsMobileCardsProps) {
                 ) : null}
               </div>
 
-              <div className="text-right">
-                <p className="font-semibold tabular-nums text-foreground text-sm">
-                  {formatCurrency(don.amount, { maximumFractionDigits: 0 })}
-                </p>
-                <p className="mt-0.5 text-muted-foreground text-xs tabular-nums">
-                  {formatDonDate(don.createdAt)}
-                </p>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <InvoiceLinkButton paymentId={don.payment?.id} bureauSection="dons" />
+                <div className="text-right">
+                  <p className="font-semibold tabular-nums text-foreground text-sm">
+                    {formatCurrency(don.amount, { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="mt-0.5 text-muted-foreground text-xs tabular-nums">
+                    {formatDonDate(don.createdAt)}
+                  </p>
+                </div>
               </div>
             </div>
 

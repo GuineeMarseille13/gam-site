@@ -9,6 +9,7 @@ import {
 import { AdhesionPaymentRef } from "./adhesion-payment-ref"
 import { AdhesionStatusBadge } from "./adhesion-status-badge"
 import { AdhesionRenewalDialog } from "./adhesion-renewal-dialog"
+import { InvoiceLinkButton } from "@/app/(admin)/bureau/factures/_components/invoice-link-button"
 
 interface AdhesionsMobileCardsProps {
   adhesions: AdhesionWithRelations[]
@@ -83,7 +84,8 @@ export function AdhesionsMobileCards({ adhesions }: AdhesionsMobileCardsProps) {
               </div>
             </dl>
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex justify-end gap-2">
+              <InvoiceLinkButton paymentId={adhesion.payment?.id} bureauSection="adhesions" />
               <AdhesionRenewalDialog adhesion={adhesion} />
             </div>
           </article>

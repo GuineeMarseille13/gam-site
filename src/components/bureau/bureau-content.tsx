@@ -18,6 +18,11 @@ interface BureauContentProps {
   actions?: React.ReactNode
   /** Palette du shell : Administration (sky) vs Bureau (ambre) */
   dashboard?: BureauContentDashboard
+  /**
+   * Masque le fil d’Ariane, le bloc titre / description et la zone actions d’en-tête à l’impression
+   * (ex. facture sur une seule page A4).
+   */
+  hideShellHeaderOnPrint?: boolean
   children: React.ReactNode
 }
 
@@ -29,51 +34,65 @@ export function BureauContent({
   addLabel = "Nouveau",
   actions,
   dashboard = "bureau",
+  hideShellHeaderOnPrint = false,
   children,
 }: BureauContentProps) {
   return (
-    <div className="flex flex-1 flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 xl:p-10">
-      {/* Retour */}
-      {backHref && (
-        <Link
-          href={backHref}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit"
-        >
-          <IconArrowLeft className="size-4" />
-          Retour
-        </Link>
+    <div
+      className={cn(
+        "flex flex-1 flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 xl:p-10",
+        hideShellHeaderOnPrint &&
+          "print:gap-0 print:p-0 sm:print:p-0 lg:print:p-0 xl:print:p-0",
       )}
+    >
+      <div className={cn(hideShellHeaderOnPrint && "print:hidden")}>
+        {/* Retour */}
+        {backHref && (
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit"
+          >
+            <IconArrowLeft className="size-4" />
+            Retour
+          </Link>
+        )}
 
-      {/* En-tête */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0 space-y-1">
-          <h1 className="text-balance break-words text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {title}
-          </h1>
-          {description && (
-            <p className="text-pretty text-sm text-muted-foreground sm:text-base">
-              {description}
-            </p>
+        {/* En-tête */}
+        <div
+          className={cn(
+            "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4",
+            backHref && "mt-4",
           )}
-        </div>
-        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-          {actions}
-          {addHref && (
-            <Button
-              asChild
-              className={cn(
-                "w-full justify-center gap-2 rounded-xl px-5 py-2.5 text-base sm:w-auto",
-                dashboard === "administration"
-                  ? administrationPrimaryButtonClassName
-                  : "bg-amber-500 text-white shadow-md transition-shadow hover:bg-amber-600 hover:shadow-lg",
-              )}
-            >
-              <Link href={addHref}>
-                <IconPlus className="size-4 sm:size-5" />
-                {addLabel}
-              </Link>
-            </Button>
-          )}
+        >
+          <div className="min-w-0 space-y-1">
+            <h1 className="text-balance break-words text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              {title}
+            </h1>
+            {description && (
+              <p className="text-pretty text-sm text-muted-foreground sm:text-base">
+                {description}
+              </p>
+            )}
+          </div>
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+            {actions}
+            {addHref && (
+              <Button
+                asChild
+                className={cn(
+                  "w-full justify-center gap-2 rounded-xl px-5 py-2.5 text-base sm:w-auto",
+                  dashboard === "administration"
+                    ? administrationPrimaryButtonClassName
+                    : "bg-amber-500 text-white shadow-md transition-shadow hover:bg-amber-600 hover:shadow-lg",
+                )}
+              >
+                <Link href={addHref}>
+                  <IconPlus className="size-4 sm:size-5" />
+                  {addLabel}
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 

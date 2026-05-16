@@ -33,6 +33,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
+import { cn } from "@/helpers/utils"
 
 type NavItem = {
   title: string
@@ -131,13 +132,13 @@ interface BureauSidebarProps extends React.ComponentProps<typeof Sidebar> {
   role?: string
 }
 
-export function BureauSidebar({ currentUser, role, ...props }: BureauSidebarProps) {
+export function BureauSidebar({ currentUser, role, className, ...props }: BureauSidebarProps) {
   const pathname = usePathname()
 
   const user = currentUser ?? navigation.user
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" className={cn("print:hidden", className)} {...props}>
       <SidebarHeader className="border-b border-sidebar-border pb-3">
         <SidebarMenu>
           <SidebarMenuItem>

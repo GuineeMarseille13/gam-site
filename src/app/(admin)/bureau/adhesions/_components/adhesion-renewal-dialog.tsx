@@ -12,6 +12,7 @@ import {
 } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
 import { fetchAdhesionApiError } from "@/app/(public)/adhesion/_services/fetch-adhesion-api-error"
 import StripePaymentForm from "@/app/(public)/adhesion/_components/stripe-payment-form"
+import { ActionTooltip } from "@/components/ui/action-tooltip"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -130,12 +131,14 @@ export function AdhesionRenewalDialog({ adhesion }: AdhesionRenewalDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <RefreshCcw />
-          Renouveler
-        </Button>
-      </DialogTrigger>
+      <ActionTooltip label="Renouveler l’adhésion pour l’année suivante (paiement Stripe)">
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm">
+            <RefreshCcw />
+            Renouveler
+          </Button>
+        </DialogTrigger>
+      </ActionTooltip>
       <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Renouveler l’adhésion</DialogTitle>

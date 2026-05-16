@@ -21,6 +21,7 @@
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@radix-ui/react-avatar": "^1.1.10",
+    "@react-pdf/renderer": "^4.5.1",
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.6.0",
     "@tabler/icons-react": "^3.40.0",

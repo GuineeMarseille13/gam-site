@@ -487,6 +487,38 @@
   margin: 0 auto;
 }
 
+/* Filigrane GAM — facture bureau (même esprit que .background-logo, centré dans la carte). */
+.invoice-document-bg-logo-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.invoice-document-bg-logo-layer img {
+  width: min(95%, 52rem);
+  height: auto;
+  object-fit: contain;
+  opacity: 0.03;
+  animation: logo-pulse 8s ease-in-out infinite;
+}
+
+@media print {
+  .invoice-document-bg-logo-layer img {
+    animation: none;
+    opacity: 0.04;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invoice-document-bg-logo-layer img {
+    animation: none;
+  }
+}
+
 /* Styles pour le bouton de don animé */
 .donate-button-animated {
   position: relative;
@@ -742,5 +774,13 @@
   button:disabled,
   button[aria-disabled="true"] {
     cursor: not-allowed;
+  }
+}
+
+/* Impression facture bureau : page A4, article pleine hauteur (flex + .invoice-print-a4). */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
   }
 }

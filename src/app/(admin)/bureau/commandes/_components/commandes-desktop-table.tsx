@@ -17,6 +17,8 @@ import {
 } from "../_utils/commande-display"
 import { CommandeStatusBadge } from "./commande-status-badge"
 import { IconListDetails } from "@tabler/icons-react"
+import { InvoiceLinkButton } from "@/app/(admin)/bureau/factures/_components/invoice-link-button"
+import { ActionTooltip } from "@/components/ui/action-tooltip"
 
 interface CommandesDesktopTableProps {
   readonly commandes: OrderWithRelations[]
@@ -85,17 +87,22 @@ export function CommandesDesktopTable({
                     {formatCommandeDate(commande.createdAt)}
                   </TableCell>
                   <TableCell className="pr-6 text-right">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="gap-1.5 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
-                      onClick={() => onOpenDetail(commande)}
-                      aria-label={`Détail commande ${commande.orderNumber}`}
-                    >
-                      <IconListDetails className="size-4" aria-hidden />
-                      Détails
-                    </Button>
+                    <div className="flex flex-wrap items-center justify-end gap-1">
+                      <InvoiceLinkButton paymentId={commande.payment?.id} bureauSection="commandes" />
+                      <ActionTooltip label="Afficher le détail des articles commandés">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="gap-1.5 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
+                          onClick={() => onOpenDetail(commande)}
+                          aria-label={`Détail commande ${commande.orderNumber}`}
+                        >
+                          <IconListDetails className="size-4" aria-hidden />
+                          Détails
+                        </Button>
+                      </ActionTooltip>
+                    </div>
                   </TableCell>
                 </TableRow>
               )

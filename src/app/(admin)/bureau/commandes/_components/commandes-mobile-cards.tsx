@@ -8,6 +8,8 @@ import {
 } from "../_utils/commande-display"
 import { CommandeStatusBadge } from "./commande-status-badge"
 import { IconListDetails } from "@tabler/icons-react"
+import { InvoiceLinkButton } from "@/app/(admin)/bureau/factures/_components/invoice-link-button"
+import { ActionTooltip } from "@/components/ui/action-tooltip"
 
 interface CommandesMobileCardsProps {
   readonly commandes: OrderWithRelations[]
@@ -79,16 +81,21 @@ export function CommandesMobileCards({
               </div>
             </dl>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-4 w-full gap-2 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
-              onClick={() => onOpenDetail(commande)}
-              aria-label={`Détail commande ${commande.orderNumber}`}
-            >
-              <IconListDetails className="size-4" aria-hidden />
-              Voir le détail des articles
-            </Button>
+            <div className="mt-4 flex items-center gap-2">
+              <InvoiceLinkButton paymentId={commande.payment?.id} bureauSection="commandes" />
+              <ActionTooltip label="Afficher le détail des articles commandés">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="min-w-0 flex-1 gap-2 rounded-full border-amber-500/40 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:text-amber-200"
+                  onClick={() => onOpenDetail(commande)}
+                  aria-label={`Détail commande ${commande.orderNumber}`}
+                >
+                  <IconListDetails className="size-4" aria-hidden />
+                  Voir le détail des articles
+                </Button>
+              </ActionTooltip>
+            </div>
           </article>
         )
       })}
