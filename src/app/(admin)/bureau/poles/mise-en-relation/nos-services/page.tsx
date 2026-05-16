@@ -9,7 +9,7 @@ import { PoleServicesPanel } from "../../_components/pole-services-panel"
 const POLE_SLUG = "mise-en-relation" as const
 
 export const metadata: Metadata = {
-  title: "Nos services — Mise en relation",
+  title: "Nos services — Hébergement et Mise en relation",
   description: "Édition des cartes services dynamiques",
 }
 

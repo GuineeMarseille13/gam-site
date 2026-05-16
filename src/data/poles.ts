@@ -217,11 +217,11 @@ export const poles: Pole[] = [
   },
   {
     slug: "mise-en-relation",
-    title: "MISE EN RELATION",
+    title: "HÉBERGEMENT ET MISE EN RELATION",
     shortDescription:
       "Facilitation des échanges et des connexions entre les membres de la communauté.",
     image: "/images/mr-pole.jpg",
-    description: `Le pôle Mise en Relation crée des ponts entre les membres de notre communauté. Nous facilitons les rencontres, les échanges et la création de réseaux solides pour favoriser l'entraide, le partage d'expériences et le développement personnel et professionnel de chacun.`,
+    description: `Le pôle Hébergement et Mise en relation crée des ponts entre les membres de notre communauté. Nous facilitons les rencontres, les échanges et la création de réseaux solides pour favoriser l'entraide, le partage d'expériences et le développement personnel et professionnel de chacun.`,
     features: [
       "Réseau de parrainage pour nouveaux arrivants",
       "Groupes d'échange et de discussion",

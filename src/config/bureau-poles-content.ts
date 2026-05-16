@@ -31,8 +31,8 @@ export const BUREAU_POLE_CONTENT_ENTRIES: readonly BureauPoleContentEntry[] = [
   },
   {
     slug: "mise-en-relation",
-    accordionLabel: "Mise en relation",
-    metaTitle: "Mise en relation",
+    accordionLabel: "Hébergement et Mise en relation",
+    metaTitle: "Hébergement et Mise en relation",
   },
 ]
 

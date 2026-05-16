@@ -68,6 +68,8 @@ export interface PoleItem {
   name: string;
   description?: string;
   imageId?: string;
+  /** Slug public (`/poles/{slug}`) — prioritaire sur le slug dérivé du nom. */
+  publicSlug?: string | null;
 }
 
 export interface Statistic {

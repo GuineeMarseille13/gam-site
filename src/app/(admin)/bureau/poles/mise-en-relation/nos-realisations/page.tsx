@@ -15,7 +15,7 @@ import { PoleDetailsSectionForm } from "../../_content/pole-details-section-form
 const POLE_SLUG = "mise-en-relation" as const
 
 export const metadata: Metadata = {
-  title: "Nos réalisations — Mise en relation",
+  title: "Nos réalisations — Hébergement et Mise en relation",
   description: "Section « Nos réalisations » — DetailsPole",
 }
 

@@ -23,7 +23,7 @@ const segmentLabels: Record<string, string> = {
   poles: "Pôles",
   "demarche-administrative": "Accompagnement administratif",
   evenementiel: "Événementiel",
-  "mise-en-relation": "Mise en relation",
+  "mise-en-relation": "Hébergement et Mise en relation",
   titre: "À propos",
   "nos-services": "Nos services",
   "nos-realisations": "Nos réalisations",

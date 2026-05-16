@@ -10,7 +10,7 @@ import { PoleStatsPanel } from "../../_components/pole-stats-panel"
 const POLE_SLUG = "mise-en-relation" as const
 
 export const metadata: Metadata = {
-  title: "Statistiques — Mise en relation",
+  title: "Statistiques — Hébergement et Mise en relation",
   description: "Édition des cartes statistiques dynamiques",
 }
 

@@ -31,7 +31,7 @@ const POLES = [
   },
   {
     file: 'mr-pole.jpg',
-    name: 'Mise en Relation',
+    name: 'Hébergement et Mise en relation',
     description:
       'Facilitation des échanges et des connexions entre les membres de la communauté.',
   },

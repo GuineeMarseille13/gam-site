@@ -15,8 +15,9 @@ import { PoleDetailsSectionForm } from "../../_content/pole-details-section-form
 const POLE_SLUG = "mise-en-relation" as const
 
 export const metadata: Metadata = {
-  title: "À propos — Mise en relation",
-  description: "Modifier le texte « À propos » sur la page publique du pôle mise en relation",
+  title: "À propos — Hébergement et Mise en relation",
+  description:
+    "Modifier le texte « À propos » sur la page publique du pôle Hébergement et Mise en relation",
 }
 
 export default async function MiseEnRelationTitrePage() {
@@ -31,7 +32,7 @@ export default async function MiseEnRelationTitrePage() {
   return (
     <BureauContent
       title="Texte « À propos »"
-      description="Texte affiché sur la page publique du pôle mise en relation"
+      description="Texte affiché sur la page publique du pôle Hébergement et Mise en relation"
       backHref="/bureau/poles"
     >
       <BureauPoleDetailsPageCard>

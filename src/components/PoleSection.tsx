@@ -25,7 +25,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
   const items =
     poles && poles.length > 0
       ? poles.map((pole, index) => {
-          const slug = slugify(pole.name);
+          const slug = pole.publicSlug?.trim() || slugify(pole.name);
           const staticMatch = staticPoles.find((s) => s.slug === slug);
           const image = pole.imageId
             ? cloudinaryImageUrl(pole.imageId, "f_auto,q_auto")
