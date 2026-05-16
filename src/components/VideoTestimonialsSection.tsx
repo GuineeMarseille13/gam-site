@@ -3,63 +3,11 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play } from "lucide-react";
 import type { VideoTestimonial } from "@/app/_services/home";
 import { SectionSplitHeading } from "@/components/section-split-heading";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function getYouTubeId(url: string): string | null {
-  const m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
-
-function getThumbnail(video: VideoTestimonial): string | null {
-  if (video.thumbnail) return video.thumbnail;
-  const ytId = getYouTubeId(video.url);
-  if (ytId) return `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
-  return null;
-}
-
-function getEmbedInfo(url: string): { type: "youtube" | "vimeo" | "direct"; embedUrl: string } {
-  const ytId = getYouTubeId(url);
-  if (ytId) return { type: "youtube", embedUrl: `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0` };
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return { type: "vimeo", embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1` };
-  return { type: "direct", embedUrl: url };
-}
-
-// ---------------------------------------------------------------------------
-// Video Player
-// ---------------------------------------------------------------------------
-
-function VideoPlayer({ url }: { url: string }) {
-  const { type, embedUrl } = getEmbedInfo(url);
-  if (type === "direct") {
-    return (
-      <video
-        src={embedUrl}
-        controls
-        autoPlay
-        playsInline
-        className="w-full h-full rounded-2xl object-contain bg-black"
-      />
-    );
-  }
-  return (
-    <iframe
-      src={embedUrl}
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowFullScreen
-      referrerPolicy="strict-origin-when-cross-origin"
-      className="w-full h-full rounded-2xl"
-      style={{ border: "none" }}
-      title="Témoignage vidéo"
-    />
-  );
-}
+import { VideoTestimonialLightbox } from "@/components/video-testimonial-lightbox";
+import { getVideoThumbnailUrl } from "@/helpers/video-urls";
 
 // ---------------------------------------------------------------------------
 // Video Card
@@ -72,7 +20,7 @@ interface CardProps {
 }
 
 function VideoCard({ video, index, onClick }: CardProps) {
-  const thumb = getThumbnail(video);
+  const thumb = getVideoThumbnailUrl(video.url, video.thumbnail);
 
   return (
     <motion.div
@@ -205,15 +153,7 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
     return () => cancelAnimationFrame(animId);
   }, [videos.length, displayVideos.length, paused, activeIndex]);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIndex(null); };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
   if (videos.length === 0) return null;
-
-  const activeVideo = activeIndex !== null ? videos[activeIndex] : null;
 
 
   return (  
@@ -266,79 +206,20 @@ export default function VideoTestimonialsSection({ videos }: VideoTestimonialsSe
 
       </div>
 
-      {mounted && createPortal(
+      {mounted &&
+        createPortal(
         <AnimatePresence>
-          {activeVideo && (
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-8 md:p-12"
-              onClick={() => setActiveIndex(null)}
-            >
-              {/* Backdrop */}
-              <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-
-              {/* Player */}
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="relative w-full max-w-5xl aspect-video z-10 max-h-[85vh]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Glow behind player */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-amber-600/15 via-red-600/20 to-amber-600/15 rounded-3xl blur-2xl" />
-
-                {/* Video container — absolute inset-0 pour avoir une hauteur définie */}
-                <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl shadow-black/60 ring-1 ring-white/10">
-                  <VideoPlayer url={activeVideo.url} />
-                </div>
-
-                {/* Close */}
-                <button
-                  onClick={() => setActiveIndex(null)}
-                  className="absolute -top-4 right-0 sm:-top-5 sm:-right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 border border-white/15 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-xl transition-all duration-200 z-20"
-                  aria-label="Fermer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-
-                {/* Title below */}
-                {activeVideo.title && (
-                  <div className="absolute -bottom-7 sm:-bottom-9 left-0 right-0 text-center">
-                    <p className="text-[10px] sm:text-xs font-medium text-white/50 tracking-wide truncate px-4">{activeVideo.title}</p>
-                  </div>
-                )}
-
-                {/* Prev / Next — hors player sur mobile pour ne pas gêner */}
-                {videos.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => setActiveIndex((activeIndex! - 1 + videos.length) % videos.length)}
-                      className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/10 hover:bg-black/80 flex items-center justify-center text-white transition-all z-20"
-                      aria-label="Précédent"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setActiveIndex((activeIndex! + 1) % videos.length)}
-                      className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/10 hover:bg-black/80 flex items-center justify-center text-white transition-all z-20"
-                      aria-label="Suivant"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </>
-                )}
-              </motion.div>
-            </motion.div>
+          {activeIndex !== null && (
+            <VideoTestimonialLightbox
+              videos={videos}
+              activeIndex={activeIndex}
+              onClose={() => setActiveIndex(null)}
+              onChangeIndex={setActiveIndex}
+            />
           )}
         </AnimatePresence>,
-        document.body
-      )}
+        document.body,
+        )}
     </section>
   );
 }
