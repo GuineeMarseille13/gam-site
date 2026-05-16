@@ -21,6 +21,8 @@ function resolveIntentClassName(intent: SubmitButtonProps["intent"]): string {
       "hover:bg-amber-600 hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.14)]",
       "active:bg-amber-700 active:shadow-[0_1px_2px_0_rgba(0,0,0,0.12)]",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
+      "dark:bg-amber-600 dark:hover:bg-amber-500 dark:active:bg-amber-700",
+      "dark:focus-visible:ring-amber-500/50 dark:focus-visible:ring-offset-background",
     )
   }
   return ""

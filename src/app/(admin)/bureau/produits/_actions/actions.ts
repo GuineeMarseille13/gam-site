@@ -41,6 +41,7 @@ export async function createProduit(
     })
 
     revalidatePath("/bureau/produits")
+    revalidatePath("/bureau/produits/categories")
     revalidatePath("/")
     redirect("/bureau/produits")
   } catch (err) {
@@ -86,6 +87,7 @@ export async function updateProduit(
     })
 
     revalidatePath("/bureau/produits")
+    revalidatePath("/bureau/produits/categories")
     revalidatePath("/")
     redirect("/bureau/produits")
   } catch (err) {
@@ -104,5 +106,6 @@ export async function deleteProduit(id: string) {
     await deleteImage(product.imageId).catch(console.error)
   }
   revalidatePath("/bureau/produits")
+  revalidatePath("/bureau/produits/categories")
   revalidatePath("/")
 }
