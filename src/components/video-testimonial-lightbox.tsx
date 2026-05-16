@@ -9,6 +9,79 @@ import {
   getVideoThumbnailUrl,
   parseVideoUrl,
 } from "@/helpers/video-urls";
+import { cn } from "@/helpers/utils";
+
+interface VideoNavButtonProps {
+  direction: "prev" | "next";
+  onClick: () => void;
+  className?: string;
+  size?: "default" | "compact";
+}
+
+/**
+ * Bouton prev/next — zone cliquable limitée au cercle (pas de bandeau sur l’iframe).
+ */
+function VideoNavButton({
+  direction,
+  onClick,
+  className,
+  size = "default",
+}: VideoNavButtonProps) {
+  const isPrev = direction === "prev";
+  const Icon = isPrev ? ChevronLeft : ChevronRight;
+  const label = isPrev ? "Vidéo précédente" : "Vidéo suivante";
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className={cn(
+        "flex shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg backdrop-blur-xl transition-transform hover:scale-105 hover:bg-black/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 touch-manipulation",
+        size === "compact" ? "size-11" : "size-10 sm:size-11",
+        className,
+      )}
+      aria-label={label}
+    >
+      <Icon className="size-5 sm:size-6" strokeWidth={2} />
+    </button>
+  );
+}
+
+interface MobileVideoNavBarProps {
+  activeIndex: number;
+  total: number;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
+/** Navigation mobile sous le lecteur — hors zone des contrôles YouTube. */
+function MobileVideoNavBar({
+  activeIndex,
+  total,
+  onPrev,
+  onNext,
+}: MobileVideoNavBarProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1, duration: 0.35 }}
+      className="mx-auto flex w-full max-w-5xl items-center justify-center gap-4 px-3 pb-2 sm:hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <VideoNavButton direction="prev" onClick={onPrev} size="compact" />
+      <p className="min-w-[4.5rem] text-center text-xs font-medium tabular-nums text-white/50">
+        {activeIndex + 1}
+        <span className="text-white/30"> / </span>
+        {total}
+      </p>
+      <VideoNavButton direction="next" onClick={onNext} size="compact" />
+    </motion.div>
+  );
+}
 
 interface VideoTestimonialLightboxProps {
   videos: VideoTestimonial[];
@@ -234,12 +307,12 @@ export function VideoTestimonialLightbox({
         />
       </motion.div>
 
-      <header className="absolute top-0 left-0 right-0 z-20 flex shrink-0 items-start justify-between gap-3 px-4 py-4 sm:px-6 sm:py-5 pointer-events-none">
+      <header className="absolute top-0 left-0 right-0 z-20 flex shrink-0 items-start justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-5 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.35 }}
-          className="pointer-events-auto min-w-0 max-w-[min(100%,28rem)] rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur-xl shadow-[0_4px_32px_rgba(0,0,0,0.25)]"
+          className="pointer-events-auto min-w-0 max-w-[min(100%,calc(100%-3rem))] rounded-xl border border-white/10 bg-white/10 px-3 py-2.5 backdrop-blur-xl shadow-[0_4px_32px_rgba(0,0,0,0.25)] sm:max-w-[28rem] sm:rounded-2xl sm:px-4 sm:py-3"
         >
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300/90">
             Témoignage
@@ -273,7 +346,10 @@ export function VideoTestimonialLightbox({
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="relative flex flex-1 min-h-0 w-full items-center justify-center px-3 pt-[5.5rem] pb-2 sm:px-8 sm:pt-24 md:px-16"
+        className={cn(
+          "relative flex flex-1 min-h-0 w-full items-center justify-center px-3 pb-0 pt-[4.75rem] sm:px-8 sm:pb-2 sm:pt-24 md:px-16",
+          hasMultiple && "sm:px-16 md:px-20",
+        )}
       >
         <motion.div
           animate={{
@@ -284,9 +360,12 @@ export function VideoTestimonialLightbox({
             ],
           }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-full max-w-5xl rounded-2xl sm:rounded-3xl"
+          className="relative w-full max-w-5xl overflow-visible rounded-2xl sm:rounded-3xl"
         >
-          <div className="relative w-full">
+          <div
+            className="relative w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeVideo.id}
@@ -300,55 +379,47 @@ export function VideoTestimonialLightbox({
                   opacity: { duration: 0.22 },
                   scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
                 }}
-                className="group relative aspect-video w-full max-h-[min(70vh,56vw)] overflow-hidden rounded-2xl bg-black ring-1 ring-white/10 sm:rounded-3xl touch-pan-y"
+                className="relative aspect-video w-full max-h-[min(52vh,78vw)] overflow-hidden rounded-xl bg-black ring-1 ring-white/10 sm:max-h-[min(70vh,56vw)] sm:rounded-3xl touch-pan-y"
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                onClick={(e) => e.stopPropagation()}
               >
                 <TestimonialEmbedPlayer url={activeVideo.url} />
-
-                {hasMultiple && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goPrev();
-                      }}
-                      className="absolute left-0 top-0 bottom-0 z-20 flex w-14 sm:w-20 items-center justify-start bg-gradient-to-r from-black/50 to-transparent pl-2 opacity-100 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100 focus:outline-none focus-visible:opacity-100 touch-manipulation"
-                      aria-label="Vidéo précédente"
-                    >
-                      <span className="flex size-10 items-center justify-center rounded-2xl border border-white/20 bg-white/15 text-white backdrop-blur-xl transition-transform duration-300 hover:scale-110 active:scale-95 sm:size-11">
-                        <ChevronLeft className="size-5" strokeWidth={2} />
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goNext();
-                      }}
-                      className="absolute right-0 top-0 bottom-0 z-20 flex w-14 sm:w-20 items-center justify-end bg-gradient-to-l from-black/50 to-transparent pr-2 opacity-100 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100 focus:outline-none focus-visible:opacity-100 touch-manipulation"
-                      aria-label="Vidéo suivante"
-                    >
-                      <span className="flex size-10 items-center justify-center rounded-2xl border border-white/20 bg-white/15 text-white backdrop-blur-xl transition-transform duration-300 hover:scale-110 active:scale-95 sm:size-11">
-                        <ChevronRight className="size-5" strokeWidth={2} />
-                      </span>
-                    </button>
-                  </>
-                )}
               </motion.div>
             </AnimatePresence>
+
+            {hasMultiple && (
+              <>
+                <VideoNavButton
+                  direction="prev"
+                  onClick={goPrev}
+                  className="absolute top-1/2 left-0 z-30 hidden -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 sm:flex"
+                />
+                <VideoNavButton
+                  direction="next"
+                  onClick={goNext}
+                  className="absolute top-1/2 right-0 z-30 hidden translate-x-[calc(100%+0.75rem)] -translate-y-1/2 sm:flex"
+                />
+              </>
+            )}
           </div>
         </motion.div>
       </motion.div>
+
+      {hasMultiple && (
+        <MobileVideoNavBar
+          activeIndex={activeIndex}
+          total={videos.length}
+          onPrev={goPrev}
+          onNext={goNext}
+        />
+      )}
 
       {activeVideo.description && (
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="shrink-0 px-6 pb-3 text-center text-sm leading-relaxed text-white/60 max-w-2xl mx-auto"
+          className="shrink-0 px-4 pb-2 pt-1 text-center text-sm leading-relaxed text-white/60 max-w-2xl mx-auto sm:px-6 sm:pb-3 sm:pt-0"
           onClick={(e) => e.stopPropagation()}
         >
           {activeVideo.description}
@@ -362,7 +433,7 @@ export function VideoTestimonialLightbox({
           transition={{ delay: 0.15, duration: 0.35 }}
           ref={thumbnailListRef}
           onClick={(e) => e.stopPropagation()}
-          className="flex shrink-0 overflow-x-auto py-4 sm:py-5 px-4 sm:px-6 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent]"
+          className="flex shrink-0 overflow-x-auto px-3 py-3 sm:px-6 sm:py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <motion.div
             animate={{ opacity: [0.85, 1, 0.85] }}
