@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-guard"
+import { buildUserDisplayName } from "@/helpers/dashboard-user-person"
 import { uploadImage } from "@/lib/cloudinary"
 import { createAdministrationAccountSchema } from "../_schemas/create-administration-account.schema"
 
@@ -52,7 +53,7 @@ export async function createAdministrationAccount(
   try {
     const created = await auth.api.createUser({
       body: {
-        name: `${firstName} ${lastName}`,
+        name: buildUserDisplayName(firstName, lastName),
         email,
         password,
         role: "user",
@@ -67,7 +68,7 @@ export async function createAdministrationAccount(
   try {
     await prisma.user.update({
       where: { id: createdUserId },
-      data: { role: "administration" },
+      data: { role: "ADMIN-PERMADMIN" },
     })
 
     let imageUrl: string | null = null

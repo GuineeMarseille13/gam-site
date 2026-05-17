@@ -15,6 +15,7 @@ interface ApiReviewLike {
   avatarUrl?: string | null
   country?: string | null
   role?: string | { labelFr: string }
+  poste?: string | { labelFr: string }
   rating?: number | "ONE" | "TWO" | "THREE" | "FOUR" | "FIVE"
 }
 
@@ -94,10 +95,14 @@ function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
     [review.firstName, review.lastName].filter(Boolean).join(" ").trim() ||
     "Anonyme"
   const roleLabel =
-    typeof review.role === "object" && review.role !== null && "labelFr" in review.role
-      ? review.role.labelFr
-      : typeof review.role === "string"
-        ? review.role
+    typeof review.poste === "object" && review.poste !== null && "labelFr" in review.poste
+      ? review.poste.labelFr
+      : typeof review.poste === "string"
+        ? review.poste
+        : typeof review.role === "object" && review.role !== null && "labelFr" in review.role
+          ? review.role.labelFr
+          : typeof review.role === "string"
+            ? review.role
         : ""
   const img = review.img ?? review.avatarUrl ?? ""
   const ratingNum =

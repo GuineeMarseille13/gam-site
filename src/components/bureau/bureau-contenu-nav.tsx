@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import { useBureauPermissions } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
 import {
   bureauNavContenuAfterAccompagnement,
   bureauNavContenuBeforeAccompagnement,
@@ -20,8 +21,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-function filterByRole(items: BureauNavItem[], role?: string): BureauNavItem[] {
-  return items.filter((item) => !item.adminOnly || role === "admin")
+function filterContenuItems(items: BureauNavItem[]): BureauNavItem[] {
+  return items.filter((item) => !item.adminOnly)
 }
 
 function isManagedBureauPoleContentPath(pathname: string): boolean {
@@ -75,10 +76,12 @@ function renderNavLinks(
 /**
  * Section sidebar « Contenu du site » : liens + accordéons par pôle (contenu public).
  */
-export function BureauContenuNav({ role }: { role?: string }) {
+export function BureauContenuNav() {
   const pathname = usePathname()
-  const before = filterByRole(bureauNavContenuBeforeAccompagnement, role)
-  const after = filterByRole(bureauNavContenuAfterAccompagnement, role)
+  const permissions = useBureauPermissions()
+  if (!permissions.canAccessContenu) return null
+  const before = filterContenuItems(bureauNavContenuBeforeAccompagnement)
+  const after = filterContenuItems(bureauNavContenuAfterAccompagnement)
 
   return (
     <SidebarGroup>

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 import { findPoleBySlugOrId } from "@/lib/api/pole-by-slug"
 import { saveDetailsPoleBureauSectionFormSchema } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import type { BureauPoleDetailsSection } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
@@ -31,7 +31,7 @@ export async function saveDetailsPoleBureauSectionAction(
   formData: FormData,
 ): Promise<SaveDetailsPoleBureauSectionState> {
   try {
-    await requireBureau()
+    await requireBureauContenu()
   } catch {
     return { error: "Accès non autorisé." }
   }

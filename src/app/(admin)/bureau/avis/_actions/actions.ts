@@ -4,10 +4,10 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 import { prisma } from "@/lib/prisma"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
-import { getRoleIdByCode } from "@/helpers/association-role-helpers"
+import { getPosteIdByCode } from "@/helpers/poste-helpers"
 import {
   formatAvisFormErrorMessage,
   parseAvisFormFields,
@@ -48,15 +48,15 @@ export async function createAvis(
   _prev: AvisActionState,
   formData: FormData,
 ): Promise<AvisActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   const parsed = parseAvisFormFields(formData)
   if (!parsed.success) {
     return { error: formatAvisFormErrorMessage(parsed.error) }
   }
 
-  const roleId = await getRoleIdByCode(prisma, parsed.data.roleCode)
-  if (!roleId) {
-    return { error: "Rôle inconnu ou inactif." }
+  const posteId = await getPosteIdByCode(prisma, parsed.data.posteCode)
+  if (!posteId) {
+    return { error: "Poste inconnu ou inactif." }
   }
 
   try {
@@ -69,7 +69,7 @@ export async function createAvis(
       data: {
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        roleId,
+        posteId,
         body: parsed.data.body,
         country: parsed.data.country,
         rating: parsed.data.rating,
@@ -96,15 +96,15 @@ export async function updateAvis(
   _prev: AvisActionState,
   formData: FormData,
 ): Promise<AvisActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   const parsed = parseAvisFormFields(formData)
   if (!parsed.success) {
     return { error: formatAvisFormErrorMessage(parsed.error) }
   }
 
-  const roleId = await getRoleIdByCode(prisma, parsed.data.roleCode)
-  if (!roleId) {
-    return { error: "Rôle inconnu ou inactif." }
+  const posteId = await getPosteIdByCode(prisma, parsed.data.posteCode)
+  if (!posteId) {
+    return { error: "Poste inconnu ou inactif." }
   }
 
   const existing = await prisma.review.findUnique({
@@ -126,7 +126,7 @@ export async function updateAvis(
       data: {
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        roleId,
+        posteId,
         body: parsed.data.body,
         country: parsed.data.country,
         rating: parsed.data.rating,
@@ -153,7 +153,7 @@ export async function updateAvis(
 }
 
 export async function deleteAvis(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
   const existing = await prisma.review.findUnique({
     where: { id },
     select: { avatarUrl: true },

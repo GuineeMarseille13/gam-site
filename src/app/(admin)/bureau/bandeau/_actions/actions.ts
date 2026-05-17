@@ -4,14 +4,14 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
 // ── Create ────────────────────────────────────────────────────────────────────
 
 export async function createBanner(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const isActive = formData.get("isActive") === "true"
     const title = (formData.get("title") as string).trim()
@@ -42,7 +42,7 @@ export async function createBanner(_prev: ActionState, formData: FormData): Prom
 // ── Update ────────────────────────────────────────────────────────────────────
 
 export async function updateBanner(id: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const isActive = formData.get("isActive") === "true"
     const title = (formData.get("title") as string).trim()
@@ -74,7 +74,7 @@ export async function updateBanner(id: string, _prev: ActionState, formData: For
 // ── Delete ────────────────────────────────────────────────────────────────────
 
 export async function deleteBanner(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
   await prisma.banner.delete({ where: { id } })
   revalidatePath("/bureau/bandeau")
   revalidatePath("/")
@@ -83,7 +83,7 @@ export async function deleteBanner(id: string) {
 // ── Toggle ────────────────────────────────────────────────────────────────────
 
 export async function toggleBannerActive(id: string, isActive: boolean) {
-  await requireBureau()
+  await requireBureauContenu()
   if (isActive) await prisma.banner.updateMany({ data: { isActive: false } })
   await prisma.banner.update({ where: { id }, data: { isActive } })
   revalidatePath("/bureau/bandeau")

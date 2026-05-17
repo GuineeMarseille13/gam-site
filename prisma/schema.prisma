@@ -334,8 +334,8 @@ model ReviewSection {
   @@map("review_sections")
 }
 
-/// Rôles métier association (bureau, bénévoles, avis). Référence stable par `code`.
-model Role {
+/// Postes organisationnels (président, secrétaire, bénévole, etc.). Référence stable par `code`.
+model Poste {
   id          String   @id @default(cuid())
   code        String   @unique // Ex. PRESIDENT, VOLUNTEER
   labelFr     String   @map("label_fr")
@@ -348,6 +348,20 @@ model Role {
   persons Person[]
   reviews Review[]
 
+  @@map("postes")
+}
+
+/// Rôles d’accès dashboard (Better Auth `User.role` aligné sur `code`).
+model Role {
+  id          String   @id @default(cuid())
+  code        String   @unique // Ex. SUPER-ADMIN, BUREAU
+  labelFr     String   @map("label_fr")
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   @@map("roles")
 }
 
@@ -355,7 +369,7 @@ model Review {
   id          String    @id @default(cuid())
   firstName   String    // Prénom de la personne
   lastName    String    // Nom de la personne
-  roleId      String // Rôle affiché (table Role)
+  posteId     String @map("poste_id") // Poste affiché (table Poste)
   body        String    @db.Text // Contenu du témoignage/avis
   avatarUrl   String?  // URL de l'image de profil
   country     String?  // Pays (ex: "🇬🇳 Guinée" ou "Guinée")
@@ -367,7 +381,7 @@ model Review {
 
   // Relations
   reviewSection ReviewSection? @relation(fields: [reviewSectionId], references: [id])
-  role            Role           @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  poste           Poste          @relation(fields: [posteId], references: [id], onDelete: Restrict)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -376,7 +390,7 @@ model Review {
   @@index([isActive])
   @@index([rating])
   @@index([order])
-  @@index([roleId])
+  @@index([posteId])
   @@map("reviews")
 }
 
@@ -466,7 +480,7 @@ model Person {
   phone       String   // Numéro de téléphone de la personne
   addressId   String?  // ID de l'adresse de la personne
   userId      String?  @unique // Compte dashboard lié (User Better Auth)
-  roleId      String?  // ID du rôle de la personne
+  posteId     String?  @map("poste_id") // Poste organisationnel (table Poste)
   image       String?  // Photo de profil (URL Cloudinary)
   showOnSite  Boolean  @default(true) // Afficher la photo sur le site public
   description String?  // Biographie / description
@@ -481,12 +495,12 @@ model Person {
   // Relations
   address Address? @relation(fields: [addressId], references: [id])
   paymentHistories PaymentHistory[] // Historiques de paiement de la personne
-  role             Role?            @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  poste            Poste?           @relation(fields: [posteId], references: [id], onDelete: SetNull)
   teamMember       TeamMember?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  @@index([roleId])
+  @@index([posteId])
   @@map("persons")
 }
 
@@ -533,7 +547,7 @@ model TeamMember {
   showOnSite  Boolean  @default(true) // Affiché dans la section "Notre équipe" du site
   teamMemberSectionId String?  // ID de la section de membre de l'équipe
 
-  // Relations — le rôle bureau est sur Person.role (FK Role)
+  // Relations — le poste bureau est sur Person.poste (FK Poste)
   person            Person             @relation(fields: [personId], references: [id], onDelete: Cascade)
   teamMemberSection TeamMemberSection? @relation(fields: [teamMemberSectionId], references: [id])
 

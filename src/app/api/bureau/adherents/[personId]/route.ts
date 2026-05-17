@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getAdherentDetailForDashboard } from "@/helpers/adherent-detail";
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles";
+import { sessionCanAccessBureauAdminAdherents } from "@/helpers/api-dashboard-auth";
 import { auth } from "@/lib/auth";
 
 const personIdParamsSchema = z.object({
@@ -19,7 +19,7 @@ export async function GET(
 ): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauAdminAdherents(session.user.role)) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 

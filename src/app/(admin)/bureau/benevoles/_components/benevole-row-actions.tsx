@@ -41,6 +41,7 @@ import {
 } from "@tabler/icons-react"
 import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
+import { useBureauPermissionsOptional } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
 import { deleteBenevole } from "../_actions/actions"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -84,6 +85,9 @@ export function BenevoleRowActions({
   dashboard = "bureau",
 }: BenevoleRowActionsProps) {
   const isAdministration = dashboard === "administration"
+  const bureauPermissions = useBureauPermissionsOptional()
+  const canDelete =
+    isAdministration || bureauPermissions?.canDeleteAdminEntities === true
   const [openSheet, setOpenSheet]   = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -138,18 +142,22 @@ export function BenevoleRowActions({
             Modifier
           </Link>
         </Button>
-        <Button
-          variant="ghost" size="sm"
-          onClick={() => setOpenDelete(true)}
-          disabled={isPending}
-          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
-        >
-          {isPending
-            ? <IconLoader2 className="size-3.5 animate-spin" />
-            : <IconTrash className="size-3.5" />
-          }
-          Supprimer
-        </Button>
+        {canDelete && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setOpenDelete(true)}
+            disabled={isPending}
+            className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
+          >
+            {isPending ? (
+              <IconLoader2 className="size-3.5 animate-spin" />
+            ) : (
+              <IconTrash className="size-3.5" />
+            )}
+            Supprimer
+          </Button>
+        )}
       </div>
 
       {/* ── Menu ⋮ — mobile / tablette ──────────────────────────────────── */}
@@ -177,14 +185,18 @@ export function BenevoleRowActions({
                 Modifier
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setOpenDelete(true)}
-              className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
-            >
-              <IconTrash className="size-4" />
-              Supprimer
-            </DropdownMenuItem>
+            {canDelete && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setOpenDelete(true)}
+                  className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
+                >
+                  <IconTrash className="size-4" />
+                  Supprimer
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -351,7 +363,7 @@ export function BenevoleRowActions({
         </SheetContent>
       </Sheet>
 
-      {/* ── Dialogue de confirmation suppression ─────────────────────────── */}
+      {canDelete && (
       <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
         <AlertDialogContent className="max-w-sm gap-0 overflow-hidden p-0">
           <div className="flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20">
@@ -383,6 +395,7 @@ export function BenevoleRowActions({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      )}
     </>
   )
 }

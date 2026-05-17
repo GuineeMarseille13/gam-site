@@ -45,11 +45,11 @@ export function usePersonsPaginated(
 /**
  * Récupérer les personnes par rôle
  */
-export function usePersonsByRole(roleCode: string) {
+export function usePersonsByPoste(posteCode: string) {
   return personsCrud.useGetAll({
     where: {
-      role: {
-        code: roleCode,
+      poste: {
+        code: posteCode,
       },
     },
     include: {

@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: "Ajouter un témoignage sur la page d’accueil",
 }
 
-async function getRoles() {
-  return prisma.role.findMany({
+async function getPostes() {
+  return prisma.poste.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
     select: { code: true, labelFr: true },
@@ -19,7 +19,7 @@ async function getRoles() {
 }
 
 export default async function NouvelAvisPage() {
-  const roles = await getRoles()
+  const postes = await getPostes()
 
   return (
     <BureauContent
@@ -29,7 +29,7 @@ export default async function NouvelAvisPage() {
     >
       <Card>
         <CardContent className="pt-6">
-          <AvisForm action={createAvis} roles={roles} />
+          <AvisForm action={createAvis} postes={postes} />
         </CardContent>
       </Card>
     </BureauContent>

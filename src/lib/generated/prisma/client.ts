@@ -122,8 +122,13 @@ export type EventImage = Prisma.EventImageModel
  */
 export type ReviewSection = Prisma.ReviewSectionModel
 /**
+ * Model Poste
+ * Postes organisationnels (président, secrétaire, bénévole, etc.). Référence stable par `code`.
+ */
+export type Poste = Prisma.PosteModel
+/**
  * Model Role
- * Rôles métier association (bureau, bénévoles, avis). Référence stable par `code`.
+ * Rôles d’accès dashboard (Better Auth `User.role` aligné sur `code`).
  */
 export type Role = Prisma.RoleModel
 /**

@@ -11,7 +11,7 @@ export default async function ModifierAccesAdministrationLayout({
   children: React.ReactNode
 }) {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || session.user.role !== "admin") {
+  if (!session || session.user.role !== "SUPER-ADMIN") {
     redirect("/administration/acces")
   }
   return <>{children}</>

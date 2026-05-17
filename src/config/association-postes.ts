@@ -1,8 +1,8 @@
 /**
- * Définitions des rôles métier association (table Role).
- * Alignées sur `code` unique — utilisées par le seed et l’UI (sélection).
+ * Postes organisationnels (table Poste).
+ * Alignés sur `code` unique — utilisés par le seed et l’UI (sélection).
  */
-export const ASSOCIATION_ROLES_SEED = [
+export const ASSOCIATION_POSTES_SEED = [
   { code: "PRESIDENT", labelFr: "Président(e)", sortOrder: 10 },
   { code: "VICE_PRESIDENT", labelFr: "Vice-président(e)", sortOrder: 20 },
   { code: "SECRETARY", labelFr: "Secrétaire", sortOrder: 30 },
@@ -15,4 +15,4 @@ export const ASSOCIATION_ROLES_SEED = [
   { code: "OTHER", labelFr: "Autre", sortOrder: 100 },
 ] as const
 
-export type AssociationRoleCode = (typeof ASSOCIATION_ROLES_SEED)[number]["code"]
+export type AssociationPosteCode = (typeof ASSOCIATION_POSTES_SEED)[number]["code"]

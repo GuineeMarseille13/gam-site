@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauPaiements } from "@/helpers/api-dashboard-auth"
 import { donPayloadSchema } from "@/app/(public)/don/_schemas/don.schema"
 import { createDonStripePaymentIntent } from "@/app/(public)/don/_services/create-don-stripe-payment-intent"
 
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic"
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauPaiements(session.user.role)) {
     return NextResponse.json({ error: "Accès non autorisé" }, { status: 401 })
   }
 

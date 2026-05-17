@@ -1,6 +1,5 @@
-import { ASSOCIATION_ROLES_SEED } from "@/config/association-roles"
+import { ASSOCIATION_POSTES_SEED } from "@/config/association-postes"
 
-/** Postes du bureau uniquement (sous-ensemble des codes Role). */
 const BUREAU_CODES = new Set([
   "PRESIDENT",
   "VICE_PRESIDENT",
@@ -10,19 +9,15 @@ const BUREAU_CODES = new Set([
   "ASSISTANT_TREASURER",
 ])
 
-export const POSTES = ASSOCIATION_ROLES_SEED.filter((r) => BUREAU_CODES.has(r.code)).map(
-  (r) => ({ value: r.code, label: r.labelFr }),
+/** Postes affichés dans les formulaires bureau / équipe (hors bénévole seul). */
+export const POSTES = ASSOCIATION_POSTES_SEED.filter((r) => BUREAU_CODES.has(r.code)).map(
+  (r) => ({
+    value: r.code,
+    label: r.labelFr,
+  }),
 )
 
-export type PosteValue = (typeof POSTES)[number]["value"]
-
-/** Libellé pour un code de poste bureau (liste POSTES). */
-export function getPosteLabel(value: string | null | undefined): string {
-  return POSTES.find((p) => p.value === value)?.label ?? ""
-}
-
-/** Libellé FR à partir du code Role (toute la table, ex. MEMBER, VOLUNTEER). */
-export function getAssociationRoleLabelByCode(code: string | null | undefined): string {
-  if (!code) return ""
-  return ASSOCIATION_ROLES_SEED.find((r) => r.code === code)?.labelFr ?? ""
+/** Libellé français d’un poste par code. */
+export function getPosteLabel(code: string): string {
+  return ASSOCIATION_POSTES_SEED.find((r) => r.code === code)?.labelFr ?? ""
 }

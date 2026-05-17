@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"
 import { uploadPdf } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
@@ -27,7 +27,7 @@ export async function saveActivityReportsBatchAction(
   formData: FormData,
 ): Promise<ActivityReportActionResult> {
   try {
-    await requireBureau()
+    await requireBureauContenu()
   } catch {
     return { success: false, error: "Accès non autorisé." }
   }
@@ -125,7 +125,7 @@ const deleteIdSchema = z.object({ id: z.string().min(1) }).strict()
  */
 export async function deleteActivityReportAction(rawId: unknown): Promise<ActivityReportActionResult> {
   try {
-    await requireBureau()
+    await requireBureauContenu()
   } catch {
     return { success: false, error: "Accès non autorisé." }
   }
@@ -172,7 +172,7 @@ export async function setActivityReportPublishedAction(
   rawInput: unknown,
 ): Promise<ActivityReportActionResult> {
   try {
-    await requireBureau()
+    await requireBureauContenu()
   } catch {
     return { success: false, error: "Accès non autorisé." }
   }

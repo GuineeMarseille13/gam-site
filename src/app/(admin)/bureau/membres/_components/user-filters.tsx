@@ -2,21 +2,55 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { ROLES } from "./roles"
+import { MembresFilterScroll } from "./membres-filter-scroll"
 import { IconX } from "@tabler/icons-react"
 
 const STATUTS = [
-  { value: "actif",  label: "Actif" },
-  { value: "banni",  label: "Banni" },
+  { value: "actif", label: "Actif" },
+  { value: "banni", label: "Banni" },
 ]
 
-export function UserFilters() {
+function FilterButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+        active
+          ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+          : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  )
+}
+
+interface UserFiltersProps {
+  canFilterBenevoles?: boolean
+  canFilterEquipe?: boolean
+}
+
+export function UserFilters({
+  canFilterBenevoles = true,
+  canFilterEquipe = true,
+}: UserFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const activeRole   = searchParams.get("role") ?? ""
+  const activeRole = searchParams.get("role") ?? ""
   const activeStatut = searchParams.get("statut") ?? ""
-  const hasFilters   = activeRole || activeStatut
+  const hasFilters = Boolean(activeRole || activeStatut)
+  const showStatutFilters = activeRole !== "benevoles" && activeRole !== "BUREAU"
 
   function set(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString())
@@ -29,7 +63,7 @@ export function UserFilters() {
     const params = new URLSearchParams(searchParams.toString())
     if (value) {
       params.set("role", value)
-      if (value === "benevole" || value === "bureau") params.delete("statut")
+      if (value === "benevoles" || value === "BUREAU") params.delete("statut")
     } else {
       params.delete("role")
     }
@@ -41,68 +75,48 @@ export function UserFilters() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      {/* Filtre rôle */}
-      <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
-        <button
-          onClick={() => setRole("")}
-          className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-            !activeRole
-              ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+      <MembresFilterScroll aria-label="Filtrer par rôle">
+        <FilterButton active={!activeRole} onClick={() => setRole("")}>
           Tous
-        </button>
-        {ROLES.map((r) => (
-          <button
+        </FilterButton>
+        {ROLES.filter((r) => {
+          if (r.value === "benevoles") return canFilterBenevoles
+          if (r.value === "BUREAU") return canFilterEquipe
+          return true
+        }).map((r) => (
+          <FilterButton
             key={r.value}
+            active={activeRole === r.value}
             onClick={() => setRole(activeRole === r.value ? "" : r.value)}
-            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-              activeRole === r.value
-                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
           >
             {r.label}
-          </button>
+          </FilterButton>
         ))}
-      </div>
+      </MembresFilterScroll>
 
-      {/* Filtre statut — comptes uniquement (pas pour bénévoles ni membres d'équipe) */}
-      {activeRole !== "benevole" && activeRole !== "bureau" && (
-        <div className="flex items-center gap-1 rounded-xl border bg-muted/30 p-1">
-          <button
-            onClick={() => set("statut", "")}
-            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-              !activeStatut
-                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
+      {showStatutFilters && (
+        <MembresFilterScroll aria-label="Filtrer par statut du compte">
+          <FilterButton active={!activeStatut} onClick={() => set("statut", "")}>
             Tous
-          </button>
+          </FilterButton>
           {STATUTS.map((s) => (
-            <button
+            <FilterButton
               key={s.value}
+              active={activeStatut === s.value}
               onClick={() => set("statut", activeStatut === s.value ? "" : s.value)}
-              className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-                activeStatut === s.value
-                  ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
             >
               {s.label}
-            </button>
+            </FilterButton>
           ))}
-        </div>
+        </MembresFilterScroll>
       )}
 
-      {/* Reset */}
       {hasFilters && (
         <button
+          type="button"
           onClick={reset}
-          className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="flex shrink-0 cursor-pointer items-center gap-1 self-start rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:self-center"
         >
           <IconX className="size-3.5" />
           Réinitialiser

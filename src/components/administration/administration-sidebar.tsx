@@ -64,7 +64,7 @@ const mainNav: NavItem[] = [
 ]
 
 function NavMain({ pathname, role }: { pathname: string; role?: string }) {
-  const items = mainNav.filter((item) => !item.adminOnly || role === "admin")
+  const items = mainNav.filter((item) => !item.adminOnly || role === "SUPER-ADMIN")
 
   return (
     <SidebarGroup>
@@ -161,7 +161,7 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
         <SidebarMenu>
-          {(role === "admin" || role === "bureau") && (
+          {(role === "SUPER-ADMIN" || role === "BUREAU") && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link

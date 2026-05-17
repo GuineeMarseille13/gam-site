@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { auth } from "@/lib/auth"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
 import { getActivityReportInlinePdfNextResponse } from "@/lib/activity-report-inline-pdf-response"
 import { prisma } from "@/lib/prisma"
 
@@ -15,7 +15,7 @@ const querySchema = z
 
 async function requireBureauApiAccess(): Promise<boolean> {
   const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && isBureauDashboardRole(session.user.role)
+  return !!session && sessionCanAccessBureauContenu(session.user.role)
 }
 
 /**

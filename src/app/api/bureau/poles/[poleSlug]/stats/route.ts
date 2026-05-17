@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { findPoleBySlugOrId } from "@/lib/api/pole-by-slug"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
 
 import { detailsPoleStatListSchema } from "@/app/(admin)/bureau/poles/_schemas/details-pole-stat.schema"
 import {
@@ -18,7 +18,7 @@ const poleSlugSchema = z.string().min(1)
 
 async function requireBureauApiAccess(): Promise<boolean> {
   const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && isBureauDashboardRole(session.user.role)
+  return !!session && sessionCanAccessBureauContenu(session.user.role)
 }
 
 async function resolveDetailsPoleId(poleSlug: string): Promise<string | null> {

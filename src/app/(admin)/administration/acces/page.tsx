@@ -19,7 +19,7 @@ export default async function AdministrationAccesPage() {
     auth.api.getSession({ headers: await headers() }),
   ])
 
-  const isAdmin = session?.user.role === "admin"
+  const isAdmin = session?.user.role === "SUPER-ADMIN"
 
   return (
     <BureauContent

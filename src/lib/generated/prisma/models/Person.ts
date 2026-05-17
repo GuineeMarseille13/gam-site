@@ -32,7 +32,7 @@ export type PersonMinAggregateOutputType = {
   phone: string | null
   addressId: string | null
   userId: string | null
-  roleId: string | null
+  posteId: string | null
   image: string | null
   showOnSite: boolean | null
   description: string | null
@@ -48,7 +48,7 @@ export type PersonMaxAggregateOutputType = {
   phone: string | null
   addressId: string | null
   userId: string | null
-  roleId: string | null
+  posteId: string | null
   image: string | null
   showOnSite: boolean | null
   description: string | null
@@ -64,7 +64,7 @@ export type PersonCountAggregateOutputType = {
   phone: number
   addressId: number
   userId: number
-  roleId: number
+  posteId: number
   image: number
   showOnSite: number
   description: number
@@ -82,7 +82,7 @@ export type PersonMinAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
-  roleId?: true
+  posteId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -98,7 +98,7 @@ export type PersonMaxAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
-  roleId?: true
+  posteId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -114,7 +114,7 @@ export type PersonCountAggregateInputType = {
   phone?: true
   addressId?: true
   userId?: true
-  roleId?: true
+  posteId?: true
   image?: true
   showOnSite?: true
   description?: true
@@ -203,7 +203,7 @@ export type PersonGroupByOutputType = {
   phone: string
   addressId: string | null
   userId: string | null
-  roleId: string | null
+  posteId: string | null
   image: string | null
   showOnSite: boolean
   description: string | null
@@ -240,7 +240,7 @@ export type PersonWhereInput = {
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
   userId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
+  posteId?: Prisma.StringNullableFilter<"Person"> | string | null
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
   description?: Prisma.StringNullableFilter<"Person"> | string | null
@@ -254,7 +254,7 @@ export type PersonWhereInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
-  role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
+  poste?: Prisma.XOR<Prisma.PosteNullableScalarRelationFilter, Prisma.PosteWhereInput> | null
   teamMember?: Prisma.XOR<Prisma.TeamMemberNullableScalarRelationFilter, Prisma.TeamMemberWhereInput> | null
 }
 
@@ -266,7 +266,7 @@ export type PersonOrderByWithRelationInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  posteId?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -280,7 +280,7 @@ export type PersonOrderByWithRelationInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerOrderByRelationAggregateInput
   address?: Prisma.AddressOrderByWithRelationInput
   paymentHistories?: Prisma.PaymentHistoryOrderByRelationAggregateInput
-  role?: Prisma.RoleOrderByWithRelationInput
+  poste?: Prisma.PosteOrderByWithRelationInput
   teamMember?: Prisma.TeamMemberOrderByWithRelationInput
 }
 
@@ -295,7 +295,7 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringNullableFilter<"Person"> | string | null
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
+  posteId?: Prisma.StringNullableFilter<"Person"> | string | null
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
   description?: Prisma.StringNullableFilter<"Person"> | string | null
@@ -309,7 +309,7 @@ export type PersonWhereUniqueInput = Prisma.AtLeast<{
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerListRelationFilter
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   paymentHistories?: Prisma.PaymentHistoryListRelationFilter
-  role?: Prisma.XOR<Prisma.RoleNullableScalarRelationFilter, Prisma.RoleWhereInput> | null
+  poste?: Prisma.XOR<Prisma.PosteNullableScalarRelationFilter, Prisma.PosteWhereInput> | null
   teamMember?: Prisma.XOR<Prisma.TeamMemberNullableScalarRelationFilter, Prisma.TeamMemberWhereInput> | null
 }, "id" | "userId">
 
@@ -321,7 +321,7 @@ export type PersonOrderByWithAggregationInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  posteId?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -343,7 +343,7 @@ export type PersonScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringWithAggregatesFilter<"Person"> | string
   addressId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
-  roleId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
+  posteId?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolWithAggregatesFilter<"Person"> | boolean
   description?: Prisma.StringNullableWithAggregatesFilter<"Person"> | string | null
@@ -371,7 +371,7 @@ export type PersonCreateInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -383,7 +383,7 @@ export type PersonUncheckedCreateInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -419,7 +419,7 @@ export type PersonUpdateInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -431,7 +431,7 @@ export type PersonUncheckedUpdateInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -455,7 +455,7 @@ export type PersonCreateManyInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -485,7 +485,7 @@ export type PersonUncheckedUpdateManyInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -511,7 +511,7 @@ export type PersonCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  roleId?: Prisma.SortOrder
+  posteId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -527,7 +527,7 @@ export type PersonMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  roleId?: Prisma.SortOrder
+  posteId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -543,7 +543,7 @@ export type PersonMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   addressId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  roleId?: Prisma.SortOrder
+  posteId?: Prisma.SortOrder
   image?: Prisma.SortOrder
   showOnSite?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -561,45 +561,45 @@ export type PersonNullableScalarRelationFilter = {
   isNot?: Prisma.PersonWhereInput | null
 }
 
-export type PersonCreateNestedManyWithoutRoleInput = {
-  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
-  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
-  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+export type PersonCreateNestedManyWithoutPosteInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput> | Prisma.PersonCreateWithoutPosteInput[] | Prisma.PersonUncheckedCreateWithoutPosteInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPosteInput | Prisma.PersonCreateOrConnectWithoutPosteInput[]
+  createMany?: Prisma.PersonCreateManyPosteInputEnvelope
   connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
 }
 
-export type PersonUncheckedCreateNestedManyWithoutRoleInput = {
-  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
-  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
-  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+export type PersonUncheckedCreateNestedManyWithoutPosteInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput> | Prisma.PersonCreateWithoutPosteInput[] | Prisma.PersonUncheckedCreateWithoutPosteInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPosteInput | Prisma.PersonCreateOrConnectWithoutPosteInput[]
+  createMany?: Prisma.PersonCreateManyPosteInputEnvelope
   connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
 }
 
-export type PersonUpdateManyWithoutRoleNestedInput = {
-  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
-  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
-  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput | Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput[]
-  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+export type PersonUpdateManyWithoutPosteNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput> | Prisma.PersonCreateWithoutPosteInput[] | Prisma.PersonUncheckedCreateWithoutPosteInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPosteInput | Prisma.PersonCreateOrConnectWithoutPosteInput[]
+  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutPosteInput | Prisma.PersonUpsertWithWhereUniqueWithoutPosteInput[]
+  createMany?: Prisma.PersonCreateManyPosteInputEnvelope
   set?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   disconnect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   delete?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
-  update?: Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput | Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput[]
-  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutRoleInput | Prisma.PersonUpdateManyWithWhereWithoutRoleInput[]
+  update?: Prisma.PersonUpdateWithWhereUniqueWithoutPosteInput | Prisma.PersonUpdateWithWhereUniqueWithoutPosteInput[]
+  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutPosteInput | Prisma.PersonUpdateManyWithWhereWithoutPosteInput[]
   deleteMany?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
 }
 
-export type PersonUncheckedUpdateManyWithoutRoleNestedInput = {
-  create?: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput> | Prisma.PersonCreateWithoutRoleInput[] | Prisma.PersonUncheckedCreateWithoutRoleInput[]
-  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutRoleInput | Prisma.PersonCreateOrConnectWithoutRoleInput[]
-  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput | Prisma.PersonUpsertWithWhereUniqueWithoutRoleInput[]
-  createMany?: Prisma.PersonCreateManyRoleInputEnvelope
+export type PersonUncheckedUpdateManyWithoutPosteNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput> | Prisma.PersonCreateWithoutPosteInput[] | Prisma.PersonUncheckedCreateWithoutPosteInput[]
+  connectOrCreate?: Prisma.PersonCreateOrConnectWithoutPosteInput | Prisma.PersonCreateOrConnectWithoutPosteInput[]
+  upsert?: Prisma.PersonUpsertWithWhereUniqueWithoutPosteInput | Prisma.PersonUpsertWithWhereUniqueWithoutPosteInput[]
+  createMany?: Prisma.PersonCreateManyPosteInputEnvelope
   set?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   disconnect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   delete?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
   connect?: Prisma.PersonWhereUniqueInput | Prisma.PersonWhereUniqueInput[]
-  update?: Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput | Prisma.PersonUpdateWithWhereUniqueWithoutRoleInput[]
-  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutRoleInput | Prisma.PersonUpdateManyWithWhereWithoutRoleInput[]
+  update?: Prisma.PersonUpdateWithWhereUniqueWithoutPosteInput | Prisma.PersonUpdateWithWhereUniqueWithoutPosteInput[]
+  updateMany?: Prisma.PersonUpdateManyWithWhereWithoutPosteInput | Prisma.PersonUpdateManyWithWhereWithoutPosteInput[]
   deleteMany?: Prisma.PersonScalarWhereInput | Prisma.PersonScalarWhereInput[]
 }
 
@@ -767,7 +767,7 @@ export type PersonUpdateOneWithoutPaymentHistoriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonUpdateToOneWithWhereWithoutPaymentHistoriesInput, Prisma.PersonUpdateWithoutPaymentHistoriesInput>, Prisma.PersonUncheckedUpdateWithoutPaymentHistoriesInput>
 }
 
-export type PersonCreateWithoutRoleInput = {
+export type PersonCreateWithoutPosteInput = {
   id?: string
   firstName: string
   lastName: string
@@ -790,7 +790,7 @@ export type PersonCreateWithoutRoleInput = {
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
-export type PersonUncheckedCreateWithoutRoleInput = {
+export type PersonUncheckedCreateWithoutPosteInput = {
   id?: string
   firstName: string
   lastName: string
@@ -813,30 +813,30 @@ export type PersonUncheckedCreateWithoutRoleInput = {
   teamMember?: Prisma.TeamMemberUncheckedCreateNestedOneWithoutPersonInput
 }
 
-export type PersonCreateOrConnectWithoutRoleInput = {
+export type PersonCreateOrConnectWithoutPosteInput = {
   where: Prisma.PersonWhereUniqueInput
-  create: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput>
 }
 
-export type PersonCreateManyRoleInputEnvelope = {
-  data: Prisma.PersonCreateManyRoleInput | Prisma.PersonCreateManyRoleInput[]
+export type PersonCreateManyPosteInputEnvelope = {
+  data: Prisma.PersonCreateManyPosteInput | Prisma.PersonCreateManyPosteInput[]
   skipDuplicates?: boolean
 }
 
-export type PersonUpsertWithWhereUniqueWithoutRoleInput = {
+export type PersonUpsertWithWhereUniqueWithoutPosteInput = {
   where: Prisma.PersonWhereUniqueInput
-  update: Prisma.XOR<Prisma.PersonUpdateWithoutRoleInput, Prisma.PersonUncheckedUpdateWithoutRoleInput>
-  create: Prisma.XOR<Prisma.PersonCreateWithoutRoleInput, Prisma.PersonUncheckedCreateWithoutRoleInput>
+  update: Prisma.XOR<Prisma.PersonUpdateWithoutPosteInput, Prisma.PersonUncheckedUpdateWithoutPosteInput>
+  create: Prisma.XOR<Prisma.PersonCreateWithoutPosteInput, Prisma.PersonUncheckedCreateWithoutPosteInput>
 }
 
-export type PersonUpdateWithWhereUniqueWithoutRoleInput = {
+export type PersonUpdateWithWhereUniqueWithoutPosteInput = {
   where: Prisma.PersonWhereUniqueInput
-  data: Prisma.XOR<Prisma.PersonUpdateWithoutRoleInput, Prisma.PersonUncheckedUpdateWithoutRoleInput>
+  data: Prisma.XOR<Prisma.PersonUpdateWithoutPosteInput, Prisma.PersonUncheckedUpdateWithoutPosteInput>
 }
 
-export type PersonUpdateManyWithWhereWithoutRoleInput = {
+export type PersonUpdateManyWithWhereWithoutPosteInput = {
   where: Prisma.PersonScalarWhereInput
-  data: Prisma.XOR<Prisma.PersonUpdateManyMutationInput, Prisma.PersonUncheckedUpdateManyWithoutRoleInput>
+  data: Prisma.XOR<Prisma.PersonUpdateManyMutationInput, Prisma.PersonUncheckedUpdateManyWithoutPosteInput>
 }
 
 export type PersonScalarWhereInput = {
@@ -850,7 +850,7 @@ export type PersonScalarWhereInput = {
   phone?: Prisma.StringFilter<"Person"> | string
   addressId?: Prisma.StringNullableFilter<"Person"> | string | null
   userId?: Prisma.StringNullableFilter<"Person"> | string | null
-  roleId?: Prisma.StringNullableFilter<"Person"> | string | null
+  posteId?: Prisma.StringNullableFilter<"Person"> | string | null
   image?: Prisma.StringNullableFilter<"Person"> | string | null
   showOnSite?: Prisma.BoolFilter<"Person"> | boolean
   description?: Prisma.StringNullableFilter<"Person"> | string | null
@@ -878,7 +878,7 @@ export type PersonCreateWithoutTeamMemberInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
 }
 
 export type PersonUncheckedCreateWithoutTeamMemberInput = {
@@ -889,7 +889,7 @@ export type PersonUncheckedCreateWithoutTeamMemberInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -940,7 +940,7 @@ export type PersonUpdateWithoutTeamMemberInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
 }
 
 export type PersonUncheckedUpdateWithoutTeamMemberInput = {
@@ -951,7 +951,7 @@ export type PersonUncheckedUpdateWithoutTeamMemberInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -985,7 +985,7 @@ export type PersonCreateWithoutMemberShipsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -997,7 +997,7 @@ export type PersonUncheckedCreateWithoutMemberShipsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1047,7 +1047,7 @@ export type PersonUpdateWithoutMemberShipsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1059,7 +1059,7 @@ export type PersonUncheckedUpdateWithoutMemberShipsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1093,7 +1093,7 @@ export type PersonCreateWithoutDonationsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1105,7 +1105,7 @@ export type PersonUncheckedCreateWithoutDonationsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1155,7 +1155,7 @@ export type PersonUpdateWithoutDonationsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1167,7 +1167,7 @@ export type PersonUncheckedUpdateWithoutDonationsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1201,7 +1201,7 @@ export type PersonCreateWithoutAddressInput = {
   beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1212,7 +1212,7 @@ export type PersonUncheckedCreateWithoutAddressInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1273,7 +1273,7 @@ export type PersonCreateWithoutBeneficiariesInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1285,7 +1285,7 @@ export type PersonUncheckedCreateWithoutBeneficiariesInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1335,7 +1335,7 @@ export type PersonUpdateWithoutBeneficiariesInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1347,7 +1347,7 @@ export type PersonUncheckedUpdateWithoutBeneficiariesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1381,7 +1381,7 @@ export type PersonCreateWithoutPermanenceAdminPresenceVolunteersInput = {
   beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1393,7 +1393,7 @@ export type PersonUncheckedCreateWithoutPermanenceAdminPresenceVolunteersInput =
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1443,7 +1443,7 @@ export type PersonUpdateWithoutPermanenceAdminPresenceVolunteersInput = {
   beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1455,7 +1455,7 @@ export type PersonUncheckedUpdateWithoutPermanenceAdminPresenceVolunteersInput =
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1489,7 +1489,7 @@ export type PersonCreateWithoutOrdersInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1501,7 +1501,7 @@ export type PersonUncheckedCreateWithoutOrdersInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1551,7 +1551,7 @@ export type PersonUpdateWithoutOrdersInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1563,7 +1563,7 @@ export type PersonUncheckedUpdateWithoutOrdersInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1597,7 +1597,7 @@ export type PersonCreateWithoutPaymentsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
   paymentHistories?: Prisma.PaymentHistoryCreateNestedManyWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1609,7 +1609,7 @@ export type PersonUncheckedCreateWithoutPaymentsInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1659,7 +1659,7 @@ export type PersonUpdateWithoutPaymentsInput = {
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1671,7 +1671,7 @@ export type PersonUncheckedUpdateWithoutPaymentsInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1705,7 +1705,7 @@ export type PersonCreateWithoutPaymentHistoriesInput = {
   beneficiaries?: Prisma.BeneficiaryCreateNestedManyWithoutPersonInput
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerCreateNestedManyWithoutPersonInput
   address?: Prisma.AddressCreateNestedOneWithoutPersonInput
-  role?: Prisma.RoleCreateNestedOneWithoutPersonsInput
+  poste?: Prisma.PosteCreateNestedOneWithoutPersonsInput
   teamMember?: Prisma.TeamMemberCreateNestedOneWithoutPersonInput
 }
 
@@ -1717,7 +1717,7 @@ export type PersonUncheckedCreateWithoutPaymentHistoriesInput = {
   phone: string
   addressId?: string | null
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1767,7 +1767,7 @@ export type PersonUpdateWithoutPaymentHistoriesInput = {
   beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   address?: Prisma.AddressUpdateOneWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1779,7 +1779,7 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   addressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1794,7 +1794,7 @@ export type PersonUncheckedUpdateWithoutPaymentHistoriesInput = {
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
-export type PersonCreateManyRoleInput = {
+export type PersonCreateManyPosteInput = {
   id?: string
   firstName: string
   lastName: string
@@ -1809,7 +1809,7 @@ export type PersonCreateManyRoleInput = {
   updatedAt?: Date | string
 }
 
-export type PersonUpdateWithoutRoleInput = {
+export type PersonUpdateWithoutPosteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1832,7 +1832,7 @@ export type PersonUpdateWithoutRoleInput = {
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
-export type PersonUncheckedUpdateWithoutRoleInput = {
+export type PersonUncheckedUpdateWithoutPosteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1855,7 +1855,7 @@ export type PersonUncheckedUpdateWithoutRoleInput = {
   teamMember?: Prisma.TeamMemberUncheckedUpdateOneWithoutPersonNestedInput
 }
 
-export type PersonUncheckedUpdateManyWithoutRoleInput = {
+export type PersonUncheckedUpdateManyWithoutPosteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1877,7 +1877,7 @@ export type PersonCreateManyAddressInput = {
   email?: string | null
   phone: string
   userId?: string | null
-  roleId?: string | null
+  posteId?: string | null
   image?: string | null
   showOnSite?: boolean
   description?: string | null
@@ -1904,7 +1904,7 @@ export type PersonUpdateWithoutAddressInput = {
   beneficiaries?: Prisma.BeneficiaryUpdateManyWithoutPersonNestedInput
   permanenceAdminPresenceVolunteers?: Prisma.PermanenceAdminPresenceVolunteerUpdateManyWithoutPersonNestedInput
   paymentHistories?: Prisma.PaymentHistoryUpdateManyWithoutPersonNestedInput
-  role?: Prisma.RoleUpdateOneWithoutPersonsNestedInput
+  poste?: Prisma.PosteUpdateOneWithoutPersonsNestedInput
   teamMember?: Prisma.TeamMemberUpdateOneWithoutPersonNestedInput
 }
 
@@ -1915,7 +1915,7 @@ export type PersonUncheckedUpdateWithoutAddressInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1938,7 +1938,7 @@ export type PersonUncheckedUpdateManyWithoutAddressInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   showOnSite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2039,7 +2039,7 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roleId?: boolean
+  posteId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
@@ -2053,7 +2053,7 @@ export type PersonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   permanenceAdminPresenceVolunteers?: boolean | Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
   teamMember?: boolean | Prisma.Person$teamMemberArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
@@ -2066,14 +2066,14 @@ export type PersonSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roleId?: boolean
+  posteId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
 export type PersonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2084,14 +2084,14 @@ export type PersonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roleId?: boolean
+  posteId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
 }, ExtArgs["result"]["person"]>
 
 export type PersonSelectScalar = {
@@ -2102,7 +2102,7 @@ export type PersonSelectScalar = {
   phone?: boolean
   addressId?: boolean
   userId?: boolean
-  roleId?: boolean
+  posteId?: boolean
   image?: boolean
   showOnSite?: boolean
   description?: boolean
@@ -2110,7 +2110,7 @@ export type PersonSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "userId" | "roleId" | "image" | "showOnSite" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
+export type PersonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "addressId" | "userId" | "posteId" | "image" | "showOnSite" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["person"]>
 export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   donations?: boolean | Prisma.Person$donationsArgs<ExtArgs>
   memberShips?: boolean | Prisma.Person$memberShipsArgs<ExtArgs>
@@ -2120,17 +2120,17 @@ export type PersonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   permanenceAdminPresenceVolunteers?: boolean | Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
   paymentHistories?: boolean | Prisma.Person$paymentHistoriesArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
   teamMember?: boolean | Prisma.Person$teamMemberArgs<ExtArgs>
   _count?: boolean | Prisma.PersonCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PersonIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
 }
 export type PersonIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Person$addressArgs<ExtArgs>
-  role?: boolean | Prisma.Person$roleArgs<ExtArgs>
+  poste?: boolean | Prisma.Person$posteArgs<ExtArgs>
 }
 
 export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2144,7 +2144,7 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     permanenceAdminPresenceVolunteers: Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>[]
     address: Prisma.$AddressPayload<ExtArgs> | null
     paymentHistories: Prisma.$PaymentHistoryPayload<ExtArgs>[]
-    role: Prisma.$RolePayload<ExtArgs> | null
+    poste: Prisma.$PostePayload<ExtArgs> | null
     teamMember: Prisma.$TeamMemberPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2155,7 +2155,7 @@ export type $PersonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     phone: string
     addressId: string | null
     userId: string | null
-    roleId: string | null
+    posteId: string | null
     image: string | null
     showOnSite: boolean
     description: string | null
@@ -2563,7 +2563,7 @@ export interface Prisma__PersonClient<T, Null = never, ExtArgs extends runtime.T
   permanenceAdminPresenceVolunteers<T extends Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$permanenceAdminPresenceVolunteersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermanenceAdminPresenceVolunteerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   address<T extends Prisma.Person$addressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$addressArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   paymentHistories<T extends Prisma.Person$paymentHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$paymentHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  role<T extends Prisma.Person$roleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$roleArgs<ExtArgs>>): Prisma.Prisma__RoleClient<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  poste<T extends Prisma.Person$posteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$posteArgs<ExtArgs>>): Prisma.Prisma__PosteClient<runtime.Types.Result.GetResult<Prisma.$PostePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   teamMember<T extends Prisma.Person$teamMemberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Person$teamMemberArgs<ExtArgs>>): Prisma.Prisma__TeamMemberClient<runtime.Types.Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2601,7 +2601,7 @@ export interface PersonFieldRefs {
   readonly phone: Prisma.FieldRef<"Person", 'String'>
   readonly addressId: Prisma.FieldRef<"Person", 'String'>
   readonly userId: Prisma.FieldRef<"Person", 'String'>
-  readonly roleId: Prisma.FieldRef<"Person", 'String'>
+  readonly posteId: Prisma.FieldRef<"Person", 'String'>
   readonly image: Prisma.FieldRef<"Person", 'String'>
   readonly showOnSite: Prisma.FieldRef<"Person", 'Boolean'>
   readonly description: Prisma.FieldRef<"Person", 'String'>
@@ -3195,22 +3195,22 @@ export type Person$paymentHistoriesArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * Person.role
+ * Person.poste
  */
-export type Person$roleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Person$posteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Role
+   * Select specific fields to fetch from the Poste
    */
-  select?: Prisma.RoleSelect<ExtArgs> | null
+  select?: Prisma.PosteSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Role
+   * Omit specific fields from the Poste
    */
-  omit?: Prisma.RoleOmit<ExtArgs> | null
+  omit?: Prisma.PosteOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.RoleInclude<ExtArgs> | null
-  where?: Prisma.RoleWhereInput
+  include?: Prisma.PosteInclude<ExtArgs> | null
+  where?: Prisma.PosteWhereInput
 }
 
 /**

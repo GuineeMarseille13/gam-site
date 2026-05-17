@@ -3,40 +3,56 @@ import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { IconCircleFilled, IconUsers } from "@tabler/icons-react"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
-import { deleteMembreEquipe, banUserEquipe, unbanUserEquipe } from "./_actions/actions"
+import { deleteMembreEquipe } from "./_actions/actions"
 import { EquipeFilters } from "./_components/equipe-filters"
+import { getDashboardAccessRoleLabel } from "@/app/(admin)/bureau/acces/_components/dashboard-access-role-label"
 import { EquipeRowActions } from "./_components/equipe-row-actions"
 
 export const metadata: Metadata = { title: "Équipe" }
 
-// ── Styles des badges de rôle ──────────────────────────────────────────────────
+const EQUIPE_LIST_GRID =
+  "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.5fr)_15.5rem]"
 
-const ROLE_BADGE: Record<string, { label: string; dot: string; badge: string }> = {
-  admin:  {
-    label: "Administrateur",
-    dot:   "text-amber-500",
+/** Rôle d’accès dashboard (User.role), pas le poste dans le bureau. */
+const DASHBOARD_ROLE_BADGE: Record<string, { label: string; dot: string; badge: string }> = {
+  "SUPER-ADMIN": {
+    label: "Super administrateur",
+    dot: "text-amber-500",
     badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40",
   },
-  bureau: {
+  BUREAU: {
     label: "Bureau",
-    dot:   "text-blue-500",
+    dot: "text-blue-500",
     badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40",
+  },
+  "INVITE-BUREAU": {
+    label: "Invité bureau",
+    dot: "text-violet-500",
+    badge: "bg-violet-50 text-violet-700 ring-violet-200 dark:bg-violet-950/40 dark:text-violet-400 dark:ring-violet-800/40",
   },
 }
 
-function RoleBadge({ role }: { role: string | null }) {
-  if (!role) return <span className="text-xs text-muted-foreground/40">—</span>
-  const s = ROLE_BADGE[role]
-  if (!s)   return <span className="text-xs text-muted-foreground/40">—</span>
+function DashboardRoleBadge({ role }: { role: string | null }) {
+  if (!role) {
+    return <span className="text-xs text-muted-foreground/60">Pas de compte</span>
+  }
+
+  const style = DASHBOARD_ROLE_BADGE[role]
+  const label = style?.label ?? getDashboardAccessRoleLabel(role)
+  const dot = style?.dot ?? "text-muted-foreground"
+  const badge =
+    style?.badge ??
+    "bg-muted text-muted-foreground ring-border dark:bg-muted/40"
+
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${s.badge}`}>
-      <IconCircleFilled className={`size-1.5 ${s.dot}`} />
-      {s.label}
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${badge}`}>
+      <IconCircleFilled className={`size-1.5 ${dot}`} />
+      {label}
     </span>
   )
 }
 
-function BureauRoleBadge({ labelFr }: { labelFr: string | null }) {
+function PosteBadge({ labelFr }: { labelFr: string | null }) {
   if (!labelFr) return <span className="text-xs text-muted-foreground/40">—</span>
   return (
     <span className="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
@@ -54,7 +70,7 @@ async function getEquipe() {
   const personIds = members.map((m) => m.personId)
   const persons   = await prisma.person.findMany({
     where: { id: { in: personIds } },
-    include: { role: true },
+    include: { poste: true },
   })
 
   const userIds = persons.flatMap((p) => (p.userId ? [p.userId] : []))
@@ -68,7 +84,7 @@ async function getEquipe() {
   return members.map((m) => {
     const person = personsById[m.personId] ?? null
     const user   = person?.userId ? (usersById[person.userId] ?? null) : null
-    const associationRoleLabel = person?.role?.labelFr ?? null
+    const posteLabel = person?.poste?.labelFr ?? null
 
     return {
       ...m,
@@ -76,7 +92,7 @@ async function getEquipe() {
       userId: person?.userId ?? null,
       role:   user?.role ?? null,
       banned: (user as { banned?: boolean } | null)?.banned ?? false,
-      associationRoleLabel,
+      posteLabel,
     }
   })
 }
@@ -135,14 +151,14 @@ export default async function EquipePage({
 
           {/* ── En-tête
                mobile : [Membre | •]
-               sm     : [Membre | Rôle GAM | Accès | •]
-               lg     : [Membre | Rôle GAM | Accès | Description | Ordre | Actions]  ── */}
-          <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_2fr_240px]">
+               sm     : [Membre | Poste | Rôle | •]
+               lg     : [Membre | Poste | Rôle | Description | Actions]  ── */}
+          <div className={`${EQUIPE_LIST_GRID} border-b bg-muted/30 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground`}>
             <span>Membre</span>
-            <span className="hidden sm:block">Rôle GAM</span>
+            <span className="hidden sm:block">Poste</span>
             <span className="hidden sm:block">Rôle</span>
             <span className="hidden lg:block">Description</span>
-            <span className="hidden lg:block text-right">Actions</span>
+            <span className="hidden text-right lg:block">Actions</span>
           </div>
 
           {/* ── Lignes ── */}
@@ -153,7 +169,7 @@ export default async function EquipePage({
               return (
                 <div
                   key={m.id}
-                  className="group grid grid-cols-[1fr_auto] items-center gap-4 px-5 py-3.5 transition-colors hover:bg-muted/20 sm:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-[2fr_1fr_1fr_2fr_240px]"
+                  className={`group ${EQUIPE_LIST_GRID} px-5 py-3.5 transition-colors hover:bg-muted/20`}
                 >
                   {/* Colonne 1 — photo + nom + sous-textes */}
                   <div className="flex min-w-0 items-center gap-3.5">
@@ -174,15 +190,14 @@ export default async function EquipePage({
                         {p ? `${p.firstName} ${p.lastName}` : "—"}
                       </p>
                       {/* Rôle — mobile uniquement */}
-                      <div className="mt-0.5 sm:hidden">
-                        <RoleBadge role={m.role} />
-                      </div>
-                      {/* Poste — mobile uniquement */}
-                      {m.associationRoleLabel && (
+                      {m.posteLabel && (
                         <div className="mt-0.5 sm:hidden">
-                          <BureauRoleBadge labelFr={m.associationRoleLabel} />
+                          <PosteBadge labelFr={m.posteLabel} />
                         </div>
                       )}
+                      <div className="mt-0.5 sm:hidden">
+                        <DashboardRoleBadge role={m.role} />
+                      </div>
                       {/* Description — mobile + sm */}
                       {m.description && (
                         <p className="mt-0.5 truncate text-xs text-muted-foreground lg:hidden">
@@ -192,9 +207,13 @@ export default async function EquipePage({
                     </div>
                   </div>
 
-                  {/* Colonne 2 — Rôle Bureau (sm+) */}
+                  {/* Colonne 2 — Poste (sm+) */}
                   <div className="hidden sm:block">
-                    <BureauRoleBadge labelFr={m.associationRoleLabel} />
+                    <PosteBadge labelFr={m.posteLabel} />
+                  </div>
+
+                  <div className="hidden sm:block">
+                    <DashboardRoleBadge role={m.role} />
                   </div>
 
                   {/* Colonne 4 — Description (lg+) */}
@@ -202,12 +221,13 @@ export default async function EquipePage({
                     {m.description ?? <span className="text-muted-foreground/40">—</span>}
                   </p>
 
-                  {/* Colonne 5 — Actions */}
-                  <EquipeRowActions
+                  {/* Colonne Actions — largeur fixe, alignée à droite (lg+) */}
+                  <div className="flex min-w-0 justify-end">
+                    <EquipeRowActions
                     memberId={m.id}
                     editHref={`/bureau/equipe/${m.id}/modifier`}
                     imageId={m.imageId}
-                    associationRoleLabel={m.associationRoleLabel}
+                    posteLabel={m.posteLabel}
                     role={m.role}
                     description={m.description}
                     order={m.order}
@@ -215,12 +235,8 @@ export default async function EquipePage({
                     banned={m.banned}
                     person={m.person}
                     onDelete={deleteMembreEquipe.bind(null, m.id)}
-                    {...(m.userId ? {
-                      onBanToggle: m.banned
-                        ? unbanUserEquipe.bind(null, m.userId)
-                        : banUserEquipe.bind(null, m.userId),
-                    } : {})}
                   />
+                  </div>
                 </div>
               )
             })}

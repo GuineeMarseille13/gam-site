@@ -17,6 +17,7 @@ const updateReviewSchema = z
     firstName: z.string().min(1).optional(),
     lastName: z.string().min(1).optional(),
     name: z.string().min(1).optional(),
+    posteId: z.string().min(1).optional(),
     roleId: z.string().min(1).optional(),
     body: z.string().optional(),
     avatarUrl: z.string().url().optional(),
@@ -40,7 +41,7 @@ export async function GET(
     const { id } = await params
     const review = await prisma.review.findUnique({
       where: { id },
-      include: { role: true },
+      include: { poste: true },
     })
 
     if (!review) {
@@ -68,7 +69,7 @@ export async function PUT(
     const data: {
       firstName?: string
       lastName?: string
-      roleId?: string
+      posteId?: string
       body?: string
       avatarUrl?: string | null
       country?: string | null
@@ -84,7 +85,8 @@ export async function PUT(
       data.firstName = parts[0] ?? ''
       data.lastName = parts.slice(1).join(' ') || ''
     }
-    if (validatedData.roleId !== undefined) data.roleId = validatedData.roleId
+    const posteId = validatedData.posteId ?? validatedData.roleId
+    if (posteId !== undefined) data.posteId = posteId
     if (validatedData.body !== undefined) data.body = validatedData.body
     if (validatedData.avatarUrl !== undefined) data.avatarUrl = validatedData.avatarUrl
     if (validatedData.img !== undefined) data.avatarUrl = validatedData.img
@@ -102,7 +104,7 @@ export async function PUT(
     const review = await prisma.review.update({
       where: { id },
       data,
-      include: { role: true },
+      include: { poste: true },
     })
 
     return successResponse(review, 'Témoignage mis à jour avec succès')

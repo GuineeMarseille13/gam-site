@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 import { createElement } from "react"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { auth } from "@/lib/auth"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauPaiements } from "@/helpers/api-dashboard-auth"
 import { fetchInvoiceDataByPaymentId } from "@/app/(admin)/bureau/factures/_services/fetch-invoice-data"
 import { InvoicePdfDocument } from "@/app/(admin)/bureau/factures/_components/invoice-pdf-document"
 import { invoicePaymentParamsSchema } from "@/app/(admin)/bureau/factures/_schemas/invoice.schema"
@@ -22,7 +22,7 @@ export async function GET(
   context: { params: Promise<{ paymentId: string }> },
 ): Promise<Response> {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauPaiements(session.user.role)) {
     return new Response("Unauthorized", { status: 401 })
   }
 

@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauPaiements } from "@/helpers/api-dashboard-auth"
 import { adhesionRenewalPayloadSchema } from "@/app/(admin)/bureau/adhesions/_schemas/adhesion-renewal.schema"
 import { createAdhesionStripePaymentIntent } from "@/app/(public)/adhesion/_services/create-adhesion-stripe-payment-intent"
 
@@ -26,7 +26,7 @@ function buildRenewalMessage(nextYear: number): string {
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauPaiements(session.user.role)) {
     return NextResponse.json({ error: "Accès non autorisé" }, { status: 401 })
   }
 

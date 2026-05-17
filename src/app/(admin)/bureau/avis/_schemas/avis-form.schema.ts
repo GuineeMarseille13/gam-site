@@ -15,7 +15,7 @@ export const avisFormFieldsSchema = z
       .trim()
       .min(1, "Le nom est obligatoire")
       .max(120, "Le nom est trop long"),
-    roleCode: z.string().trim().min(1, "Choisissez un rôle affiché"),
+    posteCode: z.string().trim().min(1, "Choisissez un poste affiché"),
     body: z
       .string()
       .trim()
@@ -57,7 +57,7 @@ export function parseAvisFormFields(formData: FormData) {
   return avisFormFieldsSchema.safeParse({
     firstName: String(formData.get("firstName") ?? ""),
     lastName: String(formData.get("lastName") ?? ""),
-    roleCode: String(formData.get("roleCode") ?? ""),
+    posteCode: String(formData.get("posteCode") ?? formData.get("roleCode") ?? ""),
     body: String(formData.get("body") ?? ""),
     country: String(formData.get("country") ?? ""),
     rating: formData.get("rating"),

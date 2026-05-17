@@ -12,7 +12,7 @@ export async function getAdministrationAccessList(): Promise<AdministrationAcces
   await requireAdministrationDashboard()
 
   const users = await prisma.user.findMany({
-    where: { role: "administration" },
+    where: { role: { in: ["ADMIN-PERMADMIN", "PERMADMIN", "INVITE-PERMADMIN"] } },
     orderBy: { createdAt: "desc" },
     take: 200,
   })
@@ -57,7 +57,7 @@ export async function getAdministrationAccessForEdit(userId: string) {
   await requireAdmin()
 
   const user = await prisma.user.findUnique({ where: { id: userId } })
-  if (!user || user.role !== "administration") return null
+  if (!user || !["ADMIN-PERMADMIN", "PERMADMIN", "INVITE-PERMADMIN"].includes(user.role ?? "")) return null
 
   const person = await prisma.person.findUnique({ where: { userId } })
   return { user, person }

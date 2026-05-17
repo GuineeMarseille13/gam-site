@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 import { auth } from "@/lib/auth"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauPaiements } from "@/helpers/api-dashboard-auth"
 import { manualAdhesionPayloadSchema } from "@/app/(public)/adhesion/_schemas/adhesion.schema"
 import { saveManualAdhesion } from "@/app/(public)/adhesion/_services/save-manual-adhesion"
 
@@ -26,7 +26,7 @@ const successResponseSchema = z
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauPaiements(session.user.role)) {
     return NextResponse.json({ success: false, error: "UNAUTHORIZED" }, { status: 401 })
   }
 

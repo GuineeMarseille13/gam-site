@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
@@ -30,7 +30,7 @@ export async function createProductCategory(
   _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
 
   const parsed = parseProductCategoryFormFields(formData)
   if (!parsed.success) {
@@ -53,7 +53,7 @@ export async function updateProductCategory(
   _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
 
   const parsed = parseProductCategoryFormFields(formData)
   if (!parsed.success) {
@@ -75,7 +75,7 @@ export async function updateProductCategory(
 }
 
 export async function deleteProductCategory(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
 
   await prisma.$transaction([
     prisma.product.updateMany({

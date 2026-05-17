@@ -6,7 +6,7 @@ import { deleteSupersededPublicId } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -23,7 +23,7 @@ export async function createPole(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const name = formData.get("name") as string
     const description = (formData.get("description") as string) || null
@@ -52,7 +52,7 @@ export async function updatePole(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const previous = await prisma.pole.findUnique({
       where: { id },
@@ -86,7 +86,7 @@ export async function updatePole(
 }
 
 export async function deletePole(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
   const pole = await prisma.pole.findUnique({ where: { id }, select: { imageId: true } })
   await prisma.pole.delete({ where: { id } })
   if (pole?.imageId) {

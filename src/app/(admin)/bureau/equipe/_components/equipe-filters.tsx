@@ -6,8 +6,8 @@ import { IconX } from "@tabler/icons-react"
 // ── Constantes ─────────────────────────────────────────────────────────────────
 
 const ROLES = [
-  { value: "admin",  label: "Administrateur" },
-  { value: "bureau", label: "Bureau" },
+  { value: "SUPER-ADMIN", label: "Super administrateur" },
+  { value: "BUREAU", label: "Bureau" },
 ]
 
 const VISIBILITES = [

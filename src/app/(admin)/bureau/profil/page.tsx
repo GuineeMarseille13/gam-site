@@ -20,7 +20,7 @@ export default async function ProfilPage() {
   // Récupérer la Person + le TeamMember liés si ils existent
   const person = await prisma.person.findUnique({
     where: { userId },
-    include: { role: true },
+    include: { poste: true },
   })
   const teamMember = person
     ? await prisma.teamMember.findUnique({ where: { personId: person.id } })
@@ -51,7 +51,7 @@ export default async function ProfilPage() {
               email:     session.user.email,
               phone:     person?.phone     ?? "",
               role:      session.user.role ?? null,
-              poste:     person?.role?.labelFr ?? null,
+              poste:     person?.poste?.labelFr ?? null,
               image:     resolvedImage,
             }}
             updateAction={updateProfil}

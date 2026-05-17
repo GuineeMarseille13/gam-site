@@ -28,7 +28,7 @@ export async function GET() {
         firstName: true,
         lastName: true,
         description: true,
-        role: { select: { labelFr: true } },
+        poste: { select: { labelFr: true } },
       },
     })
     const teamPersonsById = Object.fromEntries(teamPersons.map((p) => [p.id, p]))
@@ -43,7 +43,7 @@ export async function GET() {
         return {
           id:    m.id,
           name:  `${person.firstName} ${person.lastName}`,
-          role:  person.role?.labelFr ?? "Membre du bureau",
+          role:  person.poste?.labelFr ?? "Membre du bureau",
           image: m.imageId ? cloudinaryImageUrl(m.imageId) : "",
           order: m.order,
           ...(description !== undefined ? { description } : {}),
@@ -60,17 +60,17 @@ export async function GET() {
       select: {
         id: true, firstName: true, lastName: true,
         image: true, description: true,
-        role: { select: { labelFr: true } },
+        poste: { select: { labelFr: true } },
       },
       orderBy: { createdAt: "asc" },
     })
 
     const bureauResults = bureauPersons.map((p, i) => {
       const rawDesc = p.description?.trim()
-      const roleLabel = p.role?.labelFr ?? rawDesc ?? "Membre du bureau"
-      /** Biographie distincte seulement si un libellé de rôle existe déjà (sinon `rawDesc` sert de rôle, comme avant). */
+      const roleLabel = p.poste?.labelFr ?? rawDesc ?? "Membre du bureau"
+      /** Biographie distincte seulement si un libellé de poste existe déjà (sinon `rawDesc` sert de rôle affiché). */
       const description =
-        p.role?.labelFr && rawDesc !== undefined && rawDesc.length > 0 ? rawDesc : undefined
+        p.poste?.labelFr && rawDesc !== undefined && rawDesc.length > 0 ? rawDesc : undefined
 
       return {
         id:    p.id,

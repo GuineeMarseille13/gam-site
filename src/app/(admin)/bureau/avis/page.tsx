@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 async function listAvis() {
   return prisma.review.findMany({
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-    include: { role: { select: { labelFr: true, code: true } } },
+    include: { poste: { select: { labelFr: true, code: true } } },
   })
 }
 

@@ -5,8 +5,8 @@ import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { requireAdministrationDashboard } from "@/lib/auth-guard"
-import { getRoleIdByCode } from "@/helpers/association-role-helpers"
+import { requireBenevolesManagement, requireBureauAdminDelete } from "@/lib/auth-guard"
+import { getPosteIdByCode } from "@/helpers/poste-helpers"
 
 const BENEVOLES_LIST_PATHS = ["/bureau/benevoles", "/administration/benevoles"] as const
 
@@ -39,7 +39,7 @@ function countryCode(country: string) {
 // ── Créer ──────────────────────────────────────────────────────────────────────
 
 export async function createBenevole(formData: FormData) {
-  await requireAdministrationDashboard()
+  await requireBenevolesManagement()
 
   const firstName  = formData.get("firstName") as string
   const lastName   = formData.get("lastName")  as string
@@ -64,15 +64,15 @@ export async function createBenevole(formData: FormData) {
       })
     : null
 
-  const volunteerRoleId = await getRoleIdByCode(prisma, "VOLUNTEER")
-  if (!volunteerRoleId) {
-    throw new Error("Rôle VOLUNTEER introuvable en base (exécuter le seed des rôles).")
+  const volunteerPosteId = await getPosteIdByCode(prisma, "VOLUNTEER")
+  if (!volunteerPosteId) {
+    throw new Error("Poste VOLUNTEER introuvable en base (exécuter le seed des postes).")
   }
 
   const person = await prisma.person.create({
     data: {
       firstName, lastName, email, phone,
-      roleId: volunteerRoleId,
+      posteId: volunteerPosteId,
       image: imageUrl,
       showOnSite,
       addressId: addressRecord?.id ?? null,
@@ -90,7 +90,7 @@ export async function createBenevole(formData: FormData) {
 // ── Modifier ───────────────────────────────────────────────────────────────────
 
 export async function updateBenevole(id: string, formData: FormData) {
-  await requireAdministrationDashboard()
+  await requireBenevolesManagement()
 
   const volunteer = await prisma.volunteer.findUnique({ where: { id } })
   if (!volunteer) return
@@ -160,7 +160,7 @@ export async function updateBenevole(id: string, formData: FormData) {
 // ── Supprimer ──────────────────────────────────────────────────────────────────
 
 export async function deleteBenevole(id: string) {
-  await requireAdministrationDashboard()
+  await requireBureauAdminDelete()
   await prisma.volunteer.delete({ where: { id } })
   revalidateBenevolesLists()
 }

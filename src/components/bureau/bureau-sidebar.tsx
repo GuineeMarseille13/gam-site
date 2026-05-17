@@ -16,8 +16,10 @@ import {
   IconLayoutGrid,
   IconUserCircle,
   IconUserCheck,
+  IconKey,
 } from "@tabler/icons-react"
 
+import { useBureauPermissions } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
 import { BureauContenuNav } from "@/components/bureau/bureau-contenu-nav"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -39,49 +41,27 @@ type NavItem = {
   title: string
   url: string
   icon: React.ElementType
-  adminOnly?: boolean
+  visible: boolean
 }
 
-const navigation: {
-  user: { name: string; email: string; avatar: string }
-  main: NavItem[]
-  paiements: NavItem[]
-  admin: NavItem[]
-} = {
+const navigation = {
   user: {
     name: "Administrateur",
     email: "admin@gam.fr",
     avatar: "",
   },
-  main: [
-    { title: "Vue d'ensemble", url: "/bureau", icon: IconDashboard },
-  ],
-  paiements: [
-    { title: "Adhésions", url: "/bureau/adhesions", icon: IconIdBadge2 },
-    { title: "Dons", url: "/bureau/dons", icon: IconHeart },
-    { title: "Commandes", url: "/bureau/commandes", icon: IconShoppingCart },
-  ],
-  admin: [
-    { title: "Tous les membres",   url: "/bureau/membres",   icon: IconUserCircle },
-    { title: "Membres du bureau",    url: "/bureau/equipe",    icon: IconUsers,    adminOnly: true },
-    { title: "Adhérent", url: "/bureau/adherents", icon: IconUserCheck },
-    { title: "Bénévoles", url: "/bureau/benevoles", icon: IconHandStop },
-    { title: "Aide",      url: "/bureau/aide",      icon: IconHelp },
-  ],
 }
 
 function NavGroup({
   label,
   items,
   pathname,
-  role,
 }: {
   label?: string
   items: NavItem[]
   pathname: string
-  role?: string
 }) {
-  const visibleItems = items.filter((item) => !item.adminOnly || role === "admin")
+  const visibleItems = items.filter((item) => item.visible)
 
   if (visibleItems.length === 0) return null
 
@@ -134,8 +114,78 @@ interface BureauSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function BureauSidebar({ currentUser, role, className, ...props }: BureauSidebarProps) {
   const pathname = usePathname()
+  const permissions = useBureauPermissions()
 
   const user = currentUser ?? navigation.user
+
+  const mainNav: NavItem[] = [
+    {
+      title: "Vue d'ensemble",
+      url: "/bureau",
+      icon: IconDashboard,
+      visible: permissions.canAccessOverview,
+    },
+  ]
+
+  const paiementsNav: NavItem[] = [
+    {
+      title: "Adhésions",
+      url: "/bureau/adhesions",
+      icon: IconIdBadge2,
+      visible: permissions.canAccessPaiements,
+    },
+    {
+      title: "Dons",
+      url: "/bureau/dons",
+      icon: IconHeart,
+      visible: permissions.canAccessPaiements,
+    },
+    {
+      title: "Commandes",
+      url: "/bureau/commandes",
+      icon: IconShoppingCart,
+      visible: permissions.canAccessPaiements,
+    },
+  ]
+
+  const adminNav: NavItem[] = [
+    {
+      title: "Tous les membres",
+      url: "/bureau/membres",
+      icon: IconUserCircle,
+      visible: permissions.canAccessAdminMembres,
+    },
+    {
+      title: "Accès",
+      url: "/bureau/acces",
+      icon: IconKey,
+      visible: permissions.canAccessAdminAcces,
+    },
+    {
+      title: "Membres du bureau",
+      url: "/bureau/equipe",
+      icon: IconUsers,
+      visible: permissions.canAccessAdminEquipe,
+    },
+    {
+      title: "Adhérent",
+      url: "/bureau/adherents",
+      icon: IconUserCheck,
+      visible: permissions.canAccessAdminAdherents,
+    },
+    {
+      title: "Bénévoles",
+      url: "/bureau/benevoles",
+      icon: IconHandStop,
+      visible: permissions.canAccessAdminBenevoles,
+    },
+    {
+      title: "Aide",
+      url: "/bureau/aide",
+      icon: IconHelp,
+      visible: permissions.canAccessAdminMembres,
+    },
+  ]
 
   return (
     <Sidebar collapsible="offcanvas" className={cn("print:hidden", className)} {...props}>
@@ -162,18 +212,34 @@ export function BureauSidebar({ currentUser, role, className, ...props }: Bureau
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavGroup items={navigation.main} pathname={pathname} role={role} />
-        <SidebarSeparator className="mx-3" />
-        <NavGroup label="Paiements" items={navigation.paiements} pathname={pathname} role={role} />
-        <SidebarSeparator className="mx-3" />
-        <BureauContenuNav role={role} />
-        <SidebarSeparator className="mx-3" />
-        <NavGroup label="Administration" items={navigation.admin} pathname={pathname} role={role} />
+        <NavGroup items={mainNav} pathname={pathname} />
+        {permissions.canAccessPaiements && (
+          <>
+            <SidebarSeparator className="mx-3" />
+            <NavGroup label="Paiements" items={paiementsNav} pathname={pathname} />
+          </>
+        )}
+        {permissions.canAccessContenu && (
+          <>
+            <SidebarSeparator className="mx-3" />
+            <BureauContenuNav />
+          </>
+        )}
+        {(permissions.canAccessAdminMembres ||
+          permissions.canAccessAdminAdherents ||
+          permissions.canAccessAdminBenevoles ||
+          permissions.canAccessAdminEquipe ||
+          permissions.canAccessAdminAcces) && (
+          <>
+            <SidebarSeparator className="mx-3" />
+            <NavGroup label="Administration" items={adminNav} pathname={pathname} />
+          </>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
         <SidebarMenu>
-          {(role === "admin" || role === "bureau") && (
+          {permissions.canAccessAdministrationDashboard && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link href="/administration" className="text-muted-foreground hover:text-foreground">

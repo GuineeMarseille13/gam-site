@@ -1,16 +1,17 @@
 import { redirect } from "next/navigation"
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
+import { getSessionDashboardPermissions } from "@/lib/auth-guard"
 
 /**
- * Protège toutes les routes /bureau/equipe/** : admin uniquement.
- * Un membre bureau qui connaît l'URL est redirigé vers le dashboard.
+ * Protège toutes les routes /bureau/equipe/** (gestion équipe site).
  */
 export default async function EquipeLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({ headers: await headers() })
-
-  if (!session || session.user.role !== "admin") {
-    redirect("/bureau")
+  try {
+    const { permissions } = await getSessionDashboardPermissions()
+    if (!permissions.canAccessAdminEquipe) {
+      redirect("/bureau?error=forbidden")
+    }
+  } catch {
+    redirect("/connexion")
   }
 
   return <>{children}</>

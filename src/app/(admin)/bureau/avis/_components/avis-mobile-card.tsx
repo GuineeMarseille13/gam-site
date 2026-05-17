@@ -46,7 +46,7 @@ export function AvisMobileCard({ row: r }: AvisMobileCardProps) {
                   {name}
                 </h3>
                 <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground sm:text-sm">
-                  <span className="font-medium text-primary">{r.role.labelFr}</span>
+                  <span className="font-medium text-primary">{r.poste.labelFr}</span>
                   <span aria-hidden className="text-border">
                     ·
                   </span>

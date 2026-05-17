@@ -8,10 +8,14 @@ export const bureauSelectItemClassName = cn(
   "data-[highlighted]:bg-amber-50 data-[highlighted]:text-amber-900",
   "data-[state=checked]:bg-amber-100 data-[state=checked]:text-amber-900",
   "focus:bg-amber-50 focus:text-amber-900",
+  "data-[highlighted]:[&_.text-muted-foreground]:text-amber-800/80",
+  "data-[state=checked]:[&_.text-muted-foreground]:text-amber-800/80",
   "data-[highlighted]:[&_svg]:text-amber-700",
   "data-[state=checked]:[&_svg]:text-amber-700",
   "dark:data-[highlighted]:bg-amber-950/40 dark:data-[highlighted]:text-amber-200",
   "dark:data-[state=checked]:bg-amber-950/50 dark:data-[state=checked]:text-amber-200",
+  "dark:data-[highlighted]:[&_.text-muted-foreground]:text-amber-300/85",
+  "dark:data-[state=checked]:[&_.text-muted-foreground]:text-amber-300/85",
 )
 
 export const bureauSelectContentClassName = cn(

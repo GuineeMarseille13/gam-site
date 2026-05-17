@@ -1,13 +1,30 @@
-/** Tous les rôles (utilisé pour les filtres et badges) */
-export const ROLES = [
-  { value: "admin",           label: "Administrateur", description: "Accès complet au dashboard" },
-  { value: "bureau",          label: "Bureau",         description: "Membres du bureau (équipe)" },
-  { value: "administration",  label: "Administration", description: "Accès au dashboard Administration (/administration)" },
-  { value: "benevole",        label: "Bénévole",       description: "Bénévole de l'association" },
-] as const
+import {
+  ALL_ACCOUNT_ROLES,
+  BUREAU_ACCOUNT_ROLES,
+  SYSTEM_ROLES_SEED,
+} from "@/config/system-roles"
 
-/** Rôles proposés à la création d'un compte dashboard (Bureau) — le rôle « administration » se configure côté base ou outil admin */
-export const DASHBOARD_ROLES = [
-  { value: "admin",  label: "Administrateur", description: "Accès complet au dashboard Bureau" },
-  { value: "bureau", label: "Bureau",         description: "Membre du bureau" },
-] as const
+/** Tous les rôles d’accès (filtres et badges) + filtre section bénévoles. */
+export const ROLES = [
+  ...ALL_ACCOUNT_ROLES.map((r) => ({
+    value: r.code,
+    label: r.labelFr,
+    description: r.description ?? "",
+  })),
+  {
+    value: "benevoles",
+    label: "Bénévoles",
+    description: "Contacts bénévoles (sans compte dashboard)",
+  },
+]
+
+/** Rôles proposés à la création d’un compte dashboard Bureau. */
+export const DASHBOARD_ROLES = BUREAU_ACCOUNT_ROLES.filter(
+  (r) => r.code === "SUPER-ADMIN" || r.code === "BUREAU",
+).map((r) => ({
+  value: r.code,
+  label: r.labelFr,
+  description: r.description ?? "",
+}))
+
+export { SYSTEM_ROLES_SEED }

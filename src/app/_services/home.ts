@@ -310,7 +310,7 @@ export async function getReviews(): Promise<Review[]> {
   try {
     const params = new URLSearchParams({
       where: JSON.stringify({ isActive: true }),
-      include: JSON.stringify({ role: { select: { labelFr: true } } }),
+      include: JSON.stringify({ poste: { select: { labelFr: true } } }),
       orderBy: JSON.stringify({ order: 'asc' }),
     })
     const response = await fetch(`/api/reviews?${params.toString()}`, { cache: 'no-store' })

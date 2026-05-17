@@ -6,7 +6,7 @@ import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -30,7 +30,7 @@ export async function createVideoTemoignage(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const { url, thumbnail } = await resolveVideoSource(formData)
     const title = (formData.get("title") as string) || null
@@ -65,7 +65,7 @@ export async function updateVideoTemoignage(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const previous = await prisma.video.findUnique({
       where: { id },
@@ -98,7 +98,7 @@ export async function updateVideoTemoignage(
 }
 
 export async function deleteVideoTemoignage(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
   const existing = await prisma.video.findUnique({
     where: { id },
     select: { url: true },

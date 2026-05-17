@@ -15,8 +15,8 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-async function getRoles() {
-  return prisma.role.findMany({
+async function getPostes() {
+  return prisma.poste.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
     select: { code: true, labelFr: true },
@@ -25,12 +25,12 @@ async function getRoles() {
 
 export default async function ModifierAvisPage({ params }: PageProps) {
   const { id } = avisIdParamsSchema.parse(await params)
-  const [review, roles] = await Promise.all([
+  const [review, postes] = await Promise.all([
     prisma.review.findUnique({
       where: { id },
-      include: { role: { select: { code: true } } },
+      include: { poste: { select: { code: true } } },
     }),
-    getRoles(),
+    getPostes(),
   ])
 
   if (!review) {
@@ -47,11 +47,11 @@ export default async function ModifierAvisPage({ params }: PageProps) {
         <CardContent className="pt-6">
           <AvisForm
             action={updateAvis.bind(null, id)}
-            roles={roles}
+            postes={postes}
             defaultValues={{
               firstName: review.firstName,
               lastName: review.lastName,
-              roleCode: review.role.code,
+              posteCode: review.poste.code,
               body: review.body,
               country: review.country,
               rating: review.rating,

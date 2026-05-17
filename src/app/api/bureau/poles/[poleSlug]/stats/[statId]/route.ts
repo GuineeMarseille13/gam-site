@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
 
 import { detailsPoleStatSchema } from "@/app/(admin)/bureau/poles/_schemas/details-pole-stat.schema"
 import {
@@ -16,7 +16,7 @@ const statIdSchema = z.string().min(1)
 
 async function requireBureauApiAccess(): Promise<boolean> {
   const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && isBureauDashboardRole(session.user.role)
+  return !!session && sessionCanAccessBureauContenu(session.user.role)
 }
 
 export async function PUT(

@@ -5,7 +5,7 @@ import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
-import { requireBureau } from "@/lib/auth-guard"
+import { requireBureauContenu } from "@/lib/auth-guard"
 
 export type ActionState = { error: string } | null
 
@@ -31,7 +31,7 @@ export async function createEvenement(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const title       = formData.get("title")       as string
     const description = (formData.get("description") as string) || null
@@ -88,7 +88,7 @@ export async function updateEvenement(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  await requireBureau()
+  await requireBureauContenu()
   try {
     const title       = formData.get("title")       as string
     const description = (formData.get("description") as string) || null
@@ -155,7 +155,7 @@ export async function updateEvenement(
 // ── Supprimer un événement ─────────────────────────────────────────────────────
 
 export async function deleteEvenement(id: string) {
-  await requireBureau()
+  await requireBureauContenu()
 
   const event = await prisma.event.findUnique({
     where: { id },

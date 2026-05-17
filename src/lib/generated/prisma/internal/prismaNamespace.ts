@@ -400,6 +400,7 @@ export const ModelName = {
   EventVideo: 'EventVideo',
   EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
+  Poste: 'Poste',
   Role: 'Role',
   Review: 'Review',
   ProductSection: 'ProductSection',
@@ -454,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "poste" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1639,6 +1640,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ReviewSectionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ReviewSectionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Poste: {
+      payload: Prisma.$PostePayload<ExtArgs>
+      fields: Prisma.PosteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PosteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PosteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        findFirst: {
+          args: Prisma.PosteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PosteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        findMany: {
+          args: Prisma.PosteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>[]
+        }
+        create: {
+          args: Prisma.PosteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        createMany: {
+          args: Prisma.PosteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PosteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>[]
+        }
+        delete: {
+          args: Prisma.PosteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        update: {
+          args: Prisma.PosteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        deleteMany: {
+          args: Prisma.PosteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PosteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PosteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>[]
+        }
+        upsert: {
+          args: Prisma.PosteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostePayload>
+        }
+        aggregate: {
+          args: Prisma.PosteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePoste>
+        }
+        groupBy: {
+          args: Prisma.PosteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PosteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PosteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PosteCountAggregateOutputType> | number
         }
       }
     }
@@ -4807,6 +4882,20 @@ export const ReviewSectionScalarFieldEnum = {
 export type ReviewSectionScalarFieldEnum = (typeof ReviewSectionScalarFieldEnum)[keyof typeof ReviewSectionScalarFieldEnum]
 
 
+export const PosteScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  labelFr: 'labelFr',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PosteScalarFieldEnum = (typeof PosteScalarFieldEnum)[keyof typeof PosteScalarFieldEnum]
+
+
 export const RoleScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -4825,7 +4914,7 @@ export const ReviewScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  roleId: 'roleId',
+  posteId: 'posteId',
   body: 'body',
   avatarUrl: 'avatarUrl',
   country: 'country',
@@ -4920,7 +5009,7 @@ export const PersonScalarFieldEnum = {
   phone: 'phone',
   addressId: 'addressId',
   userId: 'userId',
-  roleId: 'roleId',
+  posteId: 'posteId',
   image: 'image',
   showOnSite: 'showOnSite',
   description: 'description',
@@ -5727,6 +5816,7 @@ export type GlobalOmitConfig = {
   eventVideo?: Prisma.EventVideoOmit
   eventImage?: Prisma.EventImageOmit
   reviewSection?: Prisma.ReviewSectionOmit
+  poste?: Prisma.PosteOmit
   role?: Prisma.RoleOmit
   review?: Prisma.ReviewOmit
   productSection?: Prisma.ProductSectionOmit

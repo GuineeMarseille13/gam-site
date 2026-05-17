@@ -25,7 +25,7 @@ interface UserFormProps {
     lastName:     string
     email:        string
     role:         string
-    associationRoleCode?: string | null
+    posteCode?: string | null
     phone?:       string | null
     description?: string | null
     imageUrl?:    string | null
@@ -41,9 +41,9 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
   const [error, setError] = useState<string | null>(null)
 
   const [showOnSite, setShowOnSite]     = useState(defaultValues?.showOnSite ?? true)
-  const [role, setRole]                 = useState(defaultValues?.role ?? "bureau")
-  const [associationRoleCode, setAssociationRoleCode] = useState(
-    defaultValues?.associationRoleCode ?? "",
+  const [role, setRole]                 = useState(defaultValues?.role ?? "BUREAU")
+  const [posteCode, setPosteCode] = useState(
+    defaultValues?.posteCode ?? "",
   )
   const [preview, setPreview]           = useState<string | null>(defaultValues?.imageUrl ?? null)
   const [sizeError, setSizeError]       = useState<string | null>(null)
@@ -77,14 +77,14 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
     e.preventDefault()
     setError(null)
 
-    if (!associationRoleCode) {
-      setError("Veuillez sélectionner un rôle dans le bureau.")
+    if (!posteCode) {
+      setError("Veuillez sélectionner un poste dans le bureau.")
       return
     }
 
     const formData = new FormData(e.currentTarget)
     formData.set("role", role)
-    formData.set("associationRoleCode", associationRoleCode)
+    formData.set("posteCode", posteCode)
     const action = mode === "create" ? createAction : updateAction
 
     startTransition(async () => {
@@ -280,11 +280,11 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Rôle <span className="text-destructive">*</span>
+                Rôle d&apos;accès <span className="text-destructive">*</span>
               </Label>
               <Select value={role} onValueChange={setRole}>
                 <SelectTrigger className="h-10 rounded-xl">
-                  <SelectValue placeholder="Sélectionner un rôle…" />
+                  <SelectValue placeholder="Sélectionner un rôle d'accès…" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
                   {DASHBOARD_ROLES.map((r) => (
@@ -305,11 +305,11 @@ export function UserForm({ mode, createAction, updateAction, defaultValues }: Us
 
             <div className="space-y-1.5">
               <Label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Rôle dans le bureau <span className="text-destructive">*</span>
+                Poste dans le bureau <span className="text-destructive">*</span>
               </Label>
-              <Select value={associationRoleCode} onValueChange={setAssociationRoleCode} required>
+              <Select value={posteCode} onValueChange={setPosteCode} required>
                 <SelectTrigger className="h-10 rounded-xl">
-                  <SelectValue placeholder="Sélectionner un rôle…" />
+                  <SelectValue placeholder="Sélectionner un poste…" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl p-1.5 shadow-lg w-[var(--radix-select-trigger-width)]">
                   {POSTES.map((p) => (

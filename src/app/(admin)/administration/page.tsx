@@ -27,7 +27,7 @@ export const metadata: Metadata = { title: "Vue d'ensemble" }
 export default async function AdministrationHomePage() {
   const session = await auth.api.getSession({ headers: await headers() })
   const firstName = session?.user.name?.split(/\s+/)[0] ?? ""
-  const isAdmin = session?.user.role === "admin"
+  const isAdmin = session?.user.role === "SUPER-ADMIN"
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">

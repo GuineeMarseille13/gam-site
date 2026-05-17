@@ -9,8 +9,9 @@ import {
   deleteSupersededPublicId,
   safeDestroyCloudinaryAsset,
 } from "@/lib/cloudinary-replacement"
-import { requireAdmin, requireBureau } from "@/lib/auth-guard"
-import { getRoleIdByCode } from "@/helpers/association-role-helpers"
+import { requireAdmin, requireBureauAdminEquipe } from "@/lib/auth-guard"
+import { getPosteIdByCode } from "@/helpers/poste-helpers"
+import { syncUserDisplayNameFromPerson, unlinkPersonFromDashboardUser } from "@/helpers/dashboard-user-person"
 
 // ── Helper image ───────────────────────────────────────────────────────────────
 
@@ -25,73 +26,62 @@ async function resolveImageId(formData: FormData, fallback: string | null = null
 }
 
 // ── Créer un membre de l'équipe ────────────────────────────────────────────────
-// Flux : User (Better Auth) → Person → TeamMember
+// Flux : Person → TeamMember → Volunteer (sans compte dashboard)
 
 export async function createMembreEquipe(formData: FormData) {
   await requireAdmin()
 
   const firstName   = formData.get("firstName") as string
   const lastName    = formData.get("lastName")  as string
-  const email       = formData.get("email")     as string
-  const password    = formData.get("password")  as string
+  const email       = (formData.get("email") as string)?.trim() || null
   const phone       = formData.get("phone")     as string
-  const role        = (formData.get("role") as string)?.trim() || "bureau"
-  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
+  const posteCode = (formData.get("posteCode") as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
   const showOnSite  = formData.get("showOnSite") !== "false"
 
-  if (!firstName || !lastName || !email || !password || !phone) {
+  if (!firstName || !lastName || !email || !phone) {
     return { error: "Tous les champs obligatoires doivent être remplis." }
   }
 
-  if (!associationRoleCode) {
-    return { error: "Veuillez sélectionner un rôle dans le bureau." }
+  if (!posteCode) {
+    return { error: "Veuillez sélectionner un poste dans le bureau." }
   }
 
-  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
-  if (!associationRoleId) {
-    return { error: "Rôle association invalide." }
+  const posteId = await getPosteIdByCode(prisma, posteCode)
+  if (!posteId) {
+    return { error: "Poste invalide." }
   }
 
-  // 1. Créer le compte utilisateur (Better Auth)
-  let createdUserId: string
-  try {
-    const created = await auth.api.createUser({
-      body: { name: `${firstName} ${lastName}`, email, password, role: role as "admin" | "user" },
-      headers: await headers(),
-    })
-    createdUserId = created.user.id
-  } catch {
-    return { error: "Un compte avec cet email existe déjà." }
-  }
-
-  // 2. Créer la Person + TeamMember (avec rollback User si échec)
   try {
     const imageId = await resolveImageId(formData)
 
-    const person = await prisma.person.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        phone,
-        userId: createdUserId,
-        roleId: associationRoleId,
-      },
-    })
+    await prisma.$transaction(async (tx) => {
+      const person = await tx.person.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          phone,
+          posteId,
+        },
+      })
 
-    await prisma.teamMember.create({
-      data: { personId: person.id, description, imageId, order, showOnSite },
+      await tx.teamMember.create({
+        data: { personId: person.id, description, imageId, order, showOnSite },
+      })
+
+      await tx.volunteer.upsert({
+        where: { personId: person.id },
+        create: { personId: person.id },
+        update: {},
+      })
     })
 
     revalidatePath("/bureau/equipe")
+    revalidatePath("/bureau/membres")
     return { success: true as const }
   } catch {
-    // Rollback : supprimer le User si la création Person/TeamMember a échoué
-    try {
-      await auth.api.removeUser({ body: { userId: createdUserId }, headers: await headers() })
-    } catch { /* non-bloquant */ }
     return { error: "Erreur lors de la création du membre." }
   }
 }
@@ -99,7 +89,7 @@ export async function createMembreEquipe(formData: FormData) {
 // ── Modifier un membre de l'équipe ─────────────────────────────────────────────
 
 export async function updateMembreEquipe(id: string, formData: FormData) {
-  await requireBureau()
+  await requireBureauAdminEquipe()
 
   const member = await prisma.teamMember.findUnique({ where: { id } })
   if (!member) return { error: "Membre introuvable." }
@@ -110,8 +100,7 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
   const firstName   = formData.get("firstName") as string
   const lastName    = formData.get("lastName")  as string
   const phone       = formData.get("phone")     as string
-  const role        = (formData.get("role") as string)?.trim() || null
-  const associationRoleCode = (formData.get("associationRoleCode") as string | null)?.trim() || null
+  const posteCode = (formData.get("posteCode") as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
   const order       = parseInt(formData.get("order") as string) || 0
   const showOnSite  = formData.get("showOnSite") !== "false"
@@ -120,35 +109,25 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
     return { error: "Le prénom, le nom et le téléphone sont requis." }
   }
 
-  if (!associationRoleCode) {
-    return { error: "Veuillez sélectionner un rôle dans le bureau." }
+  if (!posteCode) {
+    return { error: "Veuillez sélectionner un poste dans le bureau." }
   }
 
-  const associationRoleId = await getRoleIdByCode(prisma, associationRoleCode)
-  if (!associationRoleId) {
-    return { error: "Rôle association invalide." }
+  const posteId = await getPosteIdByCode(prisma, posteCode)
+  if (!posteId) {
+    return { error: "Poste invalide." }
   }
 
   try {
     const imageId = await resolveImageId(formData, member.imageId)
 
-    // Mettre à jour le nom + rôle dans le compte User si lié
     if (person.userId) {
-      await prisma.user.update({
-        where: { id: person.userId },
-        data: { name: `${firstName} ${lastName}` },
-      })
-      if (role) {
-        await auth.api.setRole({
-          body: { userId: person.userId, role: role as "admin" | "user" },
-          headers: await headers(),
-        })
-      }
+      await syncUserDisplayNameFromPerson(prisma, person.userId, firstName, lastName)
     }
 
     await prisma.person.update({
       where: { id: member.personId },
-      data: { firstName, lastName, phone, roleId: associationRoleId },
+      data: { firstName, lastName, phone, posteId },
     })
 
     await prisma.teamMember.update({
@@ -187,22 +166,8 @@ export async function changePasswordEquipe(userId: string, newPassword: string) 
   }
 }
 
-// ── Bannir / débannir un compte lié ───────────────────────────────────────────
-
-export async function banUserEquipe(userId: string) {
-  await requireAdmin()
-  await auth.api.banUser({ body: { userId }, headers: await headers() })
-  revalidatePath("/bureau/equipe")
-}
-
-export async function unbanUserEquipe(userId: string) {
-  await requireAdmin()
-  await auth.api.unbanUser({ body: { userId }, headers: await headers() })
-  revalidatePath("/bureau/equipe")
-}
-
 // ── Supprimer un membre de l'équipe ────────────────────────────────────────────
-// Cascade : TeamMember → Person → User (Better Auth)
+// Supprime TeamMember + Person (+ Volunteer). Révoque le User si la personne avait un accès.
 
 export async function deleteMembreEquipe(id: string) {
   await requireAdmin()
@@ -220,6 +185,7 @@ export async function deleteMembreEquipe(id: string) {
     const person = await prisma.person.findUnique({ where: { id: member.personId } })
     const userId = person?.userId ?? null
 
+    await prisma.volunteer.deleteMany({ where: { personId: member.personId } })
     await prisma.teamMember.delete({ where: { id } })
     await prisma.person.delete({ where: { id: member.personId } })
 
@@ -229,6 +195,7 @@ export async function deleteMembreEquipe(id: string) {
 
     if (userId) {
       try {
+        await unlinkPersonFromDashboardUser(prisma, userId)
         await auth.api.removeUser({ body: { userId }, headers: await headers() })
       } catch { /* non-bloquant */ }
     }

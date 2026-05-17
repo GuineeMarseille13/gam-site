@@ -8,5 +8,5 @@ export interface AvisListRow {
   order: number
   isActive: boolean
   isVerified: boolean
-  role: { labelFr: string; code: string }
+  poste: { labelFr: string; code: string }
 }

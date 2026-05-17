@@ -67,6 +67,7 @@ export const ModelName = {
   EventVideo: 'EventVideo',
   EventImage: 'EventImage',
   ReviewSection: 'ReviewSection',
+  Poste: 'Poste',
   Role: 'Role',
   Review: 'Review',
   ProductSection: 'ProductSection',
@@ -364,6 +365,20 @@ export const ReviewSectionScalarFieldEnum = {
 export type ReviewSectionScalarFieldEnum = (typeof ReviewSectionScalarFieldEnum)[keyof typeof ReviewSectionScalarFieldEnum]
 
 
+export const PosteScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  labelFr: 'labelFr',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PosteScalarFieldEnum = (typeof PosteScalarFieldEnum)[keyof typeof PosteScalarFieldEnum]
+
+
 export const RoleScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -382,7 +397,7 @@ export const ReviewScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  roleId: 'roleId',
+  posteId: 'posteId',
   body: 'body',
   avatarUrl: 'avatarUrl',
   country: 'country',
@@ -477,7 +492,7 @@ export const PersonScalarFieldEnum = {
   phone: 'phone',
   addressId: 'addressId',
   userId: 'userId',
-  roleId: 'roleId',
+  posteId: 'posteId',
   image: 'image',
   showOnSite: 'showOnSite',
   description: 'description',

@@ -1,18 +1,7 @@
 import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { RowActions } from "@/components/bureau/row-actions"
-import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
-import { deletePole } from "./_actions/actions"
+import { PolesList } from "./_components/poles-list"
 
 export const metadata: Metadata = { title: "Pôles" }
 
@@ -30,47 +19,7 @@ export default async function PolesPage() {
       addHref="/bureau/poles/nouveau"
       addLabel="Nouveau pôle"
     >
-      <Card>
-        <CardContent className="px-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6 w-14">Image</TableHead>
-                <TableHead>Nom</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {poles.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="py-10 text-center text-muted-foreground">
-                    Aucun pôle enregistré
-                  </TableCell>
-                </TableRow>
-              ) : (
-                poles.map((pole) => (
-                  <TableRow key={pole.id}>
-                    <TableCell className="pl-6">
-                      <CloudinaryImage imageId={pole.imageId} alt={pole.name} thumbSize={40} />
-                    </TableCell>
-                    <TableCell className="font-medium">{pole.name}</TableCell>
-                    <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
-                      {pole.description ?? "—"}
-                    </TableCell>
-                    <TableCell className="pr-6">
-                      <RowActions
-                        editHref={`/bureau/poles/${pole.id}/modifier`}
-                        onDelete={deletePole.bind(null, pole.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <PolesList poles={poles} />
     </BureauContent>
   )
 }

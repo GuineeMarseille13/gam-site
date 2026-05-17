@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/react"
 import { adminClient } from "better-auth/client/plugins"
+import { betterAuthAdminRoles } from "@/config/better-auth-admin"
 
 /**
  * Base URL des routes Better Auth (`/api/auth`).
@@ -17,7 +18,7 @@ function resolveAuthBaseURL(): string | undefined {
 }
 
 export const authClient = createAuthClient({
-  plugins: [adminClient()],
+  plugins: [adminClient({ roles: betterAuthAdminRoles })],
   baseURL: resolveAuthBaseURL(),
 })
 

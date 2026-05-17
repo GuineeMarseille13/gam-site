@@ -5,7 +5,7 @@ import { z } from "zod"
 import { auth } from "@/lib/auth"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
 
 const serviceIdSchema = z.string().min(1)
 
@@ -29,7 +29,7 @@ const upsertSchema = z
 
 async function requireBureauApiAccess(): Promise<boolean> {
   const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && isBureauDashboardRole(session.user.role)
+  return !!session && sessionCanAccessBureauContenu(session.user.role)
 }
 
 function serializeRow(row: {

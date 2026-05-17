@@ -10,11 +10,11 @@
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
-// Schéma de validation pour la création (roleCode = code métier Role, ex. MEMBER)
+// Schéma de validation pour la création (posteCode = code Poste, ex. MEMBER)
 const createReviewSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  roleCode: z.string().min(1, 'roleCode is required'),
+  posteCode: z.string().min(1, 'posteCode is required'),
   body: z.string().min(1, 'Body is required'),
   avatarUrl: z.string().url('Invalid URL').optional().nullable(),
   country: z.string().optional().nullable(),
@@ -35,20 +35,20 @@ const handlers = createCrudHandler({
   validateUpdate: (data) => updateReviewSchema.parse(data),
   beforeCreate: async (data: unknown) => {
     const parsed = createReviewSchema.parse(data)
-    const { roleCode, ...rest } = parsed
+    const { posteCode, ...rest } = parsed
     const publishedAt =
       rest.isVerified && rest.publishedAt == null ? new Date() : rest.publishedAt
     return {
       ...rest,
       publishedAt,
-      role: { connect: { code: roleCode } },
+      poste: { connect: { code: posteCode } },
     }
   },
   beforeUpdate: async (data: unknown) => {
     const parsed = updateReviewSchema.parse(data)
-    const { roleCode, ...rest } = parsed
-    if (roleCode) {
-      return { ...rest, role: { connect: { code: roleCode } } }
+    const { posteCode, ...rest } = parsed
+    if (posteCode) {
+      return { ...rest, poste: { connect: { code: posteCode } } }
     }
     return rest
   },

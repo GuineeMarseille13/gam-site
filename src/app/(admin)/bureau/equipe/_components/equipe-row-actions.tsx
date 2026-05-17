@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   IconBan,
-  IconCircleCheck,
   IconCircleFilled,
   IconDotsVertical,
   IconEdit,
@@ -43,6 +42,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react"
 
+import { getDashboardAccessRoleLabel } from "@/app/(admin)/bureau/acces/_components/dashboard-access-role-label"
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -58,15 +58,14 @@ interface EquipeRowActionsProps {
   memberId:         string
   editHref:         string
   imageId:          string | null | undefined
-  associationRoleLabel: string | null
+  posteLabel: string | null
   role:             string | null
   description:      string | null
   order:            number
   showOnSite:       boolean
   banned:           boolean
   person:           Person | null
-  onDelete:     () => Promise<unknown>
-  onBanToggle?: () => Promise<unknown>
+  onDelete: () => Promise<unknown>
 }
 
 // ── Constantes ─────────────────────────────────────────────────────────────────
@@ -79,15 +78,20 @@ function buildThumb(imageId: string, size: number) {
 }
 
 const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }> = {
-  admin: {
-    label: "Administrateur",
+  "SUPER-ADMIN": {
+    label: "Super administrateur",
     dot:   "text-amber-500",
     badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40",
   },
-  bureau: {
+  BUREAU: {
     label: "Bureau",
     dot:   "text-blue-500",
     badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40",
+  },
+  "INVITE-BUREAU": {
+    label: "Invité bureau",
+    dot:   "text-violet-500",
+    badge: "bg-violet-50 text-violet-700 ring-violet-200 dark:bg-violet-950/40 dark:text-violet-400 dark:ring-violet-800/40",
   },
 }
 
@@ -96,7 +100,7 @@ const ROLE_STYLES: Record<string, { label: string; dot: string; badge: string }>
 export function EquipeRowActions({
   editHref,
   imageId,
-  associationRoleLabel,
+  posteLabel,
   role,
   description,
   order,
@@ -104,7 +108,6 @@ export function EquipeRowActions({
   banned,
   person,
   onDelete,
-  onBanToggle,
 }: EquipeRowActionsProps) {
   const router = useRouter()
   const [openSheet, setOpenSheet] = useState(false)
@@ -112,15 +115,11 @@ export function EquipeRowActions({
   const [isPending, startTransition] = useTransition()
 
   const fullName = person ? `${person.firstName} ${person.lastName}` : "—"
-  const roleGamLabel = associationRoleLabel
-  const roleStyle  = role ? ROLE_STYLES[role] : null
-
-  function handleBan() {
-    startTransition(async () => {
-      await onBanToggle?.()
-      router.refresh()
-    })
-  }
+  const posteLabelDisplay = posteLabel
+  const roleStyle = role ? ROLE_STYLES[role] : null
+  const roleLabel = role
+    ? (ROLE_STYLES[role]?.label ?? getDashboardAccessRoleLabel(role))
+    : null
 
   function confirmDelete() {
     setOpenDelete(false)
@@ -154,23 +153,6 @@ export function EquipeRowActions({
             Modifier
           </Link>
         </Button>
-        {onBanToggle && (
-          <Button
-            variant="ghost" size="sm"
-            onClick={handleBan}
-            disabled={isPending}
-            className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer"
-          >
-            {isPending ? (
-              <IconLoader2 className="size-3.5 animate-spin" />
-            ) : banned ? (
-              <IconCircleCheck className="size-3.5 text-emerald-600" />
-            ) : (
-              <IconBan className="size-3.5 text-amber-600" />
-            )}
-            {banned ? "Débannir" : "Bannir"}
-          </Button>
-        )}
         <Button
           variant="ghost" size="sm"
           onClick={() => setOpenDelete(true)}
@@ -207,18 +189,6 @@ export function EquipeRowActions({
                 Modifier
               </Link>
             </DropdownMenuItem>
-            {onBanToggle && (
-              <DropdownMenuItem
-                onClick={handleBan}
-                disabled={isPending}
-                className="rounded-lg px-3 py-2 cursor-pointer focus:bg-muted focus:text-foreground"
-              >
-                {banned
-                  ? <><IconCircleCheck className="size-4 text-emerald-600" />Débannir</>
-                  : <><IconBan className="size-4 text-amber-600" />Bannir</>
-                }
-              </DropdownMenuItem>
-            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => setOpenDelete(true)}
@@ -276,17 +246,24 @@ export function EquipeRowActions({
               {/* Identité */}
               <div className="relative z-10 text-center space-y-1">
                 <p className="text-2xl font-bold tracking-tight text-foreground">{fullName}</p>
-                {roleGamLabel && (
-                  <p className="text-sm font-medium text-muted-foreground">{roleGamLabel}</p>
+                {posteLabelDisplay && (
+                  <p className="text-sm font-medium text-muted-foreground">{posteLabelDisplay}</p>
                 )}
               </div>
 
               {/* Badges */}
               <div className="relative z-10 flex flex-wrap items-center justify-center gap-2">
-                {roleStyle && (
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${roleStyle.badge}`}>
-                    <IconCircleFilled className={`size-1.5 ${roleStyle.dot}`} />
-                    {roleStyle.label}
+                {roleLabel && (
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
+                      roleStyle?.badge ??
+                      "bg-muted text-muted-foreground ring-border dark:bg-muted/40"
+                    }`}
+                  >
+                    <IconCircleFilled
+                      className={`size-1.5 ${roleStyle?.dot ?? "text-muted-foreground"}`}
+                    />
+                    {roleLabel}
                   </span>
                 )}
                 {banned ? (

@@ -35,7 +35,8 @@ export async function deleteAdministrationAccessUser(userId: string): Promise<Ad
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } })
-  if (!user || user.role !== "administration") {
+  const permanenceRoles = ["ADMIN-PERMADMIN", "PERMADMIN", "INVITE-PERMADMIN"] as const
+  if (!user || !permanenceRoles.includes(user.role as (typeof permanenceRoles)[number])) {
     return { success: false, error: "Compte introuvable ou rôle incorrect." }
   }
 
@@ -75,7 +76,8 @@ export async function updateAdministrationAccessUser(
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } })
-  if (!user || user.role !== "administration") {
+  const permanenceRoles = ["ADMIN-PERMADMIN", "PERMADMIN", "INVITE-PERMADMIN"] as const
+  if (!user || !permanenceRoles.includes(user.role as (typeof permanenceRoles)[number])) {
     return { success: false, error: "Compte introuvable ou rôle incorrect." }
   }
 

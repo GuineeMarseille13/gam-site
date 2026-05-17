@@ -12,18 +12,18 @@ import type { AvisActionState } from "../_actions/actions"
 
 const MAX_MB = 10
 
-interface RoleOption {
+interface PosteOption {
   code: string
   labelFr: string
 }
 
 interface AvisFormProps {
   action: (prev: AvisActionState, formData: FormData) => Promise<AvisActionState>
-  roles: RoleOption[]
+  postes: PosteOption[]
   defaultValues?: {
     firstName?: string
     lastName?: string
-    roleCode?: string
+    posteCode?: string
     body?: string
     country?: string | null
     rating?: number
@@ -37,7 +37,7 @@ interface AvisFormProps {
 /**
  * Formulaire création / édition d’un avis affiché sur la page d’accueil.
  */
-export function AvisForm({ action, roles, defaultValues }: AvisFormProps) {
+export function AvisForm({ action, postes, defaultValues }: AvisFormProps) {
   const [state, formAction] = useActionState(action, null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -146,18 +146,18 @@ export function AvisForm({ action, roles, defaultValues }: AvisFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="roleCode">Rôle affiché</Label>
+            <Label htmlFor="posteCode">Poste affiché</Label>
             <select
-              id="roleCode"
-              name="roleCode"
+              id="posteCode"
+              name="posteCode"
               required
-              defaultValue={defaultValues?.roleCode ?? ""}
+              defaultValue={defaultValues?.posteCode ?? ""}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
             >
               <option value="" disabled>
                 Choisir…
               </option>
-              {roles.map((r) => (
+              {postes.map((r) => (
                 <option key={r.code} value={r.code}>
                   {r.labelFr}
                 </option>

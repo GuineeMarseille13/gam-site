@@ -10,7 +10,7 @@
  */
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getRoleIdByCode } from '@/helpers/association-role-helpers'
+import { getPosteIdByCode } from '@/helpers/poste-helpers'
 import { cloudinaryImageUrl } from '@/lib/cloudinary-delivery'
 
 function buildAvatarUrl(imageId: string) {
@@ -34,7 +34,7 @@ export async function GET() {
 
     const teamPersons = await prisma.person.findMany({
       where: { id: { in: teamPersonIds } },
-      select: { id: true, firstName: true, lastName: true, role: { select: { labelFr: true } } },
+      select: { id: true, firstName: true, lastName: true, poste: { select: { labelFr: true } } },
     })
     const teamPersonsById = Object.fromEntries(teamPersons.map((p) => [p.id, p]))
 
@@ -46,7 +46,7 @@ export async function GET() {
           id: m.id,
           name: `${person.firstName} ${person.lastName}`,
           image: buildAvatarUrl(m.imageId!),
-          role: person.role?.labelFr ?? 'Membre du bureau',
+          role: person.poste?.labelFr ?? 'Membre du bureau',
           initials: initials(person.firstName, person.lastName),
         }
       })
@@ -55,12 +55,12 @@ export async function GET() {
     // Exclure les personnes déjà présentes via TeamMember pour éviter les doublons
     const teamPersonIdSet = new Set(teamPersonIds)
 
-    const volunteerRoleId = await getRoleIdByCode(prisma, 'VOLUNTEER')
+    const volunteerPosteId = await getPosteIdByCode(prisma, 'VOLUNTEER')
 
-    const volunteerPersons = volunteerRoleId
+    const volunteerPersons = volunteerPosteId
       ? await prisma.person.findMany({
           where: {
-            roleId: volunteerRoleId,
+            posteId: volunteerPosteId,
             showOnSite: true,
             image: { not: null },
             id: { notIn: [...teamPersonIdSet] },

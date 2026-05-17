@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 
 import { auth } from "@/lib/auth"
 import { getAdherentsForDashboard } from "@/helpers/adherents"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import { sessionCanAccessBureauAdminAdherents } from "@/helpers/api-dashboard-auth"
 
 /**
  * Liste des adhérents pour le dashboard bureau (session requise, rôle admin ou bureau).
@@ -11,7 +11,7 @@ import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
 export async function GET(): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: await headers() })
 
-  if (!session || !isBureauDashboardRole(session.user.role)) {
+  if (!session || !sessionCanAccessBureauAdminAdherents(session.user.role)) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 

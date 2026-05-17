@@ -81,7 +81,7 @@ export function AvisList({ rows }: AvisListProps) {
                         isActive={r.isActive}
                       />
                     </TableCell>
-                    <TableCell>{r.role.labelFr}</TableCell>
+                    <TableCell>{r.poste.labelFr}</TableCell>
                     <TableCell className="max-w-[140px] truncate text-muted-foreground">
                       {r.country ?? "—"}
                     </TableCell>
