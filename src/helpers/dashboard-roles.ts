@@ -16,6 +16,7 @@ export const ADMINISTRATION_DASHBOARD_ROLES = [
   "BUREAU",
   "ADMIN-PERMADMIN",
   "PERMADMIN",
+  "INVITE-PERMADMIN",
 ] as const satisfies readonly SystemRoleCode[]
 
 /** Rôle super administrateur (actions réservées). */

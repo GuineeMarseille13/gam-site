@@ -23,19 +23,19 @@ export const SYSTEM_ROLES_SEED = [
   {
     code: "ADMIN-PERMADMIN",
     labelFr: "Admin permanence administrative",
-    description: "Administration permanence — droits étendus",
+    description: "Administration — accès complet (hors autres dashboards)",
     sortOrder: 40,
   },
   {
     code: "PERMADMIN",
     labelFr: "Utilisateur Permanence administrative",
-    description: "Dashboard Administration",
+    description: "Administration — sans accès, calendrier ni suppression bénévole",
     sortOrder: 50,
   },
   {
     code: "INVITE-PERMADMIN",
     labelFr: "Invité permanence administrative",
-    description: "Accès limité au dashboard Administration",
+    description: "Administration — consultation bénévoles uniquement (liste)",
     sortOrder: 60,
   },
 ] as const
@@ -51,3 +51,18 @@ export const BUREAU_ACCOUNT_ROLES = SYSTEM_ROLES_SEED.filter((r) =>
 
 /** Tous les rôles d’accès (filtres, badges comptes). */
 export const ALL_ACCOUNT_ROLES = SYSTEM_ROLES_SEED
+
+const PERMANENCE_ADMIN_ROLE_CODES = [
+  "ADMIN-PERMADMIN",
+  "PERMADMIN",
+  "INVITE-PERMADMIN",
+] as const
+
+export type PermanenceAdminRoleCode = (typeof PERMANENCE_ADMIN_ROLE_CODES)[number]
+
+/** Rôles du dashboard Administration (permanence). */
+export const PERMANENCE_ADMIN_ACCOUNT_ROLES = SYSTEM_ROLES_SEED.filter((r) =>
+  (PERMANENCE_ADMIN_ROLE_CODES as readonly string[]).includes(r.code),
+)
+
+export { PERMANENCE_ADMIN_ROLE_CODES }

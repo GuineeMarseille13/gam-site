@@ -5,7 +5,7 @@ import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { requireBenevolesManagement, requireBureauAdminDelete } from "@/lib/auth-guard"
+import { requireBenevoleDelete, requireBenevolesWrite } from "@/lib/auth-guard"
 import { getPosteIdByCode } from "@/helpers/poste-helpers"
 
 const BENEVOLES_LIST_PATHS = ["/bureau/benevoles", "/administration/benevoles"] as const
@@ -39,7 +39,7 @@ function countryCode(country: string) {
 // ── Créer ──────────────────────────────────────────────────────────────────────
 
 export async function createBenevole(formData: FormData) {
-  await requireBenevolesManagement()
+  await requireBenevolesWrite()
 
   const firstName  = formData.get("firstName") as string
   const lastName   = formData.get("lastName")  as string
@@ -90,7 +90,7 @@ export async function createBenevole(formData: FormData) {
 // ── Modifier ───────────────────────────────────────────────────────────────────
 
 export async function updateBenevole(id: string, formData: FormData) {
-  await requireBenevolesManagement()
+  await requireBenevolesWrite()
 
   const volunteer = await prisma.volunteer.findUnique({ where: { id } })
   if (!volunteer) return
@@ -160,7 +160,7 @@ export async function updateBenevole(id: string, formData: FormData) {
 // ── Supprimer ──────────────────────────────────────────────────────────────────
 
 export async function deleteBenevole(id: string) {
-  await requireBureauAdminDelete()
+  await requireBenevoleDelete()
   await prisma.volunteer.delete({ where: { id } })
   revalidateBenevolesLists()
 }

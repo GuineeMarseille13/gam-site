@@ -1,18 +1,19 @@
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
+import { getSessionDashboardPermissions } from "@/lib/auth-guard"
 
-/**
- * Édition d’un accès : réservée aux administrateurs (même règle que la création de compte).
- */
+/** Édition d’un accès permanence. */
 export default async function ModifierAccesAdministrationLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session || session.user.role !== "SUPER-ADMIN") {
-    redirect("/administration/acces")
+  try {
+    const { permissions } = await getSessionDashboardPermissions()
+    if (!permissions.canManageAdministrationAcces) {
+      redirect("/administration?error=forbidden")
+    }
+  } catch {
+    redirect("/connexion-administration")
   }
   return <>{children}</>
 }

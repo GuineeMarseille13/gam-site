@@ -8,7 +8,7 @@ import { getPosteIdByCode } from "@/helpers/poste-helpers"
 import {
   requireAdmin,
   requireBureauAdminBenevoles,
-  requireBureauAdminDelete,
+  requireBenevoleDelete,
   requireBureauAdminMembres,
 } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
@@ -326,7 +326,7 @@ export async function updateBenevole(personId: string, formData: FormData) {
 // ── Supprimer un bénévole (table Person) ──────────────────────────────────────
 
 export async function deleteBenevole(personId: string) {
-  await requireBureauAdminDelete()
+  await requireBenevoleDelete()
   try {
     const existing = await prisma.person.findUnique({
       where: { id: personId },

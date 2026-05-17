@@ -11,13 +11,22 @@ export type DashboardBasePath = "/bureau" | "/administration"
 interface BenevolesListSectionProps {
   benevoles: BenevoleListRow[]
   basePath: DashboardBasePath
+  canAdd?: boolean
+  canEdit?: boolean
+  canDelete?: boolean
 }
 
 /**
  * Liste bénévoles partagée entre /bureau/benevoles et /administration/benevoles.
  */
-export function BenevolesListSection({ benevoles, basePath }: BenevolesListSectionProps) {
-  const nouveauHref = `${basePath}/benevoles/nouveau`
+export function BenevolesListSection({
+  benevoles,
+  basePath,
+  canAdd = true,
+  canEdit = true,
+  canDelete = true,
+}: BenevolesListSectionProps) {
+  const nouveauHref = canAdd ? `${basePath}/benevoles/nouveau` : undefined
   const dashboard: BureauContentDashboard =
     basePath === "/administration" ? "administration" : "bureau"
   const isAdministration = dashboard === "administration"
@@ -27,7 +36,7 @@ export function BenevolesListSection({ benevoles, basePath }: BenevolesListSecti
       title="Bénévoles"
       description={`${benevoles.length} bénévole${benevoles.length > 1 ? "s" : ""} — Nos héros du quotidien`}
       addHref={nouveauHref}
-      addLabel="Nouveau bénévole"
+      addLabel={canAdd ? "Nouveau bénévole" : undefined}
       dashboard={dashboard}
     >
       {benevoles.length === 0 ? (
@@ -171,6 +180,8 @@ export function BenevolesListSection({ benevoles, basePath }: BenevolesListSecti
                     person={b.person}
                     basePath={basePath}
                     dashboard={dashboard}
+                    canEdit={canEdit}
+                    canDelete={canDelete}
                   />
                 </div>
               )

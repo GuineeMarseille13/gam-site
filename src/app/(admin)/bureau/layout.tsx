@@ -11,6 +11,7 @@ import {
 import { BureauSidebar } from "@/components/bureau/bureau-sidebar"
 import { BureauHeader } from "@/components/bureau/bureau-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { DashboardAccessAlert } from "@/components/auth/dashboard-access-alert"
 import { BureauPermissionsProvider } from "./_components/bureau-permissions-provider"
 
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export default async function BureauShellLayout({ children }: { children: React.
 
   if (!isBureauDashboardRole(role) || !permissions.canAccessBureauDashboard) {
     if (isPermanenceOnlyRole(role)) {
-      redirect("/administration")
+      redirect("/administration?info=wrong_dashboard")
     }
     redirect("/connexion?error=unauthorized")
   }
@@ -64,6 +65,7 @@ export default async function BureauShellLayout({ children }: { children: React.
         />
         <SidebarInset className="print:m-0 print:ml-0 print:rounded-none print:shadow-none">
           <BureauHeader />
+          <DashboardAccessAlert />
           <main className="flex flex-1 flex-col">{children}</main>
         </SidebarInset>
       </SidebarProvider>

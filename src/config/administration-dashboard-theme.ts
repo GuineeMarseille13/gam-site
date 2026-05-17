@@ -68,3 +68,30 @@ export const administrationIconBadgeClassName = cn(
  */
 export const administrationMutedSurfaceClassName =
   "bg-[var(--admin-muted)]"
+
+/**
+ * Action destructive (suppression) — token sémantique, cohérent avec les autres modales admin.
+ */
+export const administrationDestructiveButtonClassName = cn(
+  "bg-destructive text-destructive-foreground shadow-sm",
+  "hover:bg-destructive/90",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 focus-visible:ring-offset-2",
+)
+
+/** Lien / bouton ghost « Supprimer » dans les listes. */
+export const administrationDestructiveGhostClassName = cn(
+  "text-destructive hover:bg-destructive/10 hover:text-destructive",
+  "dark:hover:bg-destructive/15",
+)
+
+/** En-tête visuel des modales de suppression (fond atténué du thème). */
+export const administrationDeleteDialogHeaderClassName = cn(
+  "flex flex-col items-center gap-3 px-8 pb-6 pt-8",
+  administrationMutedSurfaceClassName,
+)
+
+/** Pastille icône corbeille dans une modale de suppression. */
+export const administrationDeleteDialogIconClassName = cn(
+  "flex size-14 items-center justify-center rounded-2xl ring-4 ring-[var(--admin-muted)]",
+  administrationIconBadgeClassName,
+)

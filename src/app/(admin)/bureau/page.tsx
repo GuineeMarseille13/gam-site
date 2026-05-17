@@ -1,13 +1,17 @@
 import type { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
+import { headers } from "next/headers"
 import {
   IconIdBadge2,
   IconHeart,
   IconShoppingCart,
   IconUsers,
 } from "@tabler/icons-react"
+
 import { BureauRecentPayments } from "@/components/bureau/bureau-recent-payments"
+import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { formatCurrency } from "@/helpers/format-currency"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 
 export const metadata: Metadata = { title: "Vue d'ensemble" }
 
@@ -47,42 +51,51 @@ const kpiConfig = [
     key: "adhesions" as const,
     label: "Adhésions",
     icon: IconIdBadge2,
-    color: "amber",
     iconBg: "bg-amber-100",
     iconColor: "text-amber-600",
     border: "border-amber-200",
+    requiresPaiements: true,
   },
   {
     key: "dons" as const,
     label: "Dons",
     icon: IconHeart,
-    color: "rose",
     iconBg: "bg-rose-100",
     iconColor: "text-rose-600",
     border: "border-rose-200",
+    requiresPaiements: true,
   },
   {
     key: "commandes" as const,
     label: "Commandes",
     icon: IconShoppingCart,
-    color: "blue",
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",
     border: "border-blue-200",
+    requiresPaiements: true,
   },
   {
     key: "personnes" as const,
     label: "Personnes",
     icon: IconUsers,
-    color: "violet",
     iconBg: "bg-violet-100",
     iconColor: "text-violet-600",
     border: "border-violet-200",
+    requiresPaiements: false,
   },
 ]
 
 export default async function BureauOverviewPage() {
-  const [stats, recentPayments] = await Promise.all([getStats(), getRecentPayments()])
+  const session = await auth.api.getSession({ headers: await headers() })
+  const permissions = getDashboardPermissions(session?.user.role)
+  const canAccessPaiements = permissions.canAccessPaiements
+
+  const stats = await getStats()
+  const recentPayments = canAccessPaiements ? await getRecentPayments() : []
+
+  const visibleKpis = kpiConfig.filter(
+    (kpi) => !kpi.requiresPaiements || canAccessPaiements,
+  )
 
   const subValues: Record<string, string> = {
     adhesions: formatCurrency(stats.montantAdhesions, { maximumFractionDigits: 0 }) + " collectés",
@@ -100,15 +113,19 @@ export default async function BureauOverviewPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
-      {/* Titre */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Vue d&apos;ensemble</h1>
         <p className="text-sm text-muted-foreground mt-1">Tableau de bord de l&apos;association</p>
       </div>
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpiConfig.map((kpi) => (
+      <div
+        className={
+          visibleKpis.length === 1
+            ? "grid grid-cols-1 gap-4 max-w-sm"
+            : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        }
+      >
+        {visibleKpis.map((kpi) => (
           <div
             key={kpi.key}
             className={`rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md ${kpi.border}`}
@@ -129,8 +146,7 @@ export default async function BureauOverviewPage() {
         ))}
       </div>
 
-      {/* Paiements récents */}
-      <BureauRecentPayments payments={recentPayments} />
+      {canAccessPaiements && <BureauRecentPayments payments={recentPayments} />}
     </div>
   )
 }

@@ -42,6 +42,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react"
 
+import { useBureauPermissions } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
 import { getDashboardAccessRoleLabel } from "@/app/(admin)/bureau/acces/_components/dashboard-access-role-label"
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery"
 
@@ -110,6 +111,8 @@ export function EquipeRowActions({
   onDelete,
 }: EquipeRowActionsProps) {
   const router = useRouter()
+  const permissions = useBureauPermissions()
+  const canDelete = permissions.canDeleteAdminEntities
   const [openSheet, setOpenSheet] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -153,15 +156,18 @@ export function EquipeRowActions({
             Modifier
           </Link>
         </Button>
-        <Button
-          variant="ghost" size="sm"
-          onClick={() => setOpenDelete(true)}
-          disabled={isPending}
-          className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
-        >
-          <IconTrash className="size-3.5" />
-          Supprimer
-        </Button>
+        {canDelete && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setOpenDelete(true)}
+            disabled={isPending}
+            className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
+          >
+            <IconTrash className="size-3.5" />
+            Supprimer
+          </Button>
+        )}
       </div>
 
       {/* ── Menu ⋮ — mobile / tablette ──────────────────────────────────── */}
@@ -189,15 +195,19 @@ export function EquipeRowActions({
                 Modifier
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setOpenDelete(true)}
-              disabled={isPending}
-              className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
-            >
-              <IconTrash className="size-4" />
-              Supprimer
-            </DropdownMenuItem>
+            {canDelete && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setOpenDelete(true)}
+                  disabled={isPending}
+                  className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
+                >
+                  <IconTrash className="size-4" />
+                  Supprimer
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

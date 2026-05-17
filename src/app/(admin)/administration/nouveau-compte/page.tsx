@@ -1,20 +1,6 @@
-import type { Metadata } from "next"
-import { BureauContent } from "@/components/bureau/bureau-content"
-import { AdministrationCreateAccountForm } from "../_components/create-administration-account-form"
-import { createAdministrationAccount } from "../_actions/create-administration-account"
+import { redirect } from "next/navigation"
 
-export const metadata: Metadata = {
-  title: "Nouvel accès administration",
-  description: "Créer un compte avec le rôle Administration",
-}
-
-export default function NouveauCompteAdministrationPage() {
-  return (
-    <BureauContent
-      title="Nouvel accès administration"
-      backHref="/administration/acces"
-    >
-      <AdministrationCreateAccountForm action={createAdministrationAccount} />
-    </BureauContent>
-  )
+/** Redirection vers le flux unifié « Accès administration ». */
+export default function NouveauCompteAdministrationRedirectPage() {
+  redirect("/administration/acces/nouveau")
 }

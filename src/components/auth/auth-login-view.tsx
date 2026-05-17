@@ -4,7 +4,9 @@ import { useState, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { signIn } from "@/lib/auth-client"
+import type { AuthDashboardTarget } from "@/helpers/resolve-post-auth-redirect"
+import { resolvePostAuthRedirect } from "@/helpers/resolve-post-auth-redirect"
+import { authClient, signIn } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,6 +22,10 @@ export interface AuthLoginViewProps {
   haloClassName: string
   submitButtonClassName: string
   alternateLink?: { href: string; label: string }
+  /** Espace visé par cette page de connexion (contrôle du rôle après auth). */
+  accessTarget: AuthDashboardTarget
+  /** Message affiché si redirection depuis le layout (?error=unauthorized). */
+  unauthorizedMessage?: string
 }
 
 /**
@@ -33,17 +39,24 @@ export function AuthLoginView({
   haloClassName,
   submitButtonClassName,
   alternateLink,
+  accessTarget,
+  unauthorizedMessage,
 }: AuthLoginViewProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") ?? defaultRedirect
   const isUnauthorized = searchParams.get("error") === "unauthorized"
 
+  const defaultUnauthorizedMessage =
+    accessTarget === "bureau"
+      ? "Ce compte n’a pas accès à l’espace Bureau GAM. Utilisez la connexion Administration si vous êtes permanent(e), ou contactez un administrateur."
+      : "Ce compte n’a pas accès à l’espace Administration. Utilisez la connexion Bureau si vous êtes membre du bureau."
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(
-    isUnauthorized ? "Accès non autorisé." : null,
+    isUnauthorized ? (unauthorizedMessage ?? defaultUnauthorizedMessage) : null,
   )
   const [isPending, startTransition] = useTransition()
 
@@ -65,7 +78,21 @@ export function AuthLoginView({
       })
 
       if (!result.error) {
-        router.push(redirect)
+        const session = await authClient.getSession()
+        const role = session.data?.user?.role ?? null
+        const access = resolvePostAuthRedirect(role, accessTarget, redirect)
+
+        if (access.status === "denied") {
+          setError(access.message)
+          return
+        }
+
+        const href =
+          access.status === "wrong_dashboard"
+            ? `${access.href}?info=wrong_dashboard`
+            : access.href
+
+        router.push(href)
         router.refresh()
         return
       }

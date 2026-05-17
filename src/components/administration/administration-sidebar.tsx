@@ -18,6 +18,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 
+import { useAdministrationPermissions } from "@/app/(admin)/administration/_components/administration-permissions-provider"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -35,7 +36,7 @@ type NavItem = {
   title: string
   url: string
   icon: React.ElementType
-  adminOnly?: boolean
+  visible: boolean
 }
 
 const BASE = "/administration"
@@ -43,34 +44,16 @@ const DEMANDE_BENEFICIAIRE = `${BASE}/demande-beneficiaire`
 const SUIVI_DEMANDE = `${BASE}/suivi-demande`
 const CAMPUS_FRANCE_DEPOTS = `${BASE}/campus-france-depots`
 
-const mainNav: NavItem[] = [
-  { title: "Vue d'ensemble", url: BASE, icon: IconDashboard },
-  { title: "Présence Bénévoles", url: `${BASE}/permanence-administrative`, icon: IconCalendarCheck },
-  { title: "Calendrier permanence", url: `${BASE}/calendrier-permanence`, icon: IconCalendar },
-  { title: "Demande bénéficiaire", url: DEMANDE_BENEFICIAIRE, icon: IconClipboardList },
-  {
-    title: "Campus France — dépôts",
-    url: CAMPUS_FRANCE_DEPOTS,
-    icon: IconSchool,
-  },
-  { title: "Suivi demande", url: SUIVI_DEMANDE, icon: IconListDetails },
-  { title: "Bénévoles", url: `${BASE}/benevoles`, icon: IconHandStop },
-  { title: "Statistiques", url: `${BASE}/statistiques`, icon: IconChartBar },
-  {
-    title: "Accès administration",
-    url: `${BASE}/acces`,
-    icon: IconUsers,
-  },
-]
+function NavMain({ pathname, items }: { pathname: string; items: NavItem[] }) {
+  const visibleItems = items.filter((item) => item.visible)
 
-function NavMain({ pathname, role }: { pathname: string; role?: string }) {
-  const items = mainNav.filter((item) => !item.adminOnly || role === "SUPER-ADMIN")
+  if (visibleItems.length === 0) return null
 
   return (
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => {
+          {visibleItems.map((item) => {
             const isActive =
               item.url === BASE
                 ? pathname === BASE
@@ -81,9 +64,9 @@ function NavMain({ pathname, role }: { pathname: string; role?: string }) {
                     ? pathname === DEMANDE_BENEFICIAIRE ||
                       pathname.startsWith(`${DEMANDE_BENEFICIAIRE}/`)
                     : item.url === SUIVI_DEMANDE
-                        ? pathname === SUIVI_DEMANDE ||
-                          pathname.startsWith(`${SUIVI_DEMANDE}/`)
-                        : pathname.startsWith(item.url)
+                      ? pathname === SUIVI_DEMANDE ||
+                        pathname.startsWith(`${SUIVI_DEMANDE}/`)
+                      : pathname.startsWith(item.url)
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
@@ -129,7 +112,65 @@ interface AdministrationSidebarProps extends React.ComponentProps<typeof Sidebar
  */
 export function AdministrationSidebar({ currentUser, role, ...props }: AdministrationSidebarProps) {
   const pathname = usePathname()
+  const permissions = useAdministrationPermissions()
   const user = currentUser ?? { name: "", email: "", image: "" }
+
+  const mainNav: NavItem[] = [
+    {
+      title: "Vue d'ensemble",
+      url: BASE,
+      icon: IconDashboard,
+      visible: permissions.canAccessAdminOverview,
+    },
+    {
+      title: "Présence Bénévoles",
+      url: `${BASE}/permanence-administrative`,
+      icon: IconCalendarCheck,
+      visible: permissions.canAccessAdminPresence,
+    },
+    {
+      title: "Calendrier permanence",
+      url: `${BASE}/calendrier-permanence`,
+      icon: IconCalendar,
+      visible: permissions.canAccessAdminCalendrier,
+    },
+    {
+      title: "Demande bénéficiaire",
+      url: DEMANDE_BENEFICIAIRE,
+      icon: IconClipboardList,
+      visible: permissions.canAccessAdminDemandeBeneficiaire,
+    },
+    {
+      title: "Campus France — dépôts",
+      url: CAMPUS_FRANCE_DEPOTS,
+      icon: IconSchool,
+      visible: permissions.canAccessAdminCampusFrance,
+    },
+    {
+      title: "Suivi demande",
+      url: SUIVI_DEMANDE,
+      icon: IconListDetails,
+      visible: permissions.canAccessAdminSuiviDemande,
+    },
+    {
+      title: "Bénévoles",
+      url: `${BASE}/benevoles`,
+      icon: IconHandStop,
+      visible: permissions.canAccessAdminBenevolesList,
+    },
+    {
+      title: "Statistiques",
+      url: `${BASE}/statistiques`,
+      icon: IconChartBar,
+      visible: permissions.canAccessAdminStatistiques,
+    },
+    {
+      title: "Accès administration",
+      url: `${BASE}/acces`,
+      icon: IconUsers,
+      visible: permissions.canAccessAdministrationAcces,
+    },
+  ]
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -141,7 +182,7 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
               size="lg"
               className="data-[slot=sidebar-menu-button]:p-2!"
             >
-                <Link href={BASE}>
+              <Link href={BASE}>
                 <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 shadow-sm text-white font-black text-base leading-none select-none transition-[transform,box-shadow] hover:shadow-md hover:shadow-sky-600/30 hover:brightness-105">
                   G
                 </div>
@@ -156,12 +197,12 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        <NavMain pathname={pathname} role={role} />
+        <NavMain pathname={pathname} items={mainNav} />
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
         <SidebarMenu>
-          {(role === "SUPER-ADMIN" || role === "BUREAU") && (
+          {permissions.canAccessBureauDashboardCross && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link

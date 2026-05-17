@@ -6,8 +6,10 @@ import { AuthLoginView } from "@/components/auth/auth-login-view"
 function ConnexionAdministrationContent() {
   return (
     <AuthLoginView
+      accessTarget="administration"
       defaultRedirect="/administration"
       title="Permanence Administrative GAM"
+      unauthorizedMessage="Ce compte n’a pas accès à l’espace Administration. Si vous êtes membre du bureau GAM, utilisez la connexion Bureau ci-dessous."
       description="Connectez-vous pour accéder au dashboard"
       footnote="Page reservée exclusivement aux personnes autorisées"
       haloClassName="bg-sky-400/10"

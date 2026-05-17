@@ -1,3 +1,4 @@
+import { requireBenevolesManagement } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"
 
 export type BenevoleListRow = Awaited<ReturnType<typeof getBenevolesForDashboard>>[number]
@@ -6,6 +7,7 @@ export type BenevoleListRow = Awaited<ReturnType<typeof getBenevolesForDashboard
  * Liste des bénévoles pour les dashboards Bureau et Administration (même source de données).
  */
 export async function getBenevolesForDashboard() {
+  await requireBenevolesManagement()
   const volunteers = await prisma.volunteer.findMany({ orderBy: { createdAt: "desc" } })
   if (volunteers.length === 0) return []
   const personIds = volunteers.map((v) => v.personId)

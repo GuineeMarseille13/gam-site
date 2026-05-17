@@ -1,19 +1,19 @@
 import { redirect } from "next/navigation"
 import { getSessionDashboardPermissions } from "@/lib/auth-guard"
 
-/** Création de comptes permanence — réservée aux rôles avec accès « Accès administration ». */
-export default async function NouveauCompteAdministrationLayout({
+export default async function AdministrationAccesLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   try {
     const { permissions } = await getSessionDashboardPermissions()
-    if (!permissions.canManageAdministrationAcces) {
+    if (!permissions.canAccessAdministrationAcces) {
       redirect("/administration?error=forbidden")
     }
   } catch {
     redirect("/connexion-administration")
   }
+
   return <>{children}</>
 }

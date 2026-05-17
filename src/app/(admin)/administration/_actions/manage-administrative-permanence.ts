@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { requireAdministrationDashboard } from "@/lib/auth-guard"
+import { requireAdminCalendrier, requireAdministrationDashboard } from "@/lib/auth-guard"
 import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants"
 import { DEFAULT_ADMINISTRATIVE_PERMANENCE_SLOTS_2026 } from "@/helpers/administrative-permanence/default-admin-slots"
 
@@ -31,7 +31,7 @@ export async function upsertAdministrativePermanenceSlotAction(
   raw: unknown,
 ): Promise<AdministrativePermanenceActionResult> {
   try {
-    await requireAdministrationDashboard()
+    await requireAdminCalendrier()
   } catch {
     return { success: false, error: "Session requise." }
   }
@@ -119,7 +119,7 @@ export async function deleteAdministrativePermanenceSlotAction(
   raw: unknown,
 ): Promise<AdministrativePermanenceActionResult> {
   try {
-    await requireAdministrationDashboard()
+    await requireAdminCalendrier()
   } catch {
     return { success: false, error: "Session requise." }
   }
@@ -153,12 +153,6 @@ export async function deleteAdministrativePermanenceSlotAction(
 export async function saveAdministrativePermanenceSettingsAction(
   raw: unknown,
 ): Promise<AdministrativePermanenceActionResult> {
-  try {
-    await requireAdministrationDashboard()
-  } catch {
-    return { success: false, error: "Session requise." }
-  }
-
   const parsed = administrativePermanenceSettingsInputSchema.safeParse(raw)
   if (!parsed.success) {
     return {
@@ -169,6 +163,16 @@ export async function saveAdministrativePermanenceSettingsAction(
   }
 
   const { horairesCardText, showCampusFranceCard } = parsed.data
+
+  try {
+    if (horairesCardText !== undefined) {
+      await requireAdminCalendrier()
+    } else {
+      await requireAdministrationDashboard()
+    }
+  } catch {
+    return { success: false, error: "Session requise." }
+  }
 
   try {
     const existing = await prisma.administrativePermanenceSettings.findUnique({
@@ -211,7 +215,7 @@ export async function saveAdministrativePermanenceSettingsAction(
  */
 export async function seedDefaultAdministrativePermanenceSlotsAction(): Promise<AdministrativePermanenceActionResult> {
   try {
-    await requireAdministrationDashboard()
+    await requireAdminCalendrier()
   } catch {
     return { success: false, error: "Session requise." }
   }

@@ -15,7 +15,6 @@ import {
 } from "@/helpers/dashboard-roles"
 
 const BUREAU_DASHBOARD = BUREAU_DASHBOARD_ROLES as readonly string[]
-const ADMINISTRATION_ZONE = ADMINISTRATION_DASHBOARD_ROLES as readonly string[]
 
 async function getSessionOrThrow() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -34,6 +33,12 @@ function assertCapability(
   }
 }
 
+function assertAdministrationDashboard(role: string | null | undefined): void {
+  if (!getDashboardPermissions(role).canAccessAdministrationDashboard) {
+    throw new Error("Accès non autorisé")
+  }
+}
+
 /**
  * Vérifie que l'utilisateur connecté a accès au dashboard Bureau.
  */
@@ -42,17 +47,18 @@ export async function requireBureau() {
   if (!BUREAU_DASHBOARD.includes(session.user.role ?? "")) {
     throw new Error("Accès non autorisé")
   }
+  if (!getDashboardPermissions(session.user.role).canAccessBureauDashboard) {
+    throw new Error("Accès non autorisé")
+  }
   return session
 }
 
 /**
- * Accès aux fonctionnalités partagées entre Bureau et Administration.
+ * Accès au dashboard Administration (toute fonctionnalité autorisée pour le rôle).
  */
 export async function requireAdministrationDashboard() {
   const session = await getSessionOrThrow()
-  if (!ADMINISTRATION_ZONE.includes(session.user.role ?? "")) {
-    throw new Error("Accès non autorisé")
-  }
+  assertAdministrationDashboard(session.user.role)
   return session
 }
 
@@ -102,15 +108,42 @@ export async function requireBureauAdminBenevoles() {
   return session
 }
 
-/**
- * Gestion des bénévoles (dashboard Bureau ou Administration).
- */
+/** Lecture / gestion bénévoles (Bureau ou Administration). */
 export async function requireBenevolesManagement() {
   const session = await getSessionOrThrow()
   const role = session.user.role ?? ""
+  const permissions = getDashboardPermissions(role)
+  if (permissions.canAccessAdminBenevolesList || permissions.canManageAdminBenevoles) {
+    return session
+  }
+  if (hasDashboardCapability(role, DASHBOARD_CAPABILITY.bureauAdminBenevoles)) {
+    return session
+  }
+  throw new Error("Accès non autorisé")
+}
+
+/** Création / modification bénévoles (Bureau ou Administration). */
+export async function requireBenevolesWrite() {
+  const session = await getSessionOrThrow()
+  const role = session.user.role ?? ""
+  const permissions = getDashboardPermissions(role)
   if (
-    hasDashboardCapability(role, DASHBOARD_CAPABILITY.bureauAdminBenevoles) ||
-    ADMINISTRATION_ZONE.includes(role)
+    permissions.canManageAdminBenevoles ||
+    hasDashboardCapability(role, DASHBOARD_CAPABILITY.bureauAdminBenevoles)
+  ) {
+    return session
+  }
+  throw new Error("Accès non autorisé")
+}
+
+/** Suppression bénévole (Bureau ou Administration). */
+export async function requireBenevoleDelete() {
+  const session = await getSessionOrThrow()
+  const role = session.user.role ?? ""
+  const permissions = getDashboardPermissions(role)
+  if (
+    permissions.canDeleteAdminBenevole ||
+    permissions.canDeleteAdminEntities
   ) {
     return session
   }
@@ -135,6 +168,34 @@ export async function requireBureauAdminAcces() {
 export async function requireBureauAdminDelete() {
   const session = await requireBureau()
   assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminDelete)
+  return session
+}
+
+/** Calendrier permanence (dashboard Administration). */
+export async function requireAdminCalendrier() {
+  const session = await requireAdministrationDashboard()
+  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminCalendrier)
+  return session
+}
+
+/** Accès administration — gestion des comptes permanence. */
+export async function requireAdminAcces() {
+  const session = await requireAdministrationDashboard()
+  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminAcces)
+  return session
+}
+
+/** Liste bénévoles Administration (lecture). */
+export async function requireAdminBenevolesRead() {
+  const session = await requireAdministrationDashboard()
+  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesRead)
+  return session
+}
+
+/** Création / édition bénévoles Administration. */
+export async function requireAdminBenevolesManage() {
+  const session = await requireAdministrationDashboard()
+  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesManage)
   return session
 }
 

@@ -39,8 +39,15 @@ import {
   IconPhone,
   IconTrash,
 } from "@tabler/icons-react"
-import { administrationPrimaryButtonClassName } from "@/config/administration-dashboard-theme"
+import {
+  administrationDeleteDialogHeaderClassName,
+  administrationDeleteDialogIconClassName,
+  administrationDestructiveButtonClassName,
+  administrationDestructiveGhostClassName,
+  administrationPrimaryButtonClassName,
+} from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
+import { useAdministrationPermissionsOptional } from "@/app/(admin)/administration/_components/administration-permissions-provider"
 import { useBureauPermissionsOptional } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
 import { deleteBenevole } from "../_actions/actions"
 
@@ -74,6 +81,8 @@ interface BenevoleRowActionsProps {
   basePath?: DashboardBase
   /** Palette visuelle : alignée sur le shell Bureau (ambre) ou Administration (sky). */
   dashboard?: BenevoleDashboardChrome
+  canEdit?: boolean
+  canDelete?: boolean
 }
 
 // ── Composant ──────────────────────────────────────────────────────────────────
@@ -83,11 +92,22 @@ export function BenevoleRowActions({
   person,
   basePath = "/bureau",
   dashboard = "bureau",
+  canEdit: canEditProp,
+  canDelete: canDeleteProp,
 }: BenevoleRowActionsProps) {
   const isAdministration = dashboard === "administration"
   const bureauPermissions = useBureauPermissionsOptional()
+  const adminPermissions = useAdministrationPermissionsOptional()
+  const canEdit =
+    canEditProp ??
+    (isAdministration
+      ? adminPermissions?.canManageAdminBenevoles === true
+      : bureauPermissions?.canAccessAdminBenevoles !== false)
   const canDelete =
-    isAdministration || bureauPermissions?.canDeleteAdminEntities === true
+    canDeleteProp ??
+    (isAdministration
+      ? adminPermissions?.canDeleteAdminBenevole === true
+      : bureauPermissions?.canDeleteAdminEntities === true)
   const [openSheet, setOpenSheet]   = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -126,29 +146,36 @@ export function BenevoleRowActions({
           <IconEye className="size-3.5" />
           Détails
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-          className={cn(
-            "h-8 cursor-pointer gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground",
-            isAdministration &&
-              "hover:bg-sky-100/80 dark:hover:bg-sky-950/45",
-          )}
-          disabled={isPending}
-        >
-          <Link href={editHref}>
-            <IconEdit className="size-3.5" />
-            Modifier
-          </Link>
-        </Button>
+        {canEdit && (
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className={cn(
+              "h-8 cursor-pointer gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground",
+              isAdministration &&
+                "hover:bg-sky-100/80 dark:hover:bg-sky-950/45",
+            )}
+            disabled={isPending}
+          >
+            <Link href={editHref}>
+              <IconEdit className="size-3.5" />
+              Modifier
+            </Link>
+          </Button>
+        )}
         {canDelete && (
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setOpenDelete(true)}
             disabled={isPending}
-            className="h-8 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-rose-600 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
+            className={cn(
+              "h-8 cursor-pointer gap-1.5 rounded-lg px-2.5 text-xs font-medium",
+              isAdministration
+                ? administrationDestructiveGhostClassName
+                : "text-rose-600 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30",
+            )}
           >
             {isPending ? (
               <IconLoader2 className="size-3.5 animate-spin" />
@@ -164,7 +191,15 @@ export function BenevoleRowActions({
       <div className="flex lg:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8 cursor-pointer hover:bg-muted" disabled={isPending}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "size-8 cursor-pointer",
+                isAdministration ? "hover:bg-sky-100/80 dark:hover:bg-sky-950/45" : "hover:bg-muted",
+              )}
+              disabled={isPending}
+            >
               {isPending
                 ? <IconLoader2 className="size-4 animate-spin" />
                 : <IconDotsVertical className="size-4" />
@@ -179,18 +214,25 @@ export function BenevoleRowActions({
               <IconEye className="size-4 text-muted-foreground" />
               Détails
             </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-lg px-3 py-2 cursor-pointer focus:bg-muted focus:text-foreground">
-              <Link href={editHref}>
-                <IconEdit className="size-4 text-muted-foreground" />
-                Modifier
-              </Link>
-            </DropdownMenuItem>
+            {canEdit && (
+              <DropdownMenuItem asChild className="rounded-lg px-3 py-2 cursor-pointer focus:bg-muted focus:text-foreground">
+                <Link href={editHref}>
+                  <IconEdit className="size-4 text-muted-foreground" />
+                  Modifier
+                </Link>
+              </DropdownMenuItem>
+            )}
             {canDelete && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setOpenDelete(true)}
-                  className="rounded-lg px-3 py-2 cursor-pointer text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30"
+                  className={cn(
+                    "cursor-pointer rounded-lg px-3 py-2",
+                    isAdministration
+                      ? "text-destructive focus:bg-destructive/10 focus:text-destructive"
+                      : "text-rose-600 focus:bg-rose-50 focus:text-rose-600 dark:focus:bg-rose-950/30",
+                  )}
                 >
                   <IconTrash className="size-4" />
                   Supprimer
@@ -339,21 +381,22 @@ export function BenevoleRowActions({
                   </div>
                 </div>
 
-                {/* CTA */}
-                <Button
-                  asChild
-                  className={cn(
-                    "h-11 w-full cursor-pointer gap-2 rounded-xl font-semibold",
-                    isAdministration
-                      ? administrationPrimaryButtonClassName
-                      : "bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600",
-                  )}
-                >
-                  <Link href={editHref}>
-                    <IconEdit className="size-4" />
-                    Modifier le profil
-                  </Link>
-                </Button>
+                {canEdit && (
+                  <Button
+                    asChild
+                    className={cn(
+                      "h-11 w-full cursor-pointer gap-2 rounded-xl font-semibold",
+                      isAdministration
+                        ? administrationPrimaryButtonClassName
+                        : "bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600",
+                    )}
+                  >
+                    <Link href={editHref}>
+                      <IconEdit className="size-4" />
+                      Modifier le profil
+                    </Link>
+                  </Button>
+                )}
 
               </div>
             </div>
@@ -364,11 +407,33 @@ export function BenevoleRowActions({
       </Sheet>
 
       {canDelete && (
-      <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
-        <AlertDialogContent className="max-w-sm gap-0 overflow-hidden p-0">
-          <div className="flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-rose-100 ring-4 ring-rose-100/60 dark:bg-rose-900/40 dark:ring-rose-900/20">
-              <IconTrash className="size-6 text-rose-600 dark:text-rose-400" />
+        <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
+        <AlertDialogContent
+          className={cn(
+            "max-w-sm gap-0 overflow-hidden p-0",
+            isAdministration && "rounded-2xl border-[var(--admin-card-border)]",
+          )}
+        >
+          <div
+            className={
+              isAdministration
+                ? administrationDeleteDialogHeaderClassName
+                : "flex flex-col items-center gap-3 bg-rose-50/60 px-8 pb-6 pt-8 dark:bg-rose-950/20"
+            }
+          >
+            <div
+              className={
+                isAdministration
+                  ? administrationDeleteDialogIconClassName
+                  : "flex size-14 items-center justify-center rounded-2xl bg-rose-100 ring-4 ring-rose-100/60 dark:bg-rose-900/40 dark:ring-rose-900/20"
+              }
+            >
+              <IconTrash
+                className={cn(
+                  "size-6",
+                  isAdministration ? "text-destructive" : "text-rose-600 dark:text-rose-400",
+                )}
+              />
             </div>
             <AlertDialogTitle className="text-base font-semibold text-foreground">
               Supprimer le bénévole ?
@@ -379,22 +444,44 @@ export function BenevoleRowActions({
               Cette action est <span className="font-medium text-foreground">irréversible</span>. Le bénévole sera définitivement retiré de la base de contacts.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-2 border-t px-8 py-5">
-            <AlertDialogCancel className="flex-1 cursor-pointer rounded-xl border-border/60 text-sm font-medium">
+          <AlertDialogFooter
+            className={cn(
+              "flex-row gap-2 border-t px-8 py-5",
+              isAdministration && "border-[var(--admin-card-border)]",
+            )}
+          >
+            <AlertDialogCancel
+              className={cn(
+                "flex-1 cursor-pointer rounded-xl text-sm font-medium",
+                isAdministration ? "border-[var(--admin-secondary-border)]" : "border-border/60",
+              )}
+            >
               Annuler
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              className="flex-1 cursor-pointer rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold shadow-sm"
+              className={cn(
+                "flex-1 cursor-pointer rounded-xl text-sm font-semibold",
+                isAdministration
+                  ? administrationDestructiveButtonClassName
+                  : "bg-rose-600 text-white shadow-sm hover:bg-rose-700",
+              )}
             >
-              {isPending
-                ? <><IconLoader2 className="size-4 animate-spin" />Suppression…</>
-                : <><IconTrash className="size-4" />Supprimer</>
-              }
+              {isPending ? (
+                <>
+                  <IconLoader2 className="size-4 animate-spin" />
+                  Suppression…
+                </>
+              ) : (
+                <>
+                  <IconTrash className="size-4" />
+                  Supprimer
+                </>
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+        </AlertDialog>
       )}
     </>
   )

@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useAdministrationPermissions } from "@/app/(admin)/administration/_components/administration-permissions-provider"
 import { cn } from "@/helpers/utils"
 
 interface AdministrativePermanenceCalendarManagerProps {
@@ -59,6 +60,8 @@ export function AdministrativePermanenceCalendarManager({
   initialHorairesCardText,
 }: AdministrativePermanenceCalendarManagerProps) {
   const router = useRouter()
+  const permissions = useAdministrationPermissions()
+  const canManageCalendrier = permissions.canAccessAdminCalendrier
   const [pending, startTransition] = useTransition()
   const [slots, setSlots] = useState(initialSlots)
   const [horairesText, setHorairesText] = useState(initialHorairesCardText ?? "")
@@ -193,27 +196,30 @@ export function AdministrativePermanenceCalendarManager({
             placeholder="Ex. Permanences de 14h à 16h (jours indiqués au calendrier)."
             rows={3}
             className="min-h-[88px] resize-y border-border/80"
+            readOnly={!canManageCalendrier}
           />
           {settingsError ? (
             <p className="text-sm text-destructive" role="alert">
               {settingsError}
             </p>
           ) : null}
-          <Button
-            type="button"
-            className={administrationPrimaryButtonClassName}
-            onClick={handleSaveSettings}
-            disabled={pending}
-          >
-            {pending ? (
-              <>
-                <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
-                Enregistrement…
-              </>
-            ) : (
-              "Enregistrer le texte"
-            )}
-          </Button>
+          {canManageCalendrier && (
+            <Button
+              type="button"
+              className={administrationPrimaryButtonClassName}
+              onClick={handleSaveSettings}
+              disabled={pending}
+            >
+              {pending ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
+                  Enregistrement…
+                </>
+              ) : (
+                "Enregistrer le texte"
+              )}
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -238,25 +244,27 @@ export function AdministrativePermanenceCalendarManager({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button
-            type="button"
-            variant="outline"
-            className={administrationOutlineButtonClassName}
-            onClick={handleSeed}
-            disabled={pending}
-          >
-            Importer le calendrier 2026 par défaut
-          </Button>
-          <Button
-            type="button"
-            className={administrationPrimaryButtonClassName}
-            onClick={openCreate}
-          >
-            <Plus className="mr-2 size-4" aria-hidden />
-            Ajouter une permanence
-          </Button>
-        </div>
+        {canManageCalendrier && (
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              type="button"
+              variant="outline"
+              className={administrationOutlineButtonClassName}
+              onClick={handleSeed}
+              disabled={pending}
+            >
+              Importer le calendrier 2026 par défaut
+            </Button>
+            <Button
+              type="button"
+              className={administrationPrimaryButtonClassName}
+              onClick={openCreate}
+            >
+              <Plus className="mr-2 size-4" aria-hidden />
+              Ajouter une permanence
+            </Button>
+          </div>
+        )}
       </div>
 
       {byMonth.length === 0 ? (
@@ -309,28 +317,30 @@ export function AdministrativePermanenceCalendarManager({
                             {formatSlotRangeFr(row.startTime, row.endTime)}
                           </p>
                         </div>
-                        <div className="flex shrink-0 gap-1">
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            className="size-9 text-muted-foreground hover:text-foreground"
-                            onClick={() => openEdit(row)}
-                            aria-label="Modifier"
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            className="size-9 text-destructive hover:text-destructive"
-                            onClick={() => setDeleteDate(row.date)}
-                            aria-label="Supprimer"
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </div>
+                        {canManageCalendrier && (
+                          <div className="flex shrink-0 gap-1">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              className="size-9 text-muted-foreground hover:text-foreground"
+                              onClick={() => openEdit(row)}
+                              aria-label="Modifier"
+                            >
+                              <Pencil className="size-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              className="size-9 text-destructive hover:text-destructive"
+                              onClick={() => setDeleteDate(row.date)}
+                              aria-label="Supprimer"
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </li>
                   ))}
