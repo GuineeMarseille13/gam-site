@@ -12,6 +12,12 @@ import {
   IconTrash,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import {
+  administrationDestructiveButtonClassName,
+  administrationDestructiveGhostClassName,
+  administrationGhostButtonClassName,
+  administrationPrimaryButtonClassName,
+} from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
 import {
   DropdownMenu,
@@ -84,8 +90,10 @@ export function AdministrationAccessRowActions({
   const banLabelDesktop = banned ? "Réactiver" : "Suspendre"
   const BanIcon = banned ? IconCircleCheck : IconBan
 
-  const desktopActionButtonClass =
-    "h-8 shrink-0 gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+  const desktopActionButtonClass = cn(
+    "h-8 shrink-0 gap-1.5 rounded-lg px-2.5 text-xs font-medium",
+    administrationGhostButtonClassName,
+  )
 
   return (
     <>
@@ -118,10 +126,7 @@ export function AdministrationAccessRowActions({
             type="button"
             variant="ghost"
             size="sm"
-            className={cn(
-              desktopActionButtonClass,
-              "text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:hover:bg-rose-950/40",
-            )}
+            className={cn(desktopActionButtonClass, administrationDestructiveGhostClassName)}
             disabled={isPending}
             onClick={() => setOpenRevoke(true)}
           >
@@ -138,7 +143,10 @@ export function AdministrationAccessRowActions({
               type="button"
               variant="ghost"
               size="icon"
-              className="size-9 shrink-0 rounded-lg hover:bg-muted"
+              className={cn(
+                "size-9 shrink-0 rounded-lg",
+                "hover:bg-[var(--admin-secondary-hover-bg)]",
+              )}
               disabled={isPending}
               aria-label={`Actions pour ${displayName}`}
             >
@@ -192,7 +200,7 @@ export function AdministrationAccessRowActions({
           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
             <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
             <AlertDialogAction
-              className="rounded-xl bg-sky-600 hover:bg-sky-700"
+              className={cn("rounded-xl", administrationPrimaryButtonClassName)}
               onClick={() => runAction(onBan)}
             >
               {isPending ? <IconLoader2 className="size-4 animate-spin" /> : "Suspendre"}
@@ -212,7 +220,7 @@ export function AdministrationAccessRowActions({
           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
             <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
             <AlertDialogAction
-              className="rounded-xl bg-rose-600 hover:bg-rose-700"
+              className={cn("rounded-xl", administrationDestructiveButtonClassName)}
               onClick={() => runAction(onRevoke)}
             >
               {isPending ? <IconLoader2 className="size-4 animate-spin" /> : "Révoquer"}

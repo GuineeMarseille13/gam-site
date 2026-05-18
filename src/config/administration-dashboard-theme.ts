@@ -11,6 +11,7 @@ import { cn } from "@/helpers/utils"
  * - Secondaire : `--admin-secondary-border`, `--admin-secondary-bg`, `--admin-secondary-foreground`,
  *   `--admin-secondary-hover-*`, `--admin-secondary-active-bg`
  * - Icônes : `--admin-icon-badge-bg`, `--admin-icon-badge-fg`
+ * - Survols UI : `--accent` / `--accent-foreground` réassignés au secondaire sky (ghost, outline, menus)
  */
 export const ADMINISTRATION_DASHBOARD_DATA_ATTR = {
   "data-dashboard": "administration",
@@ -78,20 +79,47 @@ export const administrationDestructiveButtonClassName = cn(
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 focus-visible:ring-offset-2",
 )
 
+/** Bouton ghost — survol aligné sur le secondaire admin (évite le vert global). */
+export const administrationGhostButtonClassName = cn(
+  "text-muted-foreground hover:text-[var(--admin-secondary-hover-foreground)]",
+  "hover:bg-[var(--admin-secondary-hover-bg)]",
+)
+
 /** Lien / bouton ghost « Supprimer » dans les listes. */
 export const administrationDestructiveGhostClassName = cn(
   "text-destructive hover:bg-destructive/10 hover:text-destructive",
   "dark:hover:bg-destructive/15",
 )
 
-/** En-tête visuel des modales de suppression (fond atténué du thème). */
-export const administrationDeleteDialogHeaderClassName = cn(
-  "flex flex-col items-center gap-3 px-8 pb-6 pt-8",
-  administrationMutedSurfaceClassName,
+/**
+ * Modale de suppression — couleurs explicites sky (portail Radix hors `data-dashboard`).
+ * Associer {@link ADMINISTRATION_DASHBOARD_DATA_ATTR} sur `AlertDialogContent` si possible.
+ */
+export const administrationDeleteDialogContentClassName = cn(
+  "rounded-2xl border border-sky-200/70 bg-background shadow-xl shadow-sky-950/[0.06]",
+  "dark:border-sky-800/55 dark:shadow-black/35",
 )
 
-/** Pastille icône corbeille dans une modale de suppression. */
+export const administrationDeleteDialogHeaderClassName = cn(
+  "flex flex-col items-center gap-3 px-8 pb-6 pt-8",
+  "bg-sky-50/95 dark:bg-sky-950/40",
+)
+
+/** Pastille icône corbeille — fond sky, pictogramme destructive. */
 export const administrationDeleteDialogIconClassName = cn(
-  "flex size-14 items-center justify-center rounded-2xl ring-4 ring-[var(--admin-muted)]",
-  administrationIconBadgeClassName,
+  "flex size-14 items-center justify-center rounded-2xl ring-4 ring-sky-100/90",
+  "bg-sky-100 text-destructive",
+  "dark:bg-sky-900/50 dark:text-red-400 dark:ring-sky-950/55",
+)
+
+export const administrationDeleteDialogFooterClassName = cn(
+  "border-sky-200/50 dark:border-sky-800/45",
+)
+
+/** Annuler — contour secondaire admin (portail-safe). */
+export const administrationDeleteDialogCancelClassName = cn(
+  "rounded-xl border border-sky-200/80 bg-background text-sky-950 shadow-xs",
+  "hover:border-sky-300 hover:bg-sky-50 hover:text-sky-950",
+  "dark:border-sky-800 dark:bg-card dark:text-sky-100",
+  "dark:hover:border-sky-700 dark:hover:bg-sky-950/45",
 )

@@ -336,6 +336,10 @@
   /* Pastilles icônes */
   --admin-icon-badge-bg: rgb(14 165 233 / 0.12);
   --admin-icon-badge-fg: #0369a1;
+
+  /* Survols ghost / outline / menus — sky, pas le vert global (--accent) */
+  --accent: var(--admin-secondary-hover-bg);
+  --accent-foreground: var(--admin-secondary-hover-foreground);
 }
 
 .dark [data-dashboard="administration"] {
@@ -361,6 +365,9 @@
 
   --admin-icon-badge-bg: rgb(56 189 248 / 0.14);
   --admin-icon-badge-fg: #7dd3fc;
+
+  --accent: var(--admin-secondary-hover-bg);
+  --accent-foreground: var(--admin-secondary-hover-foreground);
 }
 
 @layer base {

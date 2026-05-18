@@ -2,22 +2,28 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { IconKey, IconLink, IconShieldLock, IconUser } from "@tabler/icons-react"
 import { cn } from "@/helpers/utils"
 import {
-  bureauSelectContentClassName,
-  bureauSelectItemClassName,
-  bureauSelectTriggerClassName,
-} from "@/config/bureau-select-theme"
+  administrationSelectContentClassName,
+  administrationSelectItemClassName,
+  administrationSelectTriggerClassName,
+} from "@/config/administration-select-theme"
+import { administrationGhostButtonClassName } from "@/config/administration-dashboard-theme"
 
 export const administrationAccessInputClassName =
-  "h-11 rounded-xl border-border/60 bg-background/80 shadow-sm transition-shadow focus-visible:ring-sky-500/30"
+  "h-11 rounded-xl border-border/60 bg-background/80 shadow-sm transition-shadow focus-visible:ring-[var(--admin-primary-ring)]"
 
-/** Évite le survol vert du token `accent` global — thème ambre bureau. */
-export const administrationAccessSelectItemClassName = bureauSelectItemClassName
+export const administrationAccessSelectItemClassName = administrationSelectItemClassName
 
-export const administrationAccessSelectContentClassName = bureauSelectContentClassName
+export const administrationAccessSelectContentClassName = administrationSelectContentClassName
 
 export const administrationAccessSelectTriggerClassName = cn(
-  bureauSelectTriggerClassName,
-  "h-11 border-border/60 bg-background/80 shadow-sm focus-visible:ring-sky-500/30",
+  administrationSelectTriggerClassName,
+  "h-11 border-border/60 bg-background/80 shadow-sm",
+)
+
+/** Bouton icône (afficher mot de passe) dans les champs du formulaire. */
+export const administrationAccessPasswordToggleClassName = cn(
+  "absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors",
+  administrationGhostButtonClassName,
 )
 
 interface AdministrationAccessSectionTitleProps {

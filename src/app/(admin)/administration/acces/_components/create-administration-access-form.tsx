@@ -15,6 +15,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { IconAlertCircle, IconEye, IconEyeOff, IconLoader2, IconUsers } from "@tabler/icons-react"
+import {
+  administrationOutlineButtonClassName,
+  administrationPrimaryButtonClassName,
+} from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
 import type { EligiblePersonForAdministrationAccess } from "../_services/get-eligible-persons-for-administration-access"
 import type { PermanenceAdminRole } from "../_schemas/permanence-admin-role.schema"
@@ -26,6 +30,7 @@ import {
   administrationAccessInputClassName,
   administrationAccessSelectContentClassName,
   administrationAccessSelectItemClassName,
+  administrationAccessPasswordToggleClassName,
   administrationAccessSelectTriggerClassName,
 } from "./administration-access-form-primitives"
 
@@ -271,7 +276,7 @@ export function CreateAdministrationAccessForm({
                     <button
                       type="button"
                       onClick={() => setShowPwd((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-sky-100/90 hover:text-sky-800 dark:hover:bg-sky-950/50 dark:hover:text-sky-300"
+                      className={administrationAccessPasswordToggleClassName}
                       aria-label={showPwd ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                     >
                       {showPwd ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
@@ -298,7 +303,7 @@ export function CreateAdministrationAccessForm({
                     <button
                       type="button"
                       onClick={() => setShowPwd2((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md text-muted-foreground transition-colors hover:bg-sky-100/90 hover:text-sky-800 dark:hover:bg-sky-950/50 dark:hover:text-sky-300"
+                      className={administrationAccessPasswordToggleClassName}
                       aria-label={showPwd2 ? "Masquer" : "Afficher"}
                     >
                       {showPwd2 ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
@@ -315,7 +320,7 @@ export function CreateAdministrationAccessForm({
               <Button
                 type="submit"
                 disabled={isPending || !personId}
-                className="min-w-[160px] gap-2 rounded-xl bg-sky-600 text-white shadow-md shadow-sky-600/25 transition-colors hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/35"
+                className={cn("min-w-[160px] gap-2 rounded-xl", administrationPrimaryButtonClassName)}
               >
                 {isPending ? (
                   <>
@@ -329,7 +334,7 @@ export function CreateAdministrationAccessForm({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-xl border-border/60"
+                className={cn("rounded-xl", administrationOutlineButtonClassName)}
                 disabled={isPending}
                 onClick={() => router.push("/administration/acces")}
               >

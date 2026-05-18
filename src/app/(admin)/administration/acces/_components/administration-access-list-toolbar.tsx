@@ -2,6 +2,10 @@
 
 import { cn } from "@/helpers/utils"
 import { Button } from "@/components/ui/button"
+import {
+  administrationOutlineButtonClassName,
+  administrationPrimaryButtonClassName,
+} from "@/config/administration-dashboard-theme"
 
 export type AdministrationAccessListFilter = "all" | "active" | "banned"
 
@@ -44,8 +48,9 @@ export function AdministrationAccessListToolbar({
             aria-selected={isActive}
             className={cn(
               "h-8 rounded-full px-3.5 text-xs font-medium",
-              isActive &&
-                "bg-sky-600 text-white shadow-sm hover:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-500",
+              isActive
+                ? administrationPrimaryButtonClassName
+                : administrationOutlineButtonClassName,
             )}
             onClick={() => onFilterChange(id)}
           >
