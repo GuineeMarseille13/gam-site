@@ -14,10 +14,13 @@ function ConnexionAdministrationContent() {
       footnote="Page reservée exclusivement aux personnes autorisées"
       haloClassName="bg-sky-400/10"
       submitButtonClassName="bg-sky-600 text-white shadow-md shadow-sky-500/20 hover:bg-sky-700"
-      alternateLink={{
-        href: "/connexion",
-        label: "Connexion au bureau administratif →",
-      }}
+      alternateLinks={[
+        { href: "/connexion", label: "Connexion Bureau GAM →" },
+        {
+          href: "/connexion-hebergement-relation",
+          label: "Connexion Hébergement & relation →",
+        },
+      ]}
     />
   )
 }

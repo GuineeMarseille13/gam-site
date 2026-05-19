@@ -1,10 +1,8 @@
-import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
+import { hasPoleApiAccess } from "@/helpers/pole-api-auth"
 
 import { detailsPoleStatSchema } from "@/app/(admin)/bureau/poles/_schemas/details-pole-stat.schema"
 import {
@@ -12,23 +10,23 @@ import {
   type DetailsPoleStatUpsertInput,
 } from "@/app/(admin)/bureau/poles/_schemas/details-pole-stat-form.schema"
 
+const poleSlugSchema = z.string().min(1)
 const statIdSchema = z.string().min(1)
-
-async function requireBureauApiAccess(): Promise<boolean> {
-  const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && sessionCanAccessBureauContenu(session.user.role)
-}
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ statId: string }> },
+  { params }: { params: Promise<{ poleSlug: string; statId: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
+  const { poleSlug, statId } = await params
+  const parsedSlug = poleSlugSchema.safeParse(poleSlug)
+  if (!parsedSlug.success) {
+    return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
-  const { statId } = await params
   const parsedId = statIdSchema.safeParse(statId)
   if (!parsedId.success) {
     return NextResponse.json({ error: "Identifiant invalide." }, { status: 400 })
@@ -68,14 +66,18 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ statId: string }> },
+  { params }: { params: Promise<{ poleSlug: string; statId: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
+  const { poleSlug, statId } = await params
+  const parsedSlug = poleSlugSchema.safeParse(poleSlug)
+  if (!parsedSlug.success) {
+    return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
-  const { statId } = await params
   const parsedId = statIdSchema.safeParse(statId)
   if (!parsedId.success) {
     return NextResponse.json({ error: "Identifiant invalide." }, { status: 400 })
@@ -84,4 +86,3 @@ export async function DELETE(
   await prisma.detailsPoleStat.delete({ where: { id: parsedId.data } })
   return NextResponse.json({ success: true })
 }
-

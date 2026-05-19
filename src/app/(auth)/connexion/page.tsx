@@ -14,10 +14,13 @@ function ConnexionContent() {
       unauthorizedMessage="Ce compte n’a pas accès à l’espace Bureau GAM. Si vous êtes permanent(e) administrative, utilisez la connexion Administration ci-dessous."
       haloClassName="bg-amber-400/10"
       submitButtonClassName="bg-amber-500 text-white shadow-md shadow-amber-500/20 hover:bg-amber-600"
-      alternateLink={{
-        href: "/connexion-administration",
-        label: "Connexion espace Administration →",
-      }}
+      alternateLinks={[
+        { href: "/connexion-administration", label: "Connexion Administration →" },
+        {
+          href: "/connexion-hebergement-relation",
+          label: "Connexion Hébergement & relation →",
+        },
+      ]}
     />
   )
 }

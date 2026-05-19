@@ -1,14 +1,17 @@
 import { IconMail } from "@tabler/icons-react"
-import type { AdministrationAccessRow } from "../_schemas/administration-access.schema"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/helpers/utils"
+import type { DashboardAccessScope } from "@/config/dashboard-access-scope"
+import { getDashboardAccessAccentClasses } from "@/config/dashboard-access-accent-theme"
+import type { DashboardAccessRow } from "../_types/dashboard-access-row"
 import {
-  getAdministrationAccessDisplayName,
-  getAdministrationAccessInitials,
-} from "./administration-access-utils"
+  getDashboardAccessDisplayName,
+  getDashboardAccessInitials,
+} from "./dashboard-access-utils"
 
-interface AdministrationAccessAccountCellProps {
-  row: AdministrationAccessRow
+interface DashboardAccessAccountCellProps {
+  scope: DashboardAccessScope
+  row: DashboardAccessRow
   showStatusDot?: boolean
   avatarClassName?: string
 }
@@ -16,13 +19,15 @@ interface AdministrationAccessAccountCellProps {
 /**
  * Bloc compte : avatar, nom, e-mail et type de profil.
  */
-export function AdministrationAccessAccountCell({
+export function DashboardAccessAccountCell({
+  scope,
   row,
   showStatusDot = false,
   avatarClassName,
-}: AdministrationAccessAccountCellProps) {
-  const displayName = getAdministrationAccessDisplayName(row)
-  const initials = getAdministrationAccessInitials(row)
+}: DashboardAccessAccountCellProps) {
+  const accent = getDashboardAccessAccentClasses(scope)
+  const displayName = getDashboardAccessDisplayName(row)
+  const initials = getDashboardAccessInitials(row)
   const person = row.person
 
   return (
@@ -30,7 +35,9 @@ export function AdministrationAccessAccountCell({
       <div className="relative shrink-0">
         <Avatar className={cn("size-11 ring-2 ring-background shadow-sm", avatarClassName)}>
           <AvatarImage src={person?.image ?? ""} alt={displayName} className="object-cover" />
-          <AvatarFallback className="bg-gradient-to-br from-sky-100 to-sky-200 text-xs font-bold text-sky-900 dark:from-sky-950/80 dark:to-sky-900/50 dark:text-sky-200">
+          <AvatarFallback
+            className={cn("bg-gradient-to-br text-xs font-bold", accent.avatarFallback)}
+          >
             {initials}
           </AvatarFallback>
         </Avatar>

@@ -6,6 +6,7 @@ import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { canAccessBureauPath } from "@/helpers/bureau-route-access"
 import {
   isBureauDashboardRole,
+  isHerbergementRelationOnlyRole,
   isPermanenceOnlyRole,
 } from "@/helpers/dashboard-roles"
 import { BureauSidebar } from "@/components/bureau/bureau-sidebar"
@@ -33,6 +34,9 @@ export default async function BureauShellLayout({ children }: { children: React.
   const permissions = getDashboardPermissions(role)
 
   if (!isBureauDashboardRole(role) || !permissions.canAccessBureauDashboard) {
+    if (isHerbergementRelationOnlyRole(role)) {
+      redirect("/hebergement-relation?info=wrong_dashboard")
+    }
     if (isPermanenceOnlyRole(role)) {
       redirect("/administration?info=wrong_dashboard")
     }

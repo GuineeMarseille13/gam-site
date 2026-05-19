@@ -1,4 +1,4 @@
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 
 import {
   detailsPoleServiceSchema,
@@ -12,7 +12,7 @@ import { readApiErrorMessage } from "./_shared/read-api-error-message"
  * Rôle: Créer un service dynamique (dashboard bureau).
  */
 export async function createPoleService(
-  poleSlug: BureauPoleContentSlug,
+  poleSlug: EditablePolePublicSlug,
   payload: DetailsPoleServiceUpsertInput,
 ): Promise<DetailsPoleService> {
   const res = await fetch(`/api/bureau/poles/${poleSlug}/services`, {

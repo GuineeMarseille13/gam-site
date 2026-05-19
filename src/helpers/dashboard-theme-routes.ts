@@ -4,5 +4,9 @@
  */
 export function isDashboardThemeRoute(pathname: string | null): boolean {
   if (pathname == null || pathname === "") return false
-  return pathname.startsWith("/bureau") || pathname.startsWith("/administration")
+  return (
+    pathname.startsWith("/bureau") ||
+    pathname.startsWith("/administration") ||
+    pathname.startsWith("/hebergement-relation")
+  )
 }

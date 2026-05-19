@@ -17,6 +17,7 @@ import {
   IconUserCircle,
   IconUserCheck,
   IconKey,
+  IconHeartHandshake,
 } from "@tabler/icons-react"
 
 import { useBureauPermissions } from "@/app/(admin)/bureau/_components/bureau-permissions-provider"
@@ -239,6 +240,19 @@ export function BureauSidebar({ currentUser, role, className, ...props }: Bureau
 
       <SidebarFooter className="border-t border-sidebar-border pt-2">
         <SidebarMenu>
+          {permissions.canAccessHerbergementDashboardCross && (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link
+                  href="/hebergement-relation"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <IconHeartHandshake className="size-4" />
+                  <span>Hébergement & relation</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           {permissions.canAccessAdministrationDashboard && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>

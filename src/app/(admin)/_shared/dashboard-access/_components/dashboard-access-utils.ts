@@ -1,13 +1,13 @@
-import type { AdministrationAccessRow } from "../_schemas/administration-access.schema"
+import type { DashboardAccessRow } from "../_types/dashboard-access-row"
 
-export function getAdministrationAccessDisplayName(row: AdministrationAccessRow): string {
+export function getDashboardAccessDisplayName(row: DashboardAccessRow): string {
   if (row.person) {
     return `${row.person.firstName} ${row.person.lastName}`
   }
   return row.name
 }
 
-export function getAdministrationAccessInitials(row: AdministrationAccessRow): string {
+export function getDashboardAccessInitials(row: DashboardAccessRow): string {
   const person = row.person
   if (person) {
     const a = person.firstName[0] ?? ""

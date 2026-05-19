@@ -10,7 +10,13 @@ import { authClient, signIn } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { IconAlertCircle, IconLoader2, IconEye, IconEyeOff } from "@tabler/icons-react"
+import {
+  IconAlertCircle,
+  IconLoader2,
+  IconEye,
+  IconEyeOff,
+  IconShieldCheck,
+} from "@tabler/icons-react"
 import { formatAuthSignInError } from "@/helpers/format-auth-sign-in-error"
 
 export interface AuthLoginViewProps {
@@ -22,6 +28,7 @@ export interface AuthLoginViewProps {
   haloClassName: string
   submitButtonClassName: string
   alternateLink?: { href: string; label: string }
+  alternateLinks?: { href: string; label: string }[]
   /** Espace visé par cette page de connexion (contrôle du rôle après auth). */
   accessTarget: AuthDashboardTarget
   /** Message affiché si redirection depuis le layout (?error=unauthorized). */
@@ -29,7 +36,7 @@ export interface AuthLoginViewProps {
 }
 
 /**
- * Écran de connexion partagé (Bureau / Administration) — même flux Better Auth.
+ * Écran de connexion partagé (Bureau / Administration / Hébergement) — même flux Better Auth.
  */
 export function AuthLoginView({
   defaultRedirect,
@@ -39,6 +46,7 @@ export function AuthLoginView({
   haloClassName,
   submitButtonClassName,
   alternateLink,
+  alternateLinks,
   accessTarget,
   unauthorizedMessage,
 }: AuthLoginViewProps) {
@@ -46,11 +54,14 @@ export function AuthLoginView({
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") ?? defaultRedirect
   const isUnauthorized = searchParams.get("error") === "unauthorized"
+  const passwordChanged = searchParams.get("mot-de-passe-modifie") === "1"
 
   const defaultUnauthorizedMessage =
     accessTarget === "bureau"
-      ? "Ce compte n’a pas accès à l’espace Bureau GAM. Utilisez la connexion Administration si vous êtes permanent(e), ou contactez un administrateur."
-      : "Ce compte n’a pas accès à l’espace Administration. Utilisez la connexion Bureau si vous êtes membre du bureau."
+      ? "Ce compte n’a pas accès à l’espace Bureau GAM. Utilisez la connexion adaptée à votre périmètre ou contactez un administrateur."
+      : accessTarget === "hebergement-relation"
+        ? "Ce compte n’a pas accès à l’espace Hébergement et mise en relation."
+        : "Ce compte n’a pas accès à l’espace Administration. Utilisez la connexion adaptée à votre périmètre."
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -128,6 +139,13 @@ export function AuthLoginView({
           </div>
 
           <div className="rounded-2xl border border-border/40 bg-background/30 p-8 shadow-xl shadow-black/5 backdrop-blur-xs">
+            {passwordChanged && !error && (
+              <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-300">
+                <IconShieldCheck className="mt-0.5 size-4 shrink-0" />
+                Mot de passe mis à jour. Connectez-vous avec votre nouveau mot de passe.
+              </div>
+            )}
+
             {error && (
               <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800/40 dark:bg-rose-950/30 dark:text-rose-400">
                 <IconAlertCircle className="mt-0.5 size-4 shrink-0" />
@@ -200,16 +218,16 @@ export function AuthLoginView({
             <p className="mt-5 text-center text-xs text-muted-foreground">{footnote}</p>
           )}
 
-          {alternateLink && (
-            <p className="mt-3 text-center text-xs">
+          {(alternateLinks ?? (alternateLink ? [alternateLink] : [])).map((link) => (
+            <p key={link.href} className="mt-3 text-center text-xs">
               <Link
-                href={alternateLink.href}
+                href={link.href}
                 className="font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
               >
-                {alternateLink.label}
+                {link.label}
               </Link>
             </p>
-          )}
+          ))}
         </div>
       </div>
     </div>

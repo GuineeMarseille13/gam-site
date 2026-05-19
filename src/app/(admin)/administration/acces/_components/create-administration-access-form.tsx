@@ -22,7 +22,7 @@ import {
 import { cn } from "@/helpers/utils"
 import type { EligiblePersonForAdministrationAccess } from "../_services/get-eligible-persons-for-administration-access"
 import type { PermanenceAdminRole } from "../_schemas/permanence-admin-role.schema"
-import type { AdministrationAccessActionResult } from "../_actions/administration-access-actions"
+import type { AdministrationAccessActionResult } from "../_types/administration-access-action-result"
 import {
   ADMINISTRATION_ACCESS_FORM_ICONS,
   AdministrationAccessSectionTitle,
@@ -111,7 +111,7 @@ export function CreateAdministrationAccessForm({
           <div>
             <p className="text-base font-semibold text-foreground">Aucune personne disponible</p>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-              Toutes les fiches ont déjà un accès, ou aucune personne n&apos;est enregistrée.
+              Aucune personne n&apos;est enregistrée.
             </p>
           </div>
         </CardContent>

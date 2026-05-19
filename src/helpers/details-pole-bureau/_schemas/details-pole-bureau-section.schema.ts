@@ -1,8 +1,18 @@
 import { z } from "zod"
 
 import { BUREAU_POLE_CONTENT_SLUGS } from "@/config/bureau-poles-content"
+import { MISE_EN_RELATION_POLE_SLUG } from "@/config/pole-public-slugs"
 
 export const bureauPoleContentSlugSchema = z.enum(BUREAU_POLE_CONTENT_SLUGS)
+
+const EDITABLE_POLE_PUBLIC_SLUGS = [
+  ...BUREAU_POLE_CONTENT_SLUGS,
+  MISE_EN_RELATION_POLE_SLUG,
+] as const
+
+export const editablePolePublicSlugSchema = z.enum(EDITABLE_POLE_PUBLIC_SLUGS)
+
+export type EditablePolePublicSlug = z.infer<typeof editablePolePublicSlugSchema>
 
 export const bureauPoleDetailsSectionSchema = z.enum([
   "about",
@@ -25,7 +35,7 @@ const sectionTextField = z
 
 export const saveDetailsPoleBureauSectionFormSchema = z
   .object({
-    poleSlug: bureauPoleContentSlugSchema,
+    poleSlug: editablePolePublicSlugSchema,
     section: bureauPoleDetailsSectionSchema,
     sectionText: sectionTextField,
   })

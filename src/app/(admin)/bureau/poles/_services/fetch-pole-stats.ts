@@ -1,4 +1,4 @@
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 
 import {
   detailsPoleStatListSchema,
@@ -10,7 +10,7 @@ import {
  * Rôle: Charger les stats dynamiques d’un pôle (dashboard bureau).
  */
 export async function fetchPoleStats(
-  poleSlug: BureauPoleContentSlug,
+  poleSlug: EditablePolePublicSlug,
 ): Promise<DetailsPoleStat[]> {
   const res = await fetch(`/api/bureau/poles/${poleSlug}/stats`, {
     credentials: "include",

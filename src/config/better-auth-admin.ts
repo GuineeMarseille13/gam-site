@@ -28,6 +28,9 @@ export const betterAuthAdminRoles: Record<string, Role> = {
   "ADMIN-PERMADMIN": noAdminAc,
   PERMADMIN: noAdminAc,
   "INVITE-PERMADMIN": noAdminAc,
+  "ADMIN-HERBERGEMENT-RELATION": noAdminAc,
+  "HERBERGEMENT-RELATION": noAdminAc,
+  "INVITE-HERBERGEMENT-RELATION": noAdminAc,
   admin: superAdminAc,
   user: noAdminAc,
 }

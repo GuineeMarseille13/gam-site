@@ -12,13 +12,9 @@ import {
   IconTrash,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
-import {
-  administrationDestructiveButtonClassName,
-  administrationDestructiveGhostClassName,
-  administrationGhostButtonClassName,
-  administrationPrimaryButtonClassName,
-} from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
+import type { DashboardAccessScope } from "@/config/dashboard-access-scope"
+import { getDashboardAccessAccentClasses } from "@/config/dashboard-access-accent-theme"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +33,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-interface AdministrationAccessRowActionsProps {
+interface DashboardAccessRowActionsProps {
+  scope: DashboardAccessScope
   userId: string
   displayName: string
   banned: boolean
@@ -51,9 +48,9 @@ interface AdministrationAccessRowActionsProps {
 
 /**
  * Actions admin sur un accès : modifier, bannir / débannir, révoquer.
- * Menu ⋮ sur mobile, boutons inline sur grand écran.
  */
-export function AdministrationAccessRowActions({
+export function DashboardAccessRowActions({
+  scope,
   userId,
   displayName,
   banned,
@@ -63,15 +60,16 @@ export function AdministrationAccessRowActions({
   onUnban,
   onRevoke,
   onError,
-}: AdministrationAccessRowActionsProps) {
+}: DashboardAccessRowActionsProps) {
   const router = useRouter()
+  const accent = getDashboardAccessAccentClasses(scope)
   const [isPending, startTransition] = useTransition()
   const [openBan, setOpenBan] = useState(false)
   const [openRevoke, setOpenRevoke] = useState(false)
 
   if (!canManage) return null
 
-  const editHref = `/administration/acces/${userId}/modifier`
+  const editHref = `${scope.accesPath}/${userId}/modifier`
 
   function runAction(action: () => Promise<{ success: boolean; error?: string }>) {
     startTransition(async () => {
@@ -92,7 +90,7 @@ export function AdministrationAccessRowActions({
 
   const desktopActionButtonClass = cn(
     "h-8 shrink-0 gap-1.5 rounded-lg px-2.5 text-xs font-medium",
-    administrationGhostButtonClassName,
+    scope.theme.ghostButtonClassName,
   )
 
   return (
@@ -116,7 +114,7 @@ export function AdministrationAccessRowActions({
             {isPending ? (
               <IconLoader2 className="size-3.5 animate-spin" />
             ) : (
-              <BanIcon className={cnIcon(banned)} />
+              <BanIcon className={cnIcon(banned, accent)} />
             )}
             {banLabelDesktop}
           </Button>
@@ -126,7 +124,7 @@ export function AdministrationAccessRowActions({
             type="button"
             variant="ghost"
             size="sm"
-            className={cn(desktopActionButtonClass, administrationDestructiveGhostClassName)}
+            className={cn(desktopActionButtonClass, scope.theme.destructiveGhostClassName)}
             disabled={isPending}
             onClick={() => setOpenRevoke(true)}
           >
@@ -143,10 +141,7 @@ export function AdministrationAccessRowActions({
               type="button"
               variant="ghost"
               size="icon"
-              className={cn(
-                "size-9 shrink-0 rounded-lg",
-                "hover:bg-[var(--admin-secondary-hover-bg)]",
-              )}
+              className="size-9 shrink-0 rounded-lg"
               disabled={isPending}
               aria-label={`Actions pour ${displayName}`}
             >
@@ -158,7 +153,7 @@ export function AdministrationAccessRowActions({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
-            <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+            <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
               <Link href={editHref}>
                 <IconEdit className="size-4 text-muted-foreground" />
                 Modifier
@@ -167,16 +162,16 @@ export function AdministrationAccessRowActions({
             {!isSelf && (
               <>
                 <DropdownMenuItem
-                  className="rounded-lg cursor-pointer"
+                  className="cursor-pointer rounded-lg"
                   disabled={isPending}
                   onClick={() => (banned ? runAction(onUnban) : setOpenBan(true))}
                 >
-                  <BanIcon className={cnIcon(banned)} />
+                  <BanIcon className={cnIcon(banned, accent)} />
                   {banLabel}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="rounded-lg cursor-pointer text-rose-600 focus:text-rose-600"
+                  className="cursor-pointer rounded-lg text-rose-600 focus:text-rose-600"
                   disabled={isPending}
                   onClick={() => setOpenRevoke(true)}
                 >
@@ -194,13 +189,14 @@ export function AdministrationAccessRowActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Suspendre l&apos;accès ?</AlertDialogTitle>
             <AlertDialogDescription>
-              <strong>{displayName}</strong> ne pourra plus se connecter au dashboard. Le compte seront conservés ; vous pourrez réactiver l&apos;accès plus tard.
+              <strong>{displayName}</strong> ne pourra plus se connecter au dashboard. Le compte
+              sera conservé ; vous pourrez réactiver l&apos;accès plus tard.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
             <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
             <AlertDialogAction
-              className={cn("rounded-xl", administrationPrimaryButtonClassName)}
+              className={cn("rounded-xl", scope.theme.primaryButtonClassName)}
               onClick={() => runAction(onBan)}
             >
               {isPending ? <IconLoader2 className="size-4 animate-spin" /> : "Suspendre"}
@@ -214,13 +210,14 @@ export function AdministrationAccessRowActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Révoquer l&apos;accès ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Le compte de <strong>{displayName}</strong> sera supprimé. Aucune connexion ne sera possible.
+              Le compte de <strong>{displayName}</strong> sera supprimé. Aucune connexion ne sera
+              possible.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
             <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
             <AlertDialogAction
-              className={cn("rounded-xl", administrationDestructiveButtonClassName)}
+              className={cn("rounded-xl", scope.theme.destructiveButtonClassName)}
               onClick={() => runAction(onRevoke)}
             >
               {isPending ? <IconLoader2 className="size-4 animate-spin" /> : "Révoquer"}
@@ -232,8 +229,9 @@ export function AdministrationAccessRowActions({
   )
 }
 
-function cnIcon(banned: boolean) {
-  return banned
-    ? "size-3.5 text-emerald-600"
-    : "size-3.5 text-sky-600"
+function cnIcon(
+  banned: boolean,
+  accent: ReturnType<typeof getDashboardAccessAccentClasses>,
+) {
+  return banned ? `size-3.5 ${accent.rowActionActive}` : `size-3.5 ${accent.rowActionIdle}`
 }

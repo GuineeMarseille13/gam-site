@@ -215,6 +215,19 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}
+          {permissions.canAccessHerbergementDashboardCross && (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link
+                  href="/hebergement-relation"
+                  className="text-muted-foreground transition-colors hover:text-sky-700 dark:hover:text-sky-300"
+                >
+                  <IconBriefcase className="size-4" />
+                  <span>Hébergement & relation</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link

@@ -2,33 +2,32 @@
 
 import { cn } from "@/helpers/utils"
 import { Button } from "@/components/ui/button"
-import {
-  administrationOutlineButtonClassName,
-  administrationPrimaryButtonClassName,
-} from "@/config/administration-dashboard-theme"
+import type { DashboardAccessScope } from "@/config/dashboard-access-scope"
 
-export type AdministrationAccessListFilter = "all" | "active" | "banned"
+export type DashboardAccessListFilter = "all" | "active" | "banned"
 
-interface AdministrationAccessListToolbarProps {
-  filter: AdministrationAccessListFilter
+interface DashboardAccessListToolbarProps {
+  scope: DashboardAccessScope
+  filter: DashboardAccessListFilter
   counts: { all: number; active: number; banned: number }
-  onFilterChange: (filter: AdministrationAccessListFilter) => void
+  onFilterChange: (filter: DashboardAccessListFilter) => void
 }
 
-const FILTERS: { id: AdministrationAccessListFilter; label: string }[] = [
+const FILTERS: { id: DashboardAccessListFilter; label: string }[] = [
   { id: "all", label: "Tous" },
   { id: "active", label: "Actifs" },
   { id: "banned", label: "Suspendus" },
 ]
 
 /**
- * Filtres de statut pour la liste des accès administration.
+ * Filtres de statut pour la liste des accès dashboard.
  */
-export function AdministrationAccessListToolbar({
+export function DashboardAccessListToolbar({
+  scope,
   filter,
   counts,
   onFilterChange,
-}: AdministrationAccessListToolbarProps) {
+}: DashboardAccessListToolbarProps) {
   return (
     <div
       className="-mx-1 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0"
@@ -49,8 +48,8 @@ export function AdministrationAccessListToolbar({
             className={cn(
               "h-8 rounded-full px-3.5 text-xs font-medium",
               isActive
-                ? administrationPrimaryButtonClassName
-                : administrationOutlineButtonClassName,
+                ? scope.theme.primaryButtonClassName
+                : scope.theme.outlineButtonClassName,
             )}
             onClick={() => onFilterChange(id)}
           >
@@ -69,4 +68,3 @@ export function AdministrationAccessListToolbar({
     </div>
   )
 }
-

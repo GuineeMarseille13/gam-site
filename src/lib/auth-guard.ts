@@ -2,17 +2,15 @@
 
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import { MISE_EN_RELATION_POLE_SLUG } from "@/config/pole-public-slugs"
 import {
   DASHBOARD_CAPABILITY,
   type DashboardCapability,
   getDashboardPermissions,
   hasDashboardCapability,
 } from "@/config/dashboard-permissions"
-import {
-  ADMINISTRATION_DASHBOARD_ROLES,
-  BUREAU_DASHBOARD_ROLES,
-  SUPER_ADMIN_ROLE,
-} from "@/helpers/dashboard-roles"
+import { sessionCanAccessMiseEnRelationPoleContent } from "@/helpers/api-dashboard-auth"
+import { BUREAU_DASHBOARD_ROLES, SUPER_ADMIN_ROLE } from "@/helpers/dashboard-roles"
 
 const BUREAU_DASHBOARD = BUREAU_DASHBOARD_ROLES as readonly string[]
 
@@ -21,6 +19,24 @@ async function getSessionOrThrow() {
   if (!session) {
     throw new Error("Accès non autorisé")
   }
+  return session
+}
+
+/**
+ * Utilisateur connecté avec accès à au moins un dashboard (Bureau, Administration ou Hébergement).
+ */
+export async function requireAuthenticatedDashboardUser() {
+  const session = await getSessionOrThrow()
+  const permissions = getDashboardPermissions(session.user.role)
+
+  if (
+    !permissions.canAccessBureauDashboard &&
+    !permissions.canAccessAdministrationDashboard &&
+    !permissions.canAccessHerbergementRelationDashboard
+  ) {
+    throw new Error("Accès non autorisé")
+  }
+
   return session
 }
 
@@ -168,6 +184,36 @@ export async function requireBureauAdminAcces() {
 export async function requireBureauAdminDelete() {
   const session = await requireBureau()
   assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminDelete)
+  return session
+}
+
+/** Accès au dashboard Hébergement et mise en relation. */
+export async function requireHerbergementRelationDashboard() {
+  const session = await getSessionOrThrow()
+  if (!getDashboardPermissions(session.user.role).canAccessHerbergementRelationDashboard) {
+    throw new Error("Accès non autorisé")
+  }
+  return session
+}
+
+/** Édition du contenu public d’un pôle (Bureau ou Hébergement selon le slug). */
+export async function requirePolePublicContentEdit(poleSlug: string) {
+  const session = await getSessionOrThrow()
+  const role = session.user.role ?? ""
+  if (poleSlug === MISE_EN_RELATION_POLE_SLUG) {
+    if (!sessionCanAccessMiseEnRelationPoleContent(role)) {
+      throw new Error("Accès non autorisé")
+    }
+    return session
+  }
+  assertCapability(role, DASHBOARD_CAPABILITY.bureauContenu)
+  return session
+}
+
+/** Gestion des accès dashboard Hébergement et mise en relation. */
+export async function requireHerbergementAcces() {
+  const session = await requireHerbergementRelationDashboard()
+  assertCapability(session.user.role, DASHBOARD_CAPABILITY.hebergementAcces)
   return session
 }
 

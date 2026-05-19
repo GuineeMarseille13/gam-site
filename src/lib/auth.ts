@@ -17,6 +17,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+    /** Réinitialisation par e-mail : invalide toutes les sessions actives. */
+    revokeSessionsOnPasswordReset: true,
   },
   plugins: [admin(betterAuthAdminPluginOptions)],
 })

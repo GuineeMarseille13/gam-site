@@ -21,7 +21,7 @@ import {
 } from "@/config/administration-dashboard-theme"
 import { cn } from "@/helpers/utils"
 import type { PermanenceAdminRole } from "../_schemas/permanence-admin-role.schema"
-import type { AdministrationAccessActionResult } from "../_actions/administration-access-actions"
+import type { AdministrationAccessActionResult } from "../_types/administration-access-action-result"
 import {
   ADMINISTRATION_ACCESS_FORM_ICONS,
   AdministrationAccessSectionTitle,

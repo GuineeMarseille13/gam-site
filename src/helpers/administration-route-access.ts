@@ -43,7 +43,11 @@ export function canAccessAdministrationPath(
     return false
   }
 
-  if (pathname === ADMIN_BASE || pathname === `${ADMIN_BASE}/profil`) {
+  if (pathname === `${ADMIN_BASE}/profil`) {
+    return true
+  }
+
+  if (pathname === ADMIN_BASE) {
     return permissions.canAccessAdminOverview
   }
 

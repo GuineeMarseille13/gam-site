@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { IconPlus } from "@tabler/icons-react"
 
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
@@ -20,7 +20,7 @@ import { PoleServiceCard } from "./pole-service-card"
 import { PoleServiceEditor } from "./pole-service-editor"
 
 interface PoleServicesPanelProps {
-  poleSlug: BureauPoleContentSlug
+  poleSlug: EditablePolePublicSlug
 }
 
 function buildDefaultForm(): DetailsPoleServiceUpsertInput {

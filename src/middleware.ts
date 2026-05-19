@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getSessionCookie } from "better-auth/cookies"
+import { resolveDashboardLoginPath } from "@/helpers/dashboard-login-path"
 
 export function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request)
@@ -7,9 +8,7 @@ export function middleware(request: NextRequest) {
   if (!sessionCookie) {
     const url = request.nextUrl.clone()
     const redirectPath = request.nextUrl.pathname
-    const loginPath = redirectPath.startsWith("/administration")
-      ? "/connexion-administration"
-      : "/connexion"
+    const loginPath = resolveDashboardLoginPath(redirectPath)
     url.pathname = loginPath
     url.searchParams.set("redirect", redirectPath)
     return NextResponse.redirect(url)
@@ -24,5 +23,9 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/bureau/:path*", "/administration/:path*"],
+  matcher: [
+    "/bureau/:path*",
+    "/administration/:path*",
+    "/hebergement-relation/:path*",
+  ],
 }

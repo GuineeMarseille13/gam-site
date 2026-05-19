@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { SubmitButton } from "@/components/bureau/submit-button"
 import { BUREAU_POLE_DETAILS_SECTION_UI } from "@/config/bureau-pole-details-section-ui"
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import type { BureauPoleDetailsSection } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import { DETAILS_POLE_BUREAU_SECTION_MAX_CHARS } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import { cn } from "@/helpers/utils"
@@ -22,7 +22,7 @@ interface PoleDetailsSectionFormProps {
     prev: SaveDetailsPoleBureauSectionState,
     formData: FormData,
   ) => Promise<SaveDetailsPoleBureauSectionState>
-  poleSlug: BureauPoleContentSlug
+  poleSlug: EditablePolePublicSlug
   section: BureauPoleDetailsSection
   savedText: string | null
 }

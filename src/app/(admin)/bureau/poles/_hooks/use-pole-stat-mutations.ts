@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 
 import type { DetailsPoleStat } from "../_schemas/details-pole-stat.schema"
 import type { DetailsPoleStatUpsertInput } from "../_schemas/details-pole-stat-form.schema"
@@ -13,7 +13,7 @@ import { deletePoleStat } from "../_services/delete-pole-stat"
  * Hook: useCreatePoleStat
  * Rôle: Créer une stat + invalidation.
  */
-export function useCreatePoleStat(poleSlug: BureauPoleContentSlug) {
+export function useCreatePoleStat(poleSlug: EditablePolePublicSlug) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -29,7 +29,7 @@ export function useCreatePoleStat(poleSlug: BureauPoleContentSlug) {
  * Hook: useUpdatePoleStat
  * Rôle: Mettre à jour une stat + invalidation.
  */
-export function useUpdatePoleStat(poleSlug: BureauPoleContentSlug) {
+export function useUpdatePoleStat(poleSlug: EditablePolePublicSlug) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -45,7 +45,7 @@ export function useUpdatePoleStat(poleSlug: BureauPoleContentSlug) {
  * Hook: useDeletePoleStat
  * Rôle: Supprimer une stat + optimistic update.
  */
-export function useDeletePoleStat(poleSlug: BureauPoleContentSlug) {
+export function useDeletePoleStat(poleSlug: EditablePolePublicSlug) {
   const queryClient = useQueryClient()
 
   return useMutation({

@@ -1,16 +1,19 @@
 "use client"
 
-import type { AdministrationAccessRow } from "../_schemas/administration-access.schema"
 import { cn } from "@/helpers/utils"
+import type { DashboardAccessScope } from "@/config/dashboard-access-scope"
+import { getDashboardAccessAccentClasses } from "@/config/dashboard-access-accent-theme"
 import { DashboardAccessStatusBadge } from "@/app/(admin)/bureau/acces/_components/dashboard-access-status-badge"
 import { getAccessListGridClass } from "@/app/(admin)/bureau/acces/_components/dashboard-access-list-layout"
-import { AdministrationAccessAccountCell } from "./administration-access-account-cell"
-import { AdministrationAccessRowActions } from "./administration-access-row-actions"
-import { getAdministrationAccessRoleLabel } from "./administration-access-role-label"
-import { getAdministrationAccessDisplayName } from "./administration-access-utils"
+import type { DashboardAccessRow } from "../_types/dashboard-access-row"
+import { DashboardAccessAccountCell } from "./dashboard-access-account-cell"
+import { DashboardAccessRowActions } from "./dashboard-access-row-actions"
+import { getDashboardAccessRoleLabel } from "./dashboard-access-role-label"
+import { getDashboardAccessDisplayName } from "./dashboard-access-utils"
 
-interface AdministrationAccessDesktopRowProps {
-  row: AdministrationAccessRow
+interface DashboardAccessDesktopRowProps {
+  scope: DashboardAccessScope
+  row: DashboardAccessRow
   roleLabels: Record<string, string>
   isAdmin: boolean
   isSelf: boolean
@@ -21,9 +24,10 @@ interface AdministrationAccessDesktopRowProps {
 }
 
 /**
- * Ligne tableau accès administration — viewport lg+.
+ * Ligne tableau accès dashboard — viewport lg+.
  */
-export function AdministrationAccessDesktopRow({
+export function DashboardAccessDesktopRow({
+  scope,
   row,
   roleLabels,
   isAdmin,
@@ -32,9 +36,10 @@ export function AdministrationAccessDesktopRow({
   onUnban,
   onRevoke,
   onError,
-}: AdministrationAccessDesktopRowProps) {
-  const displayName = getAdministrationAccessDisplayName(row)
-  const roleLabel = getAdministrationAccessRoleLabel(row.role, roleLabels)
+}: DashboardAccessDesktopRowProps) {
+  const accent = getDashboardAccessAccentClasses(scope)
+  const displayName = getDashboardAccessDisplayName(row)
+  const roleLabel = getDashboardAccessRoleLabel(row.role, roleLabels)
 
   return (
     <article
@@ -45,11 +50,16 @@ export function AdministrationAccessDesktopRow({
       )}
     >
       <div className="flex min-w-0 items-center">
-        <AdministrationAccessAccountCell row={row} avatarClassName="size-10" />
+        <DashboardAccessAccountCell scope={scope} row={row} avatarClassName="size-10" />
       </div>
 
       <div className="flex min-w-0 flex-col justify-center">
-        <span className="inline-flex w-fit rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-900 ring-1 ring-inset ring-sky-200/80 dark:bg-sky-950/40 dark:text-sky-300 dark:ring-sky-800/40">
+        <span
+          className={cn(
+            "inline-flex w-fit rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset",
+            accent.badge,
+          )}
+        >
           {roleLabel}
         </span>
       </div>
@@ -60,7 +70,8 @@ export function AdministrationAccessDesktopRow({
 
       {isAdmin && (
         <div className="flex min-w-0 items-center justify-end overflow-visible">
-          <AdministrationAccessRowActions
+          <DashboardAccessRowActions
+            scope={scope}
             userId={row.userId}
             displayName={displayName}
             banned={row.banned}

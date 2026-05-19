@@ -12,7 +12,10 @@ import {
   canAccessAdministrationBenevolesManagePath,
   canAccessAdministrationPath,
 } from "@/helpers/administration-route-access"
-import { isBureauDashboardRole } from "@/helpers/dashboard-roles"
+import {
+  isBureauDashboardRole,
+  isHerbergementRelationOnlyRole,
+} from "@/helpers/dashboard-roles"
 import { AdministrationSidebar } from "@/components/administration/administration-sidebar"
 import { BureauHeader } from "@/components/bureau/bureau-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -43,6 +46,9 @@ export default async function AdministrationShellLayout({
   const permissions = getDashboardPermissions(role)
 
   if (!permissions.canAccessAdministrationDashboard) {
+    if (isHerbergementRelationOnlyRole(role)) {
+      redirect("/hebergement-relation?info=wrong_dashboard")
+    }
     if (isBureauDashboardRole(role)) {
       redirect("/bureau?info=wrong_dashboard")
     }

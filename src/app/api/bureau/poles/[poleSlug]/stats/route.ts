@@ -1,12 +1,11 @@
-import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { auth } from "@/lib/auth"
+
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import { findPoleBySlugOrId } from "@/lib/api/pole-by-slug"
-import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
+import { hasPoleApiAccess } from "@/helpers/pole-api-auth"
 
 import { detailsPoleStatListSchema } from "@/app/(admin)/bureau/poles/_schemas/details-pole-stat.schema"
 import {
@@ -16,10 +15,6 @@ import {
 
 const poleSlugSchema = z.string().min(1)
 
-async function requireBureauApiAccess(): Promise<boolean> {
-  const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && sessionCanAccessBureauContenu(session.user.role)
-}
 
 async function resolveDetailsPoleId(poleSlug: string): Promise<string | null> {
   const pole = await findPoleBySlugOrId(poleSlug)
@@ -30,15 +25,14 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ poleSlug: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
-  }
-
   const { poleSlug } = await params
   const parsedSlug = poleSlugSchema.safeParse(poleSlug)
   if (!parsedSlug.success) {
     return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
+    return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
   const detailsPoleId = await resolveDetailsPoleId(parsedSlug.data)
@@ -66,15 +60,14 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ poleSlug: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
-  }
-
   const { poleSlug } = await params
   const parsedSlug = poleSlugSchema.safeParse(poleSlug)
   if (!parsedSlug.success) {
     return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
+    return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
   const detailsPoleId = await resolveDetailsPoleId(parsedSlug.data)

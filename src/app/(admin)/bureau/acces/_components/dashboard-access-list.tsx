@@ -3,6 +3,7 @@
 import { useMemo, useState, useCallback } from "react"
 import Link from "next/link"
 import { IconKey, IconPlus } from "@tabler/icons-react"
+import { filterAccessListRowsExcludingSessionUser } from "@/app/(admin)/_shared/dashboard-access/_helpers/access-list-session-rules"
 import type { DashboardAccessRow } from "../_schemas/dashboard-access.schema"
 import {
   banDashboardAccess,
@@ -34,20 +35,25 @@ export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardA
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<AccessListFilter>("all")
 
+  const visibleRows = useMemo(
+    () => filterAccessListRowsExcludingSessionUser(rows, currentUserId),
+    [rows, currentUserId],
+  )
+
   const counts = useMemo(
     () => ({
-      all: rows.length,
-      active: rows.filter((r) => !r.banned).length,
-      banned: rows.filter((r) => r.banned).length,
+      all: visibleRows.length,
+      active: visibleRows.filter((r) => !r.banned).length,
+      banned: visibleRows.filter((r) => r.banned).length,
     }),
-    [rows],
+    [visibleRows],
   )
 
   const filteredRows = useMemo(() => {
-    if (filter === "active") return rows.filter((r) => !r.banned)
-    if (filter === "banned") return rows.filter((r) => r.banned)
-    return rows
-  }, [rows, filter])
+    if (filter === "active") return visibleRows.filter((r) => !r.banned)
+    if (filter === "banned") return visibleRows.filter((r) => r.banned)
+    return visibleRows
+  }, [visibleRows, filter])
 
   const handleError = useCallback((message: string) => {
     setError(message)
@@ -66,7 +72,7 @@ export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardA
     [],
   )
 
-  if (rows.length === 0) {
+  if (visibleRows.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-amber-200/40 bg-gradient-to-b from-amber-50/30 to-transparent px-6 py-16 text-center dark:border-amber-900/30 dark:from-amber-950/20">
         <span className="flex size-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 shadow-sm dark:bg-amber-950/50 dark:text-amber-300">

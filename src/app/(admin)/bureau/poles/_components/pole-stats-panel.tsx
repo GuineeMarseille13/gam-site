@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { IconPencil, IconPlus, IconTrash } from "@tabler/icons-react"
 
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -44,7 +44,7 @@ import {
 } from "../_hooks/use-pole-stat-mutations"
 
 interface PoleStatsPanelProps {
-  poleSlug: BureauPoleContentSlug
+  poleSlug: EditablePolePublicSlug
 }
 
 type FormErrors = Partial<Record<keyof DetailsPoleStatUpsertInput, string>>

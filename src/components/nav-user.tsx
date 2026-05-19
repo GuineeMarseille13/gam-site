@@ -42,7 +42,7 @@ export function NavUser({
 }: {
   user: { name: string; email: string; avatar?: string; image?: string }
   role?: string
-  profileHref?: string
+  profileHref?: string | null
   /** Page de connexion après déconnexion (Bureau vs Administration) */
   afterLogoutHref?: string
 }) {
@@ -105,14 +105,20 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-100 focus:text-foreground dark:focus:bg-gray-800">
-              <Link href={profileHref} className="flex items-center gap-2">
-                <IconUserCircle className="size-4" />
-                Mon profil
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
+            {profileHref ? (
+              <>
+                <DropdownMenuItem
+                  asChild
+                  className="cursor-pointer focus:bg-gray-100 focus:text-foreground dark:focus:bg-gray-800"
+                >
+                  <Link href={profileHref} className="flex items-center gap-2">
+                    <IconUserCircle className="size-4" />
+                    Mon profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            ) : null}
 
             <DropdownMenuItem
               onClick={handleLogout}

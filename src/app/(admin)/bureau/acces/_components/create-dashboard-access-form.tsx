@@ -101,7 +101,7 @@ export function CreateDashboardAccessForm({ persons, action }: CreateDashboardAc
           <div>
             <p className="text-base font-semibold text-foreground">Aucune personne disponible</p>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-              Toutes les fiches ont déjà un accès, ou aucune personne n&apos;est enregistrée. Créez
+              Aucune personne n&apos;est enregistrée. Créez
               d&apos;abord un membre du bureau, un bénévole ou un adhérent.
             </p>
           </div>

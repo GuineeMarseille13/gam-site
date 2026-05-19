@@ -1,4 +1,4 @@
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 
 import { detailsPoleStatSchema, type DetailsPoleStat } from "../_schemas/details-pole-stat.schema"
 import type { DetailsPoleStatUpsertInput } from "../_schemas/details-pole-stat-form.schema"
@@ -23,7 +23,7 @@ async function readApiErrorMessage(res: Response): Promise<string | null> {
  * Rôle: Mettre à jour une stat dynamique (dashboard bureau).
  */
 export async function updatePoleStat(
-  poleSlug: BureauPoleContentSlug,
+  poleSlug: EditablePolePublicSlug,
   statId: string,
   payload: DetailsPoleStatUpsertInput,
 ): Promise<DetailsPoleStat> {

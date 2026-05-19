@@ -30,6 +30,10 @@ export const DASHBOARD_CAPABILITY = {
   adminBenevolesDelete: "admin.benevoles.delete",
   adminStatistiques: "admin.statistiques",
   adminAcces: "admin.acces",
+  hebergementOverview: "hebergement.overview",
+  hebergementContenu: "hebergement.contenu",
+  hebergementAcces: "hebergement.acces",
+  crossHerbergementDashboard: "cross.hebergement-dashboard",
 } as const
 
 export type DashboardCapability =
@@ -63,6 +67,12 @@ export interface DashboardPermissions {
   readonly canAccessAdministrationAcces: boolean
   readonly canManageAdministrationAcces: boolean
   readonly canAccessBureauDashboardCross: boolean
+  readonly canAccessHerbergementRelationDashboard: boolean
+  readonly canAccessHerbergementOverview: boolean
+  readonly canAccessHerbergementContenu: boolean
+  readonly canAccessHerbergementAcces: boolean
+  readonly canManageHerbergementAcces: boolean
+  readonly canAccessHerbergementDashboardCross: boolean
 }
 
 const ALL_BUREAU_CAPABILITIES: DashboardCapability[] = [
@@ -107,6 +117,15 @@ const INVITE_PERMADMIN_ADMIN_CAPABILITIES: DashboardCapability[] =
     (c) => c !== DASHBOARD_CAPABILITY.adminBenevolesManage,
   )
 
+const ALL_HERBERGEMENT_CAPABILITIES: DashboardCapability[] = [
+  DASHBOARD_CAPABILITY.hebergementOverview,
+  DASHBOARD_CAPABILITY.hebergementAcces,
+]
+
+const STANDARD_HERBERGEMENT_CAPABILITIES: DashboardCapability[] = [
+  DASHBOARD_CAPABILITY.hebergementOverview,
+]
+
 function buildPermissions(
   capabilities: readonly DashboardCapability[],
 ): DashboardPermissions {
@@ -114,6 +133,11 @@ function buildPermissions(
   const hasAdminFeature =
     set.has(DASHBOARD_CAPABILITY.adminOverview) ||
     set.has(DASHBOARD_CAPABILITY.crossAdministrationDashboard)
+
+  const hasHerbergementFeature =
+    set.has(DASHBOARD_CAPABILITY.hebergementOverview) ||
+    set.has(DASHBOARD_CAPABILITY.hebergementAcces) ||
+    set.has(DASHBOARD_CAPABILITY.crossHerbergementDashboard)
 
   return {
     canAccessBureauDashboard:
@@ -152,6 +176,14 @@ function buildPermissions(
     canAccessAdministrationAcces: set.has(DASHBOARD_CAPABILITY.adminAcces),
     canManageAdministrationAcces: set.has(DASHBOARD_CAPABILITY.adminAcces),
     canAccessBureauDashboardCross: set.has(DASHBOARD_CAPABILITY.crossBureauDashboard),
+    canAccessHerbergementRelationDashboard: hasHerbergementFeature,
+    canAccessHerbergementOverview: set.has(DASHBOARD_CAPABILITY.hebergementOverview),
+    canAccessHerbergementContenu: set.has(DASHBOARD_CAPABILITY.hebergementContenu),
+    canAccessHerbergementAcces: set.has(DASHBOARD_CAPABILITY.hebergementAcces),
+    canManageHerbergementAcces: set.has(DASHBOARD_CAPABILITY.hebergementAcces),
+    canAccessHerbergementDashboardCross: set.has(
+      DASHBOARD_CAPABILITY.crossHerbergementDashboard,
+    ),
   }
 }
 
@@ -159,7 +191,9 @@ const ROLE_CAPABILITIES: Record<SystemRoleCode, readonly DashboardCapability[]> 
   "SUPER-ADMIN": [
     ...ALL_BUREAU_CAPABILITIES,
     ...ALL_ADMIN_CAPABILITIES,
+    ...ALL_HERBERGEMENT_CAPABILITIES,
     DASHBOARD_CAPABILITY.crossBureauDashboard,
+    DASHBOARD_CAPABILITY.crossHerbergementDashboard,
   ],
   BUREAU: [
     DASHBOARD_CAPABILITY.bureauOverview,
@@ -170,6 +204,8 @@ const ROLE_CAPABILITIES: Record<SystemRoleCode, readonly DashboardCapability[]> 
     DASHBOARD_CAPABILITY.bureauAdminBenevoles,
     DASHBOARD_CAPABILITY.crossAdministrationDashboard,
     DASHBOARD_CAPABILITY.crossBureauDashboard,
+    DASHBOARD_CAPABILITY.crossHerbergementDashboard,
+    DASHBOARD_CAPABILITY.hebergementContenu,
     ...ALL_ADMIN_CAPABILITIES,
   ],
   "INVITE-BUREAU": [
@@ -180,6 +216,9 @@ const ROLE_CAPABILITIES: Record<SystemRoleCode, readonly DashboardCapability[]> 
   "ADMIN-PERMADMIN": [...ALL_ADMIN_CAPABILITIES],
   PERMADMIN: [...PERMADMIN_ADMIN_CAPABILITIES],
   "INVITE-PERMADMIN": [...INVITE_PERMADMIN_ADMIN_CAPABILITIES],
+  "ADMIN-HERBERGEMENT-RELATION": [...ALL_HERBERGEMENT_CAPABILITIES],
+  "HERBERGEMENT-RELATION": [...STANDARD_HERBERGEMENT_CAPABILITIES],
+  "INVITE-HERBERGEMENT-RELATION": [DASHBOARD_CAPABILITY.hebergementOverview],
 }
 
 const EMPTY_PERMISSIONS = buildPermissions([])

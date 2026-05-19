@@ -56,7 +56,11 @@ export function canAccessBureauPath(
     return false
   }
 
-  if (pathname === "/bureau" || pathname === "/bureau/profil") {
+  if (pathname === "/bureau/profil") {
+    return true
+  }
+
+  if (pathname === "/bureau") {
     return permissions.canAccessOverview || permissions.canAccessContenu
   }
 

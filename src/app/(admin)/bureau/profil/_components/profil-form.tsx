@@ -2,6 +2,8 @@
 
 import { useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { signOut } from "@/lib/auth-client"
+import type { ProfilActionResult } from "@/app/(admin)/_shared/profile/_types/profil-action-result"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -19,17 +21,12 @@ import {
   IconCircleFilled,
   IconBriefcase,
 } from "@tabler/icons-react"
-// ── Styles ─────────────────────────────────────────────────────────────────────
+import { getProfilRoleLabel } from "@/app/(admin)/_shared/profile/_helpers/profil-role-label"
 
-const ROLE_BADGE: Record<string, { label: string; dot: string; badge: string }> = {
-  admin:          { label: "Administrateur", dot: "text-amber-500", badge: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:ring-amber-800/40" },
-  bureau:         { label: "Bureau",         dot: "text-blue-500",  badge: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:ring-blue-800/40" },
-  administration: { label: "Administration", dot: "text-sky-500",  badge: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:ring-sky-800/40" },
-}
+const ROLE_BADGE_STYLE =
+  "inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-2.5 py-1 text-xs font-medium text-foreground ring-1 ring-inset ring-border/60"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
-
-type ActionResult = { error: string } | { success: true } | undefined
 
 interface ProfilFormProps {
   defaultValues: {
@@ -41,8 +38,13 @@ interface ProfilFormProps {
     poste?:    string | null
     image?:    string | null
   }
-  updateAction:         (formData: FormData) => Promise<ActionResult>
-  changePasswordAction: (currentPassword: string, newPassword: string) => Promise<ActionResult>
+  updateAction: (formData: FormData) => Promise<ProfilActionResult>
+  changePasswordAction: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<ProfilActionResult>
+  /** Lien « Annuler » (défaut : tableau de bord Bureau). */
+  cancelHref?: string
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -53,7 +55,12 @@ function initials(firstName: string, lastName: string) {
 
 // ── Composant ──────────────────────────────────────────────────────────────────
 
-export function ProfilForm({ defaultValues, updateAction, changePasswordAction }: ProfilFormProps) {
+export function ProfilForm({
+  defaultValues,
+  updateAction,
+  changePasswordAction,
+  cancelHref = "/bureau",
+}: ProfilFormProps) {
   const router = useRouter()
 
   // ── Soumission principale
@@ -98,13 +105,18 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
   const [showPwd, setShowPwd]               = useState(false)
   const [showConfirm, setShowConfirm]       = useState(false)
   const [pwdError, setPwdError]             = useState<string | null>(null)
-  const [pwdSuccess, setPwdSuccess]         = useState(false)
+  const [pwdRedirecting, setPwdRedirecting] = useState(false)
   const [isPwdPending, startPwdTransition]  = useTransition()
 
   function resetPwdFields() {
-    setCurrentPwd(""); setPwdValue(""); setPwdConfirm("")
-    setPwdError(null); setPwdSuccess(false)
-    setShowCurrentPwd(false); setShowPwd(false); setShowConfirm(false)
+    setCurrentPwd("")
+    setPwdValue("")
+    setPwdConfirm("")
+    setPwdError(null)
+    setPwdRedirecting(false)
+    setShowCurrentPwd(false)
+    setShowPwd(false)
+    setShowConfirm(false)
   }
 
   function handlePasswordSubmit() {
@@ -113,10 +125,35 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
     if (pwdValue.length < 8)  { setPwdError("Minimum 8 caractères."); return }
     if (pwdValue !== pwdConfirm) { setPwdError("Les mots de passe ne correspondent pas."); return }
     startPwdTransition(async () => {
-      const result = await changePasswordAction(currentPwd, pwdValue)
-      if (result && "error" in result) { setPwdError(result.error); return }
-      setPwdSuccess(true)
-      setCurrentPwd(""); setPwdValue(""); setPwdConfirm("")
+      try {
+        const result = await changePasswordAction(currentPwd, pwdValue)
+        if ("error" in result) {
+          setPwdError(result.error)
+          return
+        }
+
+        if ("requiresReauth" in result && result.requiresReauth) {
+          setPwdRedirecting(true)
+          setCurrentPwd("")
+          setPwdValue("")
+          setPwdConfirm("")
+          await signOut()
+          const loginUrl = new URL(result.loginPath, window.location.origin)
+          loginUrl.searchParams.set("mot-de-passe-modifie", "1")
+          router.push(`${loginUrl.pathname}${loginUrl.search}`)
+          router.refresh()
+          return
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : ""
+        if (message.includes("Failed to find Server Action")) {
+          setPwdError(
+            "Session de page expirée. Rechargez la page (F5) puis réessayez.",
+          )
+          return
+        }
+        setPwdError("Une erreur inattendue s'est produite.")
+      }
     })
   }
 
@@ -130,16 +167,24 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
     startTransition(async () => {
       try {
         const result = await updateAction(formData)
-        if (result && "error" in result) { setError(result.error); return }
+        if ("error" in result) {
+          setError(result.error)
+          return
+        }
         setSuccess(true)
         router.refresh()
-      } catch {
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : ""
+        if (message.includes("Failed to find Server Action")) {
+          setError("Session de page expirée. Rechargez la page (F5) puis réessayez.")
+          return
+        }
         setError("Une erreur inattendue s'est produite.")
       }
     })
   }
 
-  const roleInfo   = ROLE_BADGE[defaultValues.role ?? ""]
+  const roleLabel = getProfilRoleLabel(defaultValues.role)
   const posteLabel = defaultValues.poste?.trim() ?? ""
 
   // ── Rendu ─────────────────────────────────────────────────────────────────────
@@ -203,15 +248,15 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
             </p>
 
             {/* Rôle + Poste (lecture seule) */}
-            {(roleInfo || posteLabel) && (
+            {(roleLabel || posteLabel) && (
               <div className="space-y-2.5 rounded-2xl border bg-muted/20 p-4">
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Rôle &amp; poste
                 </p>
-                {roleInfo && (
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${roleInfo.badge}`}>
-                    <IconCircleFilled className={`size-1.5 ${roleInfo.dot}`} />
-                    {roleInfo.label}
+                {roleLabel && (
+                  <span className={ROLE_BADGE_STYLE}>
+                    <IconCircleFilled className="size-1.5 text-emerald-600" />
+                    {roleLabel}
                   </span>
                 )}
                 {posteLabel && (
@@ -318,7 +363,9 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">Changer le mot de passe</p>
-                  <p className="text-xs text-muted-foreground">Révoque toutes les autres sessions actives</p>
+                  <p className="text-xs text-muted-foreground">
+                    Révoque toutes vos sessions et vous déconnecte
+                  </p>
                 </div>
               </div>
               <IconChevronDown
@@ -329,20 +376,15 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
             {/* Contenu dépliable */}
             {pwdOpen && (
               <div className="border-t bg-muted/10 px-4 py-4">
-                {pwdSuccess ? (
+                {pwdRedirecting ? (
                   <div className="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 dark:bg-emerald-950/30">
-                    <IconShieldCheck className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    <IconLoader2 className="size-5 shrink-0 animate-spin text-emerald-600 dark:text-emerald-400" />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">Mot de passe modifié</p>
-                      <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70">Autres sessions révoquées</p>
+                      <p className="text-xs text-emerald-700/70 dark:text-emerald-400/70">
+                        Déconnexion en cours… Reconnectez-vous avec votre nouveau mot de passe.
+                      </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => { resetPwdFields(); setPwdOpen(false) }}
-                      className="ml-auto shrink-0 cursor-pointer text-xs text-emerald-700 hover:underline dark:text-emerald-400"
-                    >
-                      Fermer
-                    </button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -464,7 +506,7 @@ export function ProfilForm({ defaultValues, updateAction, changePasswordAction }
             <Button
               type="button"
               variant="ghost"
-              onClick={() => router.push("/bureau/")}
+              onClick={() => router.push(cancelHref)}
               disabled={isPending}
               className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
             >

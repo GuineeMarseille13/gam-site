@@ -1,15 +1,18 @@
 "use client"
 
-import type { AdministrationAccessRow } from "../_schemas/administration-access.schema"
 import { cn } from "@/helpers/utils"
+import type { DashboardAccessScope } from "@/config/dashboard-access-scope"
+import { getDashboardAccessAccentClasses } from "@/config/dashboard-access-accent-theme"
 import { DashboardAccessStatusBadge } from "@/app/(admin)/bureau/acces/_components/dashboard-access-status-badge"
-import { AdministrationAccessAccountCell } from "./administration-access-account-cell"
-import { AdministrationAccessRowActions } from "./administration-access-row-actions"
-import { getAdministrationAccessDisplayName } from "./administration-access-utils"
-import { getAdministrationAccessRoleLabel } from "./administration-access-role-label"
+import type { DashboardAccessRow } from "../_types/dashboard-access-row"
+import { DashboardAccessAccountCell } from "./dashboard-access-account-cell"
+import { DashboardAccessRowActions } from "./dashboard-access-row-actions"
+import { getDashboardAccessRoleLabel } from "./dashboard-access-role-label"
+import { getDashboardAccessDisplayName } from "./dashboard-access-utils"
 
-interface AdministrationAccessMobileCardProps {
-  row: AdministrationAccessRow
+interface DashboardAccessMobileCardProps {
+  scope: DashboardAccessScope
+  row: DashboardAccessRow
   roleLabels: Record<string, string>
   isAdmin: boolean
   isSelf: boolean
@@ -20,9 +23,10 @@ interface AdministrationAccessMobileCardProps {
 }
 
 /**
- * Carte accès administration — viewport &lt; lg.
+ * Carte accès dashboard — viewport &lt; lg.
  */
-export function AdministrationAccessMobileCard({
+export function DashboardAccessMobileCard({
+  scope,
   row,
   roleLabels,
   isAdmin,
@@ -31,9 +35,10 @@ export function AdministrationAccessMobileCard({
   onUnban,
   onRevoke,
   onError,
-}: AdministrationAccessMobileCardProps) {
-  const displayName = getAdministrationAccessDisplayName(row)
-  const roleLabel = getAdministrationAccessRoleLabel(row.role, roleLabels)
+}: DashboardAccessMobileCardProps) {
+  const accent = getDashboardAccessAccentClasses(scope)
+  const displayName = getDashboardAccessDisplayName(row)
+  const roleLabel = getDashboardAccessRoleLabel(row.role, roleLabels)
 
   return (
     <article
@@ -44,13 +49,14 @@ export function AdministrationAccessMobileCard({
     >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <AdministrationAccessAccountCell row={row} />
+          <DashboardAccessAccountCell scope={scope} row={row} />
         </div>
 
         <div className="flex shrink-0 flex-col items-end gap-2">
           <DashboardAccessStatusBadge banned={row.banned} />
           {isAdmin && (
-            <AdministrationAccessRowActions
+            <DashboardAccessRowActions
+              scope={scope}
               userId={row.userId}
               displayName={displayName}
               banned={row.banned}
@@ -66,7 +72,12 @@ export function AdministrationAccessMobileCard({
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/40 pt-3">
-        <span className="inline-flex rounded-full bg-sky-50 px-2.5 py-0.5 text-[11px] font-medium text-sky-900 ring-1 ring-inset ring-sky-200/80 dark:bg-sky-950/40 dark:text-sky-300 dark:ring-sky-800/40">
+        <span
+          className={cn(
+            "inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ring-inset",
+            accent.badge,
+          )}
+        >
           {roleLabel}
         </span>
       </div>

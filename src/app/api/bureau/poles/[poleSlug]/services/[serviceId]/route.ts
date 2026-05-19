@@ -1,12 +1,11 @@
-import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { auth } from "@/lib/auth"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { sessionCanAccessBureauContenu } from "@/helpers/api-dashboard-auth"
+import { hasPoleApiAccess } from "@/helpers/pole-api-auth"
 
+const poleSlugSchema = z.string().min(1)
 const serviceIdSchema = z.string().min(1)
 
 const upsertSchema = z
@@ -26,11 +25,6 @@ const upsertSchema = z
     isActive: z.coerce.boolean().default(true),
   })
   .strict()
-
-async function requireBureauApiAccess(): Promise<boolean> {
-  const session = await auth.api.getSession({ headers: await headers() })
-  return !!session && sessionCanAccessBureauContenu(session.user.role)
-}
 
 function serializeRow(row: {
   id: string
@@ -52,14 +46,18 @@ function serializeRow(row: {
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ serviceId: string }> },
+  { params }: { params: Promise<{ poleSlug: string; serviceId: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
+  const { poleSlug, serviceId } = await params
+  const parsedSlug = poleSlugSchema.safeParse(poleSlug)
+  if (!parsedSlug.success) {
+    return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
-  const { serviceId } = await params
   const parsedId = serviceIdSchema.safeParse(serviceId)
   if (!parsedId.success) {
     return NextResponse.json({ error: "Identifiant invalide." }, { status: 400 })
@@ -102,14 +100,18 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ serviceId: string }> },
+  { params }: { params: Promise<{ poleSlug: string; serviceId: string }> },
 ): Promise<NextResponse> {
-  const hasAccess = await requireBureauApiAccess()
-  if (!hasAccess) {
+  const { poleSlug, serviceId } = await params
+  const parsedSlug = poleSlugSchema.safeParse(poleSlug)
+  if (!parsedSlug.success) {
+    return NextResponse.json({ error: "Slug invalide." }, { status: 400 })
+  }
+
+  if (!(await hasPoleApiAccess(parsedSlug.data))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 })
   }
 
-  const { serviceId } = await params
   const parsedId = serviceIdSchema.safeParse(serviceId)
   if (!parsedId.success) {
     return NextResponse.json({ error: "Identifiant invalide." }, { status: 400 })
@@ -118,4 +120,3 @@ export async function DELETE(
   await prisma.detailsPoleService.delete({ where: { id: parsedId.data } })
   return NextResponse.json({ success: true })
 }
-

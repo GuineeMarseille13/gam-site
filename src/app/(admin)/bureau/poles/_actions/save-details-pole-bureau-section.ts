@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { Prisma } from "@/lib/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { requireBureauContenu } from "@/lib/auth-guard"
+import { requirePolePublicContentEdit } from "@/lib/auth-guard"
 import { findPoleBySlugOrId } from "@/lib/api/pole-by-slug"
 import { saveDetailsPoleBureauSectionFormSchema } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import type { BureauPoleDetailsSection } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
@@ -30,13 +30,13 @@ export async function saveDetailsPoleBureauSectionAction(
   _prev: SaveDetailsPoleBureauSectionState,
   formData: FormData,
 ): Promise<SaveDetailsPoleBureauSectionState> {
+  const rawSlug = (formData.get("poleSlug") as string) ?? ""
+
   try {
-    await requireBureauContenu()
+    await requirePolePublicContentEdit(rawSlug)
   } catch {
     return { error: "Accès non autorisé." }
   }
-
-  const rawSlug = (formData.get("poleSlug") as string) ?? ""
   const rawSection = (formData.get("section") as string) ?? ""
   const rawText = (formData.get("sectionText") as string) ?? ""
 

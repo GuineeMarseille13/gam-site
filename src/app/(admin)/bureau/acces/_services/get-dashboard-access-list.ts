@@ -2,6 +2,10 @@ import { prisma } from "@/lib/prisma"
 import { requireBureauAdminAcces } from "@/lib/auth-guard"
 import { SYSTEM_ROLES_SEED, type SystemRoleCode } from "@/config/system-roles"
 import {
+  prismaUserWhereExcludeSessionUser,
+  isAccessListSelfUser,
+} from "@/app/(admin)/_shared/dashboard-access/_helpers/access-list-session-rules"
+import {
   dashboardAccessRowSchema,
   type DashboardAccessRow,
 } from "../_schemas/dashboard-access.schema"
@@ -11,12 +15,16 @@ const ACCESS_ROLE_CODES = SYSTEM_ROLES_SEED.map((r) => r.code)
 
 /**
  * Liste des comptes dashboard (tous rôles système) avec fiche Person liée si présente.
+ * L’utilisateur connecté n’y figure jamais (gestion des autres accès uniquement).
  */
 export async function getDashboardAccessList(): Promise<DashboardAccessRow[]> {
-  await requireBureauAdminAcces()
+  const session = await requireBureauAdminAcces()
 
   const users = await prisma.user.findMany({
-    where: { role: { in: ACCESS_ROLE_CODES } },
+    where: {
+      role: { in: ACCESS_ROLE_CODES },
+      ...prismaUserWhereExcludeSessionUser(session.user.id),
+    },
     orderBy: { createdAt: "desc" },
     take: 300,
   })
@@ -76,6 +84,12 @@ export async function getDashboardAccessList(): Promise<DashboardAccessRow[]> {
  * Détail pour édition d’un accès (admin uniquement, via layout).
  */
 export async function getDashboardAccessForEdit(userId: string) {
+  const session = await requireBureauAdminAcces()
+
+  if (isAccessListSelfUser(userId, session.user.id)) {
+    return null
+  }
+
   const user = await prisma.user.findUnique({ where: { id: userId } })
   const role = user?.role ?? ""
   if (!user || !(ACCESS_ROLE_CODES as readonly string[]).includes(role)) return null

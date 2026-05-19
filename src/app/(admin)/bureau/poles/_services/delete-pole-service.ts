@@ -1,11 +1,11 @@
-import type { BureauPoleContentSlug } from "@/config/bureau-poles-content"
+import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 
 /**
  * Service: deletePoleService
  * Rôle: Supprimer un service dynamique (dashboard bureau).
  */
 export async function deletePoleService(
-  poleSlug: BureauPoleContentSlug,
+  poleSlug: EditablePolePublicSlug,
   serviceId: string,
 ): Promise<void> {
   const res = await fetch(`/api/bureau/poles/${poleSlug}/services/${serviceId}`, {
