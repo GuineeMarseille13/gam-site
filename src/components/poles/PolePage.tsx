@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Pole } from "@/data/poles";
 import { buildSlotsFromLegacyPole } from "@/helpers/administrative-permanence/build-pole-slots";
+import { getPoleAchievementsPublicDefaultSubtitle } from "@/config/bureau-pole-achievements-ui";
+import { getPolePublicDisplayTitle } from "@/config/pole-public-display";
 import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants";
 import { CampuceFranceStudentForm } from "@/app/(public)/poles/_components/campuce-france-student-form";
 import PermanenceCalendar from "./PermanenceCalendar";
@@ -26,6 +28,11 @@ interface PolePageProps {
 export default function PolePage({ pole }: PolePageProps) {
   const descriptionRef = useRef<HTMLElement | null>(null);
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
+
+  const poleDisplayTitle = getPolePublicDisplayTitle(
+    pole.slug,
+    pole.displayTitle ?? pole.title,
+  );
 
   const isAdministrativePole = pole.slug === ADMINISTRATIVE_POLE_SLUG;
 
@@ -96,7 +103,7 @@ export default function PolePage({ pole }: PolePageProps) {
           >
             <Image
               src={pole.image}
-              alt={pole.title}
+              alt={poleDisplayTitle}
               fill
               className="object-cover"
               priority
@@ -163,7 +170,7 @@ export default function PolePage({ pole }: PolePageProps) {
                         "0 4px 30px rgba(0,0,0,0.7), 0 2px 15px rgba(0,0,0,0.5), 0 0 60px rgba(0,0,0,0.3)",
                     }}
                   >
-                    {pole.title}
+                    {poleDisplayTitle}
                   </span>
                   {/* Effet de glow animé derrière le texte */}
                   <motion.span
@@ -762,6 +769,7 @@ export default function PolePage({ pole }: PolePageProps) {
             images={pole.eventImages ?? []}
             colorScheme={pole.colorScheme}
             introOverride={achievementsNarrative || null}
+            defaultSubtitle={getPoleAchievementsPublicDefaultSubtitle(pole.slug)}
           />
         ) : null}
       </div>
@@ -774,17 +782,17 @@ interface EventGalleryProps {
   images: { url: string; title?: string; description?: string }[];
   colorScheme: Pole["colorScheme"];
   introOverride?: string | null;
+  defaultSubtitle: string;
 }
 
 function EventGallery({
   images,
   colorScheme,
   introOverride,
+  defaultSubtitle,
 }: EventGalleryProps) {
   const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
-  const subtitle =
-    introOverride?.trim() ||
-    "Découvrez les moments forts de nos événements et l'impact de notre travail";
+  const subtitle = introOverride?.trim() || defaultSubtitle;
 
   return (
     <motion.section

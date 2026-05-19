@@ -194,6 +194,7 @@ model DetailsPole {
 
   detailsPoleStats DetailsPoleStat[]
   detailsPoleServices DetailsPoleService[]
+  detailsPoleAchievements DetailsPoleAchievement[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -238,6 +239,24 @@ model DetailsPoleService {
 
   @@unique([detailsPoleId, order])
   @@map("details_pole_services")
+}
+
+model DetailsPoleAchievement {
+  id            String   @id @default(cuid())
+  detailsPoleId String
+  title         String
+  description   String   @db.Text
+  imageUrl      String
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+
+  detailsPole DetailsPole @relation(fields: [detailsPoleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([detailsPoleId, order])
+  @@map("details_pole_achievements")
 }
 
 model PartnerSection {

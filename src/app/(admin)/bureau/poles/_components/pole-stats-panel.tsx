@@ -271,11 +271,8 @@ export function PoleStatsPanel({ poleSlug }: PoleStatsPanelProps) {
                   {errors.order ? <p className="text-xs text-destructive">{errors.order}</p> : null}
                 </div>
 
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 p-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-foreground">Actif</p>
-                    <p className="text-xs text-muted-foreground">Visible sur la page publique</p>
-                  </div>
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 px-3">
+                  <p className="text-sm font-medium text-foreground">Actif</p>
                   <Switch
                     checked={form.isActive}
                     onCheckedChange={(checked) => setForm((s) => ({ ...s, isActive: checked }))}

@@ -2,6 +2,10 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { BureauContent } from "@/components/bureau/bureau-content"
+import {
+  getBureauPoleAchievementsPageDescription,
+  getBureauPoleAchievementsPageMetaTitle,
+} from "@/config/bureau-pole-achievements-ui"
 import { getPoleBySlug } from "@/data/poles"
 import {
   getDetailsPoleBureauContentByPublicSlug,
@@ -11,12 +15,13 @@ import {
 import { saveDetailsPoleBureauSectionAction } from "../../_actions/save-details-pole-bureau-section"
 import { BureauPoleDetailsPageCard } from "../../_content/bureau-pole-details-page-card"
 import { PoleDetailsSectionForm } from "../../_content/pole-details-section-form"
+import { PoleAchievementsPanel } from "../../_components/pole-achievements-panel"
 
 const POLE_SLUG = "evenementiel" as const
 
 export const metadata: Metadata = {
-  title: "Nos réalisations — Événementiel",
-  description: "Section « Nos réalisations » — DetailsPole",
+  title: getBureauPoleAchievementsPageMetaTitle(POLE_SLUG),
+  description: getBureauPoleAchievementsPageDescription(POLE_SLUG),
 }
 
 export default async function EvenementielNosRealisationsPage() {
@@ -31,17 +36,23 @@ export default async function EvenementielNosRealisationsPage() {
   return (
     <BureauContent
       title="Nos réalisations"
-      description="Texte d’introduction de la section « Nos réalisations » sur la page publique."
+      description={getBureauPoleAchievementsPageDescription(POLE_SLUG)}
       backHref="/bureau/poles"
     >
-      <BureauPoleDetailsPageCard>
-        <PoleDetailsSectionForm
-          action={saveDetailsPoleBureauSectionAction}
-          poleSlug={POLE_SLUG}
-          section="achievements"
-          savedText={savedText}
-        />
-      </BureauPoleDetailsPageCard>
+      <div className="flex flex-col gap-6">
+        <BureauPoleDetailsPageCard>
+          <PoleDetailsSectionForm
+            action={saveDetailsPoleBureauSectionAction}
+            poleSlug={POLE_SLUG}
+            section="achievements"
+            savedText={savedText}
+          />
+        </BureauPoleDetailsPageCard>
+
+        <BureauPoleDetailsPageCard>
+          <PoleAchievementsPanel poleSlug={POLE_SLUG} />
+        </BureauPoleDetailsPageCard>
+      </div>
     </BureauContent>
   )
 }

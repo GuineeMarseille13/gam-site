@@ -10,6 +10,7 @@ import * as path from 'path'
 import { PrismaClient } from '../src/lib/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { uploadImage } from '../src/lib/cloudinary'
+import { inferPolePublicSlugFromName } from '../src/lib/api/infer-pole-public-slug'
 import 'dotenv/config'
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
@@ -61,12 +62,18 @@ async function run() {
     // 2. Chercher un pôle existant (insensible à la casse)
     const existing = await prisma.pole.findFirst({
       where: { name: { equals: pole.name, mode: 'insensitive' } },
+      select: { id: true, publicSlug: true },
     })
+
+    const publicSlug = inferPolePublicSlugFromName(pole.name)
 
     if (existing) {
       await prisma.pole.update({
         where: { id: existing.id },
-        data: { imageId },
+        data: {
+          imageId,
+          ...(publicSlug && !existing.publicSlug ? { publicSlug } : {}),
+        },
       })
       console.log(`   🔄 Pôle "${pole.name}" mis à jour\n`)
     } else {
@@ -79,6 +86,7 @@ async function run() {
           description: pole.description,
           imageId,
           detailsPoleId: details.id,
+          ...(publicSlug ? { publicSlug } : {}),
         },
       })
       console.log(`   ➕ Pôle "${pole.name}" créé\n`)

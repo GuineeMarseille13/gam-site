@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 import { requireBureauContenu } from "@/lib/auth-guard"
+import { inferPolePublicSlugFromName } from "@/lib/api/infer-pole-public-slug"
 
 export type ActionState = { error: string } | null
 
@@ -32,8 +33,16 @@ export async function createPole(
     const details = await prisma.detailsPole.create({
       data: { title: name, description },
     })
+    const publicSlug = inferPolePublicSlugFromName(name)
+
     await prisma.pole.create({
-      data: { name, description, imageId, detailsPoleId: details.id },
+      data: {
+        name,
+        description,
+        imageId,
+        detailsPoleId: details.id,
+        ...(publicSlug ? { publicSlug } : {}),
+      },
     })
 
     revalidatePath("/bureau/poles")

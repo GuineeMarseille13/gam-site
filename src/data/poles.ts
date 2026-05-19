@@ -1,6 +1,9 @@
 export interface Pole {
   slug: string;
+  /** Titre hero (souvent en majuscules). */
   title: string;
+  /** Libellé lisible (cartes, fil d’Ariane, bureau) — prioritaire si défini. */
+  displayTitle?: string;
   shortDescription: string;
   image: string;
   description: string;
@@ -57,6 +60,7 @@ export const poles: Pole[] = [
   {
     slug: "evenementiel",
     title: "ÉVÉNEMENTIEL",
+    displayTitle: "Événementiel",
     shortDescription:
       "Organisation d'événements culturels, festifs et caritatifs pour rassembler la communauté.",
     image: "/images/e-pole.jpg",
@@ -109,6 +113,7 @@ export const poles: Pole[] = [
   {
     slug: "demarche-administrative",
     title: "DÉMARCHE ADMINISTRATIVE",
+    displayTitle: "Accompagnement administratif",
     shortDescription:
       "Accompagnement et assistance dans vos démarches administratives et vos formalités.",
     image: "/images/aa-pole.jpg",
@@ -218,6 +223,7 @@ export const poles: Pole[] = [
   {
     slug: "mise-en-relation",
     title: "HÉBERGEMENT ET MISE EN RELATION",
+    displayTitle: "Hébergement et Mise en relation",
     shortDescription:
       "Facilitation des échanges et des connexions entre les membres de la communauté.",
     image: "/images/mr-pole.jpg",

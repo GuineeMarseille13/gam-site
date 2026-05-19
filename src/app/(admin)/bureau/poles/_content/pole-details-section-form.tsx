@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { SubmitButton } from "@/components/bureau/submit-button"
-import { BUREAU_POLE_DETAILS_SECTION_UI } from "@/config/bureau-pole-details-section-ui"
+import { getBureauPoleDetailsSectionUi } from "@/config/bureau-pole-details-section-ui"
 import type { EditablePolePublicSlug } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import type { BureauPoleDetailsSection } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
 import { DETAILS_POLE_BUREAU_SECTION_MAX_CHARS } from "@/helpers/details-pole-bureau/_schemas/details-pole-bureau-section.schema"
@@ -41,7 +41,7 @@ export function PoleDetailsSectionForm({
   const [text, setText] = useState(() => savedText ?? "")
   const submitSequenceRef = useRef(0)
   const lastNotifiedSubmitSequenceRef = useRef(0)
-  const ui = BUREAU_POLE_DETAILS_SECTION_UI[section]
+  const ui = getBureauPoleDetailsSectionUi(poleSlug, section)
   const fieldId = `pole-section-${section}`
   const charCount = text.length
   const isNearLimit =
@@ -115,14 +115,14 @@ export function PoleDetailsSectionForm({
             id={fieldId}
             value={text}
             onChange={handleTextChange}
-            rows={16}
+            rows={5}
             className={cn(
-              "min-h-[14rem] w-full min-w-0 resize-y text-base leading-relaxed",
-              "sm:min-h-[18rem] md:min-h-[20rem]",
+              "min-h-[8rem] w-full min-w-0 resize-y text-base leading-relaxed",
+              "sm:min-h-[10rem] md:min-h-[8rem]",
               "rounded-xl border-input bg-background shadow-sm transition-shadow",
               "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20",
             )}
-            placeholder="Saisissez le texte affiché sur le site public…"
+            placeholder={ui.placeholder ?? "Saisissez le texte affiché sur le site public…"}
             aria-describedby={`${fieldId}-meta ${fieldId}-fallback-hint`}
           />
           <div

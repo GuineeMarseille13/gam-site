@@ -63,6 +63,11 @@ export type DetailsPoleStat = Prisma.DetailsPoleStatModel
  */
 export type DetailsPoleService = Prisma.DetailsPoleServiceModel
 /**
+ * Model DetailsPoleAchievement
+ * 
+ */
+export type DetailsPoleAchievement = Prisma.DetailsPoleAchievementModel
+/**
  * Model PartnerSection
  * 
  */

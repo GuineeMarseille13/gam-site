@@ -1,5 +1,7 @@
+import { getPolePublicDisplayTitle } from "@/config/pole-public-display"
 import { RowActions } from "@/components/bureau/row-actions"
 import { CloudinaryImage } from "@/components/bureau/cloudinary-image"
+import { slugify } from "@/lib/slugify"
 import { deletePole } from "../_actions/actions"
 import {
   POLES_LIST_HEADER,
@@ -12,6 +14,7 @@ export interface PoleListItem {
   name: string
   description: string | null
   imageId: string | null
+  publicSlug?: string | null
 }
 
 interface PolesListProps {
@@ -63,16 +66,19 @@ export function PolesList({ poles }: PolesListProps) {
 }
 
 function PolePrimaryCell({ pole }: { pole: PoleListItem }) {
+  const publicSlug = pole.publicSlug?.trim() || slugify(pole.name)
+  const displayTitle = getPolePublicDisplayTitle(publicSlug, pole.name)
+
   return (
     <div className="flex min-w-0 items-center gap-3">
       <CloudinaryImage
         imageId={pole.imageId}
-        alt={pole.name}
+        alt={displayTitle}
         thumbSize={40}
         className="shrink-0"
       />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-foreground">{pole.name}</p>
+        <p className="truncate text-sm font-semibold text-foreground">{displayTitle}</p>
         {pole.description && (
           <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:hidden">
             {pole.description}

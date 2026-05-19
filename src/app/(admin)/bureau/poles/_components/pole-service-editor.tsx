@@ -157,7 +157,7 @@ export function PoleServiceEditor({
           ) : null}
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label htmlFor="service-order">Ordre</Label>
             <Input
@@ -170,11 +170,8 @@ export function PoleServiceEditor({
             {errors.order ? <p className="text-xs text-destructive">{errors.order}</p> : null}
           </div>
 
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 p-3">
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground">Actif</p>
-              <p className="text-xs text-muted-foreground">Visible sur la page publique</p>
-            </div>
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 px-3">
+            <p className="text-sm font-medium text-foreground">Actif</p>
             <Switch
               checked={value.isActive}
               onCheckedChange={(checked) => setValue((s) => ({ ...s, isActive: checked }))}

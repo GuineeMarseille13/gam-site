@@ -3,19 +3,11 @@
 import { motion } from "framer-motion";
 import { PoleCard } from "@/components/PoleCard";
 import { SectionSplitHeading } from "@/components/section-split-heading";
+import { getPolePublicDisplayTitle } from "@/config/pole-public-display";
 import { poles as staticPoles } from "@/data/poles";
 import type { PoleItem } from "@/app/_services/home";
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-}
+import { slugify } from "@/lib/slugify";
 
 interface PoleSectionProps {
   poles?: PoleItem[];
@@ -33,7 +25,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
           return {
             key: pole.id,
             image,
-            title: pole.name,
+            title: getPolePublicDisplayTitle(slug, pole.name),
             description: pole.description ?? staticMatch?.shortDescription,
             slug,
             index,
@@ -42,7 +34,7 @@ const PoleSection = ({ poles }: PoleSectionProps) => {
       : staticPoles.map((pole, index) => ({
           key: pole.slug,
           image: pole.image,
-          title: pole.title,
+          title: getPolePublicDisplayTitle(pole.slug, pole.displayTitle ?? pole.title),
           description: pole.shortDescription,
           slug: pole.slug,
           index,
