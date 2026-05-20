@@ -1,4 +1,5 @@
 import Stripe from "stripe"
+import { dispatchDonationConfirmationEmail } from "@/helpers/email/_services/dispatch-donation-confirmation-email"
 import { prisma } from "@/lib/prisma"
 import { persistDonRecords } from "./persist-don-records"
 import { parseDonFromPaymentIntentMetadata } from "./parse-don-from-metadata"
@@ -28,13 +29,21 @@ export async function saveDonFromPaymentIntent(
       return
     }
 
+    const paymentMethodLabel = paymentIntent.payment_method_types[0] ?? "card"
+
     await prisma.$transaction(async (tx) => {
       await persistDonRecords(tx, {
         donor,
         totalAmountEur: totalAmount,
         paymentReference: paymentIntent.id,
-        paymentMethod: paymentIntent.payment_method_types[0] ?? "card",
+        paymentMethod: paymentMethodLabel,
       })
+    })
+
+    dispatchDonationConfirmationEmail({
+      donor,
+      paymentReference: paymentIntent.id,
+      paymentMethodLabel,
     })
 
     console.log(

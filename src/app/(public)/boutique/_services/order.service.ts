@@ -1,7 +1,10 @@
 import Stripe from "stripe";
 
-import { prisma } from "@/lib/prisma";
+import { dispatchOrderConfirmationEmail } from "@/helpers/email/_services/dispatch-order-confirmation-email";
+import type { OrderConfirmationEmailPayload } from "@/helpers/email/_schemas/transaction-email.schema";
+import { normalizeRecipientEmail } from "@/helpers/email/_utils/normalize-recipient-email";
 import { findOrCreatePerson } from "@/helpers/person.utils";
+import { prisma } from "@/lib/prisma";
 import { PaymentStatus } from "@/types/paiement-status";
 
 import { checkoutDataSchema } from "../_schemas/product.schema";
@@ -59,6 +62,8 @@ export async function saveOrderFromPaymentIntent(
     .toString(36)
     .slice(2, 9)
     .toUpperCase()}`;
+
+  let emailPayload: OrderConfirmationEmailPayload | null = null;
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -143,7 +148,29 @@ export async function saveOrderFromPaymentIntent(
           type: "order",
         },
       });
+
+      const recipientEmail = normalizeRecipientEmail(customer.email);
+      if (recipientEmail) {
+        emailPayload = {
+          to: recipientEmail,
+          firstName: customer.firstName.trim(),
+          lastName: customer.lastName.trim(),
+          orderNumber,
+          lines: lines.map((line) => ({
+            productName: line.productName,
+            quantity: line.quantity,
+            lineTotalCents: line.lineTotalCents,
+          })),
+          totalAmountCents,
+          paymentReference: paymentIntent.id,
+          paymentMethodLabel: extractPaymentMethodLabel(paymentIntent),
+        };
+      }
     });
+
+    if (emailPayload) {
+      dispatchOrderConfirmationEmail(emailPayload);
+    }
   } catch (err) {
     if (
       err instanceof Error &&

@@ -1,3 +1,4 @@
+import { dispatchAdhesionConfirmationEmail } from "@/helpers/email/_services/dispatch-adhesion-confirmation-email"
 import { prisma } from "@/lib/prisma"
 
 import {
@@ -58,6 +59,14 @@ export async function saveManualAdhesion(
     }
     throw err
   }
+
+  dispatchAdhesionConfirmationEmail({
+    members,
+    totalAmountEur,
+    paymentReference,
+    membershipYear: year,
+    paymentMethodLabel,
+  })
 
   return {
     paymentReference,

@@ -23,8 +23,6 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: Envoyer un email de notification
-
     return successResponse(submission, 'Message envoyé avec succès', 201)
   } catch (error) {
     return handleApiError(error)

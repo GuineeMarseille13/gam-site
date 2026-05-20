@@ -1,3 +1,4 @@
+import { dispatchDonationConfirmationEmail } from "@/helpers/email/_services/dispatch-donation-confirmation-email"
 import { prisma } from "@/lib/prisma"
 
 import { MANUAL_PAYMENT_METHOD_LABELS } from "@/config/bureau-payment-methods"
@@ -41,6 +42,12 @@ export async function saveManualDon(payload: ManualDonPayload): Promise<SaveManu
     }
     throw err
   }
+
+  dispatchDonationConfirmationEmail({
+    donor,
+    paymentReference,
+    paymentMethodLabel,
+  })
 
   return { paymentReference, totalAmountEur }
 }

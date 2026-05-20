@@ -1,4 +1,5 @@
 import Stripe from 'stripe'
+import { dispatchAdhesionConfirmationEmail } from '@/helpers/email/_services/dispatch-adhesion-confirmation-email'
 import { prisma } from '@/lib/prisma'
 import { persistAdhesionRecords } from './persist-adhesion-records'
 import { parseAdhesionMembersFromMetadata } from './parse-adhesion-members'
@@ -43,14 +44,24 @@ export async function saveAdhesionFromPaymentIntent(
       ? Number(paymentIntent.metadata.membership_year)
       : undefined
 
+    const paymentMethodLabel = paymentIntent.payment_method_types[0] ?? "card"
+
     await prisma.$transaction(async (tx) => {
       await persistAdhesionRecords(tx, {
         members,
         totalAmountEur: totalAmount,
         paymentReference: paymentIntent.id,
-        paymentMethod: paymentIntent.payment_method_types[0] ?? "card",
+        paymentMethod: paymentMethodLabel,
         membershipYear,
       })
+    })
+
+    dispatchAdhesionConfirmationEmail({
+      members,
+      totalAmountEur: totalAmount,
+      paymentReference: paymentIntent.id,
+      membershipYear,
+      paymentMethodLabel,
     })
 
     console.log(`Adhésion sauvegardée: ${members.length} membre(s), montant: ${totalAmount}€`)
@@ -104,14 +115,24 @@ export async function saveAdhesionFromStripeSession(
         ? Number(session.metadata.membership_year)
         : undefined
 
+    const paymentMethodLabel = session.payment_method_types?.[0] ?? "card"
+
     await prisma.$transaction(async (tx) => {
       await persistAdhesionRecords(tx, {
         members,
         totalAmountEur: totalAmount,
         paymentReference: session.id,
-        paymentMethod: session.payment_method_types?.[0] ?? "card",
+        paymentMethod: paymentMethodLabel,
         membershipYear,
       })
+    })
+
+    dispatchAdhesionConfirmationEmail({
+      members,
+      totalAmountEur: totalAmount,
+      paymentReference: session.id,
+      membershipYear,
+      paymentMethodLabel,
     })
 
     console.log(`Adhésion sauvegardée: ${members.length} membre(s), montant: ${totalAmount}€`)
