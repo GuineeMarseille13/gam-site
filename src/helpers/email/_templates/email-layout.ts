@@ -1,4 +1,4 @@
-import { EMAIL_SENDER_NAME } from "@/config/email"
+import { EMAIL_PHONE_NUMBER, EMAIL_REPLY_TO, EMAIL_SENDER_NAME } from "@/config/email"
 import { escapeHtml } from "@/helpers/email/_templates/escape-html"
 import { buildInvoiceNoticeHtml } from "@/helpers/email/_templates/transaction-email-notices"
 import { EMAIL_BLUE_MODERN_SHELL } from "@/helpers/email/_templates/transaction-email-styles"
@@ -75,7 +75,7 @@ function buildFooterRow(
   return `
             <tr>
               <td style="padding:18px 32px 28px;font-size:12px;color:#71717a;border-top:1px solid #e4e4e7;background:${footerBg};">
-                Cet e-mail confirme une opération effectuée sur notre site. En cas de question, contactez-nous.<br /><br />
+                Cet e-mail confirme une opération effectuée sur notre site. En cas de question, contactez-nous par e-mail: <a href="mailto:${EMAIL_REPLY_TO}">${EMAIL_REPLY_TO}</a> ou par téléphone: <a href="tel:${EMAIL_PHONE_NUMBER}">${EMAIL_PHONE_NUMBER}</a>.<br /><br />
                 © ${year} ${escapeHtml(EMAIL_SENDER_NAME)}
               </td>
             </tr>`

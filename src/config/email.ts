@@ -3,6 +3,12 @@ import { INVOICE_LEGAL_NAME } from "@/config/invoice"
 /** Nom affiché dans l’expéditeur des e-mails transactionnels. */
 export const EMAIL_SENDER_NAME = INVOICE_LEGAL_NAME
 
+/** Adresse e-mail de réponse (si renseignée). */
+export const EMAIL_REPLY_TO = process.env.EMAIL_REPLY_TO
+
+/** Numéro de téléphone de contact (si renseigné). */
+export const EMAIL_PHONE_NUMBER = process.env.EMAIL_PHONE_NUMBER
+
 /** Sujets des confirmations post-paiement (adhésion, don, commande). */
 export const EMAIL_SUBJECTS = {
   adhesionConfirmation: "Confirmation de votre adhésion",
