@@ -1,11 +1,6 @@
 import { Suspense } from "react";
 import { ShopView } from "./_components/boutique-view";
 
-export const metadata = {
-  title: "Boutique",
-  description: "Découvrez les articles en vente et soutenez l'association.",
-};
-
 export default async function BoutiquePage() {
   return (
     <section className="py-6">
