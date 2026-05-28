@@ -57,14 +57,14 @@ export default function FloatingActionButton() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-4000 md:hidden"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
             onClick={toggleMenu}
           />
         )}
       </AnimatePresence>
 
       {/* Floating Menu Items */}
-      <div className="fixed bottom-24 right-6 z-5000 md:hidden">
+      <div className="fixed bottom-24 right-6 z-50 md:hidden">
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -139,7 +139,7 @@ export default function FloatingActionButton() {
       <motion.button
         onClick={toggleMenu}
         className={cn(
-          "fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg z-5000",
+          "fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg z-50",
           "bg-gradient-to-br from-theme-red via-theme-red to-theme-red-dark text-white",
           "flex items-center justify-center md:hidden",
           "hover:shadow-xl transition-all duration-200",

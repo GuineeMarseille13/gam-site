@@ -126,7 +126,7 @@ export default function FloatingElementsAnimation({
 
   return (
     <>
-      <div className={`fixed inset-0 pointer-events-none z-10 overflow-hidden ${className}`}>
+      <div className={`fixed inset-0 pointer-events-none z-[1000000] overflow-hidden ${className}`}>
         {floatingElements.map((element) => (
           <div
             key={element.id}
