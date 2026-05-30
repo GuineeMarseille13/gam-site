@@ -110,6 +110,7 @@ CREATE TABLE "poles" (
     "imageId" TEXT,
     "poleSectionId" TEXT,
     "detailsPoleId" TEXT NOT NULL,
+    "public_slug" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -125,10 +126,58 @@ CREATE TABLE "details_poles" (
     "imageId" TEXT,
     "videoId" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "aboutSectionText" TEXT,
+    "achievementsSectionText" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "details_poles_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "details_pole_stats" (
+    "id" TEXT NOT NULL,
+    "detailsPoleId" TEXT NOT NULL,
+    "label" TEXT NOT NULL,
+    "value" INTEGER NOT NULL,
+    "unit" TEXT,
+    "helperText" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "details_pole_stats_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "details_pole_services" (
+    "id" TEXT NOT NULL,
+    "detailsPoleId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "icon" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "details_pole_services_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "details_pole_achievements" (
+    "id" TEXT NOT NULL,
+    "detailsPoleId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "details_pole_achievements_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -220,6 +269,20 @@ CREATE TABLE "review_sections" (
 );
 
 -- CreateTable
+CREATE TABLE "postes" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "label_fr" TEXT NOT NULL,
+    "description" TEXT,
+    "sort_order" INTEGER NOT NULL DEFAULT 0,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "postes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "roles" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
@@ -238,7 +301,7 @@ CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "roleId" TEXT NOT NULL,
+    "poste_id" TEXT NOT NULL,
     "body" TEXT NOT NULL,
     "avatarUrl" TEXT,
     "country" TEXT,
@@ -333,7 +396,7 @@ CREATE TABLE "persons" (
     "phone" TEXT NOT NULL,
     "addressId" TEXT,
     "userId" TEXT,
-    "roleId" TEXT,
+    "poste_id" TEXT,
     "image" TEXT,
     "showOnSite" BOOLEAN NOT NULL DEFAULT true,
     "description" TEXT,
@@ -422,6 +485,7 @@ CREATE TABLE "report_activities" (
     "label" TEXT,
     "year" INTEGER NOT NULL,
     "pdfUrl" TEXT NOT NULL,
+    "isPublished" BOOLEAN NOT NULL DEFAULT true,
     "reportActivitySectionId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -653,6 +717,7 @@ CREATE TABLE "administrative_permanence_slots" (
 CREATE TABLE "administrative_permanence_settings" (
     "id" TEXT NOT NULL DEFAULT 'default',
     "horairesCardText" TEXT,
+    "show_campus_france_card" BOOLEAN NOT NULL DEFAULT true,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "administrative_permanence_settings_pkey" PRIMARY KEY ("id")
@@ -846,6 +911,21 @@ CREATE INDEX "videos_productId_idx" ON "videos"("productId");
 CREATE UNIQUE INDEX "poles_detailsPoleId_key" ON "poles"("detailsPoleId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "poles_public_slug_key" ON "poles"("public_slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "details_pole_stats_detailsPoleId_order_key" ON "details_pole_stats"("detailsPoleId", "order");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "details_pole_services_detailsPoleId_order_key" ON "details_pole_services"("detailsPoleId", "order");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "details_pole_achievements_detailsPoleId_order_key" ON "details_pole_achievements"("detailsPoleId", "order");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "postes_code_key" ON "postes"("code");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "roles_code_key" ON "roles"("code");
 
 -- CreateIndex
@@ -858,7 +938,7 @@ CREATE INDEX "reviews_rating_idx" ON "reviews"("rating");
 CREATE INDEX "reviews_order_idx" ON "reviews"("order");
 
 -- CreateIndex
-CREATE INDEX "reviews_roleId_idx" ON "reviews"("roleId");
+CREATE INDEX "reviews_poste_id_idx" ON "reviews"("poste_id");
 
 -- CreateIndex
 CREATE INDEX "achievements_isActive_idx" ON "achievements"("isActive");
@@ -870,7 +950,7 @@ CREATE INDEX "achievements_order_idx" ON "achievements"("order");
 CREATE UNIQUE INDEX "persons_userId_key" ON "persons"("userId");
 
 -- CreateIndex
-CREATE INDEX "persons_roleId_idx" ON "persons"("roleId");
+CREATE INDEX "persons_poste_id_idx" ON "persons"("poste_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "volunteers_personId_key" ON "volunteers"("personId");
@@ -942,6 +1022,18 @@ ALTER TABLE "reasons" ADD CONSTRAINT "reasons_welcomeSectionId_fkey" FOREIGN KEY
 ALTER TABLE "poles" ADD CONSTRAINT "poles_poleSectionId_fkey" FOREIGN KEY ("poleSectionId") REFERENCES "pole_sections"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "poles" ADD CONSTRAINT "poles_detailsPoleId_fkey" FOREIGN KEY ("detailsPoleId") REFERENCES "details_poles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "details_pole_stats" ADD CONSTRAINT "details_pole_stats_detailsPoleId_fkey" FOREIGN KEY ("detailsPoleId") REFERENCES "details_poles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "details_pole_services" ADD CONSTRAINT "details_pole_services_detailsPoleId_fkey" FOREIGN KEY ("detailsPoleId") REFERENCES "details_poles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "details_pole_achievements" ADD CONSTRAINT "details_pole_achievements_detailsPoleId_fkey" FOREIGN KEY ("detailsPoleId") REFERENCES "details_poles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "partners" ADD CONSTRAINT "partners_partnerSectionId_fkey" FOREIGN KEY ("partnerSectionId") REFERENCES "partner_sections"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -957,7 +1049,7 @@ ALTER TABLE "event_images" ADD CONSTRAINT "event_images_eventId_fkey" FOREIGN KE
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_reviewSectionId_fkey" FOREIGN KEY ("reviewSectionId") REFERENCES "review_sections"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_poste_id_fkey" FOREIGN KEY ("poste_id") REFERENCES "postes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_productSectionId_fkey" FOREIGN KEY ("productSectionId") REFERENCES "product_sections"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -972,7 +1064,7 @@ ALTER TABLE "achievements" ADD CONSTRAINT "achievements_achievementSectionId_fke
 ALTER TABLE "persons" ADD CONSTRAINT "persons_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "addresses"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "persons" ADD CONSTRAINT "persons_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "persons" ADD CONSTRAINT "persons_poste_id_fkey" FOREIGN KEY ("poste_id") REFERENCES "postes"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "volunteers" ADD CONSTRAINT "volunteers_volunteerSectionId_fkey" FOREIGN KEY ("volunteerSectionId") REFERENCES "volunteer_sections"("id") ON DELETE SET NULL ON UPDATE CASCADE;
