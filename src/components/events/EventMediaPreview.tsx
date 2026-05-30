@@ -3,10 +3,21 @@
 /* eslint-disable @next/next/no-img-element -- URLs dynamiques (Cloudinary, embeds), tailles variables */
 import { memo, useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ZoomIn } from "lucide-react";
 import { EventMedia } from "@/types/events";
 import { useMediaNavigation } from "@/app/(public)/evenements/_hooks/useMediaNavigation";
 import { useEventMediaPreview } from "@/contexts/event-media-preview-context";
+import {
+  CinemaAmbientBackground,
+  CinemaHeader,
+  CinemaMediaShell,
+  CinemaMobileNavBar,
+  CinemaNavButton,
+  CinemaThumbnailStrip,
+  cinemaSlideVariants,
+  cinemaThumbClasses,
+} from "@/components/lightbox/cinema-lightbox-primitives";
+import { cn } from "@/helpers/utils";
 
 interface EventMediaPreviewProps {
   media: EventMedia[];
@@ -151,12 +162,16 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
   } = useMediaNavigation(media);
   const thumbnailListRef = useRef<HTMLDivElement>(null);
   const activeThumbRef = useRef<HTMLButtonElement>(null);
+  const touchStartX = useRef(0);
 
-  // Scroll automatique pour garder la miniature active visible
+  const hasMultiple = media.length > 1;
+  const ambientImageUrl = currentMedia?.url ?? null;
+  const eventTitle = currentMedia?.description ?? null;
+
   useEffect(() => {
     const container = thumbnailListRef.current;
     const active = activeThumbRef.current;
-    if (!container || !active || media.length <= 1) return;
+    if (!container || !active || !hasMultiple) return;
     const containerRect = container.getBoundingClientRect();
     const activeRect = active.getBoundingClientRect();
     const scrollLeft =
@@ -165,33 +180,30 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
       containerRect.width / 2 +
       activeRect.width / 2;
     container.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
-  }, [currentIndex, media.length]);
+  }, [currentIndex, hasMultiple]);
 
-  // Swipe sur mobile pour naviguer
-  const touchStartX = useRef(0);
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.changedTouches[0].clientX;
+    touchStartX.current = e.changedTouches[0]?.clientX ?? 0;
   }, []);
+
   const handleTouchEnd = useCallback(
     (e: React.TouchEvent) => {
-      const endX = e.changedTouches[0].clientX;
+      if (!hasMultiple) return;
+      const endX = e.changedTouches[0]?.clientX ?? 0;
       const diff = touchStartX.current - endX;
       if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-          nextMedia();
-        } else {
-          prevMedia();
-        }
+        if (diff > 0) nextMedia();
+        else prevMedia();
       }
     },
-    [nextMedia, prevMedia]
+    [hasMultiple, nextMedia, prevMedia],
   );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") nextMedia();
-      if (e.key === "ArrowLeft") prevMedia();
+      if (e.key === "ArrowRight" && hasMultiple) nextMedia();
+      if (e.key === "ArrowLeft" && hasMultiple) prevMedia();
     };
     window.addEventListener("keydown", handleKeyDown);
     document.body.style.overflow = "hidden";
@@ -199,30 +211,15 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [onClose, nextMedia, prevMedia]);
+  }, [onClose, nextMedia, prevMedia, hasMultiple]);
 
   if (!currentMedia) return null;
 
-  const isVideoEmbed = currentMedia.type === "video" && "embedUrl" in currentMedia && currentMedia.embedUrl;
+  const isVideoEmbed =
+    currentMedia.type === "video" &&
+    "embedUrl" in currentMedia &&
+    currentMedia.embedUrl;
   const isVideoDirect = currentMedia.type === "video" && !isVideoEmbed;
-
-  const slideVariants = {
-    enter: (d: number) => ({
-      x: d > 0 ? 48 : -48,
-      opacity: 0,
-      scale: 0.98,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-    },
-    exit: (d: number) => ({
-      x: d < 0 ? 48 : -48,
-      opacity: 0,
-      scale: 0.98,
-    }),
-  };
 
   return (
     <motion.div
@@ -230,198 +227,161 @@ function EventMediaLightbox({ media, onClose }: EventMediaLightboxProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
+      className="fixed inset-0 z-[9999] flex flex-col overflow-hidden"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Galerie de l'événement"
+      aria-label={eventTitle ?? "Galerie de l'événement"}
     >
-      {/* Arrière-plan : bokeh subtil + overlay élégant */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        {(currentMedia.type === "image" || (currentMedia.type === "video" && currentMedia.url)) && (
-          <div
-            className="absolute inset-0 -m-[25%] scale-[1.4] blur-[80px] opacity-40 saturate-150"
-            aria-hidden
-          >
-            <img
-              src={currentMedia.url}
-              alt=""
-              className="h-full w-full object-cover"
-              draggable={false}
-            />
-          </div>
+      <CinemaAmbientBackground imageUrl={ambientImageUrl} />
+
+      <CinemaHeader
+        label="Galerie"
+        title={eventTitle}
+        activeIndex={currentIndex}
+        total={media.length}
+        onClose={onClose}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
+          "relative flex flex-1 min-h-0 w-full items-center justify-center px-3 pb-0 pt-[4.75rem] sm:px-8 sm:pb-2 sm:pt-24 md:px-16",
+          hasMultiple && "sm:px-16 md:px-20",
         )}
-        <div className="absolute inset-0 bg-neutral-950/80 backdrop-blur-2xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/50 via-transparent to-neutral-950/70" />
-      </div>
-
-      {/* Header flottant — design épuré */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex shrink-0 items-center justify-between px-4 py-4 sm:px-6 sm:py-5 pointer-events-none">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 text-sm font-medium text-white/95 backdrop-blur-xl border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.2)]">
-          <span className="tabular-nums">{currentIndex + 1}</span>
-          <span className="text-white/40 font-normal">/</span>
-          <span className="text-white/70">{media.length}</span>
-        </div>
-        <button
-          onClick={onClose}
-          className="pointer-events-auto flex size-10 sm:size-11 cursor-pointer items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-xl border border-white/10 transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
-          aria-label="Fermer la galerie"
-        >
-          <X className="size-5 sm:size-6" strokeWidth={2} />
-        </button>
-      </div>
-
-      {/* Zone principale : image/vidéo + flèches — clic sur le fond ferme */}
-      <div className="relative flex flex-1 min-h-0 w-full items-center justify-center pt-14 sm:pt-16 px-3 pb-2 sm:px-6 md:px-16">
-        <div className="relative w-full max-w-4xl">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentIndex}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 400, damping: 35 },
-                opacity: { duration: 0.2 },
-                scale: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
-              }}
-              className={`group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl ring-1 ring-white/10 bg-black/30 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_32px_64px_-12px_rgba(0,0,0,0.5)] touch-pan-y ${
-                isVideoEmbed || isVideoDirect
-                  ? "aspect-video max-h-[70vh] sm:max-h-[75vh]"
-                  : "max-h-[50vh] sm:max-h-[58vh]"
-              }`}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {currentMedia.type === "video" ? (
-                isVideoEmbed ? (
-                  <iframe
-                    src={`${currentMedia.embedUrl}?autoplay=1&mute=1`}
-                    title="Vidéo intégrée"
-                    className="absolute inset-0 h-full w-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video
-                    src={currentMedia.url}
-                    className="h-full w-full object-contain"
-                    controls
-                    autoPlay
-                    muted
-                    playsInline
-                  />
-                )
-              ) : (
-                <img
-                  src={currentMedia.url}
-                  alt={currentMedia.description || `Image ${currentIndex + 1}`}
-                  className="h-full w-full object-contain"
-                  draggable={false}
-                />
-              )}
-
-              {/* Flèches de navigation — style minimal */}
-              {media.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      prevMedia();
-                    }}
-                    className="absolute left-0 top-0 bottom-0 z-10 w-16 sm:w-20 md:w-24 flex items-center justify-start pl-2 sm:pl-3 cursor-pointer group/prev bg-gradient-to-r from-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:opacity-100 touch-manipulation"
-                    aria-label="Média précédent"
-                  >
-                    <span className="flex size-10 sm:size-11 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-xl border border-white/20 shadow-lg transition-all duration-300 group-hover/prev:bg-white/25 group-hover/prev:scale-110 active:scale-95">
-                      <ChevronLeft className="size-5 sm:size-6" strokeWidth={2} />
-                    </span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      nextMedia();
-                    }}
-                    className="absolute right-0 top-0 bottom-0 z-10 w-16 sm:w-20 md:w-24 flex items-center justify-end pr-2 sm:pr-3 cursor-pointer group/next bg-gradient-to-l from-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:opacity-100 touch-manipulation"
-                    aria-label="Média suivant"
-                  >
-                    <span className="flex size-10 sm:size-11 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-xl border border-white/20 shadow-lg transition-all duration-300 group-hover/next:bg-white/25 group-hover/next:scale-110 active:scale-95">
-                      <ChevronRight className="size-5 sm:size-6" strokeWidth={2} />
-                    </span>
-                  </button>
-                </>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Barre des miniatures — design épuré */}
-      {media.length > 1 && (
-        <div
-          ref={thumbnailListRef}
-          onClick={(e) => e.stopPropagation()}
-          className="flex shrink-0 overflow-x-auto overflow-y-hidden py-5 sm:py-6 px-4 sm:px-6 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]"
-        >
-          <div className="mx-auto flex w-fit max-w-full justify-center gap-3 sm:gap-4">
-            {media.map((m, i) => {
-              const isActive = i === currentIndex;
-              return (
-                <button
-                  key={i}
-                  ref={isActive ? activeThumbRef : undefined}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    goToMedia(i);
-                  }}
-                  className={`relative flex size-16 sm:size-[76px] shrink-0 overflow-hidden rounded-xl sm:rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-neutral-950 ${
-                    isActive
-                      ? "ring-2 ring-white ring-offset-2 ring-offset-neutral-950 scale-105 shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
-                      : "ring-2 ring-white/20 hover:ring-white/40 opacity-75 hover:opacity-100"
-                  }`}
-                  aria-label={`Voir média ${i + 1}`}
-                  aria-current={isActive ? "true" : undefined}
-                >
-                  {m.type === "video" ? (
-                    "embedUrl" in m && m.embedUrl ? (
-                      <img
-                        src={m.url}
-                        alt={m.description || `Miniature ${i + 1}`}
-                        className="h-full w-full object-cover"
-                        loading="eager"
-                      />
-                    ) : (
-                      <video
-                        src={m.url}
-                        className="h-full w-full object-cover"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
-                    )
+      >
+        <CinemaMediaShell>
+          <div
+            className="relative w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={cinemaSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 380, damping: 34 },
+                  opacity: { duration: 0.22 },
+                  scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                }}
+                className={cn(
+                  "relative w-full overflow-hidden rounded-xl bg-black ring-1 ring-white/10 sm:rounded-3xl touch-pan-y",
+                  isVideoEmbed || isVideoDirect
+                    ? "aspect-video max-h-[min(52vh,78vw)] sm:max-h-[min(70vh,56vw)]"
+                    : "max-h-[min(52vh,78vw)] sm:max-h-[min(70vh,56vw)]",
+                )}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {currentMedia.type === "video" ? (
+                  isVideoEmbed ? (
+                    <iframe
+                      src={`${currentMedia.embedUrl}?autoplay=1&mute=1`}
+                      title="Vidéo intégrée"
+                      className="absolute inset-0 h-full w-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   ) : (
+                    <video
+                      src={currentMedia.url}
+                      className="h-full w-full object-contain"
+                      controls
+                      autoPlay
+                      muted
+                      playsInline
+                    />
+                  )
+                ) : (
+                  <img
+                    src={currentMedia.url}
+                    alt={currentMedia.description || `Image ${currentIndex + 1}`}
+                    className="mx-auto h-full w-full max-h-[min(52vh,78vw)] object-contain sm:max-h-[min(70vh,56vw)]"
+                    draggable={false}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {hasMultiple && (
+              <>
+                <CinemaNavButton
+                  direction="prev"
+                  onClick={prevMedia}
+                  className="absolute top-1/2 left-0 z-30 hidden -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 sm:flex"
+                />
+                <CinemaNavButton
+                  direction="next"
+                  onClick={nextMedia}
+                  className="absolute top-1/2 right-0 z-30 hidden translate-x-[calc(100%+0.75rem)] -translate-y-1/2 sm:flex"
+                />
+              </>
+            )}
+          </div>
+        </CinemaMediaShell>
+      </motion.div>
+
+      {hasMultiple && (
+        <CinemaMobileNavBar
+          activeIndex={currentIndex}
+          total={media.length}
+          onPrev={prevMedia}
+          onNext={nextMedia}
+        />
+      )}
+
+      {hasMultiple && (
+        <CinemaThumbnailStrip listRef={thumbnailListRef}>
+          {media.map((m, i) => {
+            const isActive = i === currentIndex;
+            return (
+              <button
+                key={m.id}
+                ref={isActive ? activeThumbRef : undefined}
+                type="button"
+                onClick={() => goToMedia(i)}
+                className={cinemaThumbClasses(isActive)}
+                aria-label={`Voir média ${i + 1}`}
+                aria-current={isActive ? "true" : undefined}
+              >
+                {m.type === "video" ? (
+                  "embedUrl" in m && m.embedUrl ? (
                     <img
                       src={m.url}
                       alt={m.description || `Miniature ${i + 1}`}
                       className="h-full w-full object-cover"
                       loading="eager"
                     />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Description optionnelle */}
-      {currentMedia.description && (
-        <p className="shrink-0 px-4 pb-5 sm:pb-6 text-center text-sm text-white/60 max-w-2xl mx-auto font-light">
-          {currentMedia.description}
-        </p>
+                  ) : (
+                    <video
+                      src={m.url}
+                      className="h-full w-full object-cover"
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  )
+                ) : (
+                  <img
+                    src={m.url}
+                    alt={m.description || `Miniature ${i + 1}`}
+                    className="h-full w-full object-cover"
+                    loading="eager"
+                  />
+                )}
+                {isActive && (
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-amber-400 via-red-400 to-orange-400" />
+                )}
+              </button>
+            );
+          })}
+        </CinemaThumbnailStrip>
       )}
     </motion.div>
   );

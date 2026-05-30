@@ -70,7 +70,7 @@ export default async function BureauShellLayout({ children }: { children: React.
         <SidebarInset className="print:m-0 print:ml-0 print:rounded-none print:shadow-none">
           <BureauHeader />
           <DashboardAccessAlert />
-          <main className="flex flex-1 flex-col">{children}</main>
+          <main className="relative z-0 flex flex-1 flex-col">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </BureauPermissionsProvider>

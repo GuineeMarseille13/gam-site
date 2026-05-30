@@ -6,8 +6,13 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 import { requireBureauContenu } from "@/lib/auth-guard"
+import { deleteEvenementsSchema } from "../_schemas/delete-evenements.schema"
 
 export type ActionState = { error: string } | null
+
+export type DeleteEvenementsResult =
+  | { success: true; deletedCount: number }
+  | { success: false; error: string }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -152,29 +157,68 @@ export async function updateEvenement(
   }
 }
 
-// ── Supprimer un événement ─────────────────────────────────────────────────────
+// ── Suppression (unitaire & multiple) ─────────────────────────────────────────
 
-export async function deleteEvenement(id: string) {
-  await requireBureauContenu()
+function collectCloudinaryIds(
+  events: { imageId: string | null; images: { imageId: string }[] }[],
+): string[] {
+  const ids = new Set<string>()
 
-  const event = await prisma.event.findUnique({
-    where: { id },
+  for (const event of events) {
+    for (const image of event.images) {
+      ids.add(image.imageId)
+    }
+    if (
+      event.imageId &&
+      !event.images.some((image) => image.imageId === event.imageId)
+    ) {
+      ids.add(event.imageId)
+    }
+  }
+
+  return [...ids]
+}
+
+async function removeEvenementsByIds(ids: string[]): Promise<number> {
+  const events = await prisma.event.findMany({
+    where: { id: { in: ids } },
     include: { images: true },
   })
 
-  // Supprimer l'événement (cascade EventImage)
-  await prisma.event.delete({ where: { id } })
+  if (events.length === 0) return 0
 
-  // Supprimer toutes les images Cloudinary
-  const allIds = [
-    ...(event?.images.map((i) => i.imageId) ?? []),
-    // imageId héritage si pas encore migré vers EventImage
-    ...(event?.imageId && !event.images.some((i) => i.imageId === event.imageId)
-      ? [event.imageId]
-      : []),
-  ]
-  await deleteCloudinaryImages(allIds)
+  await prisma.event.deleteMany({
+    where: { id: { in: events.map((event) => event.id) } },
+  })
+
+  await deleteCloudinaryImages(collectCloudinaryIds(events))
 
   revalidatePath("/bureau/evenements")
   revalidatePath("/evenements")
+
+  return events.length
+}
+
+export async function deleteEvenement(id: string) {
+  await requireBureauContenu()
+  await removeEvenementsByIds([id])
+}
+
+export async function deleteEvenementsBulk(
+  raw: unknown,
+): Promise<DeleteEvenementsResult> {
+  await requireBureauContenu()
+
+  const parsed = deleteEvenementsSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { success: false, error: "INVALID_INPUT" }
+  }
+
+  try {
+    const deletedCount = await removeEvenementsByIds(parsed.data.ids)
+    return { success: true, deletedCount }
+  } catch (err) {
+    console.error("[deleteEvenementsBulk]", err)
+    return { success: false, error: "SERVER_ERROR" }
+  }
 }

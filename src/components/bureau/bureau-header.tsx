@@ -5,10 +5,16 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { BureauBreadcrumb } from "@/components/bureau/bureau-breadcrumb"
+import { cn } from "@/helpers/utils"
 
 export function BureauHeader() {
   return (
-    <header className="print:hidden sticky top-0 z-10 flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header
+      className={cn(
+        "print:hidden sticky top-0 flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)",
+        "z-20",
+      )}
+    >
       <div className="flex w-full min-w-0 items-center gap-1 px-3 sm:px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1 shrink-0" />
         <Separator
