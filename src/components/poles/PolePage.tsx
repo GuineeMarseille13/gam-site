@@ -20,6 +20,8 @@ import { getPolePublicDisplayTitle } from "@/config/pole-public-display";
 import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants";
 import { CampuceFranceStudentForm } from "@/app/(public)/poles/_components/campuce-france-student-form";
 import PermanenceCalendar from "./PermanenceCalendar";
+import { PoleHebergementForm } from "@/app/(public)/poles/_components/pole-hebergement-form"; 
+import { MISE_EN_RELATION_POLE_SLUG } from "@/config/pole-public-slugs";
 
 interface PolePageProps {
   pole: Pole;
@@ -35,6 +37,8 @@ export default function PolePage({ pole }: PolePageProps) {
   );
 
   const isAdministrativePole = pole.slug === ADMINISTRATIVE_POLE_SLUG;
+  const isHebergementPole = pole.slug === MISE_EN_RELATION_POLE_SLUG;
+  const isDemandePole = pole.slug === "demande-hebergement";
 
   const calendarSlots = isAdministrativePole
     ? (pole.permanenceSlots ?? [])
@@ -523,8 +527,14 @@ export default function PolePage({ pole }: PolePageProps) {
           />
         )}
 
+        {/* //card Campus France - Visible uniquement pour le pôle administratif et si showCampusFranceCard n'est pas à false  */}
         {isAdministrativePole && pole.showCampusFranceCard !== false && (
           <CampuceFranceStudentForm colorScheme={pole.colorScheme} />
+        )}
+
+        {/* Hébergement Form - Formulaire pour soumettre une proposition d'hébergement- visible sur le pôle Mise en Relation et si showHebergementForm n'est pas à false */}
+        {isHebergementPole && pole.showHebergementForm !== false && (
+          <PoleHebergementForm colorScheme={pole.colorScheme} />
         )}
 
         {/* Statistics Section - Section statistique moderne et élégante */}

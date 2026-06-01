@@ -107,6 +107,18 @@ export function HerbergementRelationSidebar({
       visible: permissions.canAccessHerbergementOverview,
     },
     {
+      title: "Propositions d'hébergement",
+      url: `${BASE}/proposition_hebergement`, 
+      icon: IconBuildingStore,
+      visible: permissions.canAccessHerbergementAcces,
+    },
+    {
+      title: "Demandes d'hébergement",
+      url: `${BASE}/demande_hebergement`, 
+      icon: IconUsers,
+      visible: permissions.canAccessHerbergementAcces,
+    },
+    {
       title: "Accès",
       url: `${BASE}/acces`,
       icon: IconUsers,

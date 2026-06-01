@@ -34,6 +34,7 @@ export type DetailsPoleMinAggregateOutputType = {
   isActive: boolean | null
   aboutSectionText: string | null
   achievementsSectionText: string | null
+  showHebergementForm: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type DetailsPoleMaxAggregateOutputType = {
   isActive: boolean | null
   aboutSectionText: string | null
   achievementsSectionText: string | null
+  showHebergementForm: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type DetailsPoleCountAggregateOutputType = {
   isActive: number
   aboutSectionText: number
   achievementsSectionText: number
+  showHebergementForm: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +81,7 @@ export type DetailsPoleMinAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   achievementsSectionText?: true
+  showHebergementForm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +96,7 @@ export type DetailsPoleMaxAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   achievementsSectionText?: true
+  showHebergementForm?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +111,7 @@ export type DetailsPoleCountAggregateInputType = {
   isActive?: true
   aboutSectionText?: true
   achievementsSectionText?: true
+  showHebergementForm?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +199,7 @@ export type DetailsPoleGroupByOutputType = {
   isActive: boolean
   aboutSectionText: string | null
   achievementsSectionText: string | null
+  showHebergementForm: boolean
   createdAt: Date
   updatedAt: Date
   _count: DetailsPoleCountAggregateOutputType | null
@@ -228,6 +235,7 @@ export type DetailsPoleWhereInput = {
   isActive?: Prisma.BoolFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
+  showHebergementForm?: Prisma.BoolFilter<"DetailsPole"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatListRelationFilter
@@ -246,6 +254,7 @@ export type DetailsPoleOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
+  showHebergementForm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   detailsPoleStats?: Prisma.DetailsPoleStatOrderByRelationAggregateInput
@@ -267,6 +276,7 @@ export type DetailsPoleWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableFilter<"DetailsPole"> | string | null
+  showHebergementForm?: Prisma.BoolFilter<"DetailsPole"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DetailsPole"> | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatListRelationFilter
@@ -285,6 +295,7 @@ export type DetailsPoleOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrderInput | Prisma.SortOrder
+  showHebergementForm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DetailsPoleCountOrderByAggregateInput
@@ -305,6 +316,7 @@ export type DetailsPoleScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"DetailsPole"> | boolean
   aboutSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
   achievementsSectionText?: Prisma.StringNullableWithAggregatesFilter<"DetailsPole"> | string | null
+  showHebergementForm?: Prisma.BoolWithAggregatesFilter<"DetailsPole"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DetailsPole"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DetailsPole"> | Date | string
 }
@@ -319,6 +331,7 @@ export type DetailsPoleCreateInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
@@ -337,6 +350,7 @@ export type DetailsPoleUncheckedCreateInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
@@ -355,6 +369,7 @@ export type DetailsPoleUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
@@ -373,6 +388,7 @@ export type DetailsPoleUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
@@ -391,6 +407,7 @@ export type DetailsPoleCreateManyInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -405,6 +422,7 @@ export type DetailsPoleUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +437,7 @@ export type DetailsPoleUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -438,6 +457,7 @@ export type DetailsPoleCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
+  showHebergementForm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -452,6 +472,7 @@ export type DetailsPoleMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
+  showHebergementForm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -466,6 +487,7 @@ export type DetailsPoleMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   aboutSectionText?: Prisma.SortOrder
   achievementsSectionText?: Prisma.SortOrder
+  showHebergementForm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -536,6 +558,7 @@ export type DetailsPoleCreateWithoutPoleInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
@@ -553,6 +576,7 @@ export type DetailsPoleUncheckedCreateWithoutPoleInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
@@ -586,6 +610,7 @@ export type DetailsPoleUpdateWithoutPoleInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
@@ -603,6 +628,7 @@ export type DetailsPoleUncheckedUpdateWithoutPoleInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
@@ -620,6 +646,7 @@ export type DetailsPoleCreateWithoutDetailsPoleStatsInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleServices?: Prisma.DetailsPoleServiceCreateNestedManyWithoutDetailsPoleInput
@@ -637,6 +664,7 @@ export type DetailsPoleUncheckedCreateWithoutDetailsPoleStatsInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleServices?: Prisma.DetailsPoleServiceUncheckedCreateNestedManyWithoutDetailsPoleInput
@@ -670,6 +698,7 @@ export type DetailsPoleUpdateWithoutDetailsPoleStatsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleServices?: Prisma.DetailsPoleServiceUpdateManyWithoutDetailsPoleNestedInput
@@ -687,6 +716,7 @@ export type DetailsPoleUncheckedUpdateWithoutDetailsPoleStatsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleServices?: Prisma.DetailsPoleServiceUncheckedUpdateManyWithoutDetailsPoleNestedInput
@@ -704,6 +734,7 @@ export type DetailsPoleCreateWithoutDetailsPoleServicesInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
@@ -721,6 +752,7 @@ export type DetailsPoleUncheckedCreateWithoutDetailsPoleServicesInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
@@ -754,6 +786,7 @@ export type DetailsPoleUpdateWithoutDetailsPoleServicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
@@ -771,6 +804,7 @@ export type DetailsPoleUncheckedUpdateWithoutDetailsPoleServicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
@@ -788,6 +822,7 @@ export type DetailsPoleCreateWithoutDetailsPoleAchievementsInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatCreateNestedManyWithoutDetailsPoleInput
@@ -805,6 +840,7 @@ export type DetailsPoleUncheckedCreateWithoutDetailsPoleAchievementsInput = {
   isActive?: boolean
   aboutSectionText?: string | null
   achievementsSectionText?: string | null
+  showHebergementForm?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedCreateNestedManyWithoutDetailsPoleInput
@@ -838,6 +874,7 @@ export type DetailsPoleUpdateWithoutDetailsPoleAchievementsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUpdateManyWithoutDetailsPoleNestedInput
@@ -855,6 +892,7 @@ export type DetailsPoleUncheckedUpdateWithoutDetailsPoleAchievementsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   aboutSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achievementsSectionText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  showHebergementForm?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detailsPoleStats?: Prisma.DetailsPoleStatUncheckedUpdateManyWithoutDetailsPoleNestedInput
@@ -921,6 +959,7 @@ export type DetailsPoleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   isActive?: boolean
   aboutSectionText?: boolean
   achievementsSectionText?: boolean
+  showHebergementForm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   detailsPoleStats?: boolean | Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs>
@@ -940,6 +979,7 @@ export type DetailsPoleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   isActive?: boolean
   aboutSectionText?: boolean
   achievementsSectionText?: boolean
+  showHebergementForm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["detailsPole"]>
@@ -954,6 +994,7 @@ export type DetailsPoleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   isActive?: boolean
   aboutSectionText?: boolean
   achievementsSectionText?: boolean
+  showHebergementForm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["detailsPole"]>
@@ -968,11 +1009,12 @@ export type DetailsPoleSelectScalar = {
   isActive?: boolean
   aboutSectionText?: boolean
   achievementsSectionText?: boolean
+  showHebergementForm?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DetailsPoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "reason" | "imageId" | "videoId" | "isActive" | "aboutSectionText" | "achievementsSectionText" | "createdAt" | "updatedAt", ExtArgs["result"]["detailsPole"]>
+export type DetailsPoleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "reason" | "imageId" | "videoId" | "isActive" | "aboutSectionText" | "achievementsSectionText" | "showHebergementForm" | "createdAt" | "updatedAt", ExtArgs["result"]["detailsPole"]>
 export type DetailsPoleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   detailsPoleStats?: boolean | Prisma.DetailsPole$detailsPoleStatsArgs<ExtArgs>
   detailsPoleServices?: boolean | Prisma.DetailsPole$detailsPoleServicesArgs<ExtArgs>
@@ -1004,6 +1046,10 @@ export type $DetailsPolePayload<ExtArgs extends runtime.Types.Extensions.Interna
      */
     aboutSectionText: string | null
     achievementsSectionText: string | null
+    /**
+     * Contrôle l'affichage du formulaire hébergement (pôle Mise en Relation uniquement).
+     */
+    showHebergementForm: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["detailsPole"]>
@@ -1442,6 +1488,7 @@ export interface DetailsPoleFieldRefs {
   readonly isActive: Prisma.FieldRef<"DetailsPole", 'Boolean'>
   readonly aboutSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
   readonly achievementsSectionText: Prisma.FieldRef<"DetailsPole", 'String'>
+  readonly showHebergementForm: Prisma.FieldRef<"DetailsPole", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"DetailsPole", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DetailsPole", 'DateTime'>
 }

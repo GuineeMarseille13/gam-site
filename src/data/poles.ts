@@ -54,6 +54,11 @@ export interface Pole {
   };
   /** Pôle administratif : contrôle affichage du bloc Campus France. */
   showCampusFranceCard?: boolean;
+  /** Pôle administratif : contrôle affichage du formulaire d’hébergement. */
+  showHebergementForm?: boolean;
+  /** Pôle demande d’hébergement : contrôle affichage du formulaire de demande d’hébergement. */
+  showDemandeHebergementForm?: boolean;
+
 }
 
 export const poles: Pole[] = [

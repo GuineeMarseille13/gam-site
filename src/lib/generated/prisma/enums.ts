@@ -70,3 +70,21 @@ export const ContactSubmissionStatus = {
 } as const
 
 export type ContactSubmissionStatus = (typeof ContactSubmissionStatus)[keyof typeof ContactSubmissionStatus]
+
+
+export const StatutHebergement = {
+  EN_ATTENTE: 'EN_ATTENTE',
+  VALIDE: 'VALIDE',
+  OCCUPE: 'OCCUPE'
+} as const
+
+export type StatutHebergement = (typeof StatutHebergement)[keyof typeof StatutHebergement]
+
+
+export const StatutDemande = {
+  EN_ATTENTE: 'EN_ATTENTE',
+  TRAITEE: 'TRAITEE',
+  REFUSEE: 'REFUSEE'
+} as const
+
+export type StatutDemande = (typeof StatutDemande)[keyof typeof StatutDemande]

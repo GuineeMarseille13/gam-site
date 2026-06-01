@@ -302,3 +302,13 @@ export type Verification = Prisma.VerificationModel
  * Dépôt étudiant — démarche Campus France (formulaire public pôle administratif).
  */
 export type CampuceFranceStudentSubmission = Prisma.CampuceFranceStudentSubmissionModel
+/**
+ * Model PropositionHebergement
+ * 
+ */
+export type PropositionHebergement = Prisma.PropositionHebergementModel
+/**
+ * Model DemandeHebergement
+ * 
+ */
+export type DemandeHebergement = Prisma.DemandeHebergementModel

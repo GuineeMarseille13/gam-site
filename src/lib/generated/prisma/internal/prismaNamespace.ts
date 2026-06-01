@@ -440,7 +440,9 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission'
+  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission',
+  PropositionHebergement: 'PropositionHebergement',
+  DemandeHebergement: 'DemandeHebergement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -456,7 +458,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "detailsPoleAchievement" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "poste" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "detailsPoleAchievement" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "poste" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission" | "propositionHebergement" | "demandeHebergement"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4678,6 +4680,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PropositionHebergement: {
+      payload: Prisma.$PropositionHebergementPayload<ExtArgs>
+      fields: Prisma.PropositionHebergementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PropositionHebergementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PropositionHebergementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        findFirst: {
+          args: Prisma.PropositionHebergementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PropositionHebergementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        findMany: {
+          args: Prisma.PropositionHebergementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>[]
+        }
+        create: {
+          args: Prisma.PropositionHebergementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        createMany: {
+          args: Prisma.PropositionHebergementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PropositionHebergementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>[]
+        }
+        delete: {
+          args: Prisma.PropositionHebergementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        update: {
+          args: Prisma.PropositionHebergementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        deleteMany: {
+          args: Prisma.PropositionHebergementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PropositionHebergementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PropositionHebergementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>[]
+        }
+        upsert: {
+          args: Prisma.PropositionHebergementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropositionHebergementPayload>
+        }
+        aggregate: {
+          args: Prisma.PropositionHebergementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePropositionHebergement>
+        }
+        groupBy: {
+          args: Prisma.PropositionHebergementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropositionHebergementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PropositionHebergementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropositionHebergementCountAggregateOutputType> | number
+        }
+      }
+    }
+    DemandeHebergement: {
+      payload: Prisma.$DemandeHebergementPayload<ExtArgs>
+      fields: Prisma.DemandeHebergementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DemandeHebergementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DemandeHebergementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        findFirst: {
+          args: Prisma.DemandeHebergementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DemandeHebergementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        findMany: {
+          args: Prisma.DemandeHebergementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>[]
+        }
+        create: {
+          args: Prisma.DemandeHebergementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        createMany: {
+          args: Prisma.DemandeHebergementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DemandeHebergementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>[]
+        }
+        delete: {
+          args: Prisma.DemandeHebergementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        update: {
+          args: Prisma.DemandeHebergementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        deleteMany: {
+          args: Prisma.DemandeHebergementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DemandeHebergementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DemandeHebergementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>[]
+        }
+        upsert: {
+          args: Prisma.DemandeHebergementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DemandeHebergementPayload>
+        }
+        aggregate: {
+          args: Prisma.DemandeHebergementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDemandeHebergement>
+        }
+        groupBy: {
+          args: Prisma.DemandeHebergementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DemandeHebergementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DemandeHebergementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DemandeHebergementCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4831,6 +4981,7 @@ export const DetailsPoleScalarFieldEnum = {
   isActive: 'isActive',
   aboutSectionText: 'aboutSectionText',
   achievementsSectionText: 'achievementsSectionText',
+  showHebergementForm: 'showHebergementForm',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5573,6 +5724,46 @@ export const CampuceFranceStudentSubmissionScalarFieldEnum = {
 export type CampuceFranceStudentSubmissionScalarFieldEnum = (typeof CampuceFranceStudentSubmissionScalarFieldEnum)[keyof typeof CampuceFranceStudentSubmissionScalarFieldEnum]
 
 
+export const PropositionHebergementScalarFieldEnum = {
+  id: 'id',
+  nom: 'nom',
+  prenom: 'prenom',
+  email: 'email',
+  telephone: 'telephone',
+  adresse: 'adresse',
+  nbPersonnes: 'nbPersonnes',
+  dateDebut: 'dateDebut',
+  dureeJours: 'dureeJours',
+  description: 'description',
+  statut: 'statut',
+  notesAdmin: 'notesAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropositionHebergementScalarFieldEnum = (typeof PropositionHebergementScalarFieldEnum)[keyof typeof PropositionHebergementScalarFieldEnum]
+
+
+export const DemandeHebergementScalarFieldEnum = {
+  id: 'id',
+  nom: 'nom',
+  prenom: 'prenom',
+  email: 'email',
+  telephone: 'telephone',
+  adresse: 'adresse',
+  nbPersonnes: 'nbPersonnes',
+  dateArrivee: 'dateArrivee',
+  dureeJours: 'dureeJours',
+  description: 'description',
+  statut: 'statut',
+  notesAdmin: 'notesAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DemandeHebergementScalarFieldEnum = (typeof DemandeHebergementScalarFieldEnum)[keyof typeof DemandeHebergementScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5768,6 +5959,34 @@ export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'StatutHebergement'
+ */
+export type EnumStatutHebergementFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutHebergement'>
+    
+
+
+/**
+ * Reference to a field of type 'StatutHebergement[]'
+ */
+export type ListEnumStatutHebergementFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutHebergement[]'>
+    
+
+
+/**
+ * Reference to a field of type 'StatutDemande'
+ */
+export type EnumStatutDemandeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutDemande'>
+    
+
+
+/**
+ * Reference to a field of type 'StatutDemande[]'
+ */
+export type ListEnumStatutDemandeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutDemande[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5947,6 +6166,8 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   campuceFranceStudentSubmission?: Prisma.CampuceFranceStudentSubmissionOmit
+  propositionHebergement?: Prisma.PropositionHebergementOmit
+  demandeHebergement?: Prisma.DemandeHebergementOmit
 }
 
 /* Types for Logging */

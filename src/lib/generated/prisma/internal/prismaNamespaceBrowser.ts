@@ -107,7 +107,9 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission'
+  CampuceFranceStudentSubmission: 'CampuceFranceStudentSubmission',
+  PropositionHebergement: 'PropositionHebergement',
+  DemandeHebergement: 'DemandeHebergement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -240,6 +242,7 @@ export const DetailsPoleScalarFieldEnum = {
   isActive: 'isActive',
   aboutSectionText: 'aboutSectionText',
   achievementsSectionText: 'achievementsSectionText',
+  showHebergementForm: 'showHebergementForm',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -980,6 +983,46 @@ export const CampuceFranceStudentSubmissionScalarFieldEnum = {
 } as const
 
 export type CampuceFranceStudentSubmissionScalarFieldEnum = (typeof CampuceFranceStudentSubmissionScalarFieldEnum)[keyof typeof CampuceFranceStudentSubmissionScalarFieldEnum]
+
+
+export const PropositionHebergementScalarFieldEnum = {
+  id: 'id',
+  nom: 'nom',
+  prenom: 'prenom',
+  email: 'email',
+  telephone: 'telephone',
+  adresse: 'adresse',
+  nbPersonnes: 'nbPersonnes',
+  dateDebut: 'dateDebut',
+  dureeJours: 'dureeJours',
+  description: 'description',
+  statut: 'statut',
+  notesAdmin: 'notesAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropositionHebergementScalarFieldEnum = (typeof PropositionHebergementScalarFieldEnum)[keyof typeof PropositionHebergementScalarFieldEnum]
+
+
+export const DemandeHebergementScalarFieldEnum = {
+  id: 'id',
+  nom: 'nom',
+  prenom: 'prenom',
+  email: 'email',
+  telephone: 'telephone',
+  adresse: 'adresse',
+  nbPersonnes: 'nbPersonnes',
+  dateArrivee: 'dateArrivee',
+  dureeJours: 'dureeJours',
+  description: 'description',
+  statut: 'statut',
+  notesAdmin: 'notesAdmin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DemandeHebergementScalarFieldEnum = (typeof DemandeHebergementScalarFieldEnum)[keyof typeof DemandeHebergementScalarFieldEnum]
 
 
 export const SortOrder = {

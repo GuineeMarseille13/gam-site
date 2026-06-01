@@ -196,6 +196,11 @@ model DetailsPole {
   detailsPoleServices DetailsPoleService[]
   detailsPoleAchievements DetailsPoleAchievement[]
 
+   /// Contrôle l'affichage du formulaire hébergement (pôle Mise en Relation uniquement).
+  showHebergementForm Boolean @default(false)
+
+
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -1063,3 +1068,72 @@ model CampuceFranceStudentSubmission {
   @@unique([submissionYear, phone, email])
   @@map("campuce_france_student_submissions")
 }
+
+
+//model pour le pole hebergeement
+//enumération et model pour les hebergements depuis le nouveau frormulaire proposer uun hebergement
+// 1. L'énumération pour le suivi 
+enum StatutHebergement {
+  EN_ATTENTE
+  VALIDE
+  OCCUPE
+}
+
+model PropositionHebergement {
+  id          String            @id @default(cuid())
+  nom         String
+  prenom      String
+  email       String           
+  telephone   String
+  adresse     String
+  
+  // Détails logistiques
+  nbPersonnes Int               @default(1)
+  
+  // Gestion du temps
+  dateDebut   DateTime
+  dureeJours  Int
+
+  description String?           @db.Text // Description du logement proposé (type de logement, équipements, accessibilité, etc.)
+  
+  // Suivi administratif
+  statut      StatutHebergement @default(EN_ATTENTE)
+  notesAdmin  String?           @db.Text
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("propositions_hebergement") // cette ligne map renomme la table en "propositions_hebergement" dans la base de données 
+}
+
+//model pour les demandes d'hébergement depuis le formulaire "besoin d'un hébergement" du pôle hébergement
+
+enum StatutDemande {
+  EN_ATTENTE
+  TRAITEE
+  REFUSEE
+}
+
+model DemandeHebergement {
+  id          String         @id @default(cuid())
+  nom         String
+  prenom      String
+  email       String
+  telephone   String
+  adresse     String
+  nbPersonnes Int            @default(1)
+  dateArrivee DateTime
+  dureeJours  Int
+  description String?        @db.Text
+
+  // Suivi administratif
+  statut      StatutDemande  @default(EN_ATTENTE)
+  notesAdmin  String?        @db.Text
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+
+}
+
+
