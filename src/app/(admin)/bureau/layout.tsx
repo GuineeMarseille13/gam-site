@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
+import { ensureDashboardSession } from "@/lib/auth-guard"
 import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { canAccessBureauPath } from "@/helpers/bureau-route-access"
 import {
@@ -24,11 +24,7 @@ export const metadata: Metadata = {
 }
 
 export default async function BureauShellLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({ headers: await headers() })
-
-  if (!session) {
-    redirect("/connexion")
-  }
+  const session = await ensureDashboardSession()
 
   const role = session.user.role ?? ""
   const permissions = getDashboardPermissions(role)

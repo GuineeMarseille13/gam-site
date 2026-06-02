@@ -1,7 +1,9 @@
 "use server"
 
 import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
+import { resolveDashboardLoginPath } from "@/helpers/dashboard-login-path"
 import { MISE_EN_RELATION_POLE_SLUG } from "@/config/pole-public-slugs"
 import {
   DASHBOARD_CAPABILITY,
@@ -14,10 +16,54 @@ import { BUREAU_DASHBOARD_ROLES, SUPER_ADMIN_ROLE } from "@/helpers/dashboard-ro
 
 const BUREAU_DASHBOARD = BUREAU_DASHBOARD_ROLES as readonly string[]
 
+function getRequestPathname(headerList: Headers): string {
+  return headerList.get("x-pathname") ?? "/bureau"
+}
+
+function getDashboardHome(pathname: string): string {
+  if (pathname.startsWith("/administration")) return "/administration"
+  if (pathname.startsWith("/hebergement-relation")) return "/hebergement-relation"
+  return "/bureau"
+}
+
+/** Invalide les cookies Better Auth puis redirige vers la page de connexion adaptée. */
+async function invalidateSessionAndRedirectToLogin(
+  error: "session_expired" | "unauthorized",
+): Promise<never> {
+  const requestHeaders = await headers()
+  const pathname = getRequestPathname(requestHeaders)
+  const loginPath = resolveDashboardLoginPath(pathname)
+
+  try {
+    await auth.api.signOut({ headers: requestHeaders })
+  } catch {
+    // Session déjà absente ou cookie invalide
+  }
+
+  const params = new URLSearchParams({ error })
+  params.set("redirect", pathname)
+  redirect(`${loginPath}?${params.toString()}`)
+}
+
+function redirectForbidden(pathname: string): never {
+  redirect(`${getDashboardHome(pathname)}?error=forbidden`)
+}
+
+function redirectUnauthorized(pathname: string): never {
+  const loginPath = resolveDashboardLoginPath(pathname)
+  const params = new URLSearchParams({ error: "unauthorized", redirect: pathname })
+  redirect(`${loginPath}?${params.toString()}`)
+}
+
 async function getSessionOrThrow() {
+  return ensureDashboardSession()
+}
+
+/** Session valide ou déconnexion + redirection vers la page de connexion du dashboard. */
+export async function ensureDashboardSession() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session) {
-    throw new Error("Accès non autorisé")
+    return invalidateSessionAndRedirectToLogin("session_expired")
   }
   return session
 }
@@ -26,6 +72,8 @@ async function getSessionOrThrow() {
  * Utilisateur connecté avec accès à au moins un dashboard (Bureau, Administration ou Hébergement).
  */
 export async function requireAuthenticatedDashboardUser() {
+  const requestHeaders = await headers()
+  const pathname = getRequestPathname(requestHeaders)
   const session = await getSessionOrThrow()
   const permissions = getDashboardPermissions(session.user.role)
 
@@ -34,24 +82,26 @@ export async function requireAuthenticatedDashboardUser() {
     !permissions.canAccessAdministrationDashboard &&
     !permissions.canAccessHerbergementRelationDashboard
   ) {
-    throw new Error("Accès non autorisé")
+    redirectUnauthorized(pathname)
   }
 
   return session
 }
 
-function assertCapability(
+async function assertCapability(
   role: string | null | undefined,
   capability: DashboardCapability,
-): void {
+): Promise<void> {
   if (!hasDashboardCapability(role, capability)) {
-    throw new Error("Accès non autorisé")
+    const pathname = getRequestPathname(await headers())
+    redirectForbidden(pathname)
   }
 }
 
-function assertAdministrationDashboard(role: string | null | undefined): void {
+async function assertAdministrationDashboard(role: string | null | undefined): Promise<void> {
   if (!getDashboardPermissions(role).canAccessAdministrationDashboard) {
-    throw new Error("Accès non autorisé")
+    const pathname = getRequestPathname(await headers())
+    redirectUnauthorized(pathname)
   }
 }
 
@@ -59,12 +109,14 @@ function assertAdministrationDashboard(role: string | null | undefined): void {
  * Vérifie que l'utilisateur connecté a accès au dashboard Bureau.
  */
 export async function requireBureau() {
+  const requestHeaders = await headers()
+  const pathname = getRequestPathname(requestHeaders)
   const session = await getSessionOrThrow()
   if (!BUREAU_DASHBOARD.includes(session.user.role ?? "")) {
-    throw new Error("Accès non autorisé")
+    redirectUnauthorized(pathname)
   }
   if (!getDashboardPermissions(session.user.role).canAccessBureauDashboard) {
-    throw new Error("Accès non autorisé")
+    redirectUnauthorized(pathname)
   }
   return session
 }
@@ -74,7 +126,7 @@ export async function requireBureau() {
  */
 export async function requireAdministrationDashboard() {
   const session = await getSessionOrThrow()
-  assertAdministrationDashboard(session.user.role)
+  await assertAdministrationDashboard(session.user.role)
   return session
 }
 
@@ -82,9 +134,10 @@ export async function requireAdministrationDashboard() {
  * Vérifie que l'utilisateur connecté est super administrateur.
  */
 export async function requireAdmin() {
+  const pathname = getRequestPathname(await headers())
   const session = await getSessionOrThrow()
   if (session.user.role !== SUPER_ADMIN_ROLE) {
-    throw new Error("Accès réservé aux administrateurs")
+    redirectForbidden(pathname)
   }
   return session
 }
@@ -92,35 +145,35 @@ export async function requireAdmin() {
 /** Contenu du site (mutations). */
 export async function requireBureauContenu() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauContenu)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauContenu)
   return session
 }
 
 /** Paiements (adhésions, dons, commandes). */
 export async function requireBureauPaiements() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauPaiements)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauPaiements)
   return session
 }
 
 /** Administration bureau — tous les membres (comptes). */
 export async function requireBureauAdminMembres() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminMembres)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminMembres)
   return session
 }
 
 /** Administration bureau — adhérents. */
 export async function requireBureauAdminAdherents() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminAdherents)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminAdherents)
   return session
 }
 
 /** Administration bureau — bénévoles. */
 export async function requireBureauAdminBenevoles() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminBenevoles)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminBenevoles)
   return session
 }
 
@@ -135,7 +188,8 @@ export async function requireBenevolesManagement() {
   if (hasDashboardCapability(role, DASHBOARD_CAPABILITY.bureauAdminBenevoles)) {
     return session
   }
-  throw new Error("Accès non autorisé")
+  const pathname = getRequestPathname(await headers())
+  redirectForbidden(pathname)
 }
 
 /** Création / modification bénévoles (Bureau ou Administration). */
@@ -149,7 +203,8 @@ export async function requireBenevolesWrite() {
   ) {
     return session
   }
-  throw new Error("Accès non autorisé")
+  const pathname = getRequestPathname(await headers())
+  redirectForbidden(pathname)
 }
 
 /** Suppression bénévole (Bureau ou Administration). */
@@ -163,35 +218,37 @@ export async function requireBenevoleDelete() {
   ) {
     return session
   }
-  throw new Error("Accès non autorisé")
+  const pathname = getRequestPathname(await headers())
+  redirectForbidden(pathname)
 }
 
 /** Membres du bureau (équipe site) — super admin uniquement. */
 export async function requireBureauAdminEquipe() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminEquipe)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminEquipe)
   return session
 }
 
 /** Gestion des accès dashboard bureau — super admin uniquement. */
 export async function requireBureauAdminAcces() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminAcces)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminAcces)
   return session
 }
 
 /** Suppression dans l’administration bureau (membres, adhérents, bénévoles). */
 export async function requireBureauAdminDelete() {
   const session = await requireBureau()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminDelete)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.bureauAdminDelete)
   return session
 }
 
 /** Accès au dashboard Hébergement et mise en relation. */
 export async function requireHerbergementRelationDashboard() {
+  const pathname = getRequestPathname(await headers())
   const session = await getSessionOrThrow()
   if (!getDashboardPermissions(session.user.role).canAccessHerbergementRelationDashboard) {
-    throw new Error("Accès non autorisé")
+    redirectUnauthorized(pathname)
   }
   return session
 }
@@ -202,53 +259,54 @@ export async function requirePolePublicContentEdit(poleSlug: string) {
   const role = session.user.role ?? ""
   if (poleSlug === MISE_EN_RELATION_POLE_SLUG) {
     if (!sessionCanAccessMiseEnRelationPoleContent(role)) {
-      throw new Error("Accès non autorisé")
+      const pathname = getRequestPathname(await headers())
+      redirectForbidden(pathname)
     }
     return session
   }
-  assertCapability(role, DASHBOARD_CAPABILITY.bureauContenu)
+  await assertCapability(role, DASHBOARD_CAPABILITY.bureauContenu)
   return session
 }
 
 /** Gestion des accès dashboard Hébergement et mise en relation. */
 export async function requireHerbergementAcces() {
   const session = await requireHerbergementRelationDashboard()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.hebergementAcces)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.hebergementAcces)
   return session
 }
 
 /** Calendrier permanence (dashboard Administration). */
 export async function requireAdminCalendrier() {
   const session = await requireAdministrationDashboard()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminCalendrier)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminCalendrier)
   return session
 }
 
 /** Accès administration — gestion des comptes permanence. */
 export async function requireAdminAcces() {
   const session = await requireAdministrationDashboard()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminAcces)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminAcces)
   return session
 }
 
 /** Liste bénévoles Administration (lecture). */
 export async function requireAdminBenevolesRead() {
   const session = await requireAdministrationDashboard()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesRead)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesRead)
   return session
 }
 
 /** Création / édition bénévoles Administration. */
 export async function requireAdminBenevolesManage() {
   const session = await requireAdministrationDashboard()
-  assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesManage)
+  await assertCapability(session.user.role, DASHBOARD_CAPABILITY.adminBenevolesManage)
   return session
 }
 
 /** Capacité arbitraire (garde générique). */
 export async function requireDashboardCapability(capability: DashboardCapability) {
   const session = await getSessionOrThrow()
-  assertCapability(session.user.role, capability)
+  await assertCapability(session.user.role, capability)
   return session
 }
 

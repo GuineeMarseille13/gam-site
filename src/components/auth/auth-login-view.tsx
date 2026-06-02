@@ -54,6 +54,7 @@ export function AuthLoginView({
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") ?? defaultRedirect
   const isUnauthorized = searchParams.get("error") === "unauthorized"
+  const isSessionExpired = searchParams.get("error") === "session_expired"
   const passwordChanged = searchParams.get("mot-de-passe-modifie") === "1"
 
   const defaultUnauthorizedMessage =
@@ -66,9 +67,15 @@ export function AuthLoginView({
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<string | null>(
-    isUnauthorized ? (unauthorizedMessage ?? defaultUnauthorizedMessage) : null,
-  )
+  const [error, setError] = useState<string | null>(() => {
+    if (isSessionExpired) {
+      return "Votre session a expiré. Veuillez vous reconnecter."
+    }
+    if (isUnauthorized) {
+      return unauthorizedMessage ?? defaultUnauthorizedMessage
+    }
+    return null
+  })
   const [isPending, startTransition] = useTransition()
 
   function handleSubmit(e: React.FormEvent) {

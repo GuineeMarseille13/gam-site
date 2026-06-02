@@ -6,69 +6,83 @@ import { Calendar as CalendarIcon, Clock, Info } from "lucide-react";
 
 import type { PermanenceSlotDisplay } from "@/helpers/administrative-permanence/build-pole-slots";
 import { formatSlotRangeFr } from "@/helpers/administrative-permanence/format-hm-fr";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-// Composant pour l'icône avec tooltip
-function NextPermanenceIcon() {
-  const [showTooltip, setShowTooltip] = useState(false);
+const TOOLTIP_COLLISION_PADDING = 16;
+const DATES_GRID_COLUMNS = 3;
 
+type NextPermanenceBadgeCorner = "top-right" | "top-left";
+
+function resolveNextPermanenceBadgeCorner(
+  dateIndex: number,
+  columns: number = DATES_GRID_COLUMNS,
+): NextPermanenceBadgeCorner {
+  const column = dateIndex % columns;
+  if (column === columns - 1) return "top-left";
+  return "top-right";
+}
+
+const badgeCornerClassName: Record<NextPermanenceBadgeCorner, string> = {
+  "top-right": "top-1.5 right-1.5",
+  "top-left": "top-1.5 left-1.5",
+};
+
+interface NextPermanenceIconProps {
+  corner: NextPermanenceBadgeCorner;
+}
+
+/** Badge « prochaine permanence » — ancré dans la tuile + tooltip en portail. */
+function NextPermanenceIcon({ corner }: NextPermanenceIconProps) {
   return (
-    <div className="absolute -top-3 -right-3 z-[100]">
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.2 }}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowTooltip(!showTooltip);
-        }}
-        className="relative w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 active:bg-red-800 transition-all duration-200 flex items-center justify-center shadow-2xl cursor-pointer group border-2 border-white"
-        style={{
-          boxShadow:
-            "0 6px 20px rgba(239, 68, 68, 0.6), 0 3px 8px rgba(239, 68, 68, 0.5), 0 0 0 2px rgba(255,255,255,0.8)",
-        }}
-      >
-        <Info className="w-5 h-5 text-white" strokeWidth={3} />
-
-        {/* Glow pulsant plus visible */}
-        <motion.div
-          className="absolute -inset-1 bg-red-500 rounded-full"
-          animate={{
-            opacity: [0.4, 0.7, 0.4],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{ zIndex: -1 }}
-        />
-
-        {/* Tooltip amélioré */}
-        <AnimatePresence>
-          {showTooltip && (
-            <motion.div
-              initial={{ opacity: 0, y: 8, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.9 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute bottom-full right-0 mb-3 px-4 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-2xl whitespace-nowrap z-[200] border border-gray-700"
-              style={{
-                boxShadow:
-                  "0 12px 32px rgba(0,0,0,0.5), 0 6px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1)",
+    <div
+      className={`pointer-events-auto absolute z-30 ${badgeCornerClassName[corner]}`}
+    >
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <motion.button
+            type="button"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
+            aria-label="Prochaine permanence"
+            className="relative flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-red-600 shadow-lg transition-colors duration-200 hover:bg-red-700 active:bg-red-800 sm:size-8"
+            style={{
+              boxShadow:
+                "0 4px 14px rgba(239, 68, 68, 0.55), 0 0 0 2px rgba(255,255,255,0.9)",
+            }}
+          >
+            <Info className="size-4 text-white sm:size-5" strokeWidth={3} aria-hidden />
+            <motion.span
+              className="pointer-events-none absolute -inset-1 rounded-full bg-red-500"
+              aria-hidden
+              animate={{
+                opacity: [0.35, 0.65, 0.35],
+                scale: [1, 1.2, 1],
               }}
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-            >
-              <span className="relative z-10">Prochaine permanence</span>
-              {/* Flèche pointant vers l'icône */}
-              <div className="absolute top-full right-4 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-gray-900" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.button>
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.button>
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          align="center"
+          sideOffset={8}
+          collisionPadding={TOOLTIP_COLLISION_PADDING}
+          className="max-w-[min(100vw-2rem,20rem)] border border-gray-700 bg-gray-900 px-4 py-2.5 text-center text-sm font-bold text-white shadow-2xl"
+        >
+          Prochaine permanence
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }
@@ -219,12 +233,13 @@ export default function PermanenceCalendar({
   };
 
   return (
+    <TooltipProvider delayDuration={200}>
     <motion.section
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-10 md:mb-12"
+      className="mb-10 overflow-visible md:mb-12"
     >
       <div className="text-center mb-6 md:mb-8">
         <motion.div
@@ -327,7 +342,7 @@ export default function PermanenceCalendar({
       )}
 
       {/* Grille responsive avec affichage optimisé */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 gap-4 overflow-visible sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
         <AnimatePresence mode="popLayout">
           {visibleMonths.map(([month, monthDates], monthIndex) => (
             <motion.div
@@ -341,28 +356,33 @@ export default function PermanenceCalendar({
                 ease: [0.22, 1, 0.36, 1],
               }}
               whileHover={{ y: -6, scale: 1.01 }}
-              className="group relative bg-white/95 backdrop-blur-md rounded-3xl shadow-xl p-5 md:p-6 border border-gray-200/40 overflow-hidden"
+              className="group relative overflow-visible rounded-3xl border border-gray-200/40 bg-white/95 p-5 shadow-xl backdrop-blur-md md:p-6"
               style={{
                 boxShadow:
                   "0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
               }}
             >
-              {/* Effet de brillance au hover */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "200%" }}
-                transition={{ duration: 1, ease: "easeInOut" }}
-                style={{ width: "50%" }}
-              />
-              {/* Gradient animé en arrière-plan avec effet subtil */}
-              <motion.div
-                className={`absolute inset-0 bg-gradient-to-br ${colorScheme.primary} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-700 pointer-events-none`}
-              />
-              {/* Bordure lumineuse au hover */}
-              <motion.div
-                className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${colorScheme.primary} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-700 pointer-events-none`}
-              />
+              <div
+                className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
+                aria-hidden
+              >
+                {/* Effet de brillance au hover */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "200%" }}
+                  transition={{ duration: 1, ease: "easeInOut" }}
+                  style={{ width: "50%" }}
+                />
+                {/* Gradient animé en arrière-plan avec effet subtil */}
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-br ${colorScheme.primary} opacity-0 transition-opacity duration-700 group-hover:opacity-[0.04]`}
+                />
+                {/* Bordure lumineuse au hover */}
+                <motion.div
+                  className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${colorScheme.primary} opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-20`}
+                />
+              </div>
               {/* En-tête du mois avec style moderne */}
               <div className="relative z-10">
                 <h3 className="text-lg md:text-xl font-extrabold text-gray-900 mb-5 capitalize flex items-center gap-3">
@@ -375,7 +395,7 @@ export default function PermanenceCalendar({
                 </h3>
 
                 {/* Grille optimisée des dates avec design moderne */}
-                <div className="grid grid-cols-3 gap-2.5 relative">
+                <div className="relative grid grid-cols-3 gap-2.5 overflow-visible">
                   {monthDates.map((dateStr, index) => {
                     const { day, weekday, date } = formatDate(dateStr);
                     const now = new Date();
@@ -399,9 +419,9 @@ export default function PermanenceCalendar({
                           ease: [0.22, 1, 0.36, 1],
                         }}
                         whileHover={{ scale: 1.08, y: -3, rotate: 0.5 }}
-                        className={`group/date relative p-3 md:p-3.5 rounded-2xl border transition-all duration-300 ${
+                        className={`group/date relative rounded-2xl border p-3 transition-all duration-300 md:p-3.5 ${
                           isNextPermanence
-                            ? "overflow-visible"
+                            ? "isolate z-[1] overflow-visible"
                             : "overflow-hidden"
                         } ${
                           isPast
@@ -467,7 +487,11 @@ export default function PermanenceCalendar({
                         )}
 
                         {/* Icône rouge avec tooltip pour la prochaine permanence */}
-                        {isNextPermanence && !isToday && <NextPermanenceIcon />}
+                        {isNextPermanence && !isToday && (
+                          <NextPermanenceIcon
+                            corner={resolveNextPermanenceBadgeCorner(index)}
+                          />
+                        )}
 
                         {/* Glow animé pour aujourd'hui */}
                         {isToday && (
@@ -591,5 +615,6 @@ export default function PermanenceCalendar({
         </AnimatePresence>
       </div>
     </motion.section>
+    </TooltipProvider>
   );
 }

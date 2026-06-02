@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
+import { ensureDashboardSession } from "@/lib/auth-guard"
 import {
   ADMINISTRATION_DASHBOARD_DATA_ATTR,
   administrationDashboardCanvasClassName,
@@ -36,11 +36,7 @@ export default async function AdministrationShellLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth.api.getSession({ headers: await headers() })
-
-  if (!session) {
-    redirect("/connexion-administration")
-  }
+  const session = await ensureDashboardSession()
 
   const role = session.user.role ?? ""
   const permissions = getDashboardPermissions(role)
