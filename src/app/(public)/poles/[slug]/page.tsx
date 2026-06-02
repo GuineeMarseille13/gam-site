@@ -13,6 +13,8 @@ import { getDetailsPoleBureauContentByPublicSlug } from "@/helpers/details-pole-
 import { getActivePoleStatsByPublicSlug } from "@/helpers/details-pole-stats/queries";
 import { getActivePoleServicesByPublicSlug } from "@/helpers/details-pole-services/queries";
 import { getActivePoleAchievementsByPublicSlug } from "@/helpers/details-pole-achievements/queries";
+import { MISE_EN_RELATION_POLE_SLUG } from "@/config/pole-public-slugs";
+import { prisma } from "@/lib/prisma";
 
 /** Calendrier admin lu en base : pas de cache page statique indéfini. */
 export const revalidate = 0;
@@ -58,6 +60,15 @@ export default async function PoleDetailPage({ params }: PageProps) {
     );
   }
 
+  // Injecter showHebergementForm depuis la BDD pour le pôle hébergement & mise en relation
+  if (slug === MISE_EN_RELATION_POLE_SLUG) {
+    const settings = await prisma.detailsPole.findFirst();
+    pole = {
+      ...pole,
+      showHebergementForm: settings?.showHebergementForm ?? true,
+    };
+  }
+
   if (isBureauPoleContentSlug(slug)) {
     const [details, dbStats, dbServices, dbAchievements] = await Promise.all([
       getDetailsPoleBureauContentByPublicSlug(slug),
@@ -94,4 +105,3 @@ export default async function PoleDetailPage({ params }: PageProps) {
 
   return <PolePage pole={pole} />;
 }
-

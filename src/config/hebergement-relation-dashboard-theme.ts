@@ -53,3 +53,9 @@ export const hebergementRelationDestructiveGhostClassName = cn(
   "text-destructive hover:bg-destructive/10 hover:text-destructive",
   "dark:hover:bg-destructive/15",
 )
+
+// ceci me permet d'avoir une surface de fond pour les éléments désactivés (ex: le toggle d'affichage du formulaire d'hébergement sur la page publique) qui soit différente du canvas du dashboard, afin de mieux les différencier visuellement
+
+ export const hebergementRelationMutedSurfaceClassName = cn(
+  "bg-[var(--hr-muted)]",
+)

@@ -1,14 +1,18 @@
 import Link from "next/link"
 import { IconHome } from "@tabler/icons-react"
+import { prisma } from "@/lib/prisma"
 import { getPropositions } from "./actions/propositions_Actions"
 import { PropositionsTable } from "./components/propositionsTable"
+import { HebergementVisibilityToggleCard } from "@/app/(admin)/hebergement-relation/_components/hebergement-visibility-toggle-card"
 
 export const dynamic = "force-dynamic"
 
 export default async function PropositionsPage() {
-  const propositions = await getPropositions()
+  const [propositions, settings] = await Promise.all([
+    getPropositions(),
+    prisma.detailsPole.findFirst(),
+  ])
 
-  // Compte les propositions par statut pour les badges
   const enAttente = propositions.filter(p => p.statut === "EN_ATTENTE").length
   const valides = propositions.filter(p => p.statut === "VALIDE").length
   const occupes = propositions.filter(p => p.statut === "OCCUPE").length
@@ -36,7 +40,10 @@ export default async function PropositionsPage() {
         </div>
       </div>
 
-      
+      {/* Toggle visibilité bloc public */}
+      <HebergementVisibilityToggleCard
+        initialShowHebergementForm={settings?.showHebergementForm ?? false}
+      />
 
       {/* Tableau */}
       <PropositionsTable initialData={propositions} />
