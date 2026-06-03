@@ -13,6 +13,7 @@ export interface InfiniteHorizontalCarouselConfig {
 }
 
 const DEFAULT_CONFIG: Required<InfiniteHorizontalCarouselConfig> = {
+  enabled: true,
   autoScrollInterval: 4000,
   cardsPerScroll: 1,
   repositionThreshold: 0.5,

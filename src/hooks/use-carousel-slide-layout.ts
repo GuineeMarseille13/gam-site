@@ -143,10 +143,7 @@ export function useCarouselSlideLayout(
 
     return () => ro.disconnect();
   }, [
-    options.minCardWidth,
-    options.maxCardWidth,
-    options.gap,
-    options.gutter,
+    options,
   ]);
 
   return { trackRef, layout };

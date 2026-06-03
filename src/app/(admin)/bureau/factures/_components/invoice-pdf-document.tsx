@@ -1,6 +1,7 @@
 import path from "node:path"
 
-import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
+import Image from "next/image"
 
 import type { InvoiceDocument } from "@/app/(admin)/bureau/factures/_schemas/invoice.schema"
 
@@ -145,7 +146,7 @@ export function InvoicePdfDocument({ data }: InvoicePdfDocumentProps) {
       <Page size="A4" style={styles.page}>
         <View style={styles.pageFrame}>
           <View style={styles.logoWatermark}>
-            <Image src={GAM_LOGO_ABSOLUTE_PATH} style={styles.logoWatermarkImage} />
+            <Image src={GAM_LOGO_ABSOLUTE_PATH} alt="Logo de la GAM" className="w-full h-auto object-contain" />
           </View>
           <View style={styles.pageColumn}>
             <View style={styles.blockTop}>
