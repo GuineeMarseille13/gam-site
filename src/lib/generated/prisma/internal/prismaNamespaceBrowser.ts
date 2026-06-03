@@ -1014,6 +1014,7 @@ export const DemandeHebergementScalarFieldEnum = {
   adresse: 'adresse',
   nbPersonnes: 'nbPersonnes',
   dateArrivee: 'dateArrivee',
+  dateFin: 'dateFin',
   dureeJours: 'dureeJours',
   description: 'description',
   statut: 'statut',

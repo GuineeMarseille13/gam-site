@@ -163,7 +163,8 @@ function HebergementFormBody({ colorScheme, onSuccessWithinDialog }: FormBodyPro
   const formRef = useRef<HTMLFormElement>(null)
   const [state, formAction, isPending] = useActionState(submitHebergement, initialState)
 
-  // Ferme le dialog 2s après succès
+  // Ferme le dialog 2.2s après un succès, pour laisser le temps de lire le message de confirmation
+  
   useEffect(() => {
     if (state.kind !== "success") return
     formRef.current?.reset()
@@ -262,17 +263,16 @@ function HebergementFormBody({ colorScheme, onSuccessWithinDialog }: FormBodyPro
   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
     Plus de détails
   </p>
-  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <div className="space-y-2 sm:col-span-2">
-      <Label htmlFor="h-description">Description *</Label>
-      <Textarea 
-        id="h-description" 
-        name="description" 
-        placeholder="Décrivez le logement proposé…" 
-        disabled={isPending}
-        className={cn("h-24 rounded-xl border-border/80 bg-background/80 shadow-sm", FIELD_FOCUS)} 
-      />
-    </div>
+
+  {/* Description qui sera afficher dans le détail directement de la proposition */}
+  <div className="space-y-2">
+    <Label htmlFor="h-description">Description de votre offre (optionnel)</Label>
+    <Textarea
+      id="h-description" name="description" rows={4} maxLength={1000}
+      placeholder="Ex : J'ai une chambre avec un lit double, un canapé convertible dans le salon, et je peux fournir des draps et des serviettes. Je vis dans un quartier calme à proximité des transports en commun."
+      disabled={isPending}
+      className={cn("rounded-xl border-border/80 bg-background/80 shadow-sm", FIELD_FOCUS)}
+    />
   </div>
 </div>
 

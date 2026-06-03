@@ -19,7 +19,8 @@ interface PropositionFormProps {
     nbPersonnes?: number
     dureeJours?: number
     dateDebut?: Date
-    statut?: "EN_ATTENTE" | "VALIDE" | "OCCUPE"
+    statut?: "EN_ATTENTE" | "VALIDE" | "OCCUPE" | "REFUSE" | "CLOTURE"
+    description?: string
     notesAdmin?: string | null
   }
 }
@@ -46,6 +47,8 @@ export function PropositionForm({
           <option value="EN_ATTENTE">⏳ En attente</option>
           <option value="VALIDE">✅ Validé</option>
           <option value="OCCUPE">🏠 Occupé</option>
+          <option value="REFUSE">❌ Refusé</option>
+          <option value="CLOTURE">🔒 Clôturé</option>
         </select>
       </div>
 
@@ -108,6 +111,21 @@ export function PropositionForm({
           id="adresse" name="adresse" required
           defaultValue={defaultValues?.adresse ?? ""}
           className="h-10 rounded-xl"
+        />
+      </div>
+
+      {/* Description du logement */}
+      <div className="space-y-2">
+        <Label htmlFor="description" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Description du logement{" "}
+          <span className="normal-case font-normal text-muted-foreground/60">(optionnel)</span>
+        </Label>
+        <textarea
+          id="description" name="description"
+          defaultValue={defaultValues?.description ?? ""}
+          rows={3}
+          placeholder="Type de logement, équipements, accessibilité..."
+          className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
 

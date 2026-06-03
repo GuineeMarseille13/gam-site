@@ -11,9 +11,9 @@ const hebergementSchema = z.object({
   telephone: z.string().min(6, "Téléphone invalide").max(30),
   adresse: z.string().min(5, "Adresse requise").max(300),
   nbPersonnes: z.coerce.number().int().min(1).max(20),
-  //description: z.string().max(500).optional(),
   dateDebut: z.string().min(1, "Date de début requise"),
   dureeJours: z.coerce.number().int().min(1).max(365),
+  description: z.string().max(1000).optional(),
 })
 
 // Type de l'état du formulaire
@@ -35,9 +35,9 @@ export async function submitHebergement(
     telephone: formData.get("telephone"),
     adresse: formData.get("adresse"),
     nbPersonnes: formData.get("nbPersonnes"),
-    //description: formData.get("description"),
     dateDebut: formData.get("dateDebut"),
     dureeJours: formData.get("dureeJours"),
+    description: formData.get("description"),
   })
 
   if (!parsed.success) {
@@ -66,6 +66,7 @@ export async function submitHebergement(
     await prisma.propositionHebergement.create({
       data: {
         ...rest,
+        description: rest.description || null,
         dateDebut: new Date(dateDebut),
       },
     })

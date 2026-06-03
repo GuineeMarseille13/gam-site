@@ -1077,6 +1077,8 @@ enum StatutHebergement {
   EN_ATTENTE
   VALIDE
   OCCUPE
+  REFUSE
+  CLOTURE
 }
 
 model PropositionHebergement {
@@ -1118,11 +1120,12 @@ model DemandeHebergement {
   id          String         @id @default(cuid())
   nom         String
   prenom      String
-  email       String
+  email       String?
   telephone   String
-  adresse     String
+  adresse     String?
   nbPersonnes Int            @default(1)
-  dateArrivee DateTime
+  dateArrivee   DateTime
+  dateFin       DateTime?
   dureeJours  Int
   description String?        @db.Text
 

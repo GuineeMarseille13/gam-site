@@ -16,7 +16,8 @@ export async function getPropositions() {
 // Met à jour le statut d'une proposition
 export async function updateStatutProposition(
   id: string,
-  statut: "EN_ATTENTE" | "VALIDE" | "OCCUPE"
+  statut: "EN_ATTENTE" | "VALIDE" | "OCCUPE" | "REFUSE" | "CLOTURE"
+
 ) {
   return prisma.propositionHebergement.update({
     where: { id },
@@ -32,7 +33,8 @@ export async function updateProposition(id: string, formData: FormData) {
   const email = formData.get("email") as string
   const telephone = formData.get("telephone") as string
   const adresse = formData.get("adresse") as string
-  const statut = formData.get("statut") as "EN_ATTENTE" | "VALIDE" | "OCCUPE"
+  const statut = formData.get("statut") as "EN_ATTENTE" | "VALIDE" | "OCCUPE" | "REFUSE" | "CLOTURE"
+  const description = (formData.get("description") as string) || null
   const notesAdmin = (formData.get("notesAdmin") as string | null)?.trim() || null
 
   
@@ -46,6 +48,7 @@ export async function updateProposition(id: string, formData: FormData) {
       telephone,
       adresse,
       statut,
+      description,
       notesAdmin,
     },
   })

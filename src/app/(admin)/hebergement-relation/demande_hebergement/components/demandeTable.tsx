@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useRef, useEffect } from "react"
 import Link from "next/link"
 import {
   IconEye, IconPencil, IconTrash,
-  IconClock, IconCheck, IconX
+  IconClock, IconCheck, IconX, IconDots,
 } from "@tabler/icons-react"
 import { deleteDemande } from "../actions/demande_actions"
 import {
@@ -29,17 +29,20 @@ type Demande = {
   id: string
   prenom: string
   nom: string
-  email: string
+  email: string | null
   telephone: string
-  adresse: string
+  adresse: string | null
   nbPersonnes: number
   dateArrivee: Date
+  dateFin: Date | null
   dureeJours: number
   statut: "EN_ATTENTE" | "TRAITEE" | "REFUSEE"
   description: string | null
   notesAdmin: string | null
   createdAt: Date
 }
+
+// ─── Badge statut ─────────────────────────────────────────────────────────────
 
 function StatutBadge({ statut }: { statut: Demande["statut"] }) {
   if (statut === "TRAITEE") return (
@@ -59,14 +62,10 @@ function StatutBadge({ statut }: { statut: Demande["statut"] }) {
   )
 }
 
-// Sous-composant pour afficher un champ label + valeur dans le Sheet
+// ─── InfoItem ─────────────────────────────────────────────────────────────────
+
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    /* EXPLICATION RESPONSIVE :
-      - w-full & min-w-0 : Forcent le bloc à respecter la largeur du Sheet sans pousser les murs.
-      - break-all : Si un e-mail ou un texte n'a pas d'espace (ex: fofaminataa@gmail.com), il est coupé proprement pour aller à la ligne.
-      - sm:break-words : Sur des écrans plus grands, on coupe normalement par mot.
-    */
     <div className="space-y-1 w-full min-w-0">
       <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
         {label}
@@ -78,12 +77,112 @@ function InfoItem({ label, value }: { label: string; value: string }) {
   )
 }
 
+// ─── Dropdown d'actions ───────────────────────────────────────────────────────
+
+function ActionsDropdown({
+  demande,
+  onDetail,
+  onDelete,
+}: {
+  demande: Demande
+  onDetail: () => void
+  onDelete: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [open])
+
+  return (
+    <div ref={ref} className="relative flex items-center justify-end">
+      {/* ── Desktop : boutons texte ── */}
+      <div className="hidden md:flex items-center gap-4">
+        <button
+          type="button"
+          onClick={onDetail}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          title="Détails"
+        >
+          <IconEye className="size-4 shrink-0" />
+          <span>Détails</span>
+        </button>
+        <Link
+          href={`/hebergement-relation/demande_hebergement/${demande.id}/modifier`}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          title="Modifier"
+        >
+          <IconPencil className="size-4 shrink-0" />
+          <span>Modifier</span>
+        </Link>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="flex items-center gap-1.5 text-sm text-destructive hover:text-destructive/80 transition-colors font-semibold"
+          title="Supprimer"
+        >
+          <IconTrash className="size-4 shrink-0" />
+          <span>Supprimer</span>
+        </button>
+      </div>
+
+      {/* ── Mobile : bouton ··· ── */}
+      <div className="md:hidden">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+          title="Actions"
+        >
+          <IconDots className="size-4" />
+        </button>
+
+        {open && (
+          <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-xl border border-border bg-background shadow-lg py-1 text-sm">
+            <button
+              type="button"
+              onClick={() => { onDetail(); setOpen(false) }}
+              className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-muted/60 transition-colors text-foreground"
+            >
+              <IconEye className="size-4 text-muted-foreground" />
+              Détails
+            </button>
+            <Link
+              href={`/hebergement-relation/demande_hebergement/${demande.id}/modifier`}
+              className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-muted/60 transition-colors text-foreground"
+              onClick={() => setOpen(false)}
+            >
+              <IconPencil className="size-4 text-muted-foreground" />
+              Modifier
+            </Link>
+            <div className="mx-2 border-t border-border my-1" />
+            <button
+              type="button"
+              onClick={() => { onDelete(); setOpen(false) }}
+              className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-destructive font-medium"
+            >
+              <IconTrash className="size-4" />
+              Supprimer
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Composant principal ──────────────────────────────────────────────────────
+
 export function DemandesTable({ initialData }: { initialData: Demande[] }) {
   const [demandes, setDemandes] = useState(initialData)
   const [idASupprimer, setIdASupprimer] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  // État pour le Sheet détails
   const [selected, setSelected] = useState<Demande | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
 
@@ -115,7 +214,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
   return (
     <>
       {/* ─── Tableau ─── */}
-      {/* EXPLICATION : w-full empêche le conteneur du tableau de dépasser de l'écran principal */}
       <div className="rounded-xl border border-border overflow-hidden w-full">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -141,7 +239,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
             <tbody className="divide-y divide-border">
               {demandes.map((demande) => (
                 <tr key={demande.id} className="hover:bg-muted/40 transition-colors">
-
                   {/* Demandeur */}
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-3">
@@ -149,7 +246,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                         {demande.prenom[0]}{demande.nom[0]}
                         <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-emerald-500" />
                       </div>
-                      {/* min-w-0 et truncate évitent que les très longs noms fassent bugger la ligne sur mobile */}
                       <div className="flex flex-col min-w-0">
                         <span className="font-semibold text-foreground truncate">
                           {demande.prenom} {demande.nom}
@@ -166,7 +262,7 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                   </td>
 
                   <td className="px-4 py-3.5 text-muted-foreground hidden md:table-cell">
-                    {demande.email}
+                    {demande.email ?? "—"}
                   </td>
 
                   <td className="px-4 py-3.5 hidden sm:table-cell">
@@ -175,40 +271,11 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
 
                   {/* Actions */}
                   <td className="px-4 py-3.5">
-                    <div className="flex items-center justify-end gap-3 sm:gap-4">
-                      {/* Détails → ouvre le Sheet */}
-                      {/* EXPLICATION RESPONSIVE : hidden md:inline cache le texte sur mobile (seule l'icône reste) pour gagner de la place */}
-                      <button
-                        type="button"
-                        onClick={() => ouvrirDetails(demande)}
-                        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        title="Détails"
-                      >
-                        <IconEye className="size-4 shrink-0" />
-                        <span className="hidden md:inline">Détails</span>
-                      </button>
-
-                      {/* Modifier → page pleine */}
-                      <Link
-                        href={`/hebergement-relation/demande_hebergement/${demande.id}/modifier`}
-                        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        title="Modifier"
-                      >
-                        <IconPencil className="size-4 shrink-0" />
-                        <span className="hidden md:inline">Modifier</span>
-                      </Link>
-
-                      {/* Supprimer */}
-                      <button
-                        type="button"
-                        onClick={() => setIdASupprimer(demande.id)}
-                        className="flex items-center gap-1.5 text-sm text-destructive hover:text-destructive/80 transition-colors font-semibold"
-                        title="Supprimer"
-                      >
-                        <IconTrash className="size-4 shrink-0" />
-                        <span className="hidden md:inline">Supprimer</span>
-                      </button>
-                    </div>
+                    <ActionsDropdown
+                      demande={demande}
+                      onDetail={() => ouvrirDetails(demande)}
+                      onDelete={() => setIdASupprimer(demande.id)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -218,11 +285,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
       </div>
 
       {/* ─── Sheet Détails ─── */}
-      {/* EXPLICATION RESPONSIVE :
-        - w-full : Occupe tout l'écran sur mobile pour donner un maximum d'espace de lecture.
-        - sm:max-w-[450px] : Reprend une taille fixe et élégante sur ordinateur.
-        - flex flex-col justify-between : Structure le contenu verticalement pour isoler le bouton modifier en bas.
-      */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent
           side="right"
@@ -233,7 +295,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
               <div className="space-y-6">
                 <SheetHeader className="mb-6">
                   <div className="flex items-center gap-3">
-                    {/* Avatar initiales */}
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 text-lg font-bold">
                       {selected.prenom[0]}{selected.nom[0]}
                     </div>
@@ -254,9 +315,9 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                     Contact
                   </p>
                   <div className="space-y-3 pl-0.5">
-                    <InfoItem label="Email" value={selected.email} />
+                    <InfoItem label="Email" value={selected.email ?? "Non renseigné"} />
                     <InfoItem label="Téléphone" value={selected.telephone} />
-                    <InfoItem label="Adresse" value={selected.adresse} />
+                    <InfoItem label="Adresse" value={selected.adresse ?? "Non renseignée"} />
                   </div>
                 </div>
 
@@ -267,24 +328,28 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                   <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                     Hébergement recherché
                   </p>
-                  {/* EXPLICATION RESPONSIVE :
-                    - grid-cols-1 : Les informations s'empilent verticalement sur smartphone.
-                    - sm:grid-cols-2 : Elles se remettent côte à côte dès qu'on est sur un écran plus large.
-                  */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-0.5">
                     <InfoItem
                       label="Nb. personnes"
                       value={`${selected.nbPersonnes} pers.`}
                     />
                     <InfoItem
-                      label="Durée"
+                      label="Durée estimée"
                       value={`${selected.dureeJours} jours`}
                     />
                     <InfoItem
                       label="Date d'arrivée"
                       value={new Date(selected.dateArrivee).toLocaleDateString("fr-FR")}
                     />
-                    <div className="space-y-1">
+                    <InfoItem
+                      label="Date de fin souhaitée"
+                      value={
+                        selected.dateFin
+                          ? new Date(selected.dateFin).toLocaleDateString("fr-FR")
+                          : "Non renseignée"
+                      }
+                    />
+                    <div className="space-y-1 sm:col-span-2">
                       <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                         Statut
                       </p>
@@ -295,13 +360,13 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                   </div>
                 </div>
 
-                {/* Message du demandeur */}
+                {/* Description / message */}
                 {selected.description && (
                   <>
                     <div className="border-t border-border" />
                     <div className="space-y-2">
                       <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                        Message
+                        Message du demandeur
                       </p>
                       <p className="text-sm text-muted-foreground leading-relaxed break-words whitespace-pre-wrap">
                         {selected.description}
@@ -318,16 +383,15 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
                       <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                         Notes admin
                       </p>
-                      <p className="text-sm text-muted-foreground leading-relaxed break-words whitespace-pre-wrap">
+                      <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-xl text-sm text-muted-foreground leading-relaxed break-words whitespace-pre-wrap">
                         {selected.notesAdmin}
-                      </p>
+                      </div>
                     </div>
                   </>
                 )}
               </div>
 
               {/* Bouton modifier */}
-              {/* EXPLICATION : pt-4 et mt-6 rajoutent de l'air au-dessus du bouton pour qu'il soit bien lisible */}
               <div className="border-t border-border pt-4 mt-6">
                 <Button
                   asChild
@@ -351,7 +415,6 @@ export function DemandesTable({ initialData }: { initialData: Demande[] }) {
         open={idASupprimer !== null}
         onOpenChange={(open) => { if (!open) setIdASupprimer(null) }}
       >
-        {/* EXPLICATION : max-w-[90vw] empêche la modale de dépasser de l'écran sur les téléphones très étroits */}
         <AlertDialogContent className="max-w-[90vw] sm:max-w-lg rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer cette demande ?</AlertDialogTitle>

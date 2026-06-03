@@ -1,3 +1,5 @@
+// src/app/(bureau)/hebergement-relation/demande_hebergement/[id]/page.tsx
+
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { IconCheck, IconClock, IconX } from "@tabler/icons-react"
@@ -23,16 +25,18 @@ export default async function DemandeDetailsPage({
       <Card>
         <CardContent className="pt-6 space-y-6">
 
+          {/* Contact */}
           <Section title="Contact">
             <Grid>
-              <Field label="Email" value={demande.email} />
+              <Field label="Email" value={demande.email ?? "Non renseigné"} />
               <Field label="Téléphone" value={demande.telephone} />
-              <Field label="Adresse actuelle" value={demande.adresse} wide />
+              <Field label="Adresse actuelle" value={demande.adresse ?? "Non renseignée"} wide />
             </Grid>
           </Section>
 
           <div className="border-t" />
 
+          {/* Hébergement recherché */}
           <Section title="Hébergement recherché">
             <Grid>
               <Field label="Nb. personnes" value={`${demande.nbPersonnes} personne(s)`} />
@@ -40,7 +44,15 @@ export default async function DemandeDetailsPage({
                 label="Date d'arrivée"
                 value={new Date(demande.dateArrivee).toLocaleDateString("fr-FR")}
               />
-              <Field label="Durée" value={`${demande.dureeJours} jours`} />
+              <Field
+                label="Date de fin souhaitée"
+                value={
+                  demande.dateFin
+                    ? new Date(demande.dateFin).toLocaleDateString("fr-FR")
+                    : "Non renseignée"
+                }
+              />
+              <Field label="Durée estimée" value={`${demande.dureeJours} jours`} />
               <div className="space-y-1.5">
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Statut
@@ -50,17 +62,19 @@ export default async function DemandeDetailsPage({
             </Grid>
           </Section>
 
+          {/* Description — toujours affiché si présent */}
           {demande.description && (
             <>
               <div className="border-t" />
               <Section title="Message du demandeur">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                   {demande.description}
                 </p>
               </Section>
             </>
           )}
 
+          {/* Notes admin */}
           {demande.notesAdmin && (
             <>
               <div className="border-t" />
@@ -72,13 +86,14 @@ export default async function DemandeDetailsPage({
             </>
           )}
 
+          {/* Actions */}
           <div className="flex gap-3 pt-2">
-            <Button asChild className="h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white">
+            <Button asChild className="h-9 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">
               <Link href={`/hebergement-relation/demande_hebergement/${id}/modifier`}>
                 Modifier
               </Link>
             </Button>
-            <Button asChild variant="outline" className="h-10 rounded-xl">
+            <Button asChild variant="outline" className="h-9 px-4 rounded-xl text-sm">
               <Link href="/hebergement-relation/demande_hebergement">
                 Retour à la liste
               </Link>
@@ -90,6 +105,8 @@ export default async function DemandeDetailsPage({
     </BureauContent>
   )
 }
+
+// ─── Sous-composants ──────────────────────────────────────────────────────────
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
