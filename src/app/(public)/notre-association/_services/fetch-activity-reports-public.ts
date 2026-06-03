@@ -12,6 +12,7 @@ export async function fetchActivityReportsPublic(): Promise<
   const data = await apiGet<unknown[]>(ENDPOINT, {
     where: { isPublished: true },
     orderBy: { year: "desc" },
+    select: { id: true, year: true, label: true },
   })
   return activityReportsPublicListSchema.parse(data)
 }

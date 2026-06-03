@@ -22,7 +22,7 @@ async function requireBureauApiAccess(): Promise<boolean> {
  * GET /api/bureau/rapports-activite/preview?reportId=…
  *
  * Sert le PDF en **inline** pour l’iframe d’aperçu : Cloudinary `raw` peut renvoyer
- * `Content-Disposition: attachment` sur l’URL directe, ce qui force le téléchargement.
+ * `Content-Disposition: attachment` sur l’URL Cloudinary directe ; cette route sert l’iframe en inline.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const hasAccess = await requireBureauApiAccess()

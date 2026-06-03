@@ -2,9 +2,8 @@
 
 import { useCallback, useState } from "react"
 import { motion } from "motion/react"
-import { Download, Eye, FileText, Loader2 } from "lucide-react"
+import { Eye, FileText, Loader2 } from "lucide-react"
 import { cn } from "@/helpers/utils"
-import Link from "next/link"
 import type { ActivityReportPublic } from "@/app/(public)/notre-association/_schemas/activity-report-public.schema"
 import { Button } from "@/components/ui/button"
 import { AssociationMagicTitle } from "@/components/association/association-magic-title"
@@ -18,8 +17,7 @@ function reportTitle(year: number, label: string | null | undefined): string {
 
 /**
  * Liste des rapports d’activité (PDF) : données issues de l’API, tri par année,
- * accent sur l’année la plus récente. L’icône œil ouvre l’aperçu dans un panneau ;
- * le bouton téléchargement ouvre le fichier dans un nouvel onglet.
+ * accent sur l’année la plus récente. L’icône œil ouvre l’aperçu dans un panneau latéral.
  */
 export default function ActivityReportsSection() {
   const { data: activityReports, isLoading, isError, error } = useActivityReportsPublic()
@@ -174,21 +172,6 @@ export default function ActivityReportsSection() {
                         >
                           <Eye className="size-4 sm:size-[1.125rem]" aria-hidden />
                         </Button>
-
-                        <Link
-                          href={report.pdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Télécharger le rapport PDF : ${title}, année ${report.year}`}
-                          className={cn(
-                            "flex size-9 shrink-0 items-center justify-center rounded-full border border-border/50 bg-background/90 text-muted-foreground shadow-sm transition-all duration-200 sm:size-10",
-                            "hover:border-theme-green/35 hover:bg-theme-green hover:text-white hover:shadow-md",
-                            "group-hover:border-theme-green/35 group-hover:bg-theme-green group-hover:text-white group-hover:shadow-md",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
-                          )}
-                        >
-                          <Download className="size-4 sm:size-[1.125rem]" aria-hidden />
-                        </Link>
                       </div>
                     </div>
                   </motion.li>

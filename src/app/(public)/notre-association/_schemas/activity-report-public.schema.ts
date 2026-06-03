@@ -8,7 +8,6 @@ export const activityReportPublicSchema = z
     id: z.string().min(1),
     year: z.number().int().min(2000).max(2100),
     label: z.string().nullable().optional(),
-    pdfUrl: z.string().url(),
   })
   .strip()
 

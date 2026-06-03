@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useId, useState } from "react"
-import Link from "next/link"
 import { Eye, Trash2, X } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -209,12 +208,7 @@ export function RapportsActiviteListCard({
                 </div>
               </div>
 
-              <SheetFooter className="flex flex-row flex-wrap items-center justify-between gap-2 border-border/50 border-t bg-muted/10 px-4 py-3 sm:px-6">
-                <Button asChild variant="outline" size="sm" className="rounded-lg">
-                  <Link href={preview.pdfUrl} target="_blank" rel="noopener noreferrer">
-                    Ouvrir dans un nouvel onglet
-                  </Link>
-                </Button>
+              <SheetFooter className="flex flex-row items-center justify-end gap-2 border-border/50 border-t bg-muted/10 px-4 py-3 sm:px-6">
                 <SheetClose asChild>
                   <Button type="button" variant="secondary" size="sm" className="rounded-lg">
                     Fermer

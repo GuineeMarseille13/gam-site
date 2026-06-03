@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useId } from "react"
-import Link from "next/link"
 import { X } from "lucide-react"
 
 import type { ActivityReportPublic } from "@/app/(public)/notre-association/_schemas/activity-report-public.schema"
@@ -64,7 +63,7 @@ export function ActivityReportsPreviewSheet({
                   </SheetTitle>
                 </div>
                 <SheetDescription id={`${baseId}-preview-desc`} className="text-left">
-                  Aperçu du document. Utilisez le bouton de téléchargement pour enregistrer le fichier.
+                  Aperçu du document dans le panneau ci-dessous.
                 </SheetDescription>
               </div>
               <SheetClose asChild>
@@ -97,12 +96,7 @@ export function ActivityReportsPreviewSheet({
               </div>
             </div>
 
-            <SheetFooter className="flex flex-row flex-wrap items-center justify-between gap-2 border-border/50 border-t bg-muted/10 px-4 py-3 sm:px-6">
-              <Button asChild variant="outline" size="sm" className="rounded-lg border-border/70">
-                <Link href={report.pdfUrl} target="_blank" rel="noopener noreferrer">
-                  Ouvrir dans un nouvel onglet
-                </Link>
-              </Button>
+            <SheetFooter className="flex flex-row items-center justify-end gap-2 border-border/50 border-t bg-muted/10 px-4 py-3 sm:px-6">
               <SheetClose asChild>
                 <Button
                   type="button"
