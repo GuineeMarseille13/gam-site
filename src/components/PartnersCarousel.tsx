@@ -1,9 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
 import { PartnerCard } from "@/components/partner-card";
 import { SectionSplitHeading } from "@/components/section-split-heading";
+import { useCarouselSlideLayout } from "@/hooks/use-carousel-slide-layout";
+import {
+  buildLoopedCatalog,
+  useInfiniteHorizontalCarousel,
+} from "@/hooks/use-infinite-horizontal-carousel";
 
 interface Partner {
   id: number;
@@ -26,137 +32,64 @@ interface PartnersCarouselProps {
   title?: string;
 }
 
-const GAP_PX = 40;
-/** Largeur cible d’une carte (design desktop / max). */
-const CARD_IDEAL_WIDTH_PX = 300;
-/** En dessous, la carte est trop étroite : on affiche moins de colonnes. */
-const CARD_MIN_WIDTH_PX = 280;
-const TRACK_MIN_WIDTH_FALLBACK = 320;
+const PARTNERS_INTRO =
+  "Nous collaborons avec des partenaires de confiance qui partagent nos valeurs et notre engagement en faveur de la communauté guinéenne à Marseille. Ensemble, nous œuvrons pour l\u2019intégration, le développement et l\u2019épanouissement de tous.";
 
-function slidesToShowForTrackWidth(width: number): number {
-  let slides = Math.max(
-    1,
-    Math.min(8, Math.floor(width / CARD_IDEAL_WIDTH_PX)),
-  );
-  while (slides > 1) {
-    const slotWidth =
-      (width - GAP_PX * (slides - 1)) / slides;
-    if (slotWidth >= CARD_MIN_WIDTH_PX) {
-      break;
-    }
-    slides -= 1;
-  }
-  return slides;
-}
+/** Largeurs cartes partenaires : plus généreuses que le carousel par défaut (meilleure lecture des descriptions). */
+const PARTNER_CAROUSEL_LAYOUT = {
+  minCardWidth: 340,
+  maxCardWidth: 460,
+} as const;
 
 /**
- * Section d’accueil : partenaires en carrousel horizontal.
- * Sur mobile (une carte visible), la largeur de slide = largeur mesurée de la piste
- * pour qu’une étape fasse défiler exactement une carte entière.
+ * Section d'accueil : partenaires en carrousel horizontal infini (défilement circulaire).
  */
 export default function PartnersCarousel({
   partners,
   autoPlay = true,
   interval = 4000,
-  loop = true,
+  showArrows = true,
   className = "",
   title = "Nos Partenaires",
 }: PartnersCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying] = useState(autoPlay);
-  const [, setDirection] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [, setHoveredCard] = useState<number | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [trackWidth, setTrackWidth] = useState(0);
-
   const safePartners = partners?.length > 0 ? partners : [];
   const totalPartners = safePartners.length;
 
-  const [responsiveSlidesToShow, setResponsiveSlidesToShow] = useState(1);
+  const { trackRef, layout } = useCarouselSlideLayout(PARTNER_CAROUSEL_LAYOUT);
 
-  useLayoutEffect(() => {
-    setIsClient(true);
-    const el = trackRef.current;
-    if (!el) return;
+  const canScroll = totalPartners > layout.slidesToShow;
+  const displayPartners = canScroll
+    ? buildLoopedCatalog(safePartners)
+    : safePartners;
+  const showControls = showArrows && canScroll;
 
-    const compute = (width: number) => {
-      setTrackWidth(width);
-      setResponsiveSlidesToShow(slidesToShowForTrackWidth(width));
-    };
-
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        compute(entry.contentRect.width);
-      }
+  const { scrollRef, scrollBy, handleMouseEnter, handleMouseLeave, isLoopEnabled } =
+    useInfiniteHorizontalCarousel(totalPartners, {
+      autoScrollInterval: autoPlay && canScroll ? interval : 0,
+      defaultGap: layout.gap,
+      enabled: canScroll,
     });
 
-    ro.observe(el);
-    compute(el.clientWidth);
-
-    return () => ro.disconnect();
-  }, []);
-
-  const effectiveSlidesToShow = responsiveSlidesToShow;
-  const effectiveTrackWidth =
-    trackWidth > 0 ? trackWidth : TRACK_MIN_WIDTH_FALLBACK;
-
-  const slideWidthPx =
-    effectiveSlidesToShow <= 1
-      ? effectiveTrackWidth
-      : Math.min(
-          CARD_IDEAL_WIDTH_PX,
-          Math.floor(
-            (effectiveTrackWidth -
-              GAP_PX * (effectiveSlidesToShow - 1)) /
-              effectiveSlidesToShow,
-          ),
-        );
-
-  const slideStridePx = slideWidthPx + GAP_PX;
-
-  const nextSlide = useCallback(() => {
-    if (totalPartners === 0) return;
-
-    setDirection(1);
-    setCurrentIndex((prev) => {
-      if (loop) {
-        return (prev + 1) % totalPartners;
-      }
-      return prev < totalPartners - 1 ? prev + 1 : prev;
-    });
-  }, [totalPartners, loop]);
-
-  const startTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (isPlaying && !isPaused && totalPartners > effectiveSlidesToShow) {
-      timerRef.current = setInterval(nextSlide, interval);
-    }
-  }, [isPlaying, isPaused, interval, nextSlide, totalPartners, effectiveSlidesToShow]);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
+  const setScrollTrackRef = (node: HTMLDivElement | null) => {
+    trackRef.current = node;
+    scrollRef.current = node;
+  };
 
   useEffect(() => {
-    startTimer();
-    return stopTimer;
-  }, [startTimer, stopTimer]);
+    const container = scrollRef.current;
+    if (!container || !isLoopEnabled || layout.cardWidth <= 0) return;
 
-  const handleMouseEnter = () => {
-    setIsPaused(true);
-    stopTimer();
-  };
+    const singleSetWidth =
+      totalPartners * (layout.cardWidth + layout.gap);
 
-  const handleMouseLeave = () => {
-    setIsPaused(false);
-    startTimer();
-  };
+    container.scrollLeft = singleSetWidth;
+  }, [
+    layout.cardWidth,
+    layout.gap,
+    totalPartners,
+    isLoopEnabled,
+    scrollRef,
+  ]);
 
   if (totalPartners === 0) {
     return (
@@ -167,100 +100,139 @@ export default function PartnersCarousel({
             title={title}
             tone="partners"
           />
-          <p className="mt-3 text-muted-foreground sm:mt-4">Aucun partenaire à afficher</p>
+          <p className="mt-3 text-muted-foreground sm:mt-4">
+            Aucun partenaire à afficher
+          </p>
         </div>
       </div>
     );
   }
 
-  const translateXPx =
-    totalPartners > effectiveSlidesToShow
-      ? -currentIndex * slideStridePx
-      : 0;
+  const partnerKey = (partner: Partner, index: number) =>
+    `partner-${partner.id}-${index}`;
 
-  const extendedPartners =
-    loop && totalPartners > effectiveSlidesToShow
-      ? [...safePartners, ...safePartners.slice(0, effectiveSlidesToShow)]
-      : safePartners;
+  const snapClass = layout.isSingleSlide ? "snap-center" : "snap-start";
 
   return (
     <section
-      className={`relative w-full py-10 sm:py-12 md:py-14 bg-gradient-to-b from-white via-gray-50/50 to-white ${className}`}
+      className={`relative w-full overflow-hidden py-12 sm:py-14 md:py-16 bg-gradient-to-b from-white via-slate-50/40 to-white ${className}`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_50%)] pointer-events-none" />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(59,130,246,0.08),transparent_55%)]"
+        aria-hidden
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-6 sm:mb-8"
+          className="text-center"
         >
           <SectionSplitHeading title={title} tone="partners" />
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mx-auto mt-3 max-w-3xl px-4 text-base text-gray-600 leading-relaxed sm:mt-4 sm:text-lg"
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:mt-5 sm:text-lg"
           >
-            Nous collaborons avec des partenaires de confiance qui partagent nos valeurs
-            et notre engagement en faveur de la communauté guinéenne à Marseille.
-            Ensemble, nous œuvrons pour l&apos;intégration, le développement et
-            l&apos;épanouissement de tous.
+            {PARTNERS_INTRO}
           </motion.p>
         </motion.div>
+      </div>
 
-        <div className="relative max-w-[100rem] mx-auto px-0 sm:px-2 lg:px-4">
-          <div
-            ref={trackRef}
-            className="relative w-full overflow-hidden px-3 py-8 sm:px-4 sm:py-10 md:py-12"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <motion.div
-              className={`flex ${totalPartners <= effectiveSlidesToShow ? "justify-center" : ""}`}
-              style={{ gap: GAP_PX }}
-              animate={{
-                x: totalPartners > effectiveSlidesToShow ? translateXPx : 0,
+      <div className="relative z-10 mt-8 sm:mt-10 md:mt-12">
+        <div
+          className="relative mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="group/carousel relative">
+            {showControls ? (
+              <button
+                type="button"
+                onClick={() => scrollBy("left")}
+                aria-label="Partenaires précédents"
+                className="absolute left-2 top-1/2 z-30 hidden -translate-y-1/2 sm:flex size-11 lg:size-12 items-center justify-center rounded-full border border-border/80 bg-white/95 text-primary shadow-lg backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 hover:border-primary/35 hover:bg-muted/90 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <ChevronLeft className="size-6" strokeWidth={2} />
+              </button>
+            ) : null}
+
+            <div
+              ref={setScrollTrackRef}
+              className="overflow-x-auto touch-pan-y overscroll-x-contain snap-x snap-mandatory scroll-smooth py-4 sm:py-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              style={{
+                scrollbarWidth: "none",
+                scrollPaddingInline: `${layout.gutter}px`,
               }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-                duration: 0.6,
-              }}
+              {...(isLoopEnabled
+                ? { "aria-roledescription": "carousel" as const }
+                : {})}
             >
-              {extendedPartners.map((partner, index) => (
-                <motion.div
-                  key={`${partner.id}-${index}`}
-                  className="box-border min-w-0 shrink-0 grow-0"
-                  style={{
-                    width: slideWidthPx,
-                    minWidth: slideWidthPx,
-                    maxWidth: slideWidthPx,
-                    opacity: isClient ? 1 : 0,
-                  }}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: isClient ? 1 : 0, y: 0, scale: 1 }}
-                  transition={{
-                    delay: (index % Math.max(responsiveSlidesToShow, 1)) * 0.1,
-                  }}
-                  onMouseEnter={() => setHoveredCard(partner.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
+              <div
+                className={`flex min-w-max ${canScroll ? "" : "w-full justify-center"}`}
+                style={{
+                  gap: layout.gap,
+                  paddingInline: layout.gutter,
+                }}
+              >
+                {displayPartners.map((partner, index) => (
+                  <div
+                    key={partnerKey(partner, index)}
+                    className={`box-border shrink-0 grow-0 self-stretch py-2 ${snapClass}`}
+                    style={{
+                      width: layout.cardWidth,
+                      minWidth: layout.cardWidth,
+                      maxWidth: layout.cardWidth,
+                    }}
+                  >
+                    <PartnerCard
+                      disableHoverLift
+                      id={partner.id}
+                      name={partner.name}
+                      logo={partner.logo}
+                      description={partner.description}
+                      website={partner.website}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {showControls ? (
+              <button
+                type="button"
+                onClick={() => scrollBy("right")}
+                aria-label="Partenaires suivants"
+                className="absolute right-2 top-1/2 z-30 hidden -translate-y-1/2 sm:flex size-11 lg:size-12 items-center justify-center rounded-full border border-border/80 bg-white/95 text-primary shadow-lg backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/carousel:opacity-100 hover:border-primary/35 hover:bg-muted/90 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <ChevronRight className="size-6" strokeWidth={2} />
+              </button>
+            ) : null}
+
+            {showControls ? (
+              <div className="mt-4 flex justify-center gap-4 py-2 sm:hidden">
+                <button
+                  type="button"
+                  onClick={() => scrollBy("left")}
+                  aria-label="Partenaires précédents"
+                  className="flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border/80 bg-white text-primary shadow-md transition-colors hover:bg-muted/90 active:bg-muted"
                 >
-                  <PartnerCard
-                    disableHoverLift
-                    id={partner.id}
-                    name={partner.name}
-                    logo={partner.logo}
-                    description={partner.description}
-                    website={partner.website}
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
+                  <ChevronLeft className="size-6" strokeWidth={2} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollBy("right")}
+                  aria-label="Partenaires suivants"
+                  className="flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border/80 bg-white text-primary shadow-md transition-colors hover:bg-muted/90 active:bg-muted"
+                >
+                  <ChevronRight className="size-6" strokeWidth={2} />
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
