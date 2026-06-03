@@ -154,9 +154,6 @@ export default function ActivityReportsSection() {
                             >
                               {title}
                             </span>
-                            <span className="text-muted-foreground text-sm tabular-nums sm:text-base">
-                              Année {report.year}
-                            </span>
                           </span>
                         </span>
                       </div>

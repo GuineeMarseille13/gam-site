@@ -8,6 +8,7 @@ import { uploadPdf } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { activityReportsUploadMetadataSchema } from "../_schemas/upload-activity-reports.schema"
 import { setActivityReportPublishedSchema } from "../_schemas/set-activity-report-published.schema"
+import { updateActivityReportMetadataSchema } from "../_schemas/update-activity-report.schema"
 
 const MAX_PDF_BYTES = 15 * 1024 * 1024
 
@@ -84,12 +85,18 @@ export async function saveActivityReportsBatchAction(
     uploaded.push({ year: row.year, label: row.label, pdfUrl: uploadResult.url })
   }
 
+  const supersededPdfUrls: { previousUrl: string; nextUrl: string }[] = []
+
   await prisma.$transaction(async (tx) => {
     for (const item of uploaded) {
       const existing = await tx.reportActivity.findFirst({
         where: { year: item.year },
+        select: { id: true, pdfUrl: true },
       })
       if (existing) {
+        if (existing.pdfUrl !== item.pdfUrl) {
+          supersededPdfUrls.push({ previousUrl: existing.pdfUrl, nextUrl: item.pdfUrl })
+        }
         await tx.reportActivity.update({
           where: { id: existing.id },
           data: { pdfUrl: item.pdfUrl, label: item.label },
@@ -106,6 +113,10 @@ export async function saveActivityReportsBatchAction(
     }
   })
 
+  for (const pair of supersededPdfUrls) {
+    await deleteSupersededCloudinaryUrl(pair)
+  }
+
   revalidatePath("/notre-association")
   revalidatePath("/bureau/rapports-activite")
 
@@ -116,6 +127,102 @@ export async function saveActivityReportsBatchAction(
       : `${count} rapports d'activité ont été enregistrés.`
 
   return { success: true, message }
+}
+
+/**
+ * Met à jour un rapport existant (année, titre, fichier PDF optionnel).
+ * Le remplacement du PDF supprime l’ancienne ressource Cloudinary une fois la base mise à jour.
+ */
+export async function updateActivityReportAction(
+  formData: FormData,
+): Promise<ActivityReportActionResult> {
+  try {
+    await requireBureauContenu()
+  } catch {
+    return { success: false, error: "Accès non autorisé." }
+  }
+
+  const rawMeta = formData.get("metadata")
+  if (typeof rawMeta !== "string") {
+    return { success: false, error: "Données du formulaire invalides (métadonnées)." }
+  }
+
+  let parsedJson: unknown
+  try {
+    parsedJson = JSON.parse(rawMeta) as unknown
+  } catch {
+    return { success: false, error: "Format JSON des métadonnées invalide." }
+  }
+
+  const metaResult = updateActivityReportMetadataSchema.safeParse(parsedJson)
+  if (!metaResult.success) {
+    const first = metaResult.error.flatten().formErrors[0]
+    return { success: false, error: first ?? "Métadonnées invalides." }
+  }
+
+  const { id, year, label } = metaResult.data
+
+  const existing = await prisma.reportActivity.findUnique({
+    where: { id },
+    select: { pdfUrl: true, year: true },
+  })
+
+  if (!existing) {
+    return { success: false, error: "Rapport introuvable." }
+  }
+
+  const yearConflict = await prisma.reportActivity.findFirst({
+    where: { year, NOT: { id } },
+    select: { id: true },
+  })
+
+  if (yearConflict) {
+    return {
+      success: false,
+      error: `Un rapport existe déjà pour l’année ${year}. Choisissez une autre année ou modifiez l’autre entrée.`,
+    }
+  }
+
+  const fileEntry = formData.get("file")
+  const hasNewFile = fileEntry instanceof File && fileEntry.size > 0
+
+  if (hasNewFile) {
+    const file = fileEntry
+    if (file.size > MAX_PDF_BYTES) {
+      return { success: false, error: "Le PDF doit faire au plus 15 Mo." }
+    }
+    if (!isPdfFile(file)) {
+      return { success: false, error: "Seuls les fichiers PDF sont acceptés." }
+    }
+  }
+
+  let nextPdfUrl = existing.pdfUrl
+
+  if (hasNewFile) {
+    const uploadResult = await uploadPdf(fileEntry, `gam/report-activities/${year}`)
+    nextPdfUrl = uploadResult.url
+  }
+
+  await prisma.reportActivity.update({
+    where: { id },
+    data: {
+      year,
+      label,
+      pdfUrl: nextPdfUrl,
+    },
+  })
+
+  if (hasNewFile) {
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: existing.pdfUrl,
+      nextUrl: nextPdfUrl,
+    })
+  }
+
+  revalidatePath("/notre-association")
+  revalidatePath("/bureau/rapports-activite")
+
+  return { success: true, message: "Rapport mis à jour." }
 }
 
 const deleteIdSchema = z.object({ id: z.string().min(1) }).strict()

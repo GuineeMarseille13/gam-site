@@ -15,8 +15,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { activityReportsPublicQueryKey } from "@/app/(public)/notre-association/_hooks/use-activity-reports-public"
-import { deleteActivityReportAction, saveActivityReportsBatchAction, setActivityReportPublishedAction } from "../_actions/activity-reports-actions"
+import {
+  deleteActivityReportAction,
+  saveActivityReportsBatchAction,
+  setActivityReportPublishedAction,
+  updateActivityReportAction,
+} from "../_actions/activity-reports-actions"
 import type { BureauActivityReportRow } from "../_types/bureau-activity-report-row"
+import { RapportsActiviteEditDialog } from "./rapports-activite-edit-dialog"
 import { RapportsActiviteListCard } from "./rapports-activite-list-card"
 import { RapportsActiviteUploadCard, type UploadRow } from "./rapports-activite-upload-card"
 
@@ -29,6 +35,15 @@ const UPLOAD_FORM_INITIAL_ROW_KEY = "upload-form-initial-row"
 
 function createEmptyRow(year: number, rowKey?: string): UploadRow {
   return { key: rowKey ?? crypto.randomUUID(), year, label: "", file: null }
+}
+
+/** Une seule ligne vide — nouvelle clé à chaque reset pour remonter les champs (dont le fichier). */
+function createDefaultUploadRows(): UploadRow[] {
+  return [createEmptyRow(new Date().getFullYear(), UPLOAD_FORM_INITIAL_ROW_KEY)]
+}
+
+function createResetUploadRows(): UploadRow[] {
+  return [createEmptyRow(new Date().getFullYear())]
 }
 
 function isUploadRowComplete(row: UploadRow): boolean {
@@ -46,10 +61,10 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
   const queryClient = useQueryClient()
   const [isPending, startTransition] = useTransition()
   const [formError, setFormError] = useState<string | null>(null)
-  const [rows, setRows] = useState<UploadRow[]>(() => [
-    createEmptyRow(new Date().getFullYear(), UPLOAD_FORM_INITIAL_ROW_KEY),
-  ])
+  const [uploadFormResetKey, setUploadFormResetKey] = useState(0)
+  const [rows, setRows] = useState<UploadRow[]>(createDefaultUploadRows)
   const [deleteTarget, setDeleteTarget] = useState<BureauActivityReportRow | null>(null)
+  const [editTarget, setEditTarget] = useState<BureauActivityReportRow | null>(null)
   const [busyVisibilityId, setBusyVisibilityId] = useState<string | null>(null)
 
   const sortedReports = useMemo(
@@ -86,6 +101,12 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
 
   const handleChangeRow = useCallback((key: string, patch: Partial<UploadRow>) => {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)))
+  }, [])
+
+  const resetUploadForm = useCallback(() => {
+    setFormError(null)
+    setUploadFormResetKey((k) => k + 1)
+    setRows(createResetUploadRows())
   }, [])
 
   const handleSubmit = useCallback(
@@ -126,11 +147,11 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
         }
         toast.success(result.message)
         await queryClient.invalidateQueries({ queryKey: activityReportsPublicQueryKey })
-        setRows([createEmptyRow(new Date().getFullYear(), UPLOAD_FORM_INITIAL_ROW_KEY)])
+        resetUploadForm()
         router.refresh()
       })
     },
-    [queryClient, router, rows],
+    [queryClient, resetUploadForm, router, rows],
   )
 
   const handlePublishedChange = useCallback(
@@ -148,6 +169,36 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
       } finally {
         setBusyVisibilityId(null)
       }
+    },
+    [queryClient, router],
+  )
+
+  const handleEditSubmit = useCallback(
+    (payload: { id: string; year: number; label: string; file: File | null }) => {
+      const fd = new FormData()
+      fd.set(
+        "metadata",
+        JSON.stringify({
+          id: payload.id,
+          year: payload.year,
+          label: payload.label,
+        }),
+      )
+      if (payload.file) {
+        fd.set("file", payload.file)
+      }
+
+      startTransition(async () => {
+        const result = await updateActivityReportAction(fd)
+        if (!result.success) {
+          toast.error(result.error)
+          return
+        }
+        toast.success(result.message)
+        setEditTarget(null)
+        await queryClient.invalidateQueries({ queryKey: activityReportsPublicQueryKey })
+        router.refresh()
+      })
     },
     [queryClient, router],
   )
@@ -170,8 +221,9 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <RapportsActiviteUploadCard
+          formResetKey={uploadFormResetKey}
           rows={rows}
           formError={formError}
           isPending={isPending}
@@ -186,9 +238,20 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
           displayTitle={displayTitle}
           busyVisibilityId={busyVisibilityId}
           onPublishedChange={handlePublishedChange}
+          onRequestEdit={setEditTarget}
           onRequestDelete={setDeleteTarget}
         />
       </div>
+
+      <RapportsActiviteEditDialog
+        report={editTarget}
+        open={editTarget !== null}
+        isPending={isPending}
+        onOpenChange={(open) => {
+          if (!open) setEditTarget(null)
+        }}
+        onSubmit={handleEditSubmit}
+      />
 
       <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>

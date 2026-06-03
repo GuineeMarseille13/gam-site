@@ -1,11 +1,9 @@
 "use client"
 
 import { useCallback, useId, useState } from "react"
-import { Eye, Trash2, X } from "lucide-react"
+import { X } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import {
   Sheet,
   SheetClose,
@@ -17,12 +15,14 @@ import {
 } from "@/components/ui/sheet"
 import { cn } from "@/helpers/utils"
 import type { BureauActivityReportRow } from "../_types/bureau-activity-report-row"
+import { RapportsActiviteListItem } from "./rapports-activite-list-item"
 
 interface RapportsActiviteListCardProps {
   reports: BureauActivityReportRow[]
   displayTitle: (r: BureauActivityReportRow) => string
   busyVisibilityId: string | null
   onPublishedChange: (id: string, isPublished: boolean) => void
+  onRequestEdit: (r: BureauActivityReportRow) => void
   onRequestDelete: (r: BureauActivityReportRow) => void
 }
 
@@ -34,6 +34,7 @@ export function RapportsActiviteListCard({
   displayTitle,
   busyVisibilityId,
   onPublishedChange,
+  onRequestEdit,
   onRequestDelete,
 }: RapportsActiviteListCardProps) {
   const baseId = useId()
@@ -51,103 +52,42 @@ export function RapportsActiviteListCard({
 
   return (
     <>
-      <Card className="lg:col-span-1 overflow-hidden rounded-2xl border-border/60 shadow-sm">
-        <CardHeader className="border-border/50 border-b bg-muted/15 px-5 py-4 sm:px-6">
-          <CardTitle className="text-lg font-semibold tracking-tight">Rapports en ligne</CardTitle>
-          <CardDescription className="text-pretty leading-relaxed">
-            Le commutateur contrôle l’affichage sur « Notre association » (onglet Rapport d’activité). Les entrées
-            masquées restent disponibles ici. Utilisez l’icône œil pour prévisualiser le document.
+      <Card className="overflow-hidden rounded-2xl border-border/60 shadow-sm lg:col-span-1">
+        <CardHeader className="border-border/50 border-b bg-muted/15 px-4 py-3.5 sm:px-6 sm:py-4">
+          <CardTitle className="text-base font-semibold tracking-tight sm:text-lg">
+            Rapports en ligne
+          </CardTitle>
+          <CardDescription className="text-pretty text-xs leading-relaxed sm:text-sm">
+            <span className="sm:hidden">
+              Commutateur = visibilité sur le site. Crayon = modifier, œil = aperçu PDF.
+            </span>
+            <span className="hidden sm:inline">
+              Le commutateur contrôle l’affichage sur « Notre association » (onglet Rapport d’activité). Les entrées
+              masquées restent disponibles ici. Modifiez une ligne via le crayon ; l’icône œil ouvre l’aperçu du PDF.
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           {reports.length === 0 ? (
-            <p className="px-5 py-12 text-center text-muted-foreground text-sm sm:px-6">
+            <p className="px-4 py-10 text-center text-muted-foreground text-sm sm:px-6 sm:py-12">
               Aucun rapport enregistré pour le moment.
             </p>
           ) : (
             <ul className="divide-border/50 divide-y" role="list">
-              {reports.map((r) => {
-                const switchId = `${baseId}-vis-${r.id}`
-                const isBusy = busyVisibilityId === r.id
-                const title = displayTitle(r)
-
-                return (
-                  <li key={r.id}>
-                    <div
-                      className={cn(
-                        "flex flex-col gap-4 px-4 py-4 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 sm:py-4",
-                        "hover:bg-muted/25",
-                        r.isPublished && "bg-primary/[0.03] hover:bg-primary/[0.06]",
-                      )}
-                    >
-                      <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                        <span
-                          className={cn(
-                            "inline-flex shrink-0 items-center justify-center rounded-xl px-3 py-1.5 text-sm font-semibold tabular-nums tracking-tight",
-                            "bg-muted/80 text-foreground ring-1 ring-border/60",
-                          )}
-                        >
-                          {r.year}
-                        </span>
-                        <div className="min-w-0 flex-1 space-y-0.5">
-                          <p className="truncate font-medium text-foreground text-sm leading-snug sm:text-base">
-                            {title}
-                          </p>
-                          <p className="text-muted-foreground text-xs sm:text-sm">
-                            {r.isPublished ? "Visible sur le site" : "Masqué sur le site"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:justify-end sm:gap-2.5">
-                        <div
-                          className={cn(
-                            "flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 shadow-xs",
-                            "dark:bg-background/40",
-                          )}
-                        >
-                          <Switch
-                            id={switchId}
-                            size="sm"
-                            checked={r.isPublished}
-                            disabled={isBusy}
-                            onCheckedChange={(checked) => onPublishedChange(r.id, checked)}
-                            aria-label={`Afficher sur le site public : ${title}`}
-                          />
-                          <Label
-                            htmlFor={switchId}
-                            className="cursor-pointer text-muted-foreground text-xs font-medium sm:text-sm"
-                          >
-                            Site public
-                          </Label>
-                        </div>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon-sm"
-                          className="rounded-xl border-border/70 shadow-xs"
-                          onClick={() => handleOpenPreview(r)}
-                          aria-label={`Aperçu du rapport ${title}`}
-                        >
-                          <Eye className="size-4" aria-hidden />
-                        </Button>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          className="rounded-xl text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => onRequestDelete(r)}
-                          aria-label={`Supprimer le rapport ${title}`}
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                        </Button>
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
+              {reports.map((r) => (
+                <li key={r.id}>
+                  <RapportsActiviteListItem
+                    report={r}
+                    title={displayTitle(r)}
+                    switchId={`${baseId}-vis-${r.id}`}
+                    isBusy={busyVisibilityId === r.id}
+                    onPublishedChange={onPublishedChange}
+                    onRequestEdit={onRequestEdit}
+                    onRequestPreview={handleOpenPreview}
+                    onRequestDelete={onRequestDelete}
+                  />
+                </li>
+              ))}
             </ul>
           )}
         </CardContent>
@@ -164,17 +104,17 @@ export function RapportsActiviteListCard({
         >
           {preview ? (
             <>
-              <SheetHeader className="flex flex-row items-start justify-between gap-3 border-border/50 border-b bg-muted/20 px-5 py-4 pr-14 sm:px-6">
+              <SheetHeader className="flex flex-row items-start justify-between gap-2 border-border/50 border-b bg-muted/20 px-4 py-3 pr-12 sm:gap-3 sm:px-6 sm:py-4 sm:pr-14">
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-lg bg-background px-2 py-0.5 font-semibold text-muted-foreground text-xs tabular-nums ring-1 ring-border/60">
                       {preview.year}
                     </span>
-                    <SheetTitle className="text-left text-base leading-snug sm:text-lg">
+                    <SheetTitle className="line-clamp-2 text-left text-sm leading-snug sm:text-lg">
                       {previewTitle}
                     </SheetTitle>
                   </div>
-                  <SheetDescription id={`${baseId}-preview-desc`} className="text-left">
+                  <SheetDescription id={`${baseId}-preview-desc`} className="text-left text-xs sm:text-sm">
                     Aperçu du rapport.
                   </SheetDescription>
                 </div>
@@ -183,7 +123,7 @@ export function RapportsActiviteListCard({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="absolute top-3 right-3 shrink-0 rounded-lg"
+                    className="absolute top-2.5 right-2.5 shrink-0 rounded-lg sm:top-3 sm:right-3"
                     aria-label="Fermer l’aperçu"
                   >
                     <X className="size-4" aria-hidden />
@@ -191,11 +131,11 @@ export function RapportsActiviteListCard({
                 </SheetClose>
               </SheetHeader>
 
-              <div className="relative min-h-0 flex-1 bg-muted/30 p-4 sm:p-5">
+              <div className="relative min-h-0 flex-1 bg-muted/30 p-3 sm:p-5">
                 <div
                   className={cn(
                     "relative overflow-hidden rounded-xl border border-border/60 bg-background shadow-inner",
-                    "min-h-[min(70vh,640px)] w-full",
+                    "min-h-[min(72dvh,640px)] w-full sm:min-h-[min(70vh,640px)]",
                   )}
                 >
                   <iframe
@@ -210,7 +150,7 @@ export function RapportsActiviteListCard({
 
               <SheetFooter className="flex flex-row items-center justify-end gap-2 border-border/50 border-t bg-muted/10 px-4 py-3 sm:px-6">
                 <SheetClose asChild>
-                  <Button type="button" variant="secondary" size="sm" className="rounded-lg">
+                  <Button type="button" variant="secondary" size="sm" className="w-full rounded-lg sm:w-auto">
                     Fermer
                   </Button>
                 </SheetClose>

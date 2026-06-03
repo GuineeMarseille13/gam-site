@@ -15,6 +15,8 @@ export interface UploadRow {
 }
 
 interface RapportsActiviteUploadCardProps {
+  /** Incrémenté après envoi réussi : remonte le formulaire et vide les inputs natifs (fichier inclus). */
+  formResetKey: number
   rows: UploadRow[]
   formError: string | null
   isPending: boolean
@@ -30,6 +32,7 @@ interface RapportsActiviteUploadCardProps {
  * Formulaire multi-lignes : année, titre affiché et fichier obligatoires par ligne — envoi groupé.
  */
 export function RapportsActiviteUploadCard({
+  formResetKey,
   rows,
   formError,
   isPending,
@@ -43,15 +46,20 @@ export function RapportsActiviteUploadCard({
 
   return (
     <Card className="lg:col-span-1 overflow-hidden rounded-2xl border-border/60 shadow-sm">
-      <CardHeader className="border-border/50 border-b bg-muted/15 px-5 py-4 sm:px-6">
-        <CardTitle className="text-lg font-semibold tracking-tight">Publier des rapports</CardTitle>
-        <CardDescription>
+      <CardHeader className="border-border/50 border-b bg-muted/15 px-4 py-3.5 sm:px-6 sm:py-4">
+        <CardTitle className="text-base font-semibold tracking-tight sm:text-lg">Publier des rapports</CardTitle>
+        <CardDescription className="text-xs leading-relaxed sm:text-sm">
           Une ligne = année, titre affiché et fichier (tous obligatoires). Vous ne pouvez ajouter une ligne suivante
           qu’une fois la précédente entièrement remplie. Si l’année existe déjà sur le site, le fichier est remplacé.
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-5 pb-5 pt-4 sm:px-6">
-        <form id={formId} onSubmit={onSubmit} className="space-y-5">
+      <CardContent className="px-4 pb-4 pt-3 sm:px-6 sm:pb-5 sm:pt-4">
+        <form
+          key={formResetKey}
+          id={formId}
+          onSubmit={onSubmit}
+          className="space-y-5"
+        >
           <ul className="space-y-4">
             {rows.map((row) => (
               <li
@@ -88,6 +96,7 @@ export function RapportsActiviteUploadCard({
                   <div className="min-w-0 flex-1 space-y-1.5">
                     <Label htmlFor={`${formId}-file-${row.key}`}>Fichier</Label>
                     <Input
+                      key={`${formId}-file-${row.key}-${formResetKey}`}
                       id={`${formId}-file-${row.key}`}
                       type="file"
                       required
@@ -134,12 +143,16 @@ export function RapportsActiviteUploadCard({
                   ? undefined
                   : "Remplissez d’abord l’année, le titre affiché et le fichier de la ligne actuelle."
               }
-              className="gap-1.5"
+              className="w-full gap-1.5 sm:w-auto"
             >
               <IconPlus className="size-4" />
               Ajouter une année
             </Button>
-            <Button type="submit" disabled={isPending} className="gap-1.5 bg-amber-500 hover:bg-amber-600">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full gap-1.5 bg-amber-500 hover:bg-amber-600 sm:w-auto"
+            >
               <IconUpload className="size-4" />
               {isPending ? "Envoi…" : "Enregistrer sur le site"}
             </Button>
