@@ -221,7 +221,7 @@ export function RapportsActiviteManager({ reports }: RapportsActiviteManagerProp
 
   return (
     <>
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+      <div className="grid items-start gap-4 sm:gap-6 lg:grid-cols-2">
         <RapportsActiviteUploadCard
           formResetKey={uploadFormResetKey}
           rows={rows}
