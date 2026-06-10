@@ -365,7 +365,6 @@ model Poste {
   updatedAt   DateTime @updatedAt
 
   persons Person[]
-  reviews Review[]
 
   @@map("postes")
 }
@@ -388,10 +387,10 @@ model Review {
   id          String    @id @default(cuid())
   firstName   String    // Prénom de la personne
   lastName    String    // Nom de la personne
-  posteId     String @map("poste_id") // Poste affiché (table Poste)
   body        String    @db.Text // Contenu du témoignage/avis
   avatarUrl   String?  // URL de l'image de profil
-  country     String?  // Pays (ex: "🇬🇳 Guinée" ou "Guinée")
+  sourceLabel String?  @map("source_label") // Origine texte (ex. « Google ») — affiché après « Avis de »
+  sourceImageUrl String? @map("source_image_url") // Logo / image de l’origine (ex. logo Google)
   rating      Int      @default(5) // Note sur 5 étoiles (1-5)
   order       Int      @default(0) // Ordre d'affichage
   isActive    Boolean  @default(true) // Si l'avis est visible
@@ -400,7 +399,6 @@ model Review {
 
   // Relations
   reviewSection ReviewSection? @relation(fields: [reviewSectionId], references: [id])
-  poste           Poste          @relation(fields: [posteId], references: [id], onDelete: Restrict)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -409,7 +407,6 @@ model Review {
   @@index([isActive])
   @@index([rating])
   @@index([order])
-  @@index([posteId])
   @@map("reviews")
 }
 

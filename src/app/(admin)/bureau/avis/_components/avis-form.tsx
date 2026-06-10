@@ -9,35 +9,32 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/bureau/submit-button"
 import type { AvisActionState } from "../_actions/actions"
+import type { AvisSourceType } from "../_schemas/avis-form.schema"
+import { AvisSourceField } from "./avis-source-field"
 
 const MAX_MB = 10
 
-interface PosteOption {
-  code: string
-  labelFr: string
-}
-
 interface AvisFormProps {
   action: (prev: AvisActionState, formData: FormData) => Promise<AvisActionState>
-  postes: PosteOption[]
   defaultValues?: {
     firstName?: string
     lastName?: string
-    posteCode?: string
     body?: string
-    country?: string | null
     rating?: number
     order?: number
     isActive?: boolean
     isVerified?: boolean
     avatarUrl?: string | null
+    sourceType?: AvisSourceType
+    sourceLabel?: string | null
+    sourceImageUrl?: string | null
   }
 }
 
 /**
  * Formulaire création / édition d’un avis affiché sur la page d’accueil.
  */
-export function AvisForm({ action, postes, defaultValues }: AvisFormProps) {
+export function AvisForm({ action, defaultValues }: AvisFormProps) {
   const [state, formAction] = useActionState(action, null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -146,26 +143,6 @@ export function AvisForm({ action, postes, defaultValues }: AvisFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="posteCode">Poste affiché</Label>
-            <select
-              id="posteCode"
-              name="posteCode"
-              required
-              defaultValue={defaultValues?.posteCode ?? ""}
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
-            >
-              <option value="" disabled>
-                Choisir…
-              </option>
-              {postes.map((r) => (
-                <option key={r.code} value={r.code}>
-                  {r.labelFr}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="body">Témoignage</Label>
             <Textarea
               id="body"
@@ -178,42 +155,37 @@ export function AvisForm({ action, postes, defaultValues }: AvisFormProps) {
             />
           </div>
 
+          <AvisSourceField
+            defaultSourceType={defaultValues?.sourceType ?? "none"}
+            defaultSourceLabel={defaultValues?.sourceLabel}
+            defaultSourceImageUrl={defaultValues?.sourceImageUrl}
+          />
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="country">Pays / localisation</Label>
-              <Input
-                id="country"
-                name="country"
-                defaultValue={defaultValues?.country ?? ""}
-                placeholder="ex. Guinée, France… (emoji optionnel)"
-              />
+              <Label htmlFor="rating">Note</Label>
+              <select
+                id="rating"
+                name="rating"
+                defaultValue={String(defaultValues?.rating ?? 5)}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
+              >
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <option key={n} value={n}>
+                    {n} / 5
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="rating">Note</Label>
-                <select
-                  id="rating"
-                  name="rating"
-                  defaultValue={String(defaultValues?.rating ?? 5)}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
-                >
-                  {[5, 4, 3, 2, 1].map((n) => (
-                    <option key={n} value={n}>
-                      {n} / 5
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="order">Ordre</Label>
-                <Input
-                  id="order"
-                  name="order"
-                  type="number"
-                  min={0}
-                  defaultValue={defaultValues?.order ?? 0}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="order">Ordre</Label>
+              <Input
+                id="order"
+                name="order"
+                type="number"
+                min={0}
+                defaultValue={defaultValues?.order ?? 0}
+              />
             </div>
           </div>
 

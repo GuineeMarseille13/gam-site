@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { updateAvis } from "../../_actions/actions"
 import { AvisForm } from "../../_components/avis-form"
 import { avisIdParamsSchema } from "../../_schemas/avis-params.schema"
+import { inferAvisSourceType } from "../../_schemas/avis-source.schema"
 
 export const metadata: Metadata = {
   title: "Modifier un avis",
@@ -15,23 +16,11 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-async function getPostes() {
-  return prisma.poste.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: "asc" },
-    select: { code: true, labelFr: true },
-  })
-}
-
 export default async function ModifierAvisPage({ params }: PageProps) {
   const { id } = avisIdParamsSchema.parse(await params)
-  const [review, postes] = await Promise.all([
-    prisma.review.findUnique({
-      where: { id },
-      include: { poste: { select: { code: true } } },
-    }),
-    getPostes(),
-  ])
+  const review = await prisma.review.findUnique({
+    where: { id },
+  })
 
   if (!review) {
     notFound()
@@ -47,18 +36,18 @@ export default async function ModifierAvisPage({ params }: PageProps) {
         <CardContent className="pt-6">
           <AvisForm
             action={updateAvis.bind(null, id)}
-            postes={postes}
             defaultValues={{
               firstName: review.firstName,
               lastName: review.lastName,
-              posteCode: review.poste.code,
               body: review.body,
-              country: review.country,
               rating: review.rating,
               order: review.order,
               isActive: review.isActive,
               isVerified: review.isVerified,
               avatarUrl: review.avatarUrl,
+              sourceType: inferAvisSourceType(review.sourceLabel, review.sourceImageUrl),
+              sourceLabel: review.sourceLabel,
+              sourceImageUrl: review.sourceImageUrl,
             }}
           />
         </CardContent>

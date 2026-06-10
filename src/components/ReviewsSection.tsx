@@ -1,125 +1,45 @@
 import { Marquee } from "@/components/Marquee";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star } from "lucide-react";
 import { SectionSplitHeading } from "@/components/section-split-heading";
-
-/** Données avis (API / service accueil). */
-interface ApiReviewLike {
-  id?: string
-  firstName?: string
-  lastName?: string
-  name?: string
-  body?: string
-  img?: string
-  avatarUrl?: string | null
-  country?: string | null
-  role?: string | { labelFr: string }
-  poste?: string | { labelFr: string }
-  rating?: number | "ONE" | "TWO" | "THREE" | "FOUR" | "FIVE"
-}
+import { TestimonialCard } from "@/components/testimonial-card";
+import {
+  dedupeReviewsById,
+  getMarqueeRepeatCount,
+  mapApiReviewToCard,
+  splitReviewsIntoMarqueeRows,
+  type ApiReviewLike,
+  type ReviewCardData,
+} from "@/components/reviews-section-utils";
 
 interface ReviewsSectionProps {
   reviews?: ApiReviewLike[]
 }
 
-function ratingToNumber(rating: "ONE" | "TWO" | "THREE" | "FOUR" | "FIVE"): number {
-  const map = {
-    ONE: 1,
-    TWO: 2,
-    THREE: 3,
-    FOUR: 4,
-    FIVE: 5,
-  }
-  return map[rating]
+interface ReviewsMarqueeRowProps {
+  rowKey: string
+  reviews: ReviewCardData[]
+  reverse?: boolean
+  className?: string
 }
 
-function TestimonialCard({
-  img,
-  name,
-  role,
-  body,
-  country,
-  rating,
-}: {
-  img: string
-  name: string
-  role: string
-  body: string
-  country: string
-  rating: number
-}) {
+/**
+ * Bande défilante — chaque avis n’apparaît que dans une seule rangée.
+ */
+function ReviewsMarqueeRow({ rowKey, reviews, reverse = false, className }: ReviewsMarqueeRowProps) {
+  if (reviews.length === 0) return null
+
   return (
-    <Card className="w-72 sm:w-80 shrink-0 border-2 border-border/70 bg-card text-card-foreground transition-colors duration-300 shadow-md hover:border-primary/45 hover:shadow-lg dark:border-border dark:hover:border-primary/50">
-      <CardContent className="p-5">
-        <div className="flex items-start gap-3 mb-3">
-          <Avatar className="size-12 border-2 border-primary/20">
-            <AvatarImage src={img} alt="" />
-            <AvatarFallback className="bg-primary/15 text-primary font-semibold dark:bg-primary/25 dark:text-primary">
-              {name[0] ?? "?"}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col flex-1 min-w-0">
-            <figcaption className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <span className="truncate">{name}</span>
-              {country ? <span className="text-xs flex-shrink-0 text-muted-foreground">{country}</span> : null}
-            </figcaption>
-            <p className="text-xs font-medium text-primary mt-0.5">{role}</p>
-            <div className="flex gap-0.5 mt-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={`star-${name}-${i}`}
-                  className={`size-3 ${
-                    i < rating
-                      ? "fill-[var(--theme-yellow)] text-[var(--theme-yellow)]"
-                      : "fill-muted-foreground/20 text-muted-foreground/20"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <blockquote className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-          <span aria-hidden="true">&ldquo;</span>
-          {body}
-          <span aria-hidden="true">&rdquo;</span>
-        </blockquote>
-      </CardContent>
-    </Card>
+    <Marquee
+      pauseOnHover
+      reverse={reverse}
+      repeat={getMarqueeRepeatCount(reviews.length)}
+      className={className}
+      ariaLabel={`Témoignages — rangée ${rowKey}`}
+    >
+      {reviews.map((review) => (
+        <TestimonialCard key={`${rowKey}-${review.id}`} {...review} />
+      ))}
+    </Marquee>
   )
-}
-
-function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
-  const name =
-    review.name?.trim() ||
-    [review.firstName, review.lastName].filter(Boolean).join(" ").trim() ||
-    "Anonyme"
-  const roleLabel =
-    typeof review.poste === "object" && review.poste !== null && "labelFr" in review.poste
-      ? review.poste.labelFr
-      : typeof review.poste === "string"
-        ? review.poste
-        : typeof review.role === "object" && review.role !== null && "labelFr" in review.role
-          ? review.role.labelFr
-          : typeof review.role === "string"
-            ? review.role
-        : ""
-  const img = review.img ?? review.avatarUrl ?? ""
-  const ratingNum =
-    typeof review.rating === "number"
-      ? review.rating
-      : review.rating
-        ? ratingToNumber(review.rating)
-        : 5
-  return {
-    id: review.id || `review-${idx}`,
-    name,
-    role: roleLabel,
-    body: review.body ?? "",
-    img,
-    country: review.country ?? "",
-    rating: ratingNum,
-  }
 }
 
 /**
@@ -127,13 +47,14 @@ function mapApiReviewToCard(review: ApiReviewLike, idx: number) {
  * Ne rend rien s’il n’y a aucun avis.
  */
 function ReviewsSection({ reviews }: ReviewsSectionProps) {
-  const list = reviews?.length
-    ? reviews.map((review, idx) => mapApiReviewToCard(review, idx))
-    : []
+  const uniqueReviews = dedupeReviewsById(reviews ?? [])
+  const list = uniqueReviews.map((review, idx) => mapApiReviewToCard(review, idx))
 
   if (list.length === 0) {
     return null
   }
+
+  const { firstRow, secondRow } = splitReviewsIntoMarqueeRows(list)
 
   return (
     <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-amber-50/30 to-white">
@@ -149,21 +70,21 @@ function ReviewsSection({ reviews }: ReviewsSectionProps) {
           </p>
         </div>
 
-        <div className="relative">
-          <Marquee pauseOnHover repeat={3} className="[--duration:25s] mb-4">
-            {list.map((review, index) => (
-              <TestimonialCard key={`review-left-${review.id}-${index}`} {...review} />
-            ))}
-          </Marquee>
+        <div className="relative -mx-4 sm:mx-0">
+          <ReviewsMarqueeRow
+            rowKey="first"
+            reviews={firstRow}
+            className="[--duration:38s] [--gap:0.75rem] mb-3 md:mb-4 md:[--duration:25s] md:[--gap:1rem]"
+          />
+          <ReviewsMarqueeRow
+            rowKey="second"
+            reviews={secondRow}
+            reverse
+            className="[--duration:38s] [--gap:0.75rem] md:[--duration:25s] md:[--gap:1rem]"
+          />
 
-          <Marquee pauseOnHover reverse repeat={3} className="[--duration:25s]">
-            {list.map((review, index) => (
-              <TestimonialCard key={`review-right-${review.id}-${index}`} {...review} />
-            ))}
-          </Marquee>
-
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white via-white/90 to-transparent sm:w-16 md:w-1/4 md:via-white/80" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white via-white/90 to-transparent sm:w-16 md:w-1/4 md:via-white/80" />
         </div>
       </div>
     </section>

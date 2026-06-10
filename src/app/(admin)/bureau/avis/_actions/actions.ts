@@ -7,31 +7,40 @@ import { prisma } from "@/lib/prisma"
 import { requireBureauContenu } from "@/lib/auth-guard"
 import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
-import { getPosteIdByCode } from "@/helpers/poste-helpers"
 import {
   formatAvisFormErrorMessage,
   parseAvisFormFields,
+  resolveAvisSourceFields,
 } from "../_schemas/avis-form.schema"
 
 export type AvisActionState = { error: string } | null
 
 const REVALIDATE_PATHS = ["/bureau/avis", "/"] as const
 
-async function resolveAvatarUrl(
+interface ImageFieldNames {
+  file: string
+  url: string
+  existing: string
+  remove: string
+}
+
+async function resolveImageUrl(
   formData: FormData,
   existingUrl: string | null,
+  fields: ImageFieldNames,
+  uploadFolder: string,
 ): Promise<string | null> {
-  const file = formData.get("imageFile") as File | null
+  const file = formData.get(fields.file) as File | null
   if (file && file.size > 0) {
-    const result = await uploadImage(file, "gam/reviews")
+    const result = await uploadImage(file, uploadFolder)
     return result.url
   }
-  if (formData.get("removeAvatar") === "on") {
+  if (formData.get(fields.remove) === "on") {
     return null
   }
-  const urlInput = (formData.get("avatarUrl") as string | null)?.trim() ?? ""
+  const urlInput = (formData.get(fields.url) as string | null)?.trim() ?? ""
   if (urlInput.length > 0) return urlInput
-  const hiddenExisting = (formData.get("existingAvatarUrl") as string | null)?.trim() ?? ""
+  const hiddenExisting = (formData.get(fields.existing) as string | null)?.trim() ?? ""
   if (hiddenExisting.length > 0) return hiddenExisting
   return existingUrl
 }
@@ -54,13 +63,31 @@ export async function createAvis(
     return { error: formatAvisFormErrorMessage(parsed.error) }
   }
 
-  const posteId = await getPosteIdByCode(prisma, parsed.data.posteCode)
-  if (!posteId) {
-    return { error: "Poste inconnu ou inactif." }
-  }
-
   try {
-    const avatarUrl = await resolveAvatarUrl(formData, null)
+    const avatarUrl = await resolveImageUrl(formData, null, {
+      file: "imageFile",
+      url: "avatarUrl",
+      existing: "existingAvatarUrl",
+      remove: "removeAvatar",
+    }, "gam/reviews")
+
+    const sourceImageUrl = await resolveImageUrl(formData, null, {
+      file: "sourceImageFile",
+      url: "sourceImageUrl",
+      existing: "existingSourceImageUrl",
+      remove: "removeSourceImage",
+    }, "gam/reviews/sources")
+
+    if (parsed.data.sourceType === "image" && !sourceImageUrl) {
+      return { error: "Ajoutez un logo ou une URL d’image pour l’origine." }
+    }
+
+    const source = resolveAvisSourceFields(
+      parsed.data.sourceType,
+      parsed.data.sourceLabel,
+      sourceImageUrl,
+    )
+
     const reviewSectionId = await defaultReviewSectionId()
     const publishedAt =
       parsed.data.isVerified ? new Date() : null
@@ -69,14 +96,14 @@ export async function createAvis(
       data: {
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        posteId,
         body: parsed.data.body,
-        country: parsed.data.country,
         rating: parsed.data.rating,
         order: parsed.data.order,
         isActive: parsed.data.isActive,
         isVerified: parsed.data.isVerified,
         avatarUrl,
+        sourceLabel: source.sourceLabel,
+        sourceImageUrl: source.sourceImageUrl,
         reviewSectionId,
         publishedAt,
       },
@@ -102,21 +129,39 @@ export async function updateAvis(
     return { error: formatAvisFormErrorMessage(parsed.error) }
   }
 
-  const posteId = await getPosteIdByCode(prisma, parsed.data.posteCode)
-  if (!posteId) {
-    return { error: "Poste inconnu ou inactif." }
-  }
-
   const existing = await prisma.review.findUnique({
     where: { id },
-    select: { avatarUrl: true, publishedAt: true },
+    select: { avatarUrl: true, sourceImageUrl: true, publishedAt: true },
   })
   if (!existing) {
     return { error: "Avis introuvable." }
   }
 
   try {
-    const avatarUrl = await resolveAvatarUrl(formData, existing.avatarUrl)
+    const avatarUrl = await resolveImageUrl(formData, existing.avatarUrl, {
+      file: "imageFile",
+      url: "avatarUrl",
+      existing: "existingAvatarUrl",
+      remove: "removeAvatar",
+    }, "gam/reviews")
+
+    const sourceImageUrl = await resolveImageUrl(formData, existing.sourceImageUrl, {
+      file: "sourceImageFile",
+      url: "sourceImageUrl",
+      existing: "existingSourceImageUrl",
+      remove: "removeSourceImage",
+    }, "gam/reviews/sources")
+
+    if (parsed.data.sourceType === "image" && !sourceImageUrl) {
+      return { error: "Ajoutez un logo ou une URL d’image pour l’origine." }
+    }
+
+    const source = resolveAvisSourceFields(
+      parsed.data.sourceType,
+      parsed.data.sourceLabel,
+      sourceImageUrl,
+    )
+
     const publishedAt = parsed.data.isVerified
       ? (existing.publishedAt ?? new Date())
       : null
@@ -126,14 +171,14 @@ export async function updateAvis(
       data: {
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        posteId,
         body: parsed.data.body,
-        country: parsed.data.country,
         rating: parsed.data.rating,
         order: parsed.data.order,
         isActive: parsed.data.isActive,
         isVerified: parsed.data.isVerified,
         avatarUrl,
+        sourceLabel: source.sourceLabel,
+        sourceImageUrl: source.sourceImageUrl,
         publishedAt,
       },
     })
@@ -141,6 +186,10 @@ export async function updateAvis(
     await deleteSupersededCloudinaryUrl({
       previousUrl: existing.avatarUrl,
       nextUrl: avatarUrl,
+    })
+    await deleteSupersededCloudinaryUrl({
+      previousUrl: existing.sourceImageUrl,
+      nextUrl: source.sourceImageUrl,
     })
 
     REVALIDATE_PATHS.forEach((p) => revalidatePath(p))
@@ -156,12 +205,16 @@ export async function deleteAvis(id: string) {
   await requireBureauContenu()
   const existing = await prisma.review.findUnique({
     where: { id },
-    select: { avatarUrl: true },
+    select: { avatarUrl: true, sourceImageUrl: true },
   })
   await prisma.review.delete({ where: { id } })
 
   await deleteSupersededCloudinaryUrl({
     previousUrl: existing?.avatarUrl,
+    nextUrl: null,
+  })
+  await deleteSupersededCloudinaryUrl({
+    previousUrl: existing?.sourceImageUrl,
     nextUrl: null,
   })
 

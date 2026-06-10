@@ -10,14 +10,13 @@
 import { createCrudHandler } from '@/lib/api/handlers'
 import { z } from 'zod'
 
-// Schéma de validation pour la création (posteCode = code Poste, ex. MEMBER)
 const createReviewSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  posteCode: z.string().min(1, 'posteCode is required'),
   body: z.string().min(1, 'Body is required'),
   avatarUrl: z.string().url('Invalid URL').optional().nullable(),
-  country: z.string().optional().nullable(),
+  sourceLabel: z.string().max(80).optional().nullable(),
+  sourceImageUrl: z.string().url('Invalid URL').optional().nullable(),
   rating: z.number().int().min(1).max(5).default(5),
   order: z.number().int().default(0),
   isActive: z.boolean().default(true),
@@ -26,7 +25,6 @@ const createReviewSchema = z.object({
   publishedAt: z.coerce.date().optional().nullable(),
 })
 
-// Schéma de validation pour la mise à jour
 const updateReviewSchema = createReviewSchema.partial()
 
 const handlers = createCrudHandler({
@@ -35,22 +33,12 @@ const handlers = createCrudHandler({
   validateUpdate: (data) => updateReviewSchema.parse(data),
   beforeCreate: async (data: unknown) => {
     const parsed = createReviewSchema.parse(data)
-    const { posteCode, ...rest } = parsed
     const publishedAt =
-      rest.isVerified && rest.publishedAt == null ? new Date() : rest.publishedAt
+      parsed.isVerified && parsed.publishedAt == null ? new Date() : parsed.publishedAt
     return {
-      ...rest,
+      ...parsed,
       publishedAt,
-      poste: { connect: { code: posteCode } },
     }
-  },
-  beforeUpdate: async (data: unknown) => {
-    const parsed = updateReviewSchema.parse(data)
-    const { posteCode, ...rest } = parsed
-    if (posteCode) {
-      return { ...rest, poste: { connect: { code: posteCode } } }
-    }
-    return rest
   },
 })
 
@@ -58,4 +46,3 @@ export const GET = handlers.GET
 export const POST = handlers.POST
 export const PUT = handlers.PUT
 export const DELETE = handlers.DELETE
-

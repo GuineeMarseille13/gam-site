@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
 import { createAvis } from "../_actions/actions"
@@ -10,17 +9,7 @@ export const metadata: Metadata = {
   description: "Ajouter un témoignage sur la page d’accueil",
 }
 
-async function getPostes() {
-  return prisma.poste.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: "asc" },
-    select: { code: true, labelFr: true },
-  })
-}
-
-export default async function NouvelAvisPage() {
-  const postes = await getPostes()
-
+export default function NouvelAvisPage() {
   return (
     <BureauContent
       title="Nouvel avis"
@@ -29,7 +18,7 @@ export default async function NouvelAvisPage() {
     >
       <Card>
         <CardContent className="pt-6">
-          <AvisForm action={createAvis} postes={postes} />
+          <AvisForm action={createAvis} />
         </CardContent>
       </Card>
     </BureauContent>

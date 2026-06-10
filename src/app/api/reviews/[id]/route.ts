@@ -17,12 +17,11 @@ const updateReviewSchema = z
     firstName: z.string().min(1).optional(),
     lastName: z.string().min(1).optional(),
     name: z.string().min(1).optional(),
-    posteId: z.string().min(1).optional(),
-    roleId: z.string().min(1).optional(),
     body: z.string().optional(),
     avatarUrl: z.string().url().optional(),
     img: z.string().url().optional(),
-    country: z.string().optional(),
+    sourceLabel: z.string().max(80).optional().nullable(),
+    sourceImageUrl: z.string().url().optional().nullable(),
     rating: z.union([z.number().int().min(1).max(5), z.enum(['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'])]).optional(),
     isActive: z.boolean().optional(),
     isPublished: z.boolean().optional(),
@@ -41,7 +40,6 @@ export async function GET(
     const { id } = await params
     const review = await prisma.review.findUnique({
       where: { id },
-      include: { poste: true },
     })
 
     if (!review) {
@@ -69,10 +67,10 @@ export async function PUT(
     const data: {
       firstName?: string
       lastName?: string
-      posteId?: string
       body?: string
       avatarUrl?: string | null
-      country?: string | null
+      sourceLabel?: string | null
+      sourceImageUrl?: string | null
       rating?: number
       isActive?: boolean
       isVerified?: boolean
@@ -85,12 +83,11 @@ export async function PUT(
       data.firstName = parts[0] ?? ''
       data.lastName = parts.slice(1).join(' ') || ''
     }
-    const posteId = validatedData.posteId ?? validatedData.roleId
-    if (posteId !== undefined) data.posteId = posteId
     if (validatedData.body !== undefined) data.body = validatedData.body
     if (validatedData.avatarUrl !== undefined) data.avatarUrl = validatedData.avatarUrl
     if (validatedData.img !== undefined) data.avatarUrl = validatedData.img
-    if (validatedData.country !== undefined) data.country = validatedData.country
+    if (validatedData.sourceLabel !== undefined) data.sourceLabel = validatedData.sourceLabel
+    if (validatedData.sourceImageUrl !== undefined) data.sourceImageUrl = validatedData.sourceImageUrl
     if (validatedData.rating !== undefined) {
       data.rating =
         typeof validatedData.rating === 'number'
@@ -104,7 +101,6 @@ export async function PUT(
     const review = await prisma.review.update({
       where: { id },
       data,
-      include: { poste: true },
     })
 
     return successResponse(review, 'Témoignage mis à jour avec succès')

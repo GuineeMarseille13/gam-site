@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { RowActions } from "@/components/bureau/row-actions"
 import { deleteAvis } from "../_actions/actions"
 import { AvisAvatarWithStatus } from "./avis-avatar-with-status"
+import { ReviewSourceLine } from "@/components/review-source-line"
 import type { AvisListRow } from "../_types/avis-list-row"
 
 function siteBadgeClass(isActive: boolean) {
@@ -29,7 +30,6 @@ export function AvisMobileCard({ row: r }: AvisMobileCardProps) {
 
   return (
     <Card className="group overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md">
-    
       <CardContent className="p-4 sm:p-5">
         <div className="flex gap-3 sm:gap-4">
           <AvisAvatarWithStatus
@@ -45,11 +45,11 @@ export function AvisMobileCard({ row: r }: AvisMobileCardProps) {
                 <h3 className="text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-[1.05rem]">
                   {name}
                 </h3>
+                <ReviewSourceLine
+                  sourceLabel={r.sourceLabel}
+                  sourceImageUrl={r.sourceImageUrl}
+                />
                 <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground sm:text-sm">
-                  <span className="font-medium text-primary">{r.poste.labelFr}</span>
-                  <span aria-hidden className="text-border">
-                    ·
-                  </span>
                   <span className="tabular-nums">
                     <span className="font-semibold text-foreground">{r.rating}</span>
                     <span>/5</span>
@@ -65,12 +65,6 @@ export function AvisMobileCard({ row: r }: AvisMobileCardProps) {
                 onDelete={deleteAvis.bind(null, r.id)}
               />
             </div>
-
-            {r.country ? (
-              <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{r.country}</p>
-            ) : (
-              <p className="text-sm text-muted-foreground/70">—</p>
-            )}
 
             <div className="flex flex-wrap gap-2 border-t border-border/40 pt-3">
               <Badge

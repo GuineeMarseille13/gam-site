@@ -12,6 +12,7 @@ import { RowActions } from "@/components/bureau/row-actions"
 import { deleteAvis } from "../_actions/actions"
 import { AvisPersonCell } from "./avis-person-cell"
 import { AvisMobileCard } from "./avis-mobile-card"
+import { ReviewSourceLine } from "@/components/review-source-line"
 import type { AvisListRow } from "../_types/avis-list-row"
 
 export type { AvisListRow }
@@ -61,8 +62,7 @@ export function AvisList({ rows }: AvisListProps) {
               <TableHeader>
                 <TableRow>
                   <TableHead className="min-w-[12rem] pl-6">Personne</TableHead>
-                  <TableHead className="min-w-[7rem]">Rôle affiché</TableHead>
-                  <TableHead className="min-w-[6rem]">Pays</TableHead>
+                  <TableHead className="min-w-[8rem]">Origine</TableHead>
                   <TableHead className="min-w-[4rem]">Note</TableHead>
                   <TableHead className="min-w-[4rem]">Ordre</TableHead>
                   <TableHead className="min-w-[5rem]">Site</TableHead>
@@ -81,9 +81,12 @@ export function AvisList({ rows }: AvisListProps) {
                         isActive={r.isActive}
                       />
                     </TableCell>
-                    <TableCell>{r.poste.labelFr}</TableCell>
-                    <TableCell className="max-w-[140px] truncate text-muted-foreground">
-                      {r.country ?? "—"}
+                    <TableCell className="text-muted-foreground">
+                      <ReviewSourceLine
+                        sourceLabel={r.sourceLabel}
+                        sourceImageUrl={r.sourceImageUrl}
+                      />
+                      {!r.sourceLabel && !r.sourceImageUrl ? "—" : null}
                     </TableCell>
                     <TableCell className="tabular-nums">{r.rating}/5</TableCell>
                     <TableCell className="tabular-nums text-muted-foreground">{r.order}</TableCell>

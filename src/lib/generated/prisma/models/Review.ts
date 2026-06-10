@@ -40,10 +40,10 @@ export type ReviewMinAggregateOutputType = {
   id: string | null
   firstName: string | null
   lastName: string | null
-  posteId: string | null
   body: string | null
   avatarUrl: string | null
-  country: string | null
+  sourceLabel: string | null
+  sourceImageUrl: string | null
   rating: number | null
   order: number | null
   isActive: boolean | null
@@ -58,10 +58,10 @@ export type ReviewMaxAggregateOutputType = {
   id: string | null
   firstName: string | null
   lastName: string | null
-  posteId: string | null
   body: string | null
   avatarUrl: string | null
-  country: string | null
+  sourceLabel: string | null
+  sourceImageUrl: string | null
   rating: number | null
   order: number | null
   isActive: boolean | null
@@ -76,10 +76,10 @@ export type ReviewCountAggregateOutputType = {
   id: number
   firstName: number
   lastName: number
-  posteId: number
   body: number
   avatarUrl: number
-  country: number
+  sourceLabel: number
+  sourceImageUrl: number
   rating: number
   order: number
   isActive: number
@@ -106,10 +106,10 @@ export type ReviewMinAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  posteId?: true
   body?: true
   avatarUrl?: true
-  country?: true
+  sourceLabel?: true
+  sourceImageUrl?: true
   rating?: true
   order?: true
   isActive?: true
@@ -124,10 +124,10 @@ export type ReviewMaxAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  posteId?: true
   body?: true
   avatarUrl?: true
-  country?: true
+  sourceLabel?: true
+  sourceImageUrl?: true
   rating?: true
   order?: true
   isActive?: true
@@ -142,10 +142,10 @@ export type ReviewCountAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  posteId?: true
   body?: true
   avatarUrl?: true
-  country?: true
+  sourceLabel?: true
+  sourceImageUrl?: true
   rating?: true
   order?: true
   isActive?: true
@@ -247,10 +247,10 @@ export type ReviewGroupByOutputType = {
   id: string
   firstName: string
   lastName: string
-  posteId: string
   body: string
   avatarUrl: string | null
-  country: string | null
+  sourceLabel: string | null
+  sourceImageUrl: string | null
   rating: number
   order: number
   isActive: boolean
@@ -288,10 +288,10 @@ export type ReviewWhereInput = {
   id?: Prisma.StringFilter<"Review"> | string
   firstName?: Prisma.StringFilter<"Review"> | string
   lastName?: Prisma.StringFilter<"Review"> | string
-  posteId?: Prisma.StringFilter<"Review"> | string
   body?: Prisma.StringFilter<"Review"> | string
   avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
-  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceLabel?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceImageUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   rating?: Prisma.IntFilter<"Review"> | number
   order?: Prisma.IntFilter<"Review"> | number
   isActive?: Prisma.BoolFilter<"Review"> | boolean
@@ -301,17 +301,16 @@ export type ReviewWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
   reviewSection?: Prisma.XOR<Prisma.ReviewSectionNullableScalarRelationFilter, Prisma.ReviewSectionWhereInput> | null
-  poste?: Prisma.XOR<Prisma.PosteScalarRelationFilter, Prisma.PosteWhereInput>
 }
 
 export type ReviewOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  posteId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -321,7 +320,6 @@ export type ReviewOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewSection?: Prisma.ReviewSectionOrderByWithRelationInput
-  poste?: Prisma.PosteOrderByWithRelationInput
 }
 
 export type ReviewWhereUniqueInput = Prisma.AtLeast<{
@@ -331,10 +329,10 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   firstName?: Prisma.StringFilter<"Review"> | string
   lastName?: Prisma.StringFilter<"Review"> | string
-  posteId?: Prisma.StringFilter<"Review"> | string
   body?: Prisma.StringFilter<"Review"> | string
   avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
-  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceLabel?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceImageUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   rating?: Prisma.IntFilter<"Review"> | number
   order?: Prisma.IntFilter<"Review"> | number
   isActive?: Prisma.BoolFilter<"Review"> | boolean
@@ -344,17 +342,16 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
   reviewSection?: Prisma.XOR<Prisma.ReviewSectionNullableScalarRelationFilter, Prisma.ReviewSectionWhereInput> | null
-  poste?: Prisma.XOR<Prisma.PosteScalarRelationFilter, Prisma.PosteWhereInput>
 }, "id">
 
 export type ReviewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  posteId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -377,10 +374,10 @@ export type ReviewScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Review"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"Review"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  posteId?: Prisma.StringWithAggregatesFilter<"Review"> | string
   body?: Prisma.StringWithAggregatesFilter<"Review"> | string
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
-  country?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  sourceLabel?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  sourceImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   rating?: Prisma.IntWithAggregatesFilter<"Review"> | number
   order?: Prisma.IntWithAggregatesFilter<"Review"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
@@ -397,7 +394,8 @@ export type ReviewCreateInput = {
   lastName: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -406,17 +404,16 @@ export type ReviewCreateInput = {
   updatedAt?: Date | string
   publishedAt?: Date | string | null
   reviewSection?: Prisma.ReviewSectionCreateNestedOneWithoutReviewsInput
-  poste: Prisma.PosteCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateInput = {
   id?: string
   firstName: string
   lastName: string
-  posteId: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -433,7 +430,8 @@ export type ReviewUpdateInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -442,17 +440,16 @@ export type ReviewUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewSection?: Prisma.ReviewSectionUpdateOneWithoutReviewsNestedInput
-  poste?: Prisma.PosteUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  posteId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -467,10 +464,10 @@ export type ReviewCreateManyInput = {
   id?: string
   firstName: string
   lastName: string
-  posteId: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -487,7 +484,8 @@ export type ReviewUpdateManyMutationInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -501,10 +499,10 @@ export type ReviewUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  posteId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -529,10 +527,10 @@ export type ReviewCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  posteId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  sourceLabel?: Prisma.SortOrder
+  sourceImageUrl?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -552,10 +550,10 @@ export type ReviewMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  posteId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  sourceLabel?: Prisma.SortOrder
+  sourceImageUrl?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -570,10 +568,10 @@ export type ReviewMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  posteId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  sourceLabel?: Prisma.SortOrder
+  sourceImageUrl?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   order?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -631,48 +629,6 @@ export type ReviewUncheckedUpdateManyWithoutReviewSectionNestedInput = {
   deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
 }
 
-export type ReviewCreateNestedManyWithoutPosteInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput> | Prisma.ReviewCreateWithoutPosteInput[] | Prisma.ReviewUncheckedCreateWithoutPosteInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutPosteInput | Prisma.ReviewCreateOrConnectWithoutPosteInput[]
-  createMany?: Prisma.ReviewCreateManyPosteInputEnvelope
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-}
-
-export type ReviewUncheckedCreateNestedManyWithoutPosteInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput> | Prisma.ReviewCreateWithoutPosteInput[] | Prisma.ReviewUncheckedCreateWithoutPosteInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutPosteInput | Prisma.ReviewCreateOrConnectWithoutPosteInput[]
-  createMany?: Prisma.ReviewCreateManyPosteInputEnvelope
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-}
-
-export type ReviewUpdateManyWithoutPosteNestedInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput> | Prisma.ReviewCreateWithoutPosteInput[] | Prisma.ReviewUncheckedCreateWithoutPosteInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutPosteInput | Prisma.ReviewCreateOrConnectWithoutPosteInput[]
-  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutPosteInput | Prisma.ReviewUpsertWithWhereUniqueWithoutPosteInput[]
-  createMany?: Prisma.ReviewCreateManyPosteInputEnvelope
-  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutPosteInput | Prisma.ReviewUpdateWithWhereUniqueWithoutPosteInput[]
-  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutPosteInput | Prisma.ReviewUpdateManyWithWhereWithoutPosteInput[]
-  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
-}
-
-export type ReviewUncheckedUpdateManyWithoutPosteNestedInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput> | Prisma.ReviewCreateWithoutPosteInput[] | Prisma.ReviewUncheckedCreateWithoutPosteInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutPosteInput | Prisma.ReviewCreateOrConnectWithoutPosteInput[]
-  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutPosteInput | Prisma.ReviewUpsertWithWhereUniqueWithoutPosteInput[]
-  createMany?: Prisma.ReviewCreateManyPosteInputEnvelope
-  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutPosteInput | Prisma.ReviewUpdateWithWhereUniqueWithoutPosteInput[]
-  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutPosteInput | Prisma.ReviewUpdateManyWithWhereWithoutPosteInput[]
-  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -683,7 +639,8 @@ export type ReviewCreateWithoutReviewSectionInput = {
   lastName: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -691,17 +648,16 @@ export type ReviewCreateWithoutReviewSectionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   publishedAt?: Date | string | null
-  poste: Prisma.PosteCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateWithoutReviewSectionInput = {
   id?: string
   firstName: string
   lastName: string
-  posteId: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -744,10 +700,10 @@ export type ReviewScalarWhereInput = {
   id?: Prisma.StringFilter<"Review"> | string
   firstName?: Prisma.StringFilter<"Review"> | string
   lastName?: Prisma.StringFilter<"Review"> | string
-  posteId?: Prisma.StringFilter<"Review"> | string
   body?: Prisma.StringFilter<"Review"> | string
   avatarUrl?: Prisma.StringNullableFilter<"Review"> | string | null
-  country?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceLabel?: Prisma.StringNullableFilter<"Review"> | string | null
+  sourceImageUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   rating?: Prisma.IntFilter<"Review"> | number
   order?: Prisma.IntFilter<"Review"> | number
   isActive?: Prisma.BoolFilter<"Review"> | boolean
@@ -758,74 +714,14 @@ export type ReviewScalarWhereInput = {
   publishedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
 }
 
-export type ReviewCreateWithoutPosteInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  body: string
-  avatarUrl?: string | null
-  country?: string | null
-  rating?: number
-  order?: number
-  isActive?: boolean
-  isVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  publishedAt?: Date | string | null
-  reviewSection?: Prisma.ReviewSectionCreateNestedOneWithoutReviewsInput
-}
-
-export type ReviewUncheckedCreateWithoutPosteInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  body: string
-  avatarUrl?: string | null
-  country?: string | null
-  rating?: number
-  order?: number
-  isActive?: boolean
-  isVerified?: boolean
-  reviewSectionId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  publishedAt?: Date | string | null
-}
-
-export type ReviewCreateOrConnectWithoutPosteInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  create: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput>
-}
-
-export type ReviewCreateManyPosteInputEnvelope = {
-  data: Prisma.ReviewCreateManyPosteInput | Prisma.ReviewCreateManyPosteInput[]
-  skipDuplicates?: boolean
-}
-
-export type ReviewUpsertWithWhereUniqueWithoutPosteInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  update: Prisma.XOR<Prisma.ReviewUpdateWithoutPosteInput, Prisma.ReviewUncheckedUpdateWithoutPosteInput>
-  create: Prisma.XOR<Prisma.ReviewCreateWithoutPosteInput, Prisma.ReviewUncheckedCreateWithoutPosteInput>
-}
-
-export type ReviewUpdateWithWhereUniqueWithoutPosteInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  data: Prisma.XOR<Prisma.ReviewUpdateWithoutPosteInput, Prisma.ReviewUncheckedUpdateWithoutPosteInput>
-}
-
-export type ReviewUpdateManyWithWhereWithoutPosteInput = {
-  where: Prisma.ReviewScalarWhereInput
-  data: Prisma.XOR<Prisma.ReviewUpdateManyMutationInput, Prisma.ReviewUncheckedUpdateManyWithoutPosteInput>
-}
-
 export type ReviewCreateManyReviewSectionInput = {
   id?: string
   firstName: string
   lastName: string
-  posteId: string
   body: string
   avatarUrl?: string | null
-  country?: string | null
+  sourceLabel?: string | null
+  sourceImageUrl?: string | null
   rating?: number
   order?: number
   isActive?: boolean
@@ -841,7 +737,8 @@ export type ReviewUpdateWithoutReviewSectionInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -849,17 +746,16 @@ export type ReviewUpdateWithoutReviewSectionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  poste?: Prisma.PosteUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateWithoutReviewSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  posteId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -873,82 +769,14 @@ export type ReviewUncheckedUpdateManyWithoutReviewSectionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  posteId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type ReviewCreateManyPosteInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  body: string
-  avatarUrl?: string | null
-  country?: string | null
-  rating?: number
-  order?: number
-  isActive?: boolean
-  isVerified?: boolean
-  reviewSectionId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  publishedAt?: Date | string | null
-}
-
-export type ReviewUpdateWithoutPosteInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  body?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  reviewSection?: Prisma.ReviewSectionUpdateOneWithoutReviewsNestedInput
-}
-
-export type ReviewUncheckedUpdateWithoutPosteInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  body?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  reviewSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type ReviewUncheckedUpdateManyWithoutPosteInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  body?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  reviewSectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -960,10 +788,10 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  posteId?: boolean
   body?: boolean
   avatarUrl?: boolean
-  country?: boolean
+  sourceLabel?: boolean
+  sourceImageUrl?: boolean
   rating?: boolean
   order?: boolean
   isActive?: boolean
@@ -973,17 +801,16 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   publishedAt?: boolean
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  posteId?: boolean
   body?: boolean
   avatarUrl?: boolean
-  country?: boolean
+  sourceLabel?: boolean
+  sourceImageUrl?: boolean
   rating?: boolean
   order?: boolean
   isActive?: boolean
@@ -993,17 +820,16 @@ export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   updatedAt?: boolean
   publishedAt?: boolean
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  posteId?: boolean
   body?: boolean
   avatarUrl?: boolean
-  country?: boolean
+  sourceLabel?: boolean
+  sourceImageUrl?: boolean
   rating?: boolean
   order?: boolean
   isActive?: boolean
@@ -1013,17 +839,16 @@ export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   updatedAt?: boolean
   publishedAt?: boolean
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectScalar = {
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  posteId?: boolean
   body?: boolean
   avatarUrl?: boolean
-  country?: boolean
+  sourceLabel?: boolean
+  sourceImageUrl?: boolean
   rating?: boolean
   order?: boolean
   isActive?: boolean
@@ -1034,34 +859,30 @@ export type ReviewSelectScalar = {
   publishedAt?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "posteId" | "body" | "avatarUrl" | "country" | "rating" | "order" | "isActive" | "isVerified" | "reviewSectionId" | "createdAt" | "updatedAt" | "publishedAt", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "body" | "avatarUrl" | "sourceLabel" | "sourceImageUrl" | "rating" | "order" | "isActive" | "isVerified" | "reviewSectionId" | "createdAt" | "updatedAt" | "publishedAt", ExtArgs["result"]["review"]>
 export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }
 export type ReviewIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }
 export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviewSection?: boolean | Prisma.Review$reviewSectionArgs<ExtArgs>
-  poste?: boolean | Prisma.PosteDefaultArgs<ExtArgs>
 }
 
 export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Review"
   objects: {
     reviewSection: Prisma.$ReviewSectionPayload<ExtArgs> | null
-    poste: Prisma.$PostePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     firstName: string
     lastName: string
-    posteId: string
     body: string
     avatarUrl: string | null
-    country: string | null
+    sourceLabel: string | null
+    sourceImageUrl: string | null
     rating: number
     order: number
     isActive: boolean
@@ -1465,7 +1286,6 @@ readonly fields: ReviewFieldRefs;
 export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reviewSection<T extends Prisma.Review$reviewSectionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Review$reviewSectionArgs<ExtArgs>>): Prisma.Prisma__ReviewSectionClient<runtime.Types.Result.GetResult<Prisma.$ReviewSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  poste<T extends Prisma.PosteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PosteDefaultArgs<ExtArgs>>): Prisma.Prisma__PosteClient<runtime.Types.Result.GetResult<Prisma.$PostePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1498,10 +1318,10 @@ export interface ReviewFieldRefs {
   readonly id: Prisma.FieldRef<"Review", 'String'>
   readonly firstName: Prisma.FieldRef<"Review", 'String'>
   readonly lastName: Prisma.FieldRef<"Review", 'String'>
-  readonly posteId: Prisma.FieldRef<"Review", 'String'>
   readonly body: Prisma.FieldRef<"Review", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"Review", 'String'>
-  readonly country: Prisma.FieldRef<"Review", 'String'>
+  readonly sourceLabel: Prisma.FieldRef<"Review", 'String'>
+  readonly sourceImageUrl: Prisma.FieldRef<"Review", 'String'>
   readonly rating: Prisma.FieldRef<"Review", 'Int'>
   readonly order: Prisma.FieldRef<"Review", 'Int'>
   readonly isActive: Prisma.FieldRef<"Review", 'Boolean'>

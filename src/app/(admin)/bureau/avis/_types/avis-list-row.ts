@@ -3,10 +3,10 @@ export interface AvisListRow {
   firstName: string
   lastName: string
   avatarUrl: string | null
-  country: string | null
+  sourceLabel: string | null
+  sourceImageUrl: string | null
   rating: number
   order: number
   isActive: boolean
   isVerified: boolean
-  poste: { labelFr: string; code: string }
 }

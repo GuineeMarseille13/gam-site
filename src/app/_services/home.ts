@@ -54,10 +54,10 @@ export interface Event {
 export interface Review {
   id: string;
   name: string;
-  role: string;
   body: string;
   img?: string;
-  country: string;
+  sourceLabel?: string | null;
+  sourceImageUrl?: string | null;
   rating: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
   isPublished: boolean;
   isFeatured: boolean;
@@ -310,7 +310,6 @@ export async function getReviews(): Promise<Review[]> {
   try {
     const params = new URLSearchParams({
       where: JSON.stringify({ isActive: true }),
-      include: JSON.stringify({ poste: { select: { labelFr: true } } }),
       orderBy: JSON.stringify({ order: 'asc' }),
     })
     const response = await fetch(`/api/reviews?${params.toString()}`, { cache: 'no-store' })
@@ -322,21 +321,13 @@ export async function getReviews(): Promise<Review[]> {
       const first = typeof r.firstName === 'string' ? r.firstName : ''
       const last = typeof r.lastName === 'string' ? r.lastName : ''
       const ratingNum = typeof r.rating === 'number' ? r.rating : 5
-      const roleObj = r.role
-      const roleLabel =
-        typeof roleObj === 'object' &&
-        roleObj !== null &&
-        'labelFr' in roleObj &&
-        typeof (roleObj as { labelFr: unknown }).labelFr === 'string'
-          ? (roleObj as { labelFr: string }).labelFr
-          : ''
       return {
         id: String(r.id ?? ''),
         name: `${first} ${last}`.trim(),
-        role: roleLabel,
         body: typeof r.body === 'string' ? r.body : '',
         img: typeof r.avatarUrl === 'string' ? r.avatarUrl : undefined,
-        country: typeof r.country === 'string' ? r.country : '',
+        sourceLabel: typeof r.sourceLabel === 'string' ? r.sourceLabel : null,
+        sourceImageUrl: typeof r.sourceImageUrl === 'string' ? r.sourceImageUrl : null,
         rating: RATING_MAP[ratingNum] ?? 'FIVE',
         isPublished: r.isActive === true,
         isFeatured: r.isVerified === true,
