@@ -48,7 +48,7 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
                   src={product.image}
                   alt={product.name}
                   fill
-                  sizes="(max-width: 768px) 340px, (max-width: 1024px) 320px, 340px"
+                  sizes="(max-width: 640px) calc(100vw - 64px), (max-width: 1024px) 320px, 400px"
                   className="object-cover"
                 />
               ) : (

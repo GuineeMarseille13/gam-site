@@ -141,13 +141,13 @@ export function useInfiniteHorizontalCarousel(
       if (scrollLeft >= singleSetWidth * 2 - threshold) {
         repositionScroll(container, scrollLeft - singleSetWidth);
       } else if (
-        scrollLeft <= singleSetWidth + threshold &&
+        scrollLeft <= singleSetWidth - threshold &&
         scrollDirection === "left"
       ) {
         repositionScroll(container, scrollLeft + singleSetWidth);
       }
 
-      lastScrollLeftRef.current = scrollLeft;
+      lastScrollLeftRef.current = container.scrollLeft;
     };
 
     container.addEventListener("scroll", handleScroll);
@@ -168,12 +168,72 @@ export function useInfiniteHorizontalCarousel(
       const amount = getScrollAmount();
       if (amount === 0) return;
 
+      if (!isLoopEnabled) {
+        container.scrollBy({
+          left: dir === "left" ? -amount : amount,
+          behavior: "smooth",
+        });
+        return;
+      }
+
+      const singleSetWidth = getSingleSetWidth();
+      if (singleSetWidth === 0) return;
+
+      const containerWidth = container.clientWidth;
+      const threshold = containerWidth * config.repositionThreshold;
+      const currentScroll = container.scrollLeft;
+
+      if (
+        dir === "right" &&
+        currentScroll >= singleSetWidth * 2 - threshold
+      ) {
+        isScrollingRef.current = true;
+        container.style.scrollBehavior = "auto";
+        container.scrollLeft = currentScroll - singleSetWidth;
+
+        requestAnimationFrame(() => {
+          if (container) {
+            container.style.scrollBehavior = "";
+            requestAnimationFrame(() => {
+              container.scrollBy({ left: amount, behavior: "smooth" });
+              isScrollingRef.current = false;
+            });
+          }
+        });
+        return;
+      }
+
+      if (
+        dir === "left" &&
+        currentScroll <= singleSetWidth - threshold
+      ) {
+        isScrollingRef.current = true;
+        container.style.scrollBehavior = "auto";
+        container.scrollLeft = currentScroll + singleSetWidth;
+
+        requestAnimationFrame(() => {
+          if (container) {
+            container.style.scrollBehavior = "";
+            requestAnimationFrame(() => {
+              container.scrollBy({ left: -amount, behavior: "smooth" });
+              isScrollingRef.current = false;
+            });
+          }
+        });
+        return;
+      }
+
       container.scrollBy({
         left: dir === "left" ? -amount : amount,
         behavior: "smooth",
       });
     },
-    [getScrollAmount],
+    [
+      getScrollAmount,
+      isLoopEnabled,
+      getSingleSetWidth,
+      config.repositionThreshold,
+    ],
   );
 
   const autoScroll = useCallback(() => {

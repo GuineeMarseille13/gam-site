@@ -313,6 +313,8 @@ export default function Home() {
           <ProductsCircularCarousel
             products={transformedProducts}
             onAdd={handleOrder}
+            {...CAROUSEL_CONFIG}
+            showArrows
           />
         )
       )}

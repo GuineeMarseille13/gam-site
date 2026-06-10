@@ -7,16 +7,18 @@ const SKELETON_CARD_COUNT = 4;
 
 /**
  * Carte produit — alignée sur `ProductCard` : cadre dégradé ambre/jaune/lime, grande zone image,
- * un titre, description courte, bloc prix + bouton (sans éléments type avatar / témoignage).
+ * titre, description courte, bloc prix + bouton.
  */
 function ProductCardSkeleton() {
   return (
-    <div className="h-full">
+    <div className="h-full py-2">
       <div className="h-full rounded-xl bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 p-[2px] shadow-lg shadow-amber-100/50 sm:rounded-2xl">
         <div className="flex h-full min-h-[22rem] flex-col overflow-hidden rounded-[10px] bg-white shadow-none sm:min-h-[24rem] sm:rounded-[14px]">
-          {/* Zone visuelle type photo produit (pas de cercle / badge type témoignage) */}
           <div className="relative aspect-[34/22] w-full shrink-0 overflow-hidden bg-gradient-to-br from-amber-50/90 via-yellow-50/80 to-lime-50/70 sm:aspect-auto sm:h-[200px] lg:h-[220px]">
-            <div className="absolute inset-0 animate-pulse bg-muted/45 sm:bg-muted/40" aria-hidden />
+            <div
+              className="absolute inset-0 animate-pulse bg-muted/45 sm:bg-muted/40"
+              aria-hidden
+            />
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col p-5">
@@ -45,8 +47,7 @@ function ProductCardSkeleton() {
 
 /**
  * Skeleton section « Nos produits » — même arborescence que `ProductsCircularCarousel`
- * (en-titre dégradé ambre/jaune/lime, filet `via-primary/35`, sous-titre `max-w-3xl`, piste scroll
- * avec `gap-4 sm:gap-5 lg:gap-6`, flèches sm+, barre de contrôle mobile).
+ * (piste scroll responsive, flèches sm+, barre de contrôle mobile).
  */
 export function ProductsSectionSkeleton() {
   return (
@@ -66,30 +67,30 @@ export function ProductsSectionSkeleton() {
         </div>
       </div>
 
-      <div className="relative mx-auto max-w-[100rem] px-3 sm:px-6 lg:px-8">
-        <div className="group/carousel relative overflow-visible">
+      <div className="relative mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8">
+        <div className="group/carousel relative">
           <div
-            className="pointer-events-none absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-card/90 shadow-lg sm:flex lg:h-12 lg:w-12"
+            className="pointer-events-none absolute left-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-white/90 shadow-lg sm:flex lg:size-12"
             aria-hidden
           >
-            <ChevronLeft className="h-6 w-6 text-muted-foreground/35" strokeWidth={2} />
+            <ChevronLeft className="size-6 text-muted-foreground/35" strokeWidth={2} />
           </div>
           <div
-            className="pointer-events-none absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-card/90 shadow-lg sm:flex lg:h-12 lg:w-12"
+            className="pointer-events-none absolute right-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-white/90 shadow-lg sm:flex lg:size-12"
             aria-hidden
           >
-            <ChevronRight className="h-6 w-6 text-muted-foreground/35" strokeWidth={2} />
+            <ChevronRight className="size-6 text-muted-foreground/35" strokeWidth={2} />
           </div>
 
-          <div
-            className="touch-pan-y overscroll-x-none snap-x snap-mandatory overflow-x-hidden py-4 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] scroll-px-4 sm:py-5 sm:scroll-px-6 lg:scroll-px-8 [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <div className="flex min-w-max gap-4 pl-6 pr-4 sm:gap-5 sm:pl-8 sm:pr-6 lg:gap-6 lg:pl-10 lg:pr-8">
-              {Array.from({ length: SKELETON_CARD_COUNT }).map((_, i) => (
+          <div className="overflow-hidden py-4 sm:py-6">
+            <div className="flex justify-center gap-6 px-4 sm:gap-8 md:justify-start md:overflow-hidden">
+              <div className="w-full max-w-[min(400px,100%)] shrink-0 md:hidden">
+                <ProductCardSkeleton />
+              </div>
+              {Array.from({ length: SKELETON_CARD_COUNT - 1 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-[340px] shrink-0 snap-start self-stretch sm:w-[280px] md:w-[320px] lg:w-[340px]"
+                  className="hidden w-[280px] shrink-0 md:block lg:w-[320px] xl:w-[360px]"
                 >
                   <ProductCardSkeleton />
                 </div>
@@ -98,11 +99,11 @@ export function ProductsSectionSkeleton() {
           </div>
 
           <div className="mt-4 flex justify-center gap-4 py-2 sm:hidden" aria-hidden>
-            <div className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-border/80 bg-card shadow-md">
-              <ChevronLeft className="h-6 w-6 text-muted-foreground/40" strokeWidth={2} />
+            <div className="flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border/80 bg-white shadow-md">
+              <ChevronLeft className="size-6 text-muted-foreground/40" strokeWidth={2} />
             </div>
-            <div className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border border-border/80 bg-card shadow-md">
-              <ChevronRight className="h-6 w-6 text-muted-foreground/40" strokeWidth={2} />
+            <div className="flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border/80 bg-white shadow-md">
+              <ChevronRight className="size-6 text-muted-foreground/40" strokeWidth={2} />
             </div>
           </div>
         </div>
