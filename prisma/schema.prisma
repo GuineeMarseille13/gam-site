@@ -635,6 +635,24 @@ model AboutUs {
   @@map("about_us")
 }
 
+/// Contenu éditable de la page publique « Notre association » (bureau).
+model AssociationPageContent {
+  id         String   @id @default(cuid())
+  /// Clé stable : president | who_we_are | what_we_offer
+  key        String   @unique
+  title      String?
+  body       String?  @db.Text
+  imageId    String?
+  intro      String?  @db.Text
+  /// Axes majeurs (section « Que propose l'association ») — tableau de chaînes JSON.
+  items      Json?
+  conclusion String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("association_page_contents")
+}
+
 model MemberShip {
   id          String   @id @default(cuid())
   title       String   // Titre de la section

@@ -28,9 +28,17 @@ export interface AboutUsSection {
   image: string;
 }
 
+export interface WhatWeOfferSection {
+  title: string;
+  intro: string;
+  items: string[];
+  conclusion: string;
+  image: string;
+}
+
 export interface AboutUsData {
   whoWeAre: AboutUsSection;
-  whatWeOffer: AboutUsSection;
+  whatWeOffer: WhatWeOfferSection;
 }
 
 // Types pour "Notre équipe"

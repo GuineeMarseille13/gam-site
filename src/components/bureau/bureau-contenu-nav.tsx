@@ -10,6 +10,7 @@ import {
   bureauNavContenuBeforeAccompagnement,
   type BureauNavItem,
 } from "@/components/bureau/bureau-nav-config"
+import { BureauAssociationContentAccordions } from "@/components/bureau/bureau-association-content-accordions"
 import { BureauPoleContentAccordions } from "@/components/bureau/bureau-pole-content-accordions"
 import { BUREAU_POLE_CONTENT_BASE_PATHS } from "@/config/bureau-poles-content"
 import {
@@ -92,6 +93,7 @@ export function BureauContenuNav() {
         <SidebarMenu>
           {renderNavLinks(before, pathname)}
           <BureauPoleContentAccordions pathname={pathname} />
+          <BureauAssociationContentAccordions pathname={pathname} />
           {renderNavLinks(after, pathname)}
         </SidebarMenu>
       </SidebarGroupContent>

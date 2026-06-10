@@ -193,6 +193,11 @@ export type AboutUsSection = Prisma.AboutUsSectionModel
  */
 export type AboutUs = Prisma.AboutUsModel
 /**
+ * Model AssociationPageContent
+ * Contenu éditable de la page publique « Notre association » (bureau).
+ */
+export type AssociationPageContent = Prisma.AssociationPageContentModel
+/**
  * Model MemberShip
  * 
  */

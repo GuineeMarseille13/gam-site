@@ -4,8 +4,8 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Award, Heart } from "lucide-react";
-import { usePresidentData, usePresidentImage } from "@/hooks/use-association";
-import { presidentInfo as defaultPresidentInfo, presidentMessage } from "@/data/association";
+import { usePresidentData } from "@/hooks/use-association";
+import { AssociationEmptyState } from "@/components/association/association-empty-state";
 import { AssociationMagicTitle } from "@/components/association/association-magic-title";
 
 // Constantes d'animation centralisées
@@ -40,48 +40,31 @@ export default function PresidentSection() {
   // Récupérer les données via TanStack Query
   const {
     data: presidentData,
-    isLoading: isLoadingData,
+    isLoading,
     error: dataError,
   } = usePresidentData();
 
-  const {
-    data: imageUrl,
-    isLoading: isLoadingImage,
-    error: imageError,
-  } = usePresidentImage();
-
-  // Utiliser les données de l'API ou fallback vers les données statiques
-  const president = presidentData?.president;
-  const message = presidentData?.message;
-
-  const presidentInfo = {
-    name: president?.name || defaultPresidentInfo.name,
-    role: president?.role || defaultPresidentInfo.role,
-    image: imageUrl || president?.image || defaultPresidentInfo.image,
-  };
-
-  const messageContent = message?.content || presidentMessage;
-
-  // Diviser le message en paragraphes
-  const messageParagraphs = messageContent
-    .split("\n\n")
-    .filter((p) => p.trim());
-
-  // Extraire le prénom et nom pour la signature
-  const nameParts = presidentInfo.name.split(" ");
-  const firstName = nameParts[0] || "";
-  const lastName = nameParts.slice(1).join(" ") || "";
-
-  // Afficher un état de chargement si les données sont en cours de chargement
-  if (isLoadingData || isLoadingImage) {
+  if (isLoading) {
     return <LoadingState />;
   }
 
-  // Afficher un état d'erreur si les données n'ont pas pu être chargées
-  if (dataError || imageError) {
-    // On continue avec les données par défaut en cas d'erreur
-    console.warn("Error loading president data, using fallback:", dataError || imageError);
+  if (dataError || !presidentData) {
+    return (
+      <AssociationEmptyState
+        title="Mot du président indisponible"
+        description="Ce contenu n'a pas encore été publié ou est momentanément inaccessible."
+      />
+    );
   }
+
+  const { president: presidentInfo, message } = presidentData;
+  const messageParagraphs = message.content
+    .split("\n\n")
+    .filter((p) => p.trim());
+
+  const nameParts = presidentInfo.name.split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
 
   return (
     <div className="relative w-full min-w-0 overflow-hidden py-8 sm:py-12 md:py-16">
@@ -92,7 +75,7 @@ export default function PresidentSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: ANIMATION_CONFIG.durations.normal }}
-        className="max-w-7xl mx-auto min-w-0 px-0 relative z-10"
+        className="max-w-7xl mx-auto min-w-0 px-1 sm:px-0 relative z-10"
       >
         <HeaderSection />
 
@@ -158,7 +141,7 @@ function HeaderSection() {
           delay: ANIMATION_CONFIG.delays.title,
           duration: ANIMATION_CONFIG.durations.normal,
         }}
-        className="flex w-full min-w-0 justify-center px-1 text-balance break-words px-2"
+        className="flex w-full min-w-0 justify-center px-2 text-balance break-words"
       >
         <AssociationMagicTitle
           text={CONTENT.title}
@@ -192,7 +175,7 @@ function PresidentInfoCard({ president }: { president: { name: string; role: str
         delay: ANIMATION_CONFIG.delays.photo,
         duration: ANIMATION_CONFIG.durations.slow,
       }}
-      className="lg:col-span-2 space-y-6 sm:space-y-8"
+      className="lg:col-span-2 min-w-0 space-y-5 sm:space-y-8"
     >
       <PresidentPhoto image={president.image} name={president.name} />
       <PresidentDetailsCard name={president.name} role={president.role} />
@@ -203,7 +186,7 @@ function PresidentInfoCard({ president }: { president: { name: string; role: str
 // Composant pour la photo du président
 function PresidentPhoto({ image, name }: { image: string; name: string }) {
   return (
-    <div className="relative group">
+    <div className="relative group mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0 lg:max-w-none">
       <div className="absolute -inset-2 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-3xl opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-700 ease-out" />
 
       <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-50 via-green-100/50 to-green-50">
@@ -214,7 +197,7 @@ function PresidentPhoto({ image, name }: { image: string; name: string }) {
           alt={`Photo de ${name}`}
           fill
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-          sizes="(max-width: 1024px) 100vw, 40vw"
+          sizes="(max-width: 640px) 320px, (max-width: 1024px) 100vw, 40vw"
           priority
         />
 
@@ -277,23 +260,29 @@ function PresidentDetailsCard({ name, role }: { name: string; role: string }) {
           }}
         />
 
-        <CardContent className="p-6 sm:p-8 relative z-10">
-          <div className="space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="w-1 h-14 sm:h-16 bg-gradient-to-b from-white via-white/80 to-white/40 rounded-full flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-2 leading-tight">{name}</h2>
-                <div className="flex items-center gap-2 text-green-50">
-                  <Award className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                  <p className="text-base sm:text-lg font-medium leading-relaxed">{role}</p>
+        <CardContent className="relative z-10 p-5 sm:p-8">
+          <div className="space-y-4 sm:space-y-5">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="mt-1 h-12 w-1 shrink-0 rounded-full bg-gradient-to-b from-white via-white/80 to-white/40 sm:h-16" />
+              <div className="min-w-0 flex-1">
+                <h2 className="text-pretty text-xl font-bold leading-tight sm:text-2xl md:text-3xl">
+                  {name}
+                </h2>
+                <div className="mt-2 flex items-start gap-2 text-green-50">
+                  <Award className="mt-0.5 size-4 shrink-0 sm:size-5" />
+                  <p className="text-pretty text-sm font-medium leading-relaxed sm:text-base md:text-lg">
+                    {role}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-5 border-t border-white/20">
-              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors duration-300">
-                <Heart className="w-4 h-4 fill-white text-white" />
-                <span className="text-sm font-medium">{CONTENT.badgeText}</span>
+            <div className="border-t border-white/20 pt-4 sm:pt-5">
+              <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm transition-colors duration-300 hover:bg-white/15 sm:px-5 sm:py-2.5">
+                <Heart className="size-4 shrink-0 fill-white text-white" />
+                <span className="text-pretty text-xs font-medium sm:text-sm">
+                  {CONTENT.badgeText}
+                </span>
               </div>
             </div>
           </div>
@@ -323,13 +312,13 @@ function MessageCard({
         delay: ANIMATION_CONFIG.delays.message,
         duration: ANIMATION_CONFIG.durations.slow,
       }}
-      className="lg:col-span-3"
+      className="min-w-0 lg:col-span-3"
     >
-      <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-sm relative overflow-hidden h-full hover:shadow-3xl transition-all duration-500">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-50/20 to-transparent animate-shimmer opacity-30" />
+      <Card className="relative h-full min-w-0 overflow-hidden border-0 bg-white/90 shadow-2xl backdrop-blur-sm transition-all duration-500 hover:shadow-3xl">
+        <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-green-50/20 to-transparent opacity-30" />
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-400 via-green-500 to-green-400" />
 
-        <CardContent className="relative z-10 p-5 sm:p-8 md:p-10 lg:p-12 xl:p-14">
+        <CardContent className="relative z-10 p-4 sm:p-8 md:p-10 lg:p-12 xl:p-14">
           <motion.div
             initial={{ opacity: 0, scale: 0, rotate: -10 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -339,12 +328,12 @@ function MessageCard({
               type: "spring",
               stiffness: 200,
             }}
-            className="mb-8 sm:mb-10"
+            className="mb-6 sm:mb-10"
           >
-            <Quote className="w-14 h-14 sm:w-16 sm:h-16 text-green-400/30" />
+            <Quote className="size-12 text-green-400/30 sm:size-16" />
           </motion.div>
 
-          <div className="space-y-6 sm:space-y-7 md:space-y-8">
+          <div className="space-y-5 sm:space-y-7 md:space-y-8">
             {paragraphs.map((paragraph, index) => (
               <motion.p
                 key={index}
@@ -354,7 +343,7 @@ function MessageCard({
                   delay: ANIMATION_CONFIG.delays.quote + 0.1 + index * 0.12,
                   duration: ANIMATION_CONFIG.durations.normal,
                 }}
-                className="text-left text-base text-muted-foreground leading-relaxed sm:text-justify sm:text-lg md:text-xl"
+                className="text-pretty break-words text-left text-base leading-relaxed text-muted-foreground sm:text-justify sm:text-lg md:text-xl"
               >
                 {paragraph}
               </motion.p>
@@ -390,19 +379,32 @@ function SignatureSection({
         delay: ANIMATION_CONFIG.delays.signature,
         duration: ANIMATION_CONFIG.durations.normal,
       }}
-      className="mt-12 sm:mt-14 pt-8 sm:pt-10 relative"
+      className="relative mt-8 pt-6 sm:mt-14 sm:pt-10"
     >
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-200 via-green-300 to-green-200" />
+      <div
+        className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-200 via-green-300 to-green-200"
+        aria-hidden
+      />
 
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 sm:gap-6">
-        <div className="space-y-2">
-          <p className="text-sm sm:text-base text-gray-500 italic">{CONTENT.signaturePrefix}</p>
-          <div className="flex items-center gap-3">
-            <div className="h-px w-12 sm:w-16 bg-gradient-to-r from-green-400 to-transparent" />
-            <div>
-              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{firstName}</p>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 font-medium">{lastName}</p>
-              <p className="text-sm sm:text-base text-gray-500 mt-1">{role}</p>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+        <div className="min-w-0 space-y-3">
+          <p className="text-pretty text-sm leading-relaxed text-gray-500 italic sm:text-base">
+            {CONTENT.signaturePrefix}
+          </p>
+
+          <div className="flex items-start gap-3">
+            <div
+              className="mt-2.5 h-px w-10 shrink-0 bg-gradient-to-r from-green-400 to-transparent sm:mt-3 sm:w-14"
+              aria-hidden
+            />
+            <div className="min-w-0">
+              <p className="text-pretty text-xl font-bold leading-tight text-gray-900 sm:text-2xl md:text-3xl">
+                {firstName}
+              </p>
+              <p className="text-pretty text-base font-medium text-gray-600 sm:text-lg md:text-xl">
+                {lastName}
+              </p>
+              <p className="mt-1 text-pretty text-sm text-gray-500 sm:text-base">{role}</p>
             </div>
           </div>
         </div>
@@ -410,10 +412,10 @@ function SignatureSection({
         <motion.div
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="flex items-center gap-2 text-green-600"
+          className="flex shrink-0 items-center gap-2 self-start text-green-600 sm:self-end"
         >
-          <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-green-500 text-green-500" />
-          <span className="text-base sm:text-lg font-semibold">GAM</span>
+          <Heart className="size-5 fill-green-500 text-green-500 sm:size-6" />
+          <span className="text-base font-semibold sm:text-lg">GAM</span>
         </motion.div>
       </div>
     </motion.footer>
@@ -473,7 +475,7 @@ function HeaderSkeleton() {
 // Skeleton pour la photo
 function PhotoSkeleton() {
   return (
-    <div className="relative group">
+    <div className="relative group mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0 lg:max-w-none">
       <div className="absolute -inset-2 bg-gradient-to-r from-green-200/30 via-green-300/30 to-green-200/30 rounded-3xl opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-700" />
       
       <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-50 via-green-100/50 to-green-50">
@@ -520,12 +522,12 @@ function InfoCardSkeleton() {
         }}
       />
 
-      <CardContent className="p-6 sm:p-8 relative z-10">
-        <div className="space-y-5">
+      <CardContent className="relative z-10 p-5 sm:p-8">
+        <div className="space-y-4 sm:space-y-5">
           {/* Skeleton pour nom et rôle - structure identique */}
-          <div className="flex items-start gap-4">
-            <div className="w-1 h-14 sm:h-16 bg-gradient-to-b from-white/30 via-white/20 to-white/10 rounded-full flex-shrink-0" />
-            <div className="flex-1 min-w-0 space-y-3">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="mt-1 h-12 w-1 shrink-0 rounded-full bg-gradient-to-b from-white/30 via-white/20 to-white/10 sm:h-16" />
+            <div className="min-w-0 flex-1 space-y-3">
               {/* Nom */}
               <div className="h-8 sm:h-10 w-3/4 bg-white/20 rounded-lg animate-pulse" />
               {/* Rôle avec icône */}
@@ -537,8 +539,8 @@ function InfoCardSkeleton() {
           </div>
 
           {/* Skeleton pour le badge - structure identique */}
-          <div className="pt-5 border-t border-white/20">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+          <div className="border-t border-white/20 pt-4 sm:pt-5">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm sm:px-5 sm:py-2.5">
               <div className="w-4 h-4 rounded-full bg-white/20 animate-pulse" />
               <div className="h-4 w-40 sm:w-48 bg-white/20 rounded-full animate-pulse" />
             </div>
@@ -558,10 +560,10 @@ function MessageCardSkeleton() {
       {/* Bordure décorative - même que le vrai */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-green-200 via-green-300 to-green-200" />
 
-      <CardContent className="relative z-10 p-5 sm:p-8 md:p-10 lg:p-12 xl:p-14">
+      <CardContent className="relative z-10 p-4 sm:p-8 md:p-10 lg:p-12 xl:p-14">
         {/* Skeleton pour l'icône de citation - même taille et position */}
-        <div className="mb-8 sm:mb-10">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-gradient-to-br from-green-200/30 to-green-300/30 animate-pulse" />
+        <div className="mb-6 sm:mb-10">
+          <div className="size-12 animate-pulse rounded-lg bg-gradient-to-br from-green-200/30 to-green-300/30 sm:size-16" />
         </div>
 
         {/* Skeleton pour les paragraphes - même espacement */}
@@ -577,32 +579,32 @@ function MessageCardSkeleton() {
         </div>
 
         {/* Skeleton pour la signature - structure identique */}
-        <div className="mt-12 sm:mt-14 pt-8 sm:pt-10 relative">
+        <div className="relative mt-8 pt-6 sm:mt-14 sm:pt-10">
           {/* Bordure gradient - même que le vrai */}
           <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
 
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 sm:gap-6">
-            <div className="space-y-2">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+            <div className="min-w-0 space-y-3">
               {/* Texte de signature */}
-              <div className="h-4 sm:h-5 w-64 bg-gray-200 rounded animate-pulse" />
-              <div className="flex items-center gap-3">
+              <div className="h-4 w-full max-w-xs animate-pulse rounded bg-gray-200 sm:h-5" />
+              <div className="flex items-start gap-3">
                 {/* Ligne décorative */}
-                <div className="h-px w-12 sm:w-16 bg-gradient-to-r from-gray-300 to-transparent" />
-                <div className="space-y-2">
+                <div className="mt-2.5 h-px w-10 shrink-0 bg-gradient-to-r from-gray-300 to-transparent sm:mt-3 sm:w-14" />
+                <div className="min-w-0 space-y-2">
                   {/* Prénom */}
-                  <div className="h-7 sm:h-8 md:h-10 w-32 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-7 w-32 animate-pulse rounded bg-gray-200 sm:h-8 md:h-10" />
                   {/* Nom */}
-                  <div className="h-5 sm:h-6 md:h-7 w-40 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-5 w-40 animate-pulse rounded bg-gray-200 sm:h-6 md:h-7" />
                   {/* Rôle */}
-                  <div className="h-4 sm:h-5 w-48 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 w-48 max-w-full animate-pulse rounded bg-gray-200 sm:h-5" />
                 </div>
               </div>
             </div>
 
             {/* Logo GAM skeleton */}
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-200 animate-pulse" />
-              <div className="h-5 sm:h-6 w-12 bg-green-200 rounded animate-pulse" />
+            <div className="flex shrink-0 items-center gap-2 self-start sm:self-end">
+              <div className="size-5 animate-pulse rounded-full bg-green-200 sm:size-6" />
+              <div className="h-5 w-12 animate-pulse rounded bg-green-200 sm:h-6" />
             </div>
           </div>
         </div>

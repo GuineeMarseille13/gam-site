@@ -27,6 +27,7 @@ const BUREAU_CONTENU_PREFIXES = [
   "/bureau/carousel",
   "/bureau/evenements",
   "/bureau/poles",
+  "/bureau/notre-association",
   "/bureau/rapports-activite",
   "/bureau/partenaires",
   "/bureau/produits",

@@ -6,8 +6,8 @@ import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Heart, Globe, Target, Handshake, Sparkles, Eye } from "lucide-react";
 import { useAboutUsData } from "@/hooks/use-association";
-import { aboutUsContent } from "@/data/association";
-import { AboutUsData } from "@/types/association";
+import { AssociationEmptyState } from "@/components/association/association-empty-state";
+import type { AboutUsData, WhatWeOfferSection } from "@/types/association";
 import { cn } from "@/helpers/utils";
 import { AssociationMagicTitle } from "@/components/association/association-magic-title";
 
@@ -34,18 +34,20 @@ export default function AboutUsSection() {
     error,
   } = useAboutUsData();
 
-  // Utiliser les données de l'API ou fallback vers les données statiques
-  const data: AboutUsData = aboutUsData || aboutUsContent;
-
-  // Afficher un état de chargement si les données sont en cours de chargement
   if (isLoading) {
-    return <LoadingState data={aboutUsContent} />;
+    return <LoadingState />;
   }
 
-  // Logger l'erreur mais continuer avec les données par défaut
-  if (error) {
-    console.warn("Error loading about us data, using fallback:", error);
+  if (error || !aboutUsData) {
+    return (
+      <AssociationEmptyState
+        title="Contenu indisponible"
+        description="Les sections « Qui sommes-nous ? » ne sont pas encore publiées sur le site."
+      />
+    );
   }
+
+  const data: AboutUsData = aboutUsData;
 
   return (
     <div className="relative w-full min-w-0 py-6 sm:py-10 md:py-12">
@@ -201,13 +203,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
 }
 
 // Section "Que propose l'association ?"
-function WhatWeOfferSection({ data }: { data: { title: string; text: string; image: string } }) {
-  // Extraire les points de la liste
-  const textParts = data.text.split("\n\n");
-  const intro = textParts[0] || "";
-  const points = textParts[1]?.split("\n").filter((line) => line.trim().startsWith("•")) || [];
-  const conclusion = textParts[2] || "";
-
+function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
   const icons = [Heart, Handshake, Globe, Target, Users, Sparkles];
 
   return (
@@ -240,7 +236,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
 
             <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
               {/* Introduction */}
-              {intro && (
+              {data.intro && (
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -250,15 +246,14 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
                   }}
                   className="mb-6 text-left text-base text-gray-700 leading-relaxed sm:mb-8 sm:text-justify sm:text-lg"
                 >
-                  {intro}
+                  {data.intro}
                 </motion.p>
               )}
 
               {/* Liste des points */}
               <div className="space-y-3 sm:space-y-4">
-                {points.map((point, index) => {
+                {data.items.map((pointText, index) => {
                   const Icon = icons[index % icons.length];
-                  const pointText = point.replace("•", "").trim();
                   
                   return (
                     <motion.div
@@ -283,7 +278,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
               </div>
 
               {/* Conclusion */}
-              {conclusion && (
+              {data.conclusion && (
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -293,7 +288,7 @@ function WhatWeOfferSection({ data }: { data: { title: string; text: string; ima
                   }}
                   className="mt-6 border-t border-gray-200 pt-5 text-left text-base text-gray-700 leading-relaxed sm:mt-8 sm:pt-6 sm:text-justify sm:text-lg"
                 >
-                  {conclusion}
+                  {data.conclusion}
                 </motion.p>
               )}
             </CardContent>
@@ -376,19 +371,7 @@ function SectionTitle({
   );
 }
 
-/** ~15 mots par ligne — aligné sur la largeur du texte réel pour la densité des barres */
-function estimateLinesFromText(text: string, wordsPerLine: number): number {
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return 3;
-  return Math.max(2, Math.ceil(words.length / wordsPerLine));
-}
-
-function LoadingState({ data }: { data: AboutUsData }) {
-  const whoWeAreParagraphs = data.whoWeAre.text.split("\n\n").filter((p) => p.trim());
-  const whatWeOfferParts = data.whatWeOffer.text.split("\n\n");
-  const whatWeOfferPoints =
-    whatWeOfferParts[1]?.split("\n").filter((line) => line.trim().startsWith("•")) || [];
-
+function LoadingState() {
   return (
     <div
       className="relative w-full min-w-0 py-6 sm:py-10 md:py-12"
@@ -399,12 +382,8 @@ function LoadingState({ data }: { data: AboutUsData }) {
       <LoadingBackgroundDecorations />
 
       <div className="relative z-10 mx-auto max-w-7xl min-w-0 space-y-10 px-0 sm:space-y-16 md:space-y-20">
-        <WhoWeAreSkeleton paragraphs={whoWeAreParagraphs} />
-        <WhatWeOfferSkeleton
-          intro={whatWeOfferParts[0] || ""}
-          points={whatWeOfferPoints}
-          conclusion={whatWeOfferParts[2] || ""}
-        />
+        <WhoWeAreSkeleton paragraphs={[4, 3]} />
+        <WhatWeOfferSkeleton />
       </div>
     </div>
   );
@@ -509,11 +488,8 @@ function ParagraphSkeletonGroup({ lines }: { lines: number }) {
 }
 
 /** Section « Qui sommes-nous ? » — grille image gauche / carte droite, badge bas comme le rendu final */
-function WhoWeAreSkeleton({ paragraphs }: { paragraphs: string[] }) {
-  const blocks =
-    paragraphs.length > 0
-      ? paragraphs.map((p) => estimateLinesFromText(p, 15))
-      : [4, 3];
+function WhoWeAreSkeleton({ paragraphs }: { paragraphs: number[] }) {
+  const blocks = paragraphs;
 
   return (
     <section className="relative">
@@ -546,18 +522,10 @@ function WhoWeAreSkeleton({ paragraphs }: { paragraphs: string[] }) {
 }
 
 /** Section « Que propose… » — carte gauche (desktop), image droite ; intro + liste à icônes + conclusion */
-function WhatWeOfferSkeleton({
-  intro,
-  points,
-  conclusion,
-}: {
-  intro: string;
-  points: string[];
-  conclusion: string;
-}) {
-  const introLines = intro.trim() ? estimateLinesFromText(intro, 14) : 3;
-  const pointRows = points.length > 0 ? points.length : 4;
-  const conclusionLines = conclusion.trim() ? estimateLinesFromText(conclusion, 15) : 0;
+function WhatWeOfferSkeleton() {
+  const introLines = 3;
+  const pointRows = 4;
+  const conclusionLines = 2;
 
   return (
     <section className="relative">
@@ -571,10 +539,7 @@ function WhatWeOfferSkeleton({
 
               <div className="space-y-3 sm:space-y-4">
                 {Array.from({ length: pointRows }).map((_, index) => {
-                  const src = points[index];
-                  const lines = src
-                    ? estimateLinesFromText(src.replace("•", "").trim(), 12)
-                    : 2;
+                  const lines = 2;
                   return (
                     <div
                       key={index}

@@ -86,6 +86,7 @@ export const ModelName = {
   ReportActivity: 'ReportActivity',
   AboutUsSection: 'AboutUsSection',
   AboutUs: 'AboutUs',
+  AssociationPageContent: 'AssociationPageContent',
   MemberShip: 'MemberShip',
   Donation: 'Donation',
   Address: 'Address',
@@ -628,6 +629,22 @@ export const AboutUsScalarFieldEnum = {
 } as const
 
 export type AboutUsScalarFieldEnum = (typeof AboutUsScalarFieldEnum)[keyof typeof AboutUsScalarFieldEnum]
+
+
+export const AssociationPageContentScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  body: 'body',
+  imageId: 'imageId',
+  intro: 'intro',
+  items: 'items',
+  conclusion: 'conclusion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssociationPageContentScalarFieldEnum = (typeof AssociationPageContentScalarFieldEnum)[keyof typeof AssociationPageContentScalarFieldEnum]
 
 
 export const MemberShipScalarFieldEnum = {

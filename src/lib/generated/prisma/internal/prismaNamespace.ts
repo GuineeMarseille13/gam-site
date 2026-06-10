@@ -419,6 +419,7 @@ export const ModelName = {
   ReportActivity: 'ReportActivity',
   AboutUsSection: 'AboutUsSection',
   AboutUs: 'AboutUs',
+  AssociationPageContent: 'AssociationPageContent',
   MemberShip: 'MemberShip',
   Donation: 'Donation',
   Address: 'Address',
@@ -456,7 +457,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "detailsPoleAchievement" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "poste" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
+    modelProps: "image" | "video" | "welcomeSection" | "reason" | "poleSection" | "pole" | "detailsPole" | "detailsPoleStat" | "detailsPoleService" | "detailsPoleAchievement" | "partnerSection" | "partner" | "eventSection" | "event" | "eventVideo" | "eventImage" | "reviewSection" | "poste" | "role" | "review" | "productSection" | "product" | "productCategory" | "achievementSection" | "achievement" | "person" | "volunteerSection" | "volunteer" | "teamMemberSection" | "teamMember" | "socialMedia" | "reportActivitySection" | "reportActivity" | "aboutUsSection" | "aboutUs" | "associationPageContent" | "memberShip" | "donation" | "address" | "contact" | "popup" | "banner" | "contactSubmission" | "beneficiaryDemandType" | "beneficiaryDocumentType" | "beneficiary" | "permanenceAdminPresenceVolunteer" | "administrativePermanenceSlot" | "administrativePermanenceSettings" | "order" | "orderItem" | "payment" | "paymentHistory" | "user" | "session" | "account" | "verification" | "campuceFranceStudentSubmission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3050,6 +3051,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AssociationPageContent: {
+      payload: Prisma.$AssociationPageContentPayload<ExtArgs>
+      fields: Prisma.AssociationPageContentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssociationPageContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssociationPageContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        findFirst: {
+          args: Prisma.AssociationPageContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssociationPageContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        findMany: {
+          args: Prisma.AssociationPageContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>[]
+        }
+        create: {
+          args: Prisma.AssociationPageContentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        createMany: {
+          args: Prisma.AssociationPageContentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssociationPageContentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>[]
+        }
+        delete: {
+          args: Prisma.AssociationPageContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        update: {
+          args: Prisma.AssociationPageContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssociationPageContentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssociationPageContentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssociationPageContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssociationPageContentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssociationPageContentPayload>
+        }
+        aggregate: {
+          args: Prisma.AssociationPageContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssociationPageContent>
+        }
+        groupBy: {
+          args: Prisma.AssociationPageContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssociationPageContentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssociationPageContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssociationPageContentCountAggregateOutputType> | number
+        }
+      }
+    }
     MemberShip: {
       payload: Prisma.$MemberShipPayload<ExtArgs>
       fields: Prisma.MemberShipFieldRefs
@@ -5221,6 +5296,22 @@ export const AboutUsScalarFieldEnum = {
 export type AboutUsScalarFieldEnum = (typeof AboutUsScalarFieldEnum)[keyof typeof AboutUsScalarFieldEnum]
 
 
+export const AssociationPageContentScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  body: 'body',
+  imageId: 'imageId',
+  intro: 'intro',
+  items: 'items',
+  conclusion: 'conclusion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssociationPageContentScalarFieldEnum = (typeof AssociationPageContentScalarFieldEnum)[keyof typeof AssociationPageContentScalarFieldEnum]
+
+
 export const MemberShipScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -5925,6 +6016,7 @@ export type GlobalOmitConfig = {
   reportActivity?: Prisma.ReportActivityOmit
   aboutUsSection?: Prisma.AboutUsSectionOmit
   aboutUs?: Prisma.AboutUsOmit
+  associationPageContent?: Prisma.AssociationPageContentOmit
   memberShip?: Prisma.MemberShipOmit
   donation?: Prisma.DonationOmit
   address?: Prisma.AddressOmit
