@@ -10,12 +10,8 @@ import { useActiveProducts } from "../_hooks/use-active-products";
 import { ProductCard } from "./product-card";
 import { CartDrawer } from "./cart-drawer";
 import type { Product } from "../_schemas/product.schema";
-import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
+import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title";
 import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
-import {
-  MAGIC_HERO_MEMBERSHIP_SHOP_COLOR,
-  MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES,
-} from "@/config/magic-hero-page-title";
 
 /** Durée de la mise en évidence du produit après redirection (ms) */
 const HIGHLIGHT_DURATION_MS = 4500;
@@ -129,11 +125,7 @@ export function ShopView() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero */}
       <div className="text-center mb-10 sm:mb-12">
-        <PageHeroMagicTitle
-          text="Boutique de l'association"
-          magicColor={MAGIC_HERO_MEMBERSHIP_SHOP_COLOR}
-          titleTypographyClassName={MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES}
-        />
+        <PageHeroMagicTitle text="Boutique de l'association" variant={PAGE_HERO_SLIDER_VARIANT.shop} />
         <SectionSplitTitleSeparator tone="events" className="mt-2 sm:mt-3" />
         <motion.p
           initial={{ opacity: 0, y: 8 }}

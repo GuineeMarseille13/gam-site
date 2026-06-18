@@ -3,8 +3,6 @@
  * Tous les styles, animations et messages sont définis ici pour faciliter la maintenance
  */
 
-import { MAGIC_HERO_CONTACT_TYPOGRAPHY_CLASSES } from "@/config/magic-hero-page-title";
-
 /** Icônes des cartes Email / Téléphone / Adresse — zinc unifié. */
 export const CONTACT_METHOD_ICON_COLOR =
   "from-zinc-100 to-neutral-100 text-zinc-800";
@@ -104,7 +102,6 @@ export const STYLE_CONFIG = {
     "mx-auto flex w-full min-w-0 max-w-5xl flex-col items-center gap-8 px-4 py-6 sm:gap-10 sm:px-6 sm:py-10 lg:px-8",
   hero: {
     wrapper: "mx-auto w-full min-w-0 max-w-4xl text-center mb-8 sm:mb-12",
-    title: MAGIC_HERO_CONTACT_TYPOGRAPHY_CLASSES,
     description:
       "mt-2 sm:mt-3 max-w-3xl text-pretty text-base leading-relaxed text-gray-700 sm:text-lg mx-auto",
   },

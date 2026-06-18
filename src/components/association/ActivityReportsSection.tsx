@@ -6,7 +6,7 @@ import { Eye, FileText, Loader2 } from "lucide-react"
 import { cn } from "@/helpers/utils"
 import type { ActivityReportPublic } from "@/app/(public)/notre-association/_schemas/activity-report-public.schema"
 import { Button } from "@/components/ui/button"
-import { AssociationMagicTitle } from "@/components/association/association-magic-title"
+import { AssociationSectionTitle } from "@/components/association/association-section-title"
 import { ActivityReportsPreviewSheet } from "@/components/association/activity-reports-preview-sheet"
 import { useActivityReportsPublic } from "@/app/(public)/notre-association/_hooks/use-activity-reports-public"
 
@@ -59,49 +59,11 @@ export default function ActivityReportsSection() {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto w-full min-w-0 max-w-7xl px-0"
       >
-        <header className="mb-8 text-center sm:mb-11 md:mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.5 }}
-            className="mb-4 flex flex-col items-center justify-center gap-3 sm:mb-5 sm:flex-row sm:gap-4"
-          >
-            <div className="hidden h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-green-600 via-green-500 to-green-400 sm:block sm:h-12 md:h-14" />
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-xl sm:h-14 sm:w-14 md:h-16 md:w-16">
-              <FileText className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" aria-hidden />
-            </div>
-            <div className="hidden h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-green-600 via-green-500 to-green-400 sm:block sm:h-12 md:h-14" />
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.5 }}
-            className="mb-4 flex w-full min-w-0 justify-center px-1 text-balance break-words sm:px-2"
-          >
-            <AssociationMagicTitle
-              text="Rapport d'activité"
-              variant="hero"
-              className="max-w-full justify-center"
-            />
-          </motion.h2>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto h-1.5 w-32 origin-center rounded-full bg-gradient-to-r from-transparent via-green-500 to-transparent sm:w-40"
-          />
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.28, duration: 0.5 }}
-            className="mx-auto mt-6 max-w-2xl text-pretty text-base text-muted-foreground leading-relaxed sm:text-lg"
-          >
-            Consultez nos rapports annuels pour découvrir nos réalisations et notre impact.
-          </motion.p>
-        </header>
+        <AssociationSectionTitle
+          title="Rapport d'activité"
+          description="Consultez nos rapports annuels pour découvrir nos réalisations et notre impact."
+          animationDelay={0.08}
+        />
 
         {reports.length === 0 ? (
           <div className="mx-auto max-w-3xl rounded-2xl border border-dashed border-border/60 bg-muted/25 px-5 py-10 text-center text-muted-foreground text-base">

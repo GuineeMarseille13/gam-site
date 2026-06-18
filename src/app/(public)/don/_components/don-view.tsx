@@ -7,12 +7,8 @@ import { donPayloadSchema, SUGGESTED_AMOUNTS, MIN_DON_AMOUNT_EUR, MAX_DON_AMOUNT
 import { useCreateDonPaymentIntent } from "../_hooks/use-create-don-payment-intent";
 import StripePaymentForm from "../../adhesion/_components/stripe-payment-form";
 import { formatCurrency } from "@/helpers/format-currency";
-import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
+import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title";
 import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
-import {
-  MAGIC_HERO_DONATION_COLOR,
-  MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES,
-} from "@/config/magic-hero-page-title";
 import {
   DON_BENEFIT_CARD_CLASSNAME,
   DON_BENEFIT_ICON_CLASSNAME,
@@ -197,11 +193,7 @@ export default function DonationView() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {/* Hero */}
       <div className="text-center mb-8 sm:mb-12">
-        <PageHeroMagicTitle
-          text="Faire un don"
-          magicColor={MAGIC_HERO_DONATION_COLOR}
-          titleTypographyClassName={MAGIC_HERO_DONATION_TYPOGRAPHY_CLASSES}
-        />
+        <PageHeroMagicTitle text="Faire un don" variant={PAGE_HERO_SLIDER_VARIANT.donation} />
         <SectionSplitTitleSeparator tone="hero" className="mt-2 sm:mt-3" />
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 

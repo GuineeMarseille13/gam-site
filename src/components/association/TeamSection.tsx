@@ -4,13 +4,12 @@ import { useMemo, type ReactNode } from "react"
 import { motion } from "motion/react"
 import { ImageWithFallback } from "@/components/ui/image-with-fallback"
 import { Button } from "@/components/ui/button"
-import { Users } from "lucide-react"
 import { useTeamData } from "@/hooks/use-association"
 import { cn } from "@/helpers/utils"
 import type { TeamMember } from "@/types/association"
 import { partitionTeamByHierarchy } from "@/components/association/_utils/team-hierarchy"
 import { TeamMemberDescription } from "@/components/association/team-member-description"
-import { AssociationMagicTitle } from "@/components/association/association-magic-title"
+import { AssociationSectionTitle } from "@/components/association/association-section-title"
 
 // Configuration des animations
 const ANIMATION_CONFIG = {
@@ -287,65 +286,11 @@ export default function TeamSection() {
 /** En-tête : typographie forte, une seule couleur d’accent (vert marque). */
 function SectionTitle() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay: ANIMATION_CONFIG.delays.title,
-        duration: 0.55,
-        ease: MOTION_EASE,
-      }}
-      className="relative mb-8 text-center sm:mb-10 md:mb-12"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.1, duration: 0.55, ease: MOTION_EASE }}
-        className="relative mb-4 flex flex-col items-center gap-3 sm:mb-5 sm:flex-row sm:justify-center sm:gap-4"
-      >
-        <span className="hidden h-px w-12 shrink-0 bg-gradient-to-r from-transparent to-border sm:block md:w-16" />
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-theme-green to-theme-green-dark text-white shadow-md ring-1 ring-black/5 dark:ring-white/10 sm:h-14 sm:w-14 md:h-[3.75rem] md:w-[3.75rem]">
-          <Users className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
-        </div>
-        <span className="hidden h-px w-12 shrink-0 bg-gradient-to-l from-transparent to-border sm:block md:w-16" />
-      </motion.div>
-
-      <motion.h2
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.14, duration: 0.55, ease: MOTION_EASE }}
-        className="relative flex flex-wrap items-center justify-center gap-x-[0.2em] px-2 text-balance font-black tracking-tight"
-      >
-        <span className="text-foreground text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Notre </span>
-        <span className="inline-flex shrink-0 items-center">
-          <AssociationMagicTitle
-            text="équipe"
-            variant="display"
-            className="justify-center overflow-visible"
-          />
-        </span>
-      </motion.h2>
-
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: 1, opacity: 1 }}
-        transition={{
-          delay: ANIMATION_CONFIG.delays.title + 0.22,
-          duration: 0.6,
-          ease: MOTION_EASE,
-        }}
-        className="mx-auto mt-5 h-1 max-w-[10rem] origin-center rounded-full bg-gradient-to-r from-transparent via-theme-green/75 to-transparent sm:mt-6 sm:max-w-[12rem]"
-      />
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: ANIMATION_CONFIG.delays.title + 0.28, duration: 0.55, ease: MOTION_EASE }}
-        className="mx-auto mt-5 max-w-lg text-pretty px-2 text-center text-muted-foreground text-sm leading-relaxed sm:mt-6 sm:max-w-xl sm:text-base"
-      >
-        Les membres du bureau qui portent les projets et la vie de l&apos;association.
-      </motion.p>
-    </motion.div>
+    <AssociationSectionTitle
+      title="Notre équipe"
+      description="Les membres du bureau qui portent les projets et la vie de l'association."
+      animationDelay={ANIMATION_CONFIG.delays.title}
+    />
   )
 }
 

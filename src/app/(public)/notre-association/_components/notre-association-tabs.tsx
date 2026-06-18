@@ -8,7 +8,7 @@ import AboutUsSection from "@/components/association/AboutUsSection"
 import ActivityReportsSection from "@/components/association/ActivityReportsSection"
 import PresidentSection from "@/components/association/PresidentSection"
 import TeamSection from "@/components/association/TeamSection"
-import { AssociationMagicTitle } from "@/components/association/association-magic-title"
+import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const DEFAULT_TAB = "president"
@@ -80,13 +80,11 @@ function NotreAssociationTabsContent() {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mb-7 max-w-3xl text-center sm:mb-9 md:mb-10"
         >
-          <h1 className="flex w-full min-w-0 justify-center px-1 text-balance font-bold leading-[1.06] tracking-tight sm:px-2">
-            <AssociationMagicTitle
-              text="Notre Association"
-              variant="hero"
-              className="max-w-full justify-center"
-            />
-          </h1>
+          <PageHeroMagicTitle
+            text="Notre association"
+            variant={PAGE_HERO_SLIDER_VARIANT.association}
+            className="mb-4"
+          />
           <p className="mx-auto max-w-2xl text-pretty text-base text-muted-foreground leading-relaxed sm:mt-4 sm:text-lg">
             Découvrez notre histoire, nos valeurs et les personnes qui font vivre
             l&apos;association
@@ -160,8 +158,7 @@ function NotreAssociationTabsFallback() {
     <div className="relative min-h-screen bg-background py-7 sm:py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl animate-pulse text-center">
-          <div className="mx-auto mb-3 h-6 w-24 rounded-full bg-muted sm:mb-4" />
-          <div className="mx-auto mb-4 h-11 max-w-md rounded-2xl bg-muted sm:mb-5" />
+          <div className="mx-auto mb-4 h-14 max-w-md rounded-2xl bg-muted sm:mb-5" />
           <div className="mx-auto h-14 max-w-lg rounded-xl bg-muted/70" />
         </div>
         <div className="mx-auto mt-9 min-h-[14rem] max-w-5xl animate-pulse rounded-xl bg-muted/40 sm:mt-11 md:min-h-[16rem]" />

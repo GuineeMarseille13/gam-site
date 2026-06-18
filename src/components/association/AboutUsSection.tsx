@@ -9,7 +9,7 @@ import { useAboutUsData } from "@/hooks/use-association";
 import { AssociationEmptyState } from "@/components/association/association-empty-state";
 import type { AboutUsData, WhatWeOfferSection } from "@/types/association";
 import { cn } from "@/helpers/utils";
-import { AssociationMagicTitle } from "@/components/association/association-magic-title";
+import { AssociationSectionTitle, AssociationSectionTitleSkeleton } from "@/components/association/association-section-title";
 
 // Constantes d'animation
 const ANIMATION_CONFIG = {
@@ -108,7 +108,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
       className="relative"
     >
       {/* Titre de section */}
-      <SectionTitle title={data.title} icon={Users} delay={ANIMATION_CONFIG.delays.title} />
+      <SectionTitle title={data.title} delay={ANIMATION_CONFIG.delays.title} />
 
       <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
         {/* Image */}
@@ -217,7 +217,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
       className="relative"
     >
       {/* Titre de section */}
-      <SectionTitle title={data.title} icon={Target} delay={ANIMATION_CONFIG.delays.title + 0.1} />
+      <SectionTitle title={data.title} delay={ANIMATION_CONFIG.delays.title + 0.1} />
 
       <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8 xl:gap-10">
         {/* Contenu */}
@@ -335,40 +335,8 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
 }
 
 // Composant pour le titre de section
-function SectionTitle({
-  title,
-  icon: Icon,
-  delay,
-}: {
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  delay: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay,
-        duration: ANIMATION_CONFIG.durations.normal,
-      }}
-      className="mb-8 flex w-full min-w-0 flex-row items-center gap-2 sm:mb-10 sm:gap-3 md:mb-12 md:gap-4"
-    >
-      <div className="w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-green-600 via-green-500 to-green-400 min-h-9 sm:min-h-10 sm:h-12 sm:min-h-0 sm:self-auto md:h-14" />
-      <div className="flex min-w-0 w-full flex-1 flex-row items-center gap-1.5 sm:gap-3 md:gap-4">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg sm:size-12 md:size-14">
-          <Icon className="h-4 w-4 sm:h-6 sm:w-6 md:h-7 md:w-7" />
-        </div>
-        <h2 className="min-w-0 flex-1 text-balance break-words">
-          <AssociationMagicTitle
-            text={title}
-            variant="section"
-            className="max-w-full min-w-0 justify-start"
-          />
-        </h2>
-      </div>
-    </motion.div>
-  );
+function SectionTitle({ title, delay }: { title: string; delay: number }) {
+  return <AssociationSectionTitle title={title} align="start" animationDelay={delay} />;
 }
 
 function LoadingState() {
@@ -404,46 +372,9 @@ function SkeletonTextLine({ className }: { className?: string }) {
   );
 }
 
-/** Accent vertical — même gabarit que `SectionTitle` (barre à gauche) */
-function SkeletonTitleAccentBar() {
-  return (
-    <div
-      className={cn(
-        "w-1 shrink-0 self-stretch rounded-full min-h-9 sm:min-h-10 sm:h-12 sm:min-h-0 sm:self-auto md:h-14",
-        SKELETON_PULSE,
-      )}
-      aria-hidden
-    />
-  );
-}
-
-/** Tuile icône — mêmes dimensions que le carré du titre réel */
-function SkeletonTitleIconTile() {
-  return (
-    <div
-      className={cn(
-        "flex size-9 shrink-0 rounded-xl shadow-lg sm:size-12 md:size-14",
-        SKELETON_PULSE,
-      )}
-    />
-  );
-}
-
-/**
- * Titre de section — structure identique à `SectionTitle` : barre | (icône + titre responsive).
- */
+/** Placeholder titre — aligné sur `AssociationSectionTitle`. */
 function SectionTitleSkeleton() {
-  return (
-    <div className="mb-8 flex w-full min-w-0 flex-row items-center gap-2 sm:mb-10 sm:gap-3 md:mb-12 md:gap-4">
-      <SkeletonTitleAccentBar />
-      <div className="flex min-w-0 w-full flex-1 flex-row items-center gap-1.5 sm:gap-3 md:gap-4">
-        <SkeletonTitleIconTile />
-        <div className="min-w-0 flex-1">
-          <SkeletonTextLine className="h-7 w-full max-w-[min(100%,18rem)] sm:h-10 sm:max-w-xl md:h-12 md:max-w-2xl" />
-        </div>
-      </div>
-    </div>
-  );
+  return <AssociationSectionTitleSkeleton align="start" />
 }
 
 /** Bloc média — `aspect-video`, `rounded-3xl`, comme la zone image réelle */

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Award, Heart } from "lucide-react";
 import { usePresidentData } from "@/hooks/use-association";
 import { AssociationEmptyState } from "@/components/association/association-empty-state";
-import { AssociationMagicTitle } from "@/components/association/association-magic-title";
+import { AssociationSectionTitle } from "@/components/association/association-section-title";
 
 // Constantes d'animation centralisées
 const ANIMATION_CONFIG = {
@@ -29,7 +29,7 @@ const ANIMATION_CONFIG = {
 
 // Constantes de contenu
 const CONTENT = {
-  title: "LE MOT DU PRÉSIDENT",
+  title: "Le mot du président",
   subtitle: "Les mots de notre fondateur, porteur d'espoir et de solidarité",
   badgeText: "Dévoué à aider et soutenir les autres",
   signaturePrefix: "Avec toute ma gratitude et mes encouragements,",
@@ -114,54 +114,12 @@ function BackgroundDecorations() {
 // Composant pour l'en-tête
 function HeaderSection() {
   return (
-    <header className="mb-10 text-center sm:mb-14 md:mb-16">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{
-          delay: ANIMATION_CONFIG.delays.header,
-          duration: ANIMATION_CONFIG.durations.normal,
-        }}
-        className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-4"
-      >
-        <div className="h-px w-12 sm:w-20 md:w-24 bg-gradient-to-r from-transparent via-green-400 to-green-500" />
-        <motion.div
-          animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
-        >
-          <Award className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-green-600" />
-        </motion.div>
-        <div className="h-px w-12 sm:w-20 md:w-24 bg-gradient-to-l from-transparent via-green-400 to-green-500" />
-      </motion.div>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: ANIMATION_CONFIG.delays.title,
-          duration: ANIMATION_CONFIG.durations.normal,
-        }}
-        className="flex w-full min-w-0 justify-center px-2 text-balance break-words"
-      >
-        <AssociationMagicTitle
-          text={CONTENT.title}
-          variant="hero"
-          className="max-w-full justify-center"
-        />
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          delay: ANIMATION_CONFIG.delays.subtitle,
-          duration: ANIMATION_CONFIG.durations.normal,
-        }}
-        className="mx-auto max-w-2xl text-pretty px-1 text-muted-foreground text-base leading-relaxed sm:text-lg md:text-xl"
-      >
-        {CONTENT.subtitle}
-      </motion.p>
-    </header>
+    <AssociationSectionTitle
+      title={CONTENT.title}
+      description={CONTENT.subtitle}
+      align="start"
+      animationDelay={ANIMATION_CONFIG.delays.header}
+    />
   );
 }
 

@@ -8,12 +8,8 @@ import { adhesionPayloadSchema, PRICE_PER_MEMBER_EUR, type Member } from "../_sc
 import { useCreateAdhesionPaymentIntent } from "../_hooks/use-create-adhesion-payment-intent";
 import StripePaymentForm from "./stripe-payment-form";
 import { formatCurrency } from "@/helpers/format-currency";
-import { PageHeroMagicTitle } from "@/components/page-hero-magic-title";
+import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title";
 import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
-import {
-  MAGIC_HERO_MEMBERSHIP_SHOP_COLOR,
-  MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES,
-} from "@/config/magic-hero-page-title";
 import {
   ADHESION_BENEFIT_CARD_CLASSNAME,
   ADHESION_BENEFIT_ICON_CLASSNAME,
@@ -206,11 +202,7 @@ export default function MembershipView() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {/* Hero */}
       <div className="text-center mb-8 sm:mb-12">
-        <PageHeroMagicTitle
-          text="Adhérer à l'association"
-          magicColor={MAGIC_HERO_MEMBERSHIP_SHOP_COLOR}
-          titleTypographyClassName={MAGIC_HERO_MEMBERSHIP_SHOP_TYPOGRAPHY_CLASSES}
-        />
+        <PageHeroMagicTitle text="Adhérer à l'association" variant={PAGE_HERO_SLIDER_VARIANT.membership} />
         <SectionSplitTitleSeparator tone="events" className="mt-2 sm:mt-3" />
         <motion.p 
           initial={{ opacity: 0, y: 8 }} 
