@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import {
   ArrowLeft,
   Mail,
@@ -20,6 +19,7 @@ import { getPolePublicDisplayTitle } from "@/config/pole-public-display";
 import { ADMINISTRATIVE_POLE_SLUG } from "@/helpers/administrative-permanence/constants";
 import { CampuceFranceStudentForm } from "@/app/(public)/poles/_components/campuce-france-student-form";
 import PermanenceCalendar from "./PermanenceCalendar";
+import { PoleAchievementsSection } from "./pole-achievements-section";
 
 interface PolePageProps {
   pole: Pole;
@@ -765,7 +765,7 @@ export default function PolePage({ pole }: PolePageProps) {
 
         {/* Galerie / texte — Nos réalisations */}
         {showAchievementsSection ? (
-          <EventGallery
+          <PoleAchievementsSection
             images={pole.eventImages ?? []}
             colorScheme={pole.colorScheme}
             introOverride={achievementsNarrative || null}
@@ -774,286 +774,5 @@ export default function PolePage({ pole }: PolePageProps) {
         ) : null}
       </div>
     </div>
-  );
-}
-
-// Composant Galerie d'événements
-interface EventGalleryProps {
-  images: { url: string; title?: string; description?: string }[];
-  colorScheme: Pole["colorScheme"];
-  introOverride?: string | null;
-  defaultSubtitle: string;
-}
-
-function EventGallery({
-  images,
-  colorScheme,
-  introOverride,
-  defaultSubtitle,
-}: EventGalleryProps) {
-  const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
-  const subtitle = introOverride?.trim() || defaultSubtitle;
-
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-20 md:mb-28"
-    >
-      <div className="text-center mb-12 md:mb-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent"
-        >
-          Nos Réalisations
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-xl text-gray-600 mb-6 font-medium max-w-3xl mx-auto whitespace-pre-wrap"
-        >
-          {subtitle}
-        </motion.p>
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gray-400 to-transparent rounded-full"
-        />
-      </div>
-
-      {images.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {images.map((image, index) => (
-              <EventImageCard
-                key={index}
-                image={image}
-                index={index}
-                colorScheme={colorScheme}
-                onClick={() => setSelectedImage(index)}
-              />
-            ))}
-          </div>
-
-          <AnimatePresence mode="wait">
-            {selectedImage !== null && (
-              <ImageModal
-                key={selectedImage}
-                images={images}
-                currentIndex={selectedImage}
-                onClose={() => setSelectedImage(null)}
-                onNext={() =>
-                  setSelectedImage((prev) =>
-                    prev !== null && prev < images.length - 1 ? prev + 1 : 0
-                  )
-                }
-                onPrev={() =>
-                  setSelectedImage((prev) =>
-                    prev !== null && prev > 0 ? prev - 1 : images.length - 1
-                  )
-                }
-              />
-            )}
-          </AnimatePresence>
-        </>
-      ) : null}
-    </motion.section>
-  );
-}
-
-// Carte d'image d'événement
-interface EventImageCardProps {
-  image: { url: string; title?: string; description?: string };
-  index: number;
-  colorScheme: Pole["colorScheme"];
-  onClick: () => void;
-}
-
-function EventImageCard({
-  image,
-  index,
-  colorScheme,
-  onClick,
-}: EventImageCardProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
-      onClick={onClick}
-    >
-      {/* Image avec overlay au hover */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        <ImageWithFallback
-          src={image.url}
-          alt={image.title || "Événement"}
-          fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-
-        {/* Overlay gradient au hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-        {/* Effet de brillance au hover */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-          initial={{ x: "-100%" }}
-          whileHover={{ x: "200%" }}
-          transition={{ duration: 0.8 }}
-          style={{ width: "50%" }}
-        />
-
-        {/* Badge avec gradient coloré */}
-        <div
-          className={`absolute top-4 right-4 px-3 py-1.5 rounded-full bg-gradient-to-r ${colorScheme.primary} text-white text-xs font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-        >
-          Voir
-        </div>
-      </div>
-
-      {/* Informations (si disponibles) */}
-      {(image.title || image.description) && (
-        <div className="p-4 sm:p-5">
-          {image.title && (
-            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-gray-950 transition-colors">
-              {image.title}
-            </h3>
-          )}
-          {image.description && (
-            <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
-              {image.description}
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* Glow effect au hover */}
-      <motion.div
-        className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.primary} rounded-2xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 -z-10`}
-      />
-    </motion.div>
-  );
-}
-
-// Modal pour afficher l'image en grand
-interface ImageModalProps {
-  images: { url: string; title?: string; description?: string }[];
-  currentIndex: number;
-  onClose: () => void;
-  onNext: () => void;
-  onPrev: () => void;
-}
-
-function ImageModal({
-  images,
-  currentIndex,
-  onClose,
-  onNext,
-  onPrev,
-}: ImageModalProps) {
-  const currentImage = images[currentIndex];
-
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onNext();
-      if (e.key === "ArrowLeft") onPrev();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
-    };
-  }, [onClose, onNext, onPrev]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="relative max-w-6xl max-h-[90vh] w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Bouton fermer */}
-        <button
-          onClick={onClose}
-          className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors text-2xl font-bold z-10"
-        >
-          ✕
-        </button>
-
-        {/* Image */}
-        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gray-900">
-          <ImageWithFallback
-            src={currentImage.url}
-            alt={currentImage.title || "Événement"}
-            fill
-            className="object-contain"
-            sizes="90vw"
-            priority
-          />
-        </div>
-
-        {/* Informations */}
-        {(currentImage.title || currentImage.description) && (
-          <div className="mt-4 text-center">
-            {currentImage.title && (
-              <h3 className="text-2xl font-bold text-white mb-2">
-                {currentImage.title}
-              </h3>
-            )}
-            {currentImage.description && (
-              <p className="text-gray-300">{currentImage.description}</p>
-            )}
-          </div>
-        )}
-
-        {/* Navigation */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={onPrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all flex items-center justify-center"
-            >
-              ←
-            </button>
-            <button
-              onClick={onNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all flex items-center justify-center"
-            >
-              →
-            </button>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm">
-              {currentIndex + 1} / {images.length}
-            </div>
-          </>
-        )}
-      </motion.div>
-    </motion.div>
   );
 }
