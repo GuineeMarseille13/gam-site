@@ -6,9 +6,13 @@ import { useRouter } from "next/navigation"
 import { IconAlignLeft, IconTypography } from "@tabler/icons-react"
 import { toast } from "sonner"
 
-import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { RichTextEditor } from "@/components/ui-extended/rich-text-editor"
 import { cn } from "@/helpers/utils"
+import {
+  isAssociationContentEmpty,
+  normalizeAssociationContentForEditor,
+} from "@/lib/format/association-content-format"
 
 import type { SaveAssociationContentState } from "../_actions/save-association-content"
 import { AssociationImageUploadField } from "./association-image-upload-field"
@@ -17,7 +21,6 @@ import {
   AssociationFormFooter,
   AssociationFormPanel,
   associationInputClassName,
-  associationTextareaClassName,
 } from "./association-form-ui"
 
 type LayoutVariant = "stacked" | "split"
@@ -43,7 +46,7 @@ interface AssociationTextImageFormProps {
 }
 
 /**
- * Formulaire bureau : texte + image pour une section association.
+ * Formulaire bureau : rich text + image pour une section association.
  */
 export function AssociationTextImageForm({
   action,
@@ -63,16 +66,15 @@ export function AssociationTextImageForm({
   const router = useRouter()
   const [state, formAction] = useActionState(action, null)
   const [title, setTitle] = useState(savedTitle)
-  const [text, setText] = useState(savedText)
+  const [text, setText] = useState(() => normalizeAssociationContentForEditor(savedText))
   const submitSequenceRef = useRef(0)
   const lastNotifiedSubmitSequenceRef = useRef(0)
-  const charCount = text.length
-  const isNearLimit = charCount > maxChars * 0.9
+  const isContentEmpty = isAssociationContentEmpty(text)
   const isSplit = layout === "split"
 
   useEffect(() => {
     setTitle(savedTitle)
-    setText(savedText)
+    setText(normalizeAssociationContentForEditor(savedText))
   }, [savedTitle, savedText])
 
   useEffect(() => {
@@ -99,8 +101,8 @@ export function AssociationTextImageForm({
     }
   }, [state])
 
-  const handleTextChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value)
+  const handleTextChange = useCallback((html: string) => {
+    setText(html)
   }, [])
 
   const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -141,34 +143,20 @@ export function AssociationTextImageForm({
         compact
       >
         <input type="hidden" name={showTitle ? "text" : "message"} value={text} readOnly />
-        <Textarea
+        <RichTextEditor
           id="association-text"
           value={text}
           onChange={handleTextChange}
-          rows={isSplit ? 14 : 10}
-          className={cn(
-            associationTextareaClassName,
-            "w-full resize-y",
-            isSplit ? "min-h-[18rem]" : "min-h-[12rem]",
-          )}
-          required
+          maxLength={maxChars}
+          minHeightClassName={isSplit ? "min-h-[18rem]" : "min-h-[12rem]"}
+          placeholder="Rédigez le contenu tel qu'il apparaîtra sur le site public…"
+          aria-label={textLabel}
         />
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <span className="inline-flex rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-            Paragraphes séparés par une ligne vide
-          </span>
-          <span
-            className={cn(
-              "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold tabular-nums",
-              isNearLimit
-                ? "bg-amber-500/15 text-amber-700 dark:text-amber-400"
-                : "bg-muted text-muted-foreground",
-            )}
-            aria-live="polite"
-          >
-            {charCount.toLocaleString("fr-FR")} / {maxChars.toLocaleString("fr-FR")}
-          </span>
-        </div>
+        {isContentEmpty ? (
+          <p className="mt-2 text-xs text-destructive" role="alert">
+            Le contenu ne peut pas être vide.
+          </p>
+        ) : null}
       </AssociationFormField>
     </AssociationFormPanel>
   )
@@ -176,7 +164,15 @@ export function AssociationTextImageForm({
   return (
     <form
       action={formAction}
-      onSubmit={() => {
+      onSubmit={(event) => {
+        if (isContentEmpty) {
+          event.preventDefault()
+          toast.error("Contenu requis.", {
+            description: "Ajoutez du texte avant d'enregistrer.",
+          })
+          return
+        }
+
         submitSequenceRef.current += 1
       }}
       className="flex w-full min-w-0 flex-col gap-6"

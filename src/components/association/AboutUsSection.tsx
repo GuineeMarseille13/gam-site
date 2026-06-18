@@ -10,6 +10,10 @@ import { AssociationEmptyState } from "@/components/association/association-empt
 import type { AboutUsData, WhatWeOfferSection } from "@/types/association";
 import { cn } from "@/helpers/utils";
 import { AssociationSectionTitle, AssociationSectionTitleSkeleton } from "@/components/association/association-section-title";
+import {
+  AssociationFormattedInline,
+  AssociationFormattedText,
+} from "@/components/association/association-formatted-text";
 
 // Constantes d'animation
 const ANIMATION_CONFIG = {
@@ -95,8 +99,6 @@ function LoadingBackgroundDecorations() {
 
 // Section "Qui sommes-nous ?"
 function WhoWeAreSection({ data }: { data: { title: string; text: string; image: string } }) {
-  const paragraphs = data.text.split("\n\n").filter((p) => p.trim());
-
   return (
     <motion.section
       initial={{ opacity: 0, y: 30 }}
@@ -161,22 +163,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-green-500 to-green-400" />
 
             <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
-              <div className="space-y-5 sm:space-y-6">
-                {paragraphs.map((paragraph, index) => (
-                  <motion.p
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: ANIMATION_CONFIG.delays.content + 0.1 + index * 0.1,
-                      duration: ANIMATION_CONFIG.durations.normal,
-                    }}
-                    className="text-left text-base text-gray-700 leading-relaxed sm:text-justify sm:text-lg"
-                  >
-                    {paragraph}
-                  </motion.p>
-                ))}
-              </div>
+              <AssociationFormattedText text={data.text} variant="body" />
 
               {/* Badge informatif */}
               <motion.div
@@ -246,7 +233,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                   }}
                   className="mb-6 text-left text-base text-gray-700 leading-relaxed sm:mb-8 sm:text-justify sm:text-lg"
                 >
-                  {data.intro}
+                  <AssociationFormattedInline text={data.intro} variant="body" />
                 </motion.p>
               )}
 
@@ -270,7 +257,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                         <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                       <p className="text-gray-700 leading-relaxed text-base sm:text-lg flex-1 pt-1">
-                        {pointText}
+                        <AssociationFormattedInline text={pointText} variant="body" />
                       </p>
                     </motion.div>
                   );
@@ -288,7 +275,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                   }}
                   className="mt-6 border-t border-gray-200 pt-5 text-left text-base text-gray-700 leading-relaxed sm:mt-8 sm:pt-6 sm:text-justify sm:text-lg"
                 >
-                  {data.conclusion}
+                  <AssociationFormattedInline text={data.conclusion} variant="body" />
                 </motion.p>
               )}
             </CardContent>

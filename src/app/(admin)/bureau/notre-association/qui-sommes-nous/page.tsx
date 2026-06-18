@@ -51,7 +51,7 @@ export default async function BureauAssociationQuiSommesNousPage() {
             showTitle
             titleLabel="Titre de la section"
             textLabel="Texte de présentation"
-            textHelper="Décrivez l'origine et la mission de l'association. Séparez les paragraphes par une ligne vide."
+            textHelper="Décrivez l'origine et la mission de l'association. Utilisez la barre d'outils pour structurer le texte."
             imageLabel="Image illustrative"
             imageHelper="Format paysage recommandé pour la section « Qui sommes-nous ? »."
             layout="split"

@@ -7,6 +7,7 @@ import { Quote, Award, Heart } from "lucide-react";
 import { usePresidentData } from "@/hooks/use-association";
 import { AssociationEmptyState } from "@/components/association/association-empty-state";
 import { AssociationSectionTitle } from "@/components/association/association-section-title";
+import { AssociationFormattedText } from "@/components/association/association-formatted-text";
 
 // Constantes d'animation centralisées
 const ANIMATION_CONFIG = {
@@ -58,9 +59,6 @@ export default function PresidentSection() {
   }
 
   const { president: presidentInfo, message } = presidentData;
-  const messageParagraphs = message.content
-    .split("\n\n")
-    .filter((p) => p.trim());
 
   const nameParts = presidentInfo.name.split(" ");
   const firstName = nameParts[0] || "";
@@ -82,7 +80,7 @@ export default function PresidentSection() {
         <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12 xl:gap-16">
           <PresidentInfoCard president={presidentInfo} />
           <MessageCard
-            paragraphs={messageParagraphs}
+            content={message.content}
             presidentRole={presidentInfo.role}
             firstName={firstName}
             lastName={lastName}
@@ -252,12 +250,12 @@ function PresidentDetailsCard({ name, role }: { name: string; role: string }) {
 
 // Composant pour la carte de message
 function MessageCard({
-  paragraphs,
+  content,
   presidentRole,
   firstName,
   lastName,
 }: {
-  paragraphs: string[];
+  content: string;
   presidentRole: string;
   firstName: string;
   lastName: string;
@@ -291,22 +289,16 @@ function MessageCard({
             <Quote className="size-12 text-green-400/30 sm:size-16" />
           </motion.div>
 
-          <div className="space-y-5 sm:space-y-7 md:space-y-8">
-            {paragraphs.map((paragraph, index) => (
-              <motion.p
-                key={index}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: ANIMATION_CONFIG.delays.quote + 0.1 + index * 0.12,
-                  duration: ANIMATION_CONFIG.durations.normal,
-                }}
-                className="text-pretty break-words text-left text-base leading-relaxed text-muted-foreground sm:text-justify sm:text-lg md:text-xl"
-              >
-                {paragraph}
-              </motion.p>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: ANIMATION_CONFIG.delays.quote + 0.1,
+              duration: ANIMATION_CONFIG.durations.normal,
+            }}
+          >
+            <AssociationFormattedText text={content} variant="quote" />
+          </motion.div>
 
           <SignatureSection
             firstName={firstName}

@@ -50,7 +50,7 @@ export default async function BureauAssociationPresidentPage() {
             savedText={savedText}
             savedImageId={content?.imageId}
             textLabel="Message du président"
-            textHelper="Rédigez le discours tel qu'il apparaîtra sur le site. Utilisez une ligne vide entre chaque paragraphe."
+            textHelper="Rédigez le discours tel qu'il apparaîtra sur le site. Utilisez la barre d'outils pour le gras, l'italique et les listes."
             imageLabel="Photo — Fondateur & Président"
             imageHelper="Format portrait recommandé. Cette image alimente la carte photo sur le site."
             layout="split"

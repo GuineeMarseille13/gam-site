@@ -2,15 +2,24 @@ import type { ReactNode } from "react";
 
 const EMPHASIS_PATTERN = /\*\*([^*]+)\*\*/g;
 
+interface ParseInlineEmphasisOptions {
+  strongClassName?: string;
+}
+
 /**
  * Transforme les segments `**gras**` en <strong> (sans HTML brut).
  */
-export function parseInlineEmphasis(text: string): ReactNode[] {
+export function parseInlineEmphasis(
+  text: string,
+  options?: ParseInlineEmphasisOptions,
+): ReactNode[] {
+  const strongClassName = options?.strongClassName ?? "font-semibold text-gray-800";
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
-  let match: RegExpExecArray | null = EMPHASIS_PATTERN.exec(text);
 
-  while (match !== null) {
+  for (const match of text.matchAll(EMPHASIS_PATTERN)) {
+    if (match.index === undefined) continue;
+
     if (match.index > lastIndex) {
       nodes.push(text.slice(lastIndex, match.index));
     }
@@ -18,14 +27,13 @@ export function parseInlineEmphasis(text: string): ReactNode[] {
     nodes.push(
       <strong
         key={`emphasis-${match.index}`}
-        className="font-semibold text-gray-800"
+        className={strongClassName}
       >
         {match[1]}
       </strong>,
     );
 
     lastIndex = match.index + match[0].length;
-    match = EMPHASIS_PATTERN.exec(text);
   }
 
   if (lastIndex < text.length) {
