@@ -40,29 +40,19 @@ function EventMediaBlockSkeleton() {
   );
 }
 
-/** Colonne texte — titre + paragraphe (alignement géré par le parent). */
-function EventTextBlockSkeleton({ align }: { align: "left" | "right" }) {
+/** Colonne texte — titre + paragraphe, toujours alignés à gauche (bloc poussé vers l’axe par le parent). */
+function EventTextBlockSkeleton({ towardSpine }: { towardSpine: "left" | "right" }) {
   return (
     <div
       className={cn(
-        "max-w-md space-y-3",
-        align === "right" ? "ml-auto text-right" : "mr-auto text-left",
+        "max-w-md space-y-3 text-left",
+        towardSpine === "right" ? "ml-auto pr-10" : "pl-10",
       )}
     >
-      <PulseBar
-        className={cn(
-          "h-7 rounded-lg sm:h-8 md:h-9",
-          align === "right" ? "ml-auto w-[92%]" : "w-[92%]",
-        )}
-      />
-      <PulseBar className={cn("h-4 w-full", align === "right" && "ml-auto")} />
-      <PulseBar className={cn("h-4 w-full", align === "right" && "ml-auto")} />
-      <PulseBar
-        className={cn(
-          "h-4",
-          align === "right" ? "ml-auto w-[88%]" : "w-[88%]",
-        )}
-      />
+      <PulseBar className="h-7 w-[92%] rounded-lg sm:h-8 md:h-9" />
+      <PulseBar className="h-4 w-full" />
+      <PulseBar className="h-4 w-full" />
+      <PulseBar className="h-4 w-[88%]" />
     </div>
   );
 }
@@ -97,7 +87,7 @@ function DesktopTimelineItemSkeleton({ isImageOnLeft }: { isImageOnLeft: boolean
       <div className="flex w-full items-start">
         <div className="flex w-1/2 justify-end pr-2">
           {!isImageOnLeft ? (
-            <EventTextBlockSkeleton align="right" />
+            <EventTextBlockSkeleton towardSpine="right" />
           ) : (
             <EventMediaBlockSkeleton />
           )}
@@ -105,7 +95,7 @@ function DesktopTimelineItemSkeleton({ isImageOnLeft }: { isImageOnLeft: boolean
         <div className="w-4 shrink-0" aria-hidden />
         <div className="flex w-1/2 justify-start pl-2">
           {isImageOnLeft ? (
-            <EventTextBlockSkeleton align="left" />
+            <EventTextBlockSkeleton towardSpine="left" />
           ) : (
             <EventMediaBlockSkeleton />
           )}

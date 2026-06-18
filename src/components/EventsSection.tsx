@@ -363,17 +363,17 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
             </div>
           </div>
 
-          {/* Ligne 2 : contenu (image / texte) */}
-          <div className="flex w-full items-center">
+          {/* Ligne 2 : contenu juxtaposé (texte | image) — texte toujours aligné à gauche dans sa colonne */}
+          <div className="flex w-full items-start">
             {/* Colonne de gauche */}
             <div className="w-1/2 flex justify-end pr-2">
               {!isImageOnLeft ? (
-                <div className="max-w-md text-right pr-10">
+                <div className="max-w-md space-y-3 pr-10 text-left">
                   <motion.h3
                     initial={{ opacity: 0, x: -20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-                    className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+                    className="text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl"
                   >
                     {event.title}
                   </motion.h3>
@@ -381,7 +381,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                     initial={{ opacity: 0, x: -20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                    className="text-sm sm:text-base text-gray-600 leading-relaxed"
+                    className="text-sm leading-relaxed text-gray-600 sm:text-base"
                   >
                     {event.description}
                   </motion.p>
@@ -402,12 +402,12 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
             {/* Colonne de droite */}
             <div className="w-1/2 flex justify-start pl-2">
               {isImageOnLeft ? (
-                <div className="max-w-md text-left pl-10">
+                <div className="max-w-md space-y-3 pl-10 text-left">
                   <motion.h3
                     initial={{ opacity: 0, x: 20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-                    className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+                    className="text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl"
                   >
                     {event.title}
                   </motion.h3>
@@ -415,7 +415,7 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                     initial={{ opacity: 0, x: 20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                    className="text-sm sm:text-base text-gray-600 leading-relaxed"
+                    className="text-sm leading-relaxed text-gray-600 sm:text-base"
                   >
                     {event.description}
                   </motion.p>
@@ -458,25 +458,26 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
             )}
           </motion.div>
 
-          {/* Titre */}
-          <motion.h3
-            initial={{ opacity: 0, x: 0 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
-            className="text-xl sm:text-2xl font-bold text-gray-900"
-          >
-            {event.title}
-          </motion.h3>
+          {/* Titre + description — flux vertical centré sur mobile */}
+          <div className="space-y-3">
+            <motion.h3
+              initial={{ opacity: 0, x: 0 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+              className="text-xl font-bold text-gray-900 sm:text-2xl"
+            >
+              {event.title}
+            </motion.h3>
 
-          {/* Description */}
-          <motion.p
-            initial={{ opacity: 0, x: 0 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-            className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4"
-          >
-            {event.description}
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, x: 0 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
+              className="text-sm leading-relaxed text-gray-600 sm:text-base"
+            >
+              {event.description}
+            </motion.p>
+          </div>
 
           {/* Media */}
           <motion.div
