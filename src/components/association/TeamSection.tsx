@@ -25,7 +25,6 @@ const ANIMATION_CONFIG = {
 
 type TeamAnimationBand = keyof Omit<typeof ANIMATION_CONFIG.delays, "title">
 
-const MOTION_EASE = [0.22, 1, 0.36, 1] as const
 const MOTION_SPRING = { type: "spring" as const, stiffness: 420, damping: 30, mass: 0.85 }
 
 /** Fond de section : profondeur, halo vert discret, grain léger (singularité vs autres onglets). */

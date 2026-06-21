@@ -5,11 +5,11 @@ import { Expand } from "lucide-react";
 import { PoleAchievementImage } from "./pole-achievement-image";
 import type {
   PoleAchievementColorScheme,
-  PoleAchievementImage,
+  PoleAchievementImage as PoleAchievementImageType,
 } from "./pole-achievement.types";
 
 interface PoleAchievementCardProps {
-  image: PoleAchievementImage;
+  image: PoleAchievementImageType;
   index: number;
   colorScheme: PoleAchievementColorScheme;
   onOpen: () => void;
