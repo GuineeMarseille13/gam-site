@@ -229,7 +229,7 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
         {/* Cartes statistiques */}
         <div
           className={cn(
-            "flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5 max-w-6xl mx-auto",
+            "flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5  mx-auto",
             isMobile && "flex-col"
           )}
         >
