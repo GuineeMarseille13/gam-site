@@ -1,12 +1,12 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { ASSOCIATION_CONTENT_KEYS } from "@/helpers/association-content/_schemas/association-content.schema"
 import {
-  ASSOCIATION_CONTENT_KEYS,
   savePresidentContentSchema,
   saveWhatWeOfferContentSchema,
   saveWhoWeAreContentSchema,
-} from "@/helpers/association-content/_schemas/association-content.schema"
+} from "@/helpers/association-content/_schemas/association-save-content.schema"
 import { resolveAssociationImageId } from "@/helpers/association-content/resolve-image-id"
 import { requireBureauContenu } from "@/lib/auth-guard"
 import { prisma } from "@/lib/prisma"

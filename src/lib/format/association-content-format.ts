@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 const HTML_TAG_PATTERN = /<\/?[a-z][\s\S]*>/i;
 
@@ -15,9 +15,9 @@ export function isAssociationHtmlContent(text: string): boolean {
  * Nettoie le HTML association (balises limitées, sans attributs).
  */
 export function sanitizeAssociationHtml(html: string): string {
-  return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: [...ASSOCIATION_ALLOWED_TAGS],
-    ALLOWED_ATTR: [],
+  return sanitizeHtml(html, {
+    allowedTags: [...ASSOCIATION_ALLOWED_TAGS],
+    allowedAttributes: {},
   }).trim();
 }
 
