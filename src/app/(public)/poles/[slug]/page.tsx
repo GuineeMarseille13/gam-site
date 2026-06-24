@@ -65,31 +65,32 @@ export default async function PoleDetailPage({ params }: PageProps) {
       getActivePoleServicesByPublicSlug(slug),
       getActivePoleAchievementsByPublicSlug(slug),
     ]);
-    if (details) {
-      pole = {
-        ...pole,
-        ...(details.aboutSectionText
-          ? { description: details.aboutSectionText }
-          : {}),
-        detailsNarratives: {
-          services: null,
-          statistics: null,
-          achievements: details.achievementsSectionText,
-        },
-        ...(dbServices && dbServices.length > 0 ? { services: dbServices } : {}),
-        ...(dbStats && dbStats.length > 0
-          ? {
-              statistics: {
-                title: pole.statistics?.title,
-                items: dbStats,
-              },
-            }
-          : {}),
-        ...(dbAchievements && dbAchievements.length > 0
-          ? { eventImages: dbAchievements }
-          : {}),
-      };
-    }
+
+    pole = {
+      ...pole,
+      eventImages: dbAchievements ?? [],
+      ...(details
+        ? {
+            ...(details.aboutSectionText
+              ? { description: details.aboutSectionText }
+              : {}),
+            detailsNarratives: {
+              services: null,
+              statistics: null,
+              achievements: details.achievementsSectionText,
+            },
+          }
+        : {}),
+      ...(dbServices && dbServices.length > 0 ? { services: dbServices } : {}),
+      ...(dbStats && dbStats.length > 0
+        ? {
+            statistics: {
+              title: pole.statistics?.title,
+              items: dbStats,
+            },
+          }
+        : {}),
+    };
   }
 
   return <PolePage pole={pole} />;

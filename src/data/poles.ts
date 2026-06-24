@@ -181,44 +181,7 @@ export const poles: Pole[] = [
       secondary: "from-teal-400 to-cyan-500",
       accent: "green",
     },
-    eventImages: [
-      {
-        url: "/images/events/admin/permanence-1.jpg",
-        title: "Permanence Administrative",
-        description:
-          "Accueil et accompagnement personnalisé lors de nos permanences hebdomadaires",
-      },
-      {
-        url: "/images/events/admin/atelier-info-1.jpg",
-        title: "Atelier d'Information",
-        description:
-          "Session collective sur les démarches administratives et les droits des usagers",
-      },
-      {
-        url: "/images/events/admin/accompagnement-1.jpg",
-        title: "Accompagnement Personnalisé",
-        description:
-          "Soutien individuel pour la préparation et le suivi des dossiers administratifs",
-      },
-      {
-        url: "/images/events/admin/formation-1.jpg",
-        title: "Formation aux Démarches",
-        description:
-          "Atelier pratique pour apprendre à constituer ses dossiers en autonomie",
-      },
-      {
-        url: "/images/events/admin/rencontre-1.jpg",
-        title: "Rencontre avec les Bénévoles",
-        description:
-          "Échanges et partage d'expériences avec notre équipe de bénévoles dévoués",
-      },
-      {
-        url: "/images/events/admin/success-1.jpg",
-        title: "Célébration des Réussites",
-        description:
-          "Moments de joie partagés lors de l'aboutissement des démarches accompagnées",
-      },
-    ],
+    eventImages: [],
   },
   {
     slug: "mise-en-relation",

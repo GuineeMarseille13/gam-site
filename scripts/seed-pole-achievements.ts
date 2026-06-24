@@ -1,5 +1,5 @@
 /**
- * Importe les `eventImages` statiques de `src/data/poles.ts` vers `details_pole_achievements`.
+ * Importe des réalisations historiques vers `details_pole_achievements`.
  *
  * Usage : npx tsx scripts/seed-pole-achievements.ts [publicSlug]
  * Exemple : npx tsx scripts/seed-pole-achievements.ts demarche-administrative
@@ -9,18 +9,60 @@ import { PrismaClient } from "../src/lib/generated/prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import "dotenv/config"
 
-import { poles } from "../src/data/poles"
 import { findPoleBySlugOrId } from "../src/lib/api/pole-by-slug"
+
+const LEGACY_ADMIN_ACHIEVEMENTS = [
+  {
+    url: "/images/events/admin/permanence-1.jpg",
+    title: "Permanence Administrative",
+    description:
+      "Accueil et accompagnement personnalisé lors de nos permanences hebdomadaires",
+  },
+  {
+    url: "/images/events/admin/atelier-info-1.jpg",
+    title: "Atelier d'Information",
+    description:
+      "Session collective sur les démarches administratives et les droits des usagers",
+  },
+  {
+    url: "/images/events/admin/accompagnement-1.jpg",
+    title: "Accompagnement Personnalisé",
+    description:
+      "Soutien individuel pour la préparation et le suivi des dossiers administratifs",
+  },
+  {
+    url: "/images/events/admin/formation-1.jpg",
+    title: "Formation aux Démarches",
+    description:
+      "Atelier pratique pour apprendre à constituer ses dossiers en autonomie",
+  },
+  {
+    url: "/images/events/admin/rencontre-1.jpg",
+    title: "Rencontre avec les Bénévoles",
+    description:
+      "Échanges et partage d'expériences avec notre équipe de bénévoles dévoués",
+  },
+  {
+    url: "/images/events/admin/success-1.jpg",
+    title: "Célébration des Réussites",
+    description:
+      "Moments de joie partagés lors de l'aboutissement des démarches accompagnées",
+  },
+] as const
+
+const LEGACY_ACHIEVEMENTS_BY_SLUG: Record<string, typeof LEGACY_ADMIN_ACHIEVEMENTS> = {
+  "demarche-administrative": LEGACY_ADMIN_ACHIEVEMENTS,
+}
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
 const prisma = new PrismaClient({ adapter })
 
 async function run() {
   const publicSlug = process.argv[2] ?? "demarche-administrative"
-  const staticPole = poles.find((p) => p.slug === publicSlug)
+  const staticImages = LEGACY_ACHIEVEMENTS_BY_SLUG[publicSlug]
 
-  if (!staticPole?.eventImages?.length) {
-    console.error(`Aucune image statique pour le pôle « ${publicSlug} ».`)
+  if (!staticImages?.length) {
+    console.error(`Aucune image de seed pour le pôle « ${publicSlug} ».`)
     process.exit(1)
   }
 
@@ -41,7 +83,7 @@ async function run() {
     process.exit(0)
   }
 
-  for (const [index, image] of staticPole.eventImages.entries()) {
+  for (const [index, image] of staticImages.entries()) {
     await prisma.detailsPoleAchievement.create({
       data: {
         detailsPoleId: pole.detailsPoleId,
@@ -55,7 +97,7 @@ async function run() {
     console.log(`✅ ${image.title ?? image.url}`)
   }
 
-  console.log(`\n${staticPole.eventImages.length} réalisation(s) importée(s).`)
+  console.log(`\n${staticImages.length} réalisation(s) importée(s).`)
 }
 
 run()

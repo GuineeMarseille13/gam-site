@@ -52,8 +52,7 @@ export default function PolePage({ pole }: PolePageProps) {
     pole.detailsNarratives?.statistics?.trim() ?? "";
   const achievementsNarrative =
     pole.detailsNarratives?.achievements?.trim() ?? "";
-  const showAchievementsSection =
-    (pole.eventImages?.length ?? 0) > 0 || achievementsNarrative.length > 0;
+  const showAchievementsSection = (pole.eventImages?.length ?? 0) > 0;
 
   /** Pôle ADM : encadré coordonnées / horaires toujours visible ; calendrier seulement si créneaux en base. */
   const showPermanenceBlock =
