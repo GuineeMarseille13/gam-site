@@ -28,7 +28,7 @@ const navigationItems: NavigationItem[] = [
   { label: "Contacts", href: "/contacts", icon: Phone, color: "bg-green-500" },
   {
     label: "Association",
-    href: "/association",
+    href: "/notre-association",
     icon: Building,
     color: "bg-purple-500",
   },
