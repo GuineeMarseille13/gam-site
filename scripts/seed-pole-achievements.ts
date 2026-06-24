@@ -94,10 +94,7 @@ async function run() {
         isActive: true,
       },
     })
-    console.log(`✅ ${image.title ?? image.url}`)
   }
-
-  console.log(`\n${staticImages.length} réalisation(s) importée(s).`)
 }
 
 run()
