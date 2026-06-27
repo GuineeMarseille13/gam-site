@@ -1,23 +1,43 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Check, ShoppingBag } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/helpers/format-currency";
+import { CART_ADDED_FEEDBACK_MS } from "../_constants/cart-feedback";
 import type { Product } from "../_schemas/product.schema";
-import { usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
   onAdd: (product: Product) => void;
-  /** Mise en évidence (ex: après redirection depuis "Commander") */
+  /** Mise en évidence (ex: après redirection depuis "Commander" ou ajout depuis la boutique) */
   isHighlighted?: boolean;
 }
 
+/**
+ * Composant: ProductCard
+ * Rôle: Afficher un produit boutique avec action d'ajout au panier et retour visuel immédiat.
+ */
 export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCardProps) {
   const pathname = usePathname();
   const isBoutique = pathname === "/boutique";
+  const [justAdded, setJustAdded] = useState(false);
+  const showAddedFeedback = isHighlighted || justAdded;
+
+  useEffect(() => {
+    if (!justAdded) return;
+    const timer = window.setTimeout(() => setJustAdded(false), CART_ADDED_FEEDBACK_MS);
+    return () => window.clearTimeout(timer);
+  }, [justAdded]);
+
+  const handleAdd = useCallback(() => {
+    if (!product.inStock) return;
+    onAdd(product);
+    setJustAdded(true);
+  }, [onAdd, product]);
 
   return (
     <motion.div
@@ -30,12 +50,12 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
     >
       <motion.div
         className={`group h-full rounded-xl sm:rounded-2xl p-[2px] bg-gradient-to-br from-amber-200 via-yellow-200 to-lime-200 hover:from-amber-300 hover:via-yellow-300 hover:to-lime-300 shadow-lg shadow-amber-100/50 transition-all duration-300 ${
-          isHighlighted
+          showAddedFeedback
             ? "ring-2 ring-emerald-500 ring-offset-2 sm:ring-offset-4 shadow-emerald-200/60 shadow-xl"
             : ""
         }`}
         whileHover={{ y: -4, transition: { duration: 0.2 } }}
-        animate={isHighlighted ? { scale: [1, 1.02, 1] } : {}}
+        animate={showAddedFeedback ? { scale: [1, 1.02, 1] } : {}}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <Card className="h-full py-0 bg-white shadow-none rounded-xl sm:rounded-2xl overflow-hidden">
@@ -67,7 +87,7 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
                   -{product.discount}%
                 </span>
               )}
-              {isHighlighted && (
+              {showAddedFeedback && (
                 <motion.div
                   initial={{ opacity: 0, y: 12, scale: 0.94 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -109,18 +129,41 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
 
                 {/* Bouton - pleine largeur sur mobile */}
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={showAddedFeedback ? undefined : { scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => onAdd(product)}
+                  onClick={handleAdd}
                   disabled={!product.inStock}
-                  className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all cursor-pointer shadow-lg shrink-0 min-h-[44px] ${
-                    product.inStock
-                      ? "bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 text-white hover:shadow-orange-200/50 hover:shadow-xl"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  aria-label={
+                    showAddedFeedback
+                      ? `${product.name} ajouté au panier`
+                      : isBoutique
+                        ? `Ajouter ${product.name} au panier`
+                        : `Commander ${product.name}`
+                  }
+                  className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all cursor-pointer shadow-lg shrink-0 min-h-[44px] min-w-[7.5rem] ${
+                    !product.inStock
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : showAddedFeedback
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-emerald-200/50"
+                        : "bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 text-white hover:shadow-orange-200/50 hover:shadow-xl"
                   }`}
                 >
-                  {product.inStock && <ShoppingBag className="w-4 h-4 shrink-0" />}
-                  <span>{product.inStock ? (isBoutique ? "Ajouter" : "Commander") : "Épuisé"}</span>
+                  {product.inStock && (
+                    showAddedFeedback ? (
+                      <Check className="w-4 h-4 shrink-0" aria-hidden />
+                    ) : (
+                      <ShoppingBag className="w-4 h-4 shrink-0" aria-hidden />
+                    )
+                  )}
+                  <span aria-live="polite">
+                    {!product.inStock
+                      ? "Épuisé"
+                      : showAddedFeedback
+                        ? "Ajouté"
+                        : isBoutique
+                          ? "Ajouter"
+                          : "Commander"}
+                  </span>
                 </motion.button>
               </div>
             </div>

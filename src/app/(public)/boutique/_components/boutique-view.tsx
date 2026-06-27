@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { CART_OPEN_EVENT, CART_TOGGLE_EVENT } from "../_services/cart-storage";
+import { CART_ADDED_FEEDBACK_MS } from "../_constants/cart-feedback";
 import { useCart } from "../_hooks/use-cart";
 import { useActiveProducts } from "../_hooks/use-active-products";
 import { ProductCard } from "./product-card";
@@ -13,8 +14,6 @@ import type { Product } from "../_schemas/product.schema";
 import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title";
 import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
 
-/** Durée de la mise en évidence du produit après redirection (ms) */
-const HIGHLIGHT_DURATION_MS = 4500;
 /** Délai avant le scroll pour laisser le DOM se rendre (ms) */
 const SCROLL_DELAY_MS = 150;
 
@@ -28,6 +27,40 @@ export function ShopView() {
   const router = useRouter();
   const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null);
   const urlHandledRef = useRef(false);
+  const shouldScrollToProductRef = useRef(false);
+  const highlightTimerRef = useRef<number | null>(null);
+
+  const setProductHighlight = useCallback((productId: string, options?: { scroll?: boolean }) => {
+    setHighlightedProductId(productId);
+    if (options?.scroll) {
+      shouldScrollToProductRef.current = true;
+    }
+
+    if (highlightTimerRef.current) {
+      window.clearTimeout(highlightTimerRef.current);
+    }
+
+    highlightTimerRef.current = window.setTimeout(() => {
+      setHighlightedProductId(null);
+      highlightTimerRef.current = null;
+    }, CART_ADDED_FEEDBACK_MS);
+  }, []);
+
+  const handleAddToCart = useCallback(
+    (product: Product) => {
+      add({ product, quantity: 1 });
+      setProductHighlight(String(product.id));
+    },
+    [add, setProductHighlight],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimerRef.current) {
+        window.clearTimeout(highlightTimerRef.current);
+      }
+    };
+  }, []);
 
   // 1) Traitement des paramètres URL (openCart, product) - une seule fois au mount
   useEffect(() => {
@@ -37,7 +70,7 @@ export function ShopView() {
     const productId = searchParams.get("product");
 
     if (productId) {
-      setHighlightedProductId(productId);
+      setProductHighlight(productId, { scroll: true });
     }
 
     if (openCartParam === "true") {
@@ -51,11 +84,11 @@ export function ShopView() {
         : window.location.pathname;
       router.replace(newUrl, { scroll: false });
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, setProductHighlight]);
 
-  // 2) Scroll vers le produit et retrait de la mise en évidence - quand le catalogue est chargé
+  // Scroll vers le produit mis en évidence après redirection depuis l'accueil
   useEffect(() => {
-    if (!highlightedProductId || products.length === 0) return;
+    if (!highlightedProductId || !shouldScrollToProductRef.current || products.length === 0) return;
 
     const productIdStr = String(highlightedProductId);
     const hasProduct = products.some((p) => String(p.id) === productIdStr);
@@ -64,15 +97,11 @@ export function ShopView() {
     const scrollTimer = window.setTimeout(() => {
       const element = document.getElementById(`product-${productIdStr}`);
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      shouldScrollToProductRef.current = false;
     }, SCROLL_DELAY_MS);
-
-    const clearTimer = window.setTimeout(() => {
-      setHighlightedProductId(null);
-    }, HIGHLIGHT_DURATION_MS);
 
     return () => {
       window.clearTimeout(scrollTimer);
-      window.clearTimeout(clearTimer);
     };
   }, [highlightedProductId, products]);
 
@@ -143,7 +172,7 @@ export function ShopView() {
           <ProductCard
             key={p.id}
             product={p}
-            onAdd={(prod) => add({ product: prod, quantity: 1 })}
+            onAdd={handleAddToCart}
             isHighlighted={highlightedProductId != null && String(p.id) === String(highlightedProductId)}
           />
         ))}

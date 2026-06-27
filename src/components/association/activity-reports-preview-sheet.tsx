@@ -79,18 +79,18 @@ export function ActivityReportsPreviewSheet({
               </SheetClose>
             </SheetHeader>
 
-            <div className="relative min-h-0 flex-1 bg-muted/30 p-4 sm:p-5">
+            <div className="relative flex-1 bg-muted/30 p-4 sm:p-5">
               <div
                 className={cn(
-                  "relative overflow-hidden rounded-2xl border border-border/60 bg-background shadow-inner",
-                  "min-h-[min(70vh,640px)] w-full ring-1 ring-black/[0.03] dark:ring-white/[0.04]",
+                  "relative overflow-hidden rounded-t-2xl border border-border/60 bg-background shadow-inner",
+                  "h-full w-full ring-1 ring-black/[0.03] dark:ring-white/[0.04]",
                 )}
               >
                 <iframe
                   key={report.id}
                   src={`/api/report-activities/preview?reportId=${encodeURIComponent(report.id)}`}
                   title={title}
-                  className="absolute inset-0 h-full w-full border-0"
+                  className="absolute inset-0 h-full w-full"
                   loading="lazy"
                 />
               </div>
