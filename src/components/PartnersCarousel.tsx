@@ -112,6 +112,9 @@ export default function PartnersCarousel({
     `partner-${partner.id}-${index}`;
 
   const snapClass = layout.isSingleSlide ? "snap-center" : "snap-start";
+  const isMobileTrack = layout.trackWidth > 0 && layout.trackWidth < 640;
+  const scrollGutter =
+    isMobileTrack && layout.isSingleSlide ? 16 : layout.gutter;
 
   return (
     <section
@@ -130,22 +133,26 @@ export default function PartnersCarousel({
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <SectionSplitHeading title={title} tone="partners" />
+          <SectionSplitHeading
+            title={title}
+            tone="partners"
+            headingClassName="text-3xl sm:text-4xl md:text-5xl"
+          />
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:mt-5 sm:text-lg"
+            className="mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-7 text-gray-600 sm:mt-5 sm:px-0 sm:text-lg sm:leading-relaxed"
           >
             {PARTNERS_INTRO}
           </motion.p>
         </motion.div>
       </div>
 
-      <div className="relative z-10 mt-8 sm:mt-10 md:mt-12">
+      <div className="relative z-10 -mx-4 mt-6 sm:mx-0 sm:mt-10 md:mt-12">
         <div
-          className="relative mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8"
+          className="relative mx-auto w-full max-w-[100rem] px-0 sm:px-6 lg:px-8"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -166,7 +173,7 @@ export default function PartnersCarousel({
               className="overflow-x-auto touch-pan-y overscroll-x-contain snap-x snap-mandatory scroll-smooth py-4 sm:py-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               style={{
                 scrollbarWidth: "none",
-                scrollPaddingInline: `${layout.gutter}px`,
+                scrollPaddingInline: `${scrollGutter}px`,
               }}
               {...(isLoopEnabled
                 ? { "aria-roledescription": "carousel" as const }
@@ -176,7 +183,7 @@ export default function PartnersCarousel({
                 className={`flex min-w-max ${canScroll ? "" : "w-full justify-center"}`}
                 style={{
                   gap: layout.gap,
-                  paddingInline: layout.gutter,
+                  paddingInline: scrollGutter,
                 }}
               >
                 {displayPartners.map((partner, index) => (

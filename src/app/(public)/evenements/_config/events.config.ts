@@ -94,9 +94,10 @@ export const ANIMATION_CONFIG = {
 
 // Configuration des styles (classes CSS)
 export const STYLE_CONFIG = {
-  container: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10",
+  container:
+    "mx-auto w-full max-w-7xl px-0 py-6 sm:px-6 sm:py-10 lg:px-8",
   hero: {
-    wrapper: "text-center mb-10 sm:mb-14",
+    wrapper: "mb-8 text-center sm:mb-14",
     title:
       "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-3 sm:mb-4",
     description:
@@ -105,19 +106,19 @@ export const STYLE_CONFIG = {
       "mt-6 h-1 w-20 mx-auto bg-gradient-to-r from-amber-400 to-amber-500 rounded-full",
   },
   stats: {
-    grid: "grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-8 sm:mb-12",
+    grid: "mb-8 grid grid-cols-1 gap-3 sm:mb-12 sm:grid-cols-2 sm:gap-5",
     card:
-      "group rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-sm p-4 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-300 text-center",
+      "group w-full rounded-xl border border-gray-200/80 bg-white/90 p-4 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-amber-100/50 sm:rounded-2xl sm:p-5",
     value:
       "text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-amber-600 via-yellow-600 to-lime-600 bg-clip-text text-transparent mb-2",
     label: "text-sm sm:text-base text-gray-600 font-medium",
   },
   yearSection: {
     wrapper:
-      "rounded-2xl sm:rounded-3xl border border-slate-200/50 bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+      "w-full overflow-hidden rounded-xl border border-slate-200/50 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:rounded-2xl md:rounded-3xl",
     inner: "overflow-hidden",
     button:
-      "w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 flex items-center justify-between hover:bg-slate-50/80 transition-colors duration-300 group relative overflow-hidden",
+      "group relative flex w-full items-center justify-between overflow-hidden px-3 py-4 transition-colors duration-300 hover:bg-slate-50/80 sm:px-6 sm:py-5 md:px-8 md:py-6",
     shine:
       "absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out",
     indicator:
@@ -127,11 +128,12 @@ export const STYLE_CONFIG = {
     count: "text-sm text-slate-500 mt-0.5",
     chevron:
       "w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-amber-500 transition-colors duration-300",
-    content: "px-4 sm:px-6 md:px-8 pt-5 sm:pt-6 pb-6 sm:pb-8 space-y-6 sm:space-y-8 bg-slate-50/30",
+    content:
+      "space-y-4 bg-slate-50/30 px-3 pt-4 pb-5 sm:space-y-6 sm:px-6 sm:pt-6 sm:pb-8 md:space-y-8 md:px-8",
   },
   eventCard: {
     wrapper:
-      "group relative rounded-2xl sm:rounded-3xl border border-slate-200/60 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:border-amber-200/50 transition-all duration-300 ease-out overflow-hidden",
+      "group relative w-full min-w-0 overflow-hidden rounded-xl border border-slate-200/60 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out hover:border-amber-200/50 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] sm:rounded-2xl sm:p-6 md:rounded-3xl",
     badge:
       "inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-amber-900 bg-amber-100/90 rounded-full border border-amber-200/50",
     location: "text-xs sm:text-sm text-slate-500 flex items-center gap-1.5",
@@ -140,24 +142,31 @@ export const STYLE_CONFIG = {
     description: "text-sm sm:text-base text-slate-600 leading-relaxed mb-4 sm:mb-6",
   },
   mediaGallery: {
-    container: "space-y-3 sm:space-y-4 mt-1",
+    container: "mt-2 w-full min-w-0 space-y-3 sm:mt-1 sm:space-y-4",
     mediaWrapper:
-      "relative aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-gray-100 group shadow-lg",
+      "relative aspect-[4/3] touch-pan-y overflow-hidden rounded-xl bg-muted shadow-md ring-1 ring-border/40 sm:aspect-video sm:rounded-2xl",
     overlay:
-      "absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end p-3 sm:p-4",
+      "pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3 pb-3 pt-10 sm:px-4 sm:pb-4 sm:pt-12",
+    overlayText:
+      "line-clamp-2 text-pretty text-left text-xs font-medium leading-snug text-white drop-shadow-md sm:text-sm",
+    expandHint:
+      "pointer-events-none absolute top-3 left-3 z-[6] inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/45 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-md sm:hidden",
     navButton:
-      "absolute top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-md shadow-xl flex items-center justify-center hover:bg-white transition-all duration-300 opacity-0 group-hover:opacity-100 z-10 border border-gray-200",
-    navButtonLeft: "left-3 sm:left-5",
-    navButtonRight: "right-3 sm:right-5",
+      "absolute top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/95 shadow-lg backdrop-blur-sm transition-opacity duration-200 sm:size-11 sm:opacity-0 sm:group-hover/stage:opacity-100",
+    navButtonLeft: "left-2 sm:left-4",
+    navButtonRight: "right-2 sm:right-4",
     indicator:
-      "absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/20",
-    thumbnails: "flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide",
+      "absolute top-3 right-3 z-10 rounded-full border border-white/20 bg-black/55 px-2.5 py-1 backdrop-blur-md sm:top-auto sm:right-auto sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 sm:px-3 sm:py-1.5",
+    thumbnailsWrapper: "space-y-2",
+    thumbnailsLabel:
+      "text-xs font-medium text-muted-foreground sm:text-sm",
+    thumbnails:
+      "flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
     thumbnail:
-      "flex-shrink-0 relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer",
-    thumbnailActive:
-      "border-amber-500 shadow-lg shadow-amber-500/30 scale-105",
+      "relative shrink-0 snap-center size-[4.5rem] cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-300 sm:size-20 sm:rounded-xl",
+    thumbnailActive: "border-amber-500 opacity-100 shadow-md shadow-amber-500/25",
     thumbnailInactive:
-      "border-gray-200 hover:border-amber-300 opacity-70 hover:opacity-100",
+      "border-border/70 opacity-80 hover:border-amber-300 hover:opacity-100",
   },
   emptyState: {
     wrapper: "text-center py-16 md:py-24",

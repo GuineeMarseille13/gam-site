@@ -81,14 +81,14 @@ export function PartnerCard({
       className="group relative h-full min-w-0 w-full"
     >
       <div
-        className="pointer-events-none absolute -inset-2 rounded-2xl opacity-100"
+        className="pointer-events-none absolute -inset-2 hidden rounded-2xl opacity-100 sm:block"
         style={{ background: "transparent", boxShadow: FLOAT_SHADOW }}
         aria-hidden
       />
 
       <div
         className={cn(
-          "relative h-[420px] w-full min-w-0 sm:h-[450px]",
+          "relative h-auto w-full min-w-0 sm:h-[450px]",
           "rounded-2xl",
           "bg-gradient-to-br from-white via-gray-50 to-white",
           "border border-gray-200/60 transition-all duration-500 ease-out",
@@ -123,8 +123,8 @@ export function PartnerCard({
             className={cn(
               "relative w-full shrink-0 overflow-hidden transition-[height] duration-300 ease-out",
               isDescriptionExpanded
-                ? "h-[176px] sm:h-[192px]"
-                : "h-[220px] sm:h-[240px]",
+                ? "h-[160px] sm:h-[192px]"
+                : "aspect-[16/10] sm:aspect-auto sm:h-[240px]",
             )}
           >
             {logo ? (
@@ -138,7 +138,7 @@ export function PartnerCard({
                   alt={`Logo ${name}`}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 92vw, (max-width: 1280px) 400px, 420px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 400px, 420px"
                 />
               </motion.div>
             ) : (
@@ -168,7 +168,7 @@ export function PartnerCard({
             >
               <h3
                 id={`partner-${id}-title`}
-                className="shrink-0 min-w-0 break-words bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-xl font-extrabold text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:text-2xl"
+                className="min-w-0 shrink-0 break-words bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-lg font-extrabold text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:text-2xl"
               >
                 {name}
               </h3>
@@ -186,7 +186,7 @@ export function PartnerCard({
                 href={website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex shrink-0 items-center gap-2 text-blue-600 transition-colors duration-300 group-hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:mt-4"
+                className="mt-3 flex min-h-[44px] shrink-0 items-center gap-2 text-blue-600 transition-colors duration-300 group-hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:mt-4"
                 aria-label={`Visiter le site de ${name}`}
                 whileHover={{ x: 4 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -195,7 +195,7 @@ export function PartnerCard({
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </motion.a>
             ) : (
-              <div className="mt-3 flex shrink-0 items-center gap-2 text-gray-400 sm:mt-4">
+              <div className="mt-3 flex min-h-[44px] shrink-0 items-center gap-2 text-gray-400 sm:mt-4">
                 <span className="text-sm font-semibold">Site non disponible</span>
               </div>
             )}

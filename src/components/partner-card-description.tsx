@@ -25,6 +25,9 @@ const EXPANDED_SCROLL_MIN_H =
 const TEXT_CLASSES =
   "text-sm leading-relaxed text-gray-600 sm:text-base";
 
+const TRUNCATE_CLASSES =
+  "line-clamp-3 sm:line-clamp-2";
+
 /**
  * Description tronquée à 2 lignes ; déploiement dans la carte au survol (desktop) ou au tap.
  */
@@ -126,7 +129,7 @@ export function PartnerCardDescription({
             TEXT_CLASSES,
             !isExpanded &&
               (!hasMeasured || isTruncated) &&
-              "line-clamp-2",
+              TRUNCATE_CLASSES,
             isExpanded && "text-gray-700",
           )}
         >
@@ -138,7 +141,7 @@ export function PartnerCardDescription({
         <button
           type="button"
           className={cn(
-            "mt-1.5 inline-flex shrink-0 items-center gap-1 self-start rounded-md",
+            "mt-1.5 inline-flex min-h-[44px] shrink-0 items-center gap-1 self-start rounded-md sm:min-h-0",
             "text-xs font-semibold text-blue-600 transition-colors duration-200",
             "hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2",
             "focus-visible:ring-blue-500/30 focus-visible:ring-offset-1",

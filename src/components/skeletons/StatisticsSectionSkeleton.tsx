@@ -3,7 +3,6 @@
 import { cn } from "@/helpers/utils";
 import { PulseBar } from "@/components/skeletons/home-skeleton-primitives";
 import { Card, CardContent } from "@/components/ui/card";
-import { useIsMobile } from "@/hooks/useIsMobile";
 
 const STAT_BORDER_CLASSES = [
   "border-theme-red/20 shadow-theme-red/10",
@@ -21,10 +20,6 @@ const STAT_GRADIENT_BG = [
 
 const SKELETON_CARD_COUNT = 4;
 
-/**
- * Carte — même gabarit que `StatisticCard` : `h-24`, `border-2`, overlay dégradé ~10 %,
- * `CardContent` : **[ chiffre large | libellé + icône ]** avec `space-x-3`.
- */
 function StatisticCardSkeleton({ index }: { index: number }) {
   const borderClass = STAT_BORDER_CLASSES[index % STAT_BORDER_CLASSES.length];
   const gradClass = STAT_GRADIENT_BG[index % STAT_GRADIENT_BG.length];
@@ -32,7 +27,8 @@ function StatisticCardSkeleton({ index }: { index: number }) {
   return (
     <Card
       className={cn(
-        "relative h-24 overflow-hidden border-2 bg-card/95 shadow-sm dark:bg-card",
+        "relative w-full gap-0 overflow-hidden border-2 bg-card/95 py-0 shadow-sm dark:bg-card",
+        "sm:h-24 sm:gap-6 sm:py-6",
         borderClass,
       )}
     >
@@ -41,29 +37,16 @@ function StatisticCardSkeleton({ index }: { index: number }) {
         aria-hidden
       />
 
-      <CardContent className="relative z-10 flex h-full min-w-0 items-center justify-center p-4">
-        <div className="mr-4 shrink-0">
-          <PulseBar className="h-10 w-14 rounded-md md:h-12 md:w-16 lg:h-14 lg:w-[4.25rem]" />
-        </div>
-        <div className="flex min-w-0 flex-1 items-center space-x-3">
-          <div className="min-w-0 flex-1">
-            <PulseBar className="h-4 w-full max-w-[200px] md:h-[1.125rem]" />
-          </div>
-          <PulseBar className="size-8 shrink-0 rounded-md md:size-10" />
-        </div>
+      <CardContent className="relative z-10 grid w-full min-w-0 grid-cols-[3rem_1fr_auto] items-center gap-x-2.5 px-3.5 py-3 sm:flex sm:h-full sm:items-center sm:justify-center sm:gap-0 sm:p-4">
+        <PulseBar className="h-8 w-10 shrink-0 rounded-md sm:mr-4 sm:h-10 sm:w-14 md:h-12 md:w-16" />
+        <PulseBar className="h-[15px] w-full rounded-sm sm:h-4 sm:max-w-[200px] md:h-[1.125rem]" />
+        <PulseBar className="size-7 shrink-0 rounded-md sm:ml-3 sm:size-8 md:size-10" />
       </CardContent>
     </Card>
   );
 }
 
-/**
- * Skeleton « Nos Réalisations » — aligné sur `StatisticsSection` :
- * `py-10 md:py-12 px-4`, overlay, `container`, titre dégradé, sous-titre `max-w-2xl`,
- * grille `flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5 max-w-6xl`, `flex-col` + `w-full` sur mobile.
- */
 export function StatisticsSectionSkeleton() {
-  const isMobile = useIsMobile();
-
   return (
     <section
       className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-10 md:py-12"
@@ -82,17 +65,9 @@ export function StatisticsSectionSkeleton() {
           <PulseBar className="mx-auto h-7 max-w-2xl rounded-md md:h-8" />
         </div>
 
-        <div
-          className={cn(
-            "mx-auto flex max-w-6xl flex-wrap justify-center gap-4 md:gap-6 sm:gap-5",
-            isMobile && "flex-col",
-          )}
-        >
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 sm:flex sm:max-w-none sm:flex-wrap sm:justify-center sm:gap-4 md:gap-6 lg:gap-5">
           {Array.from({ length: SKELETON_CARD_COUNT }).map((_, i) => (
-            <div
-              key={i}
-              className={cn("min-w-0 shrink-0", isMobile ? "w-full" : "")}
-            >
+            <div key={i} className="min-w-0 w-full sm:w-auto sm:shrink-0">
               <StatisticCardSkeleton index={i} />
             </div>
           ))}

@@ -131,7 +131,7 @@ export default function Carousel({
   if (totalItems === 0) {
     return (
       <div
-        className={`relative w-full h-96 md:h-[500px] rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${className}`}
+        className={`relative flex h-[min(58dvh,520px)] min-h-[220px] w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 sm:h-96 md:h-[500px] ${className}`}
       >
         <p className="text-gray-500">Aucune image à afficher</p>
       </div>
@@ -141,8 +141,8 @@ export default function Carousel({
   const currentItem = safeItems[currentIndex];
 
   return (
-    <div
-      className={`relative w-full max-w-7xl mx-auto h-[60vh] md:h-[70vh] lg:h-[75vh] overflow-hidden rounded-xl bg-gray-900 group ${className}`}
+      <div
+        className={`relative w-full overflow-hidden rounded-xl bg-gray-900 group shadow-lg h-[min(58dvh,520px)] min-h-[220px] sm:h-[60vh] md:h-[70vh] lg:h-[75vh] ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -186,7 +186,7 @@ export default function Carousel({
               height={600}
               priority={currentIndex === 0}
               loading={currentIndex === 0 ? "eager" : "lazy"}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 640px) 99vw, (max-width: 1280px) 100vw, 80rem"
             />
 
             {/* Dégradés modernes et doux sur les 4 côtés */}
@@ -212,15 +212,15 @@ export default function Carousel({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white z-10"
+                className="absolute bottom-0 left-0 right-0 z-10 p-4 pb-14 text-white sm:p-6 sm:pb-16 md:p-8 md:pb-20"
               >
                 {currentItem.title && (
-                  <h3 className="text-2xl md:text-4xl font-bold mb-3 drop-shadow-2xl leading-tight">
+                  <h3 className="mb-2 text-xl font-bold leading-tight drop-shadow-2xl sm:mb-3 sm:text-2xl md:text-4xl">
                     {currentItem.title}
                   </h3>
                 )}
                 {currentItem.description && (
-                  <p className="text-sm md:text-lg opacity-95 max-w-3xl drop-shadow-lg leading-relaxed">
+                  <p className="line-clamp-2 max-w-3xl text-sm leading-relaxed opacity-95 drop-shadow-lg sm:line-clamp-none sm:text-base md:text-lg">
                     {currentItem.description}
                   </p>
                 )}
@@ -255,17 +255,19 @@ export default function Carousel({
 
       {/* Dots Indicator modernisés */}
       {showDots && totalItems > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 z-10">
+        <div className="absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-1.5 overflow-x-auto rounded-full border border-white/20 bg-black/25 px-3 py-1.5 backdrop-blur-md sm:bottom-6 sm:max-w-[calc(100%-3rem)] sm:gap-3 sm:px-4 sm:py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {safeItems.map((item, index) => (
             <button
               key={`carousel-dot-${item.id || index}`}
+              type="button"
               onClick={() => goToSlide(index)}
-              className={`transition-all duration-300 ${
+              className={`shrink-0 transition-all duration-300 ${
                 index === currentIndex
-                  ? "w-16 h-4 bg-white rounded-full scale-110"
-                  : "w-4 h-4 bg-white/50 hover:bg-white/70 rounded-full hover:scale-110"
+                  ? "h-2 w-8 rounded-full bg-white sm:h-4 sm:w-16"
+                  : "size-2 rounded-full bg-white/50 hover:bg-white/70 sm:size-4"
               }`}
               aria-label={`Aller à l'image ${index + 1}`}
+              aria-current={index === currentIndex ? "true" : undefined}
             />
           ))}
         </div>
@@ -285,7 +287,7 @@ export default function Carousel({
       )}
 
       {/* Indicateur de slide actuel */}
-      <div className="absolute top-4 left-4 bg-black/20 backdrop-blur-md border border-white/20 rounded-full px-3 py-1 text-white text-sm font-medium opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute top-3 left-3 rounded-full border border-white/20 bg-black/25 px-2.5 py-1 text-xs font-medium text-white opacity-80 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 sm:top-4 sm:left-4 sm:px-3 sm:text-sm">
         {currentIndex + 1} / {totalItems}
       </div>
     </div>

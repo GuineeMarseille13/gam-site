@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/helpers/utils";
 import { useCountUp } from "@/hooks/useCountUp";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { SectionSplitHeading } from "@/components/section-split-heading";
 
 interface Statistic {
@@ -84,8 +83,10 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
   return (
     <Card
       className={cn(
-        "relative overflow-hidden border-2 transition-all duration-700 transform",
-        "hover:scale-105 hover:shadow-xl h-24",
+        "relative w-full transform overflow-hidden border-2 transition-all duration-700",
+        "h-auto gap-0 py-0",
+        "sm:h-24 sm:gap-6 sm:py-6",
+        "hover:scale-[1.02] hover:shadow-xl sm:hover:scale-105",
         colors.border,
         colors.shadow,
         shouldAnimate
@@ -128,14 +129,13 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
         ))}
       </div>
 
-      <CardContent className="relative z-10 p-4 h-full flex items-center justify-center min-w-0">
-        {/* Nombre en grand */}
-        <div className="flex-shrink-0 mr-4">
+      <CardContent className="relative z-10 grid w-full min-w-0 grid-cols-[3rem_1fr_auto] items-center gap-x-2.5 px-3.5 py-3 sm:flex sm:h-full sm:items-center sm:justify-center sm:gap-0 sm:p-4">
+        <div className="shrink-0 sm:mr-4">
           <div
             className={cn(
-              "text-3xl md:text-4xl lg:text-5xl font-bold transition-all duration-300 whitespace-nowrap flex items-center justify-center",
+              "whitespace-nowrap text-2xl font-extrabold tabular-nums transition-all duration-300 sm:text-3xl sm:font-bold md:text-4xl lg:text-5xl",
               colors.text,
-              shouldAnimate && "animate-pulse"
+              shouldAnimate && "animate-pulse",
             )}
             style={{
               textShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -145,21 +145,19 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
             {count}
           </div>
         </div>
-        {/* Icône et titre */}
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <div className="flex-1 min-w-0">
-            <p className="text-sm md:text-base font-semibold text-slate-700 leading-tight truncate">
-              {statistic.label}
-            </p>
-          </div>
-          <div
-            className={cn(
-              "text-2xl md:text-3xl transition-transform duration-500 flex-shrink-0",
-              shouldAnimate && "animate-bounce"
-            )}
-          >
-            {statistic.icon}
-          </div>
+
+        <p className="min-w-0 text-[15px] font-semibold leading-[1.35] text-slate-800 break-words sm:flex-1 sm:text-sm sm:leading-tight sm:text-slate-700 md:text-base sm:truncate">
+          {statistic.label}
+        </p>
+
+        <div
+          className={cn(
+            "shrink-0 text-xl leading-none transition-transform duration-500 sm:ml-3 sm:text-2xl md:text-3xl",
+            shouldAnimate && "animate-bounce",
+          )}
+          aria-hidden
+        >
+          {statistic.icon}
         </div>
       </CardContent>
     </Card>
@@ -169,7 +167,6 @@ const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
 const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -216,7 +213,7 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
           />
           <p
             className={cn(
-              "mx-auto mt-3 max-w-2xl text-xl text-slate-600 transition-all duration-1000 delay-300 sm:mt-4",
+              "mx-auto mt-3 max-w-2xl px-1 text-[15px] leading-7 text-slate-600 transition-all duration-1000 delay-300 sm:mt-4 sm:px-0 sm:text-xl",
               isVisible
                 ? "animate-in slide-in-from-top-3 fade-in"
                 : "opacity-0 -translate-y-3"
@@ -227,16 +224,11 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
         </div>
 
         {/* Cartes statistiques */}
-        <div
-          className={cn(
-            "flex flex-wrap justify-center gap-4 md:gap-6 sm:gap-5  mx-auto",
-            isMobile && "flex-col"
-          )}
-        >
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 sm:flex sm:max-w-none sm:flex-wrap sm:justify-center sm:gap-4 md:gap-6 lg:gap-5">
           {statistics.map((stat, index) => (
             <div
               key={stat.id ?? stat.label}
-              className={cn("min-w-0 flex-shrink-0", isMobile ? "w-full" : "")}
+              className="min-w-0 w-full sm:w-auto sm:shrink-0"
             >
               <StatisticCard
                 statistic={stat}

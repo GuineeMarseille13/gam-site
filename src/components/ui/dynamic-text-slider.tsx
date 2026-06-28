@@ -24,7 +24,7 @@ const SIN_THETA = Math.sin(THETA)
 const DEFAULT_TEXT_WIDTH = 408
 
 const TITLE_TYPOGRAPHY =
-  "font-bold tracking-tighter text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
+  "font-bold tracking-tighter text-[clamp(1.375rem,4.8vw,2.25rem)] sm:text-5xl md:text-6xl lg:text-7xl"
 
 type SliderHandle = "left" | "right"
 
@@ -230,12 +230,27 @@ function DynamicTextSlider({
  */
 function DynamicTextSliderTitle({ text, variant, className }: DynamicTextSliderTitleProps) {
   const measureRef = useRef<HTMLSpanElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [textWidth, setTextWidth] = useState(DEFAULT_TEXT_WIDTH)
+  const [scale, setScale] = useState(1)
   const theme = getPageHeroSliderTheme(variant)
 
   useEffect(() => {
     const measure = () => {
-      setTextWidth(measureRef.current?.clientWidth ?? DEFAULT_TEXT_WIDTH)
+      const measured = measureRef.current?.clientWidth ?? DEFAULT_TEXT_WIDTH
+      const containerWidth =
+        containerRef.current?.clientWidth ??
+        containerRef.current?.parentElement?.clientWidth ??
+        window.innerWidth
+
+      const horizontalPadding = 16
+      const sliderTotalWidth = measured + 35
+      const availableWidth = Math.max(0, containerWidth - horizontalPadding)
+      const nextScale =
+        sliderTotalWidth > availableWidth ? availableWidth / sliderTotalWidth : 1
+
+      setTextWidth(measured)
+      setScale(Math.min(1, Math.max(0.72, nextScale)))
     }
 
     measure()
@@ -243,7 +258,9 @@ function DynamicTextSliderTitle({ text, variant, className }: DynamicTextSliderT
 
     const resizeObserver = new ResizeObserver(measure)
     const element = measureRef.current
+    const container = containerRef.current
     if (element) resizeObserver.observe(element)
+    if (container) resizeObserver.observe(container)
 
     return () => {
       window.removeEventListener("resize", measure)
@@ -252,7 +269,10 @@ function DynamicTextSliderTitle({ text, variant, className }: DynamicTextSliderT
   }, [text])
 
   return (
-    <div className={cn("flex justify-center text-center", className)}>
+    <div
+      ref={containerRef}
+      className={cn("flex w-full min-w-0 justify-center text-center", className)}
+    >
       <span
         ref={measureRef}
         aria-hidden
@@ -265,7 +285,12 @@ function DynamicTextSliderTitle({ text, variant, className }: DynamicTextSliderT
         {text}
       </span>
 
-      <DynamicTextSlider width={textWidth} text={text} variant={variant} />
+      <div
+        className="origin-center transition-transform duration-300 ease-out"
+        style={{ transform: `scale(${scale})` }}
+      >
+        <DynamicTextSlider width={textWidth} text={text} variant={variant} />
+      </div>
     </div>
   )
 }

@@ -153,9 +153,13 @@ export function ShopView() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero */}
-      <div className="text-center mb-10 sm:mb-12">
-        <PageHeroMagicTitle text="Boutique de l'association" variant={PAGE_HERO_SLIDER_VARIANT.shop} />
-        <SectionSplitTitleSeparator tone="events" className="mt-2 sm:mt-3" />
+      <div className="mb-10 w-full min-w-0 text-center sm:mb-12">
+        <PageHeroMagicTitle
+          text="Boutique de l'association"
+          variant={PAGE_HERO_SLIDER_VARIANT.shop}
+          className="w-full max-w-full"
+        />
+        <SectionSplitTitleSeparator tone="shop" className="mt-2 sm:mt-3" />
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

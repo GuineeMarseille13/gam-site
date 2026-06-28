@@ -244,13 +244,16 @@ export default function Home() {
         <CarouselSkeleton />
       ) : (
         transformedCarouselItems.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <section
+            aria-label="Carrousel principal"
+            className="relative mx-auto w-[99%] sm:mx-auto sm:w-full sm:max-w-7xl sm:px-6 lg:px-8"
+          >
             <Carousel
               items={transformedCarouselItems}
               {...CAROUSEL_CONFIG}
-              className="shadow-xl rounded-xl overflow-hidden"
+              className="overflow-hidden rounded-xl shadow-lg sm:shadow-xl"
             />
-          </div>
+          </section>
         )
       )}
 

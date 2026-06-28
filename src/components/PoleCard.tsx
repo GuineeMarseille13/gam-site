@@ -26,8 +26,8 @@ export const PoleCard = ({
 }: PoleCardProps) => {
   const [imgSrc, setImgSrc] = useState<string | undefined>(imageProp);
   return (
-    <div className="pt-8 pb-4 px-4 sm:pt-10 sm:pb-6 sm:px-6 overflow-hidden">
-      <Link href={`/poles/${slug}`} className="block">
+    <div className="w-full px-0 pt-4 pb-3 sm:px-6 sm:pt-10 sm:pb-6">
+      <Link href={`/poles/${slug}`} className="block w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +39,8 @@ export const PoleCard = ({
           }}
           whileHover={{ y: -12, scale: 1.02 }}
           className={cn(
-            "group relative w-full max-w-[300px] sm:w-[280px] md:w-[300px] h-[420px] sm:h-[450px]",
+            "group relative mx-auto w-full sm:max-w-[300px] sm:w-[280px] md:w-[300px]",
+            "h-auto sm:h-[450px]",
             "rounded-2xl",
             "bg-gradient-to-br from-white via-gray-50 to-white",
             "border border-gray-200/60 group-hover:border-transparent",
@@ -96,8 +97,8 @@ export const PoleCard = ({
             }}
             transition={{ duration: 0.3 }}
           >
-            {/* Section image avec overlay - hauteur fixe identique pour toutes les images */}
-            <div className="relative w-full h-[280px] overflow-hidden">
+            {/* Section image — ratio plus compact sur mobile, hauteur fixe dès sm */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-auto sm:h-[280px]">
               {imgSrc ? (
                 <motion.div
                   whileHover={{ scale: 1.1 }}
@@ -108,7 +109,7 @@ export const PoleCard = ({
                     src={imgSrc}
                     alt={title}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 280px, 300px"
                     className="object-cover"
                     priority={index < 3}
                     onError={() => setImgSrc(undefined)}
@@ -127,30 +128,27 @@ export const PoleCard = ({
             </div>
 
             {/* Section contenu */}
-            <div className="flex-1 flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-white to-gray-50/50">
+            <div className="flex flex-col justify-between bg-gradient-to-b from-white to-gray-50/50 p-5 sm:flex-1 sm:p-6">
               <div>
-                {/* Titre avec effet de gradient */}
-                <motion.h3 className="text-xl sm:text-2xl font-extrabold mb-2 sm:mb-3 bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 transition-all duration-300">
+                <motion.h3 className="mb-2 text-lg font-extrabold bg-gradient-to-r from-gray-900 via-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 sm:mb-3 sm:text-2xl">
                   {title}
                 </motion.h3>
 
-                {/* Description optionnelle */}
                 {description && (
                   <motion.p
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.15 + 0.2 }}
-                    className="text-sm sm:text-base text-gray-600 leading-relaxed line-clamp-2"
+                    className="text-sm leading-relaxed text-gray-600 line-clamp-3 sm:line-clamp-2 sm:text-base"
                   >
                     {description}
                   </motion.p>
                 )}
               </div>
 
-              {/* Bouton d'action avec animation */}
               <motion.div
-                className="mt-4 flex items-center gap-2 text-blue-600 group-hover:text-indigo-600 transition-colors duration-300"
+                className="mt-4 flex min-h-[44px] items-center gap-2 text-blue-600 transition-colors duration-300 group-hover:text-indigo-600"
                 whileHover={{ x: 4 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/helpers/utils";
 import type { Volunteer } from "@/app/_services/home";
+import { FloatingVolunteerAvatar } from "@/components/volunteers/floating-volunteer-avatar";
 
 interface FloatingVolunteer extends Volunteer {
   x: number;
@@ -22,9 +23,41 @@ interface VolunteersSectionProps {
 export default function VolunteersSection({ volunteers }: VolunteersSectionProps) {
   const [floatingVolunteers, setFloatingVolunteers] = useState<FloatingVolunteer[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [tappedVolunteerId, setTappedVolunteerId] = useState<string | null>(null);
+  const [prefersHoverTooltip, setPrefersHoverTooltip] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const sync = () => setPrefersHoverTooltip(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (prefersHoverTooltip || !tappedVolunteerId) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest("[data-volunteer-avatar]")) return;
+      setTappedVolunteerId(null);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [prefersHoverTooltip, tappedVolunteerId]);
+
+  const handleVolunteerTap = useCallback(
+    (volunteerId: string) => {
+      if (prefersHoverTooltip) return;
+      setTappedVolunteerId((current) => (current === volunteerId ? null : volunteerId));
+    },
+    [prefersHoverTooltip],
+  );
 
   // Observer pour déclencher l'animation quand la section est visible
   useEffect(() => {
@@ -318,56 +351,17 @@ export default function VolunteersSection({ volunteers }: VolunteersSectionProps
                 : "opacity-0 translate-x-16"
             )}
           >
-            <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
+            <div className="absolute inset-0 w-full h-full overflow-hidden max-sm:overflow-visible rounded-3xl">
               {floatingVolunteers.map((volunteer, index) => (
-                <div
+                <FloatingVolunteerAvatar
                   key={volunteer.id}
-                  className="absolute transition-none"
-                  style={{
-                    left: `${volunteer.x}px`,
-                    top: `${volunteer.y}px`,
-                    transform: `scale(${volunteer.scale})`,
-                    opacity: volunteer.opacity,
-                    animationDelay: `${volunteer.animationDelay}ms`,
-                  }}
-                >
-                  <div className="relative group cursor-pointer">
-                    {/* Halos colorés */}
-                    <div className="absolute -inset-4 bg-gradient-to-r from-theme-red/20 via-theme-yellow/20 to-theme-green/20 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
-                    <div
-                      className="absolute -inset-3 bg-gradient-to-r from-theme-green/15 via-theme-blue/15 to-theme-red/15 rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-500"
-                      style={{ animationDelay: `${index * 0.5}s` }}
-                    />
-                    <div className="absolute -inset-2 bg-gradient-to-r from-theme-yellow/25 via-theme-red/25 to-theme-green/25 rounded-full blur-md opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
-
-                    {/* Avatar principal */}
-                    <Avatar className="w-16 h-16 relative z-10 border-4 border-white shadow-2xl group-hover:scale-125 transition-all duration-500 group-hover:rotate-12">
-                      <AvatarImage
-                        src={volunteer.image}
-                        alt={volunteer.name}
-                        className="object-cover"
-                      />
-                      <AvatarFallback className="bg-gradient-to-br from-theme-red to-theme-yellow text-white font-bold text-lg">
-                        {volunteer.initials}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none z-100">
-                      <div className="bg-gradient-to-r from-gray-900 to-black text-white text-sm px-4 py-3 rounded-xl whitespace-nowrap shadow-2xl border border-theme-yellow/30">
-                        <div className="font-bold text-theme-yellow">
-                          {volunteer.name}
-                        </div>
-                        {volunteer.role && (
-                          <div className="text-xs text-gray-300 mt-1">
-                            {volunteer.role}
-                          </div>
-                        )}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-6 border-r-6 border-t-6 border-transparent border-t-gray-900" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  volunteer={volunteer}
+                  index={index}
+                  boundaryRef={containerRef}
+                  prefersHoverTooltip={prefersHoverTooltip}
+                  isTooltipOpen={tappedVolunteerId === volunteer.id}
+                  onTap={handleVolunteerTap}
+                />
               ))}
             </div>
 
