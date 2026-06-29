@@ -27,6 +27,18 @@ interface StatisticCardProps {
   delay: number;
 }
 
+/** Rotation équilibrée : chaque couleur du thème apparaît à parts égales. */
+const STAT_CARD_COLOR_SEQUENCE = [
+  "red",
+  "green",
+  "yellow",
+  "blue",
+] as const satisfies readonly Statistic["color"][];
+
+function getStatCardDisplayColor(index: number): Statistic["color"] {
+  return STAT_CARD_COLOR_SEQUENCE[index % STAT_CARD_COLOR_SEQUENCE.length];
+}
+
 const StatisticCard = ({ statistic, isVisible, delay }: StatisticCardProps) => {
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
@@ -198,10 +210,10 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
   return (
     <section
       ref={sectionRef}
-      className="py-10 md:py-12 px-4 bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden"
+      className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-50 px-4 py-10 md:py-12"
     >
-      {/* Background décoratif */}
-      <div className="absolute inset-0 bg-gradient-theme-overlay opacity-30" />
+      {/* Background décoratif multicolore léger */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-theme-overlay opacity-40" />
 
       <div className="container mx-auto relative">
         {/* Titre de section */}
@@ -231,7 +243,10 @@ const StatisticsSection = ({ statistics = [] }: StatisticsSectionProps) => {
               className="min-w-0 w-full sm:w-auto sm:shrink-0"
             >
               <StatisticCard
-                statistic={stat}
+                statistic={{
+                  ...stat,
+                  color: getStatCardDisplayColor(index),
+                }}
                 isVisible={isVisible}
                 delay={index * 200}
               />

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Eye, ShoppingBag } from "lucide-react";
-import Image from "next/image";
+import { ProductImageLightbox } from "@/components/product-image-lightbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/helpers/format-currency";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -279,23 +279,24 @@ export default function ProductsCarousel({
                         isMobile ? "h-36" : "h-48"
                       } bg-gradient-to-br from-gray-50 to-gray-100 group-hover:from-theme-red/5 group-hover:to-theme-yellow/5 transition-all duration-500 overflow-hidden`}
                     >
-                      <Image
+                      <ProductImageLightbox
                         src={product.image}
                         alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        caption={product.name}
+                        price={product.price}
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
 
                       {/* Overlay avec actions - simplifié sur mobile */}
                       {!isMobile && (
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                          <div className="flex space-x-3">
+                        <div className="pointer-events-none absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                          <div className="pointer-events-auto flex space-x-3">
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={() => onViewProduct?.(product)}
                               className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-colors duration-300"
+                              aria-label={`Voir ${product.name}`}
                             >
                               <Eye className="w-5 h-5" />
                             </motion.button>
