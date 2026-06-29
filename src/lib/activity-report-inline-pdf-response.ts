@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { activityReportPdfFilename } from "@/lib/activity-report-pdf-filename"
 import { parseCloudinaryDeliveryUrl } from "@/lib/cloudinary-replacement"
 import {
   cloudinaryImageUploadBase,
@@ -10,13 +11,16 @@ function stripPdfExtensionFromPublicId(publicId: string): string {
   return publicId.replace(/\.pdf$/i, "")
 }
 
+type ActivityReportPdfDisposition = "inline" | "attachment"
+
 /**
- * Construit une réponse HTTP PDF en **inline** pour iframe : tente plusieurs URLs
+ * Construit une réponse HTTP PDF (inline ou téléchargement) : tente plusieurs URLs
  * Cloudinary (`fl_inline`, suffixe `.pdf`, etc.) car la livraison `raw` peut varier.
  */
-export async function getActivityReportInlinePdfNextResponse(
+export async function getActivityReportPdfNextResponse(
   pdfUrl: string,
   year: number,
+  disposition: ActivityReportPdfDisposition = "inline",
 ): Promise<NextResponse> {
   const parsedDelivery = parseCloudinaryDeliveryUrl(pdfUrl)
   if (!parsedDelivery || parsedDelivery.resourceType !== "raw") {
@@ -51,15 +55,23 @@ export async function getActivityReportInlinePdfNextResponse(
   }
 
   const arrayBuffer = await upstream.arrayBuffer()
-  const filename = `rapport-activite-${year}.pdf`
+  const filename = activityReportPdfFilename(year)
 
   return new NextResponse(arrayBuffer, {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${filename}"`,
+      "Content-Disposition": `${disposition}; filename="${filename}"`,
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
     },
   })
+}
+
+/** @deprecated Préférer `getActivityReportPdfNextResponse` avec `disposition: "inline"`. */
+export async function getActivityReportInlinePdfNextResponse(
+  pdfUrl: string,
+  year: number,
+): Promise<NextResponse> {
+  return getActivityReportPdfNextResponse(pdfUrl, year, "inline")
 }

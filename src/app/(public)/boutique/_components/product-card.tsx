@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Check, ShoppingBag } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { ProductImageLightbox } from "@/components/product-image-lightbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/helpers/format-currency";
 import { CART_ADDED_FEEDBACK_MS } from "../_constants/cart-feedback";
@@ -64,19 +64,18 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
             {/* Image - mêmes proportions que la base (340×220) sur tous les breakpoints */}
             <div className="relative w-full aspect-[34/22] sm:aspect-auto sm:h-[200px] lg:h-[220px] overflow-hidden shrink-0">
               {product.image ? (
-                <Image
+                <ProductImageLightbox
                   src={product.image}
                   alt={product.name}
-                  fill
-                  sizes="(max-width: 640px) calc(100vw - 64px), (max-width: 1024px) 320px, 400px"
-                  className="object-cover"
+                  caption={product.name}
+                  price={product.price}
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-50 to-yellow-100">
                   <span className="text-5xl font-bold text-amber-200">{product.name[0]}</span>
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {product.featured && (
                 <span className="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white shadow">
                   Coup de cœur
@@ -92,7 +91,7 @@ export function ProductCard({ product, onAdd, isHighlighted = false }: ProductCa
                   initial={{ opacity: 0, y: 12, scale: 0.94 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="absolute bottom-3 left-3 right-3 flex items-center justify-center"
+                  className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-center justify-center"
                 >
                   <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-semibold tracking-wide shadow-[0_2px_12px_-2px_rgba(16,185,129,0.5),0_0_0_1px_rgba(255,255,255,0.1)_inset] backdrop-blur-md">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/25">

@@ -32,14 +32,15 @@ function NotreAssociationTabsContent() {
   const router = useRouter()
   const tabFromUrl = searchParams.get("tab")
 
-  const initialTab = isValidTab(tabFromUrl) ? tabFromUrl : DEFAULT_TAB
-  const [activeTab, setActiveTab] = useState<AssociationTab>(initialTab)
+  const tabFromUrlValue = isValidTab(tabFromUrl) ? tabFromUrl : DEFAULT_TAB
+  const [activeTab, setActiveTab] = useState<AssociationTab>(tabFromUrlValue)
 
   const handleTabChange = useCallback(
     (newTab: string) => {
-      if (!isValidTab(newTab)) return
+      if (!isValidTab(newTab) || newTab === activeTab) return
 
       setActiveTab(newTab)
+
       const params = new URLSearchParams(searchParams.toString())
 
       if (newTab === DEFAULT_TAB) {
@@ -49,18 +50,16 @@ function NotreAssociationTabsContent() {
       }
 
       const query = params.toString()
-      router.push(query ? `/notre-association?${query}` : "/notre-association", {
+      router.replace(query ? `/notre-association?${query}` : "/notre-association", {
         scroll: false,
       })
     },
-    [router, searchParams],
+    [activeTab, router, searchParams],
   )
 
   useEffect(() => {
-    if (isValidTab(tabFromUrl) && tabFromUrl !== activeTab) {
-      setActiveTab(tabFromUrl)
-    }
-  }, [activeTab, tabFromUrl])
+    setActiveTab(tabFromUrlValue)
+  }, [tabFromUrlValue])
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
@@ -93,17 +92,12 @@ function NotreAssociationTabsContent() {
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full min-w-0">
           <div className="min-w-0">
-            <div className="relative border-border/50 border-b">
-              <div
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-theme-green/20 to-transparent"
-                aria-hidden
-              />
+            <div className="mx-auto max-w-4xl">
               <TabsList
-                variant="line"
                 className="
-                  flex h-auto w-full max-w-5xl snap-x snap-mandatory flex-nowrap justify-start gap-0 overflow-x-auto overflow-y-hidden rounded-none border-0 bg-transparent px-0 pb-0 pt-0
+                  flex h-auto w-full snap-x snap-mandatory flex-nowrap justify-start gap-1.5 overflow-x-auto overflow-y-hidden rounded-2xl border border-border/60 bg-muted/45 p-1.5 shadow-sm
                   [-ms-overflow-style:none] [scrollbar-width:none]
-                  sm:mx-auto sm:max-w-4xl sm:justify-center
+                  sm:justify-center sm:gap-2 sm:p-2
                   [&::-webkit-scrollbar]:hidden
                 "
               >
@@ -112,15 +106,14 @@ function NotreAssociationTabsContent() {
                     key={tab.id}
                     value={tab.id}
                     className="
-                      shrink-0 snap-center rounded-none border-0 px-2.5 py-2 font-medium text-muted-foreground text-xs shadow-none
-                      transition-colors duration-200
-                      after:h-0.5 after:rounded-full
-                      hover:text-foreground
-                      data-[state=active]:text-theme-green data-[state=active]:shadow-none
-                      data-[state=active]:after:bg-theme-green
+                      shrink-0 snap-center cursor-pointer rounded-xl border border-transparent px-3 py-2.5 font-semibold text-muted-foreground text-xs
+                      shadow-none transition-all duration-200
+                      hover:border-border/60 hover:bg-background/80 hover:text-foreground hover:shadow-sm
+                      focus-visible:ring-2 focus-visible:ring-theme-green/35
+                      active:scale-[0.98]
+                      data-[state=active]:border-theme-green/30 data-[state=active]:bg-background data-[state=active]:text-theme-green data-[state=active]:shadow-md
                       dark:data-[state=active]:text-theme-green-light
-                      dark:data-[state=active]:after:bg-theme-green-light
-                      sm:px-4 sm:py-3 sm:text-sm lg:px-5 lg:py-3.5 lg:text-base
+                      sm:px-4 sm:py-3 sm:text-sm lg:px-5 lg:text-base
                     "
                   >
                     {tab.label}

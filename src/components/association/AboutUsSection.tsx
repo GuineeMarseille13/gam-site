@@ -10,10 +10,7 @@ import { AssociationEmptyState } from "@/components/association/association-empt
 import type { AboutUsData, WhatWeOfferSection } from "@/types/association";
 import { cn } from "@/helpers/utils";
 import { AssociationSectionTitle, AssociationSectionTitleSkeleton } from "@/components/association/association-section-title";
-import {
-  AssociationFormattedInline,
-  AssociationFormattedText,
-} from "@/components/association/association-formatted-text";
+import { AssociationExpandableText } from "@/components/association/association-expandable-text";
 
 // Constantes d'animation
 const ANIMATION_CONFIG = {
@@ -163,7 +160,7 @@ function WhoWeAreSection({ data }: { data: { title: string; text: string; image:
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-green-500 to-green-400" />
 
             <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
-              <AssociationFormattedText text={data.text} variant="body" />
+              <AssociationExpandableText text={data.text} variant="body" mode="block" />
 
               {/* Badge informatif */}
               <motion.div
@@ -224,7 +221,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
             <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
               {/* Introduction */}
               {data.intro && (
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -233,8 +230,8 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                   }}
                   className="mb-6 text-left text-base text-gray-700 leading-relaxed sm:mb-8 sm:text-justify sm:text-lg"
                 >
-                  <AssociationFormattedInline text={data.intro} variant="body" />
-                </motion.p>
+                  <AssociationExpandableText text={data.intro} variant="body" mode="inline" />
+                </motion.div>
               )}
 
               {/* Liste des points */}
@@ -256,9 +253,13 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                       <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
-                      <p className="text-gray-700 leading-relaxed text-base sm:text-lg flex-1 pt-1">
-                        <AssociationFormattedInline text={pointText} variant="body" />
-                      </p>
+                      <div className="min-w-0 flex-1 pt-1 text-base leading-relaxed text-gray-700 sm:text-lg">
+                        <AssociationExpandableText
+                          text={pointText}
+                          variant="body"
+                          mode="inline"
+                        />
+                      </div>
                     </motion.div>
                   );
                 })}
@@ -266,7 +267,7 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
 
               {/* Conclusion */}
               {data.conclusion && (
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -275,8 +276,8 @@ function WhatWeOfferSection({ data }: { data: WhatWeOfferSection }) {
                   }}
                   className="mt-6 border-t border-gray-200 pt-5 text-left text-base text-gray-700 leading-relaxed sm:mt-8 sm:pt-6 sm:text-justify sm:text-lg"
                 >
-                  <AssociationFormattedInline text={data.conclusion} variant="body" />
-                </motion.p>
+                  <AssociationExpandableText text={data.conclusion} variant="body" mode="inline" />
+                </motion.div>
               )}
             </CardContent>
           </Card>
