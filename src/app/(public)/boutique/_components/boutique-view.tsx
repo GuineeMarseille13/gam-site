@@ -13,12 +13,13 @@ import { CartDrawer } from "./cart-drawer";
 import type { Product } from "../_schemas/product.schema";
 import { PageHeroMagicTitle, PAGE_HERO_SLIDER_VARIANT } from "@/components/page-hero-magic-title";
 import { SectionSplitTitleSeparator } from "@/components/section-split-heading";
+import { BoutiqueProductsGridSkeleton } from "@/components/skeletons";
 
 /** Délai avant le scroll pour laisser le DOM se rendre (ms) */
 const SCROLL_DELAY_MS = 150;
 
 export function ShopView() {
-  const { data: catalog = [] } = useActiveProducts();
+  const { data: catalog = [], isLoading: isLoadingProducts } = useActiveProducts();
   const products = useMemo<Product[]>(() => catalog, [catalog]);
   const { items, totalPrice, totalQuantity, add, update, remove, clear } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -171,16 +172,20 @@ export function ShopView() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        {products.map((p) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            onAdd={handleAddToCart}
-            isHighlighted={highlightedProductId != null && String(p.id) === String(highlightedProductId)}
-          />
-        ))}
-      </div>
+      {isLoadingProducts ? (
+        <BoutiqueProductsGridSkeleton />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {products.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              onAdd={handleAddToCart}
+              isHighlighted={highlightedProductId != null && String(p.id) === String(highlightedProductId)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Floating Cart Button (hidden on mobile, shown from sm+) */}
       <motion.button
