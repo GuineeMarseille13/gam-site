@@ -11,6 +11,10 @@ import {
 } from "@tabler/icons-react"
 import { listComptes, listBenevoles, listTeamMembersForMembresPage } from "./_actions/actions"
 import { UserFilters } from "./_components/user-filters"
+import {
+  getMembresAccountRoleLabel,
+  isMembresGenericAccountRoleFilter,
+} from "./_components/membres-filter-config"
 import { MembresUsersTable } from "./_components/membres-users-table"
 import { MembresTeamTable } from "./_components/membres-team-table"
 import { MembresBenevolesTable } from "./_components/membres-benevoles-table"
@@ -41,6 +45,8 @@ export default async function MembresPage({
   const isFilterAdministration = roleFilter === "ADMIN-PERMADMIN"
   const isFilterAdmin = roleFilter === "SUPER-ADMIN"
   const isFilterBenevole = roleFilter === "benevoles"
+  const isGenericRoleFilter = isMembresGenericAccountRoleFilter(roleFilter)
+  const genericRoleLabel = roleFilter ? getMembresAccountRoleLabel(roleFilter) : null
 
   const comptesAfterStatut = allComptes.filter((u) => {
     const banned = (u as { banned?: boolean }).banned === true
@@ -74,6 +80,10 @@ export default async function MembresPage({
           u.role === "PERMADMIN" ||
           u.role === "INVITE-PERMADMIN",
       )
+    : []
+
+  const genericRoleUsers = isGenericRoleFilter
+    ? comptesAfterStatut.filter((u) => u.role === roleFilter)
     : []
 
   const showComptesEtEquipe =
@@ -257,6 +267,28 @@ export default async function MembresPage({
                     Icon={IconBuildingCommunity}
                     title="Aucun accès Administration"
                     description="Aucun compte avec le rôle « administration » ne correspond aux filtres."
+                  />
+                )}
+              </section>
+            )}
+
+            {isGenericRoleFilter && genericRoleLabel && (
+              <section className="space-y-3">
+                <SectionHeading
+                  title={genericRoleLabel}
+                  description={`Comptes avec le rôle « ${genericRoleLabel} » (${genericRoleUsers.length})`}
+                />
+                {genericRoleUsers.length > 0 ? (
+                  <MembresUsersTable
+                    users={genericRoleUsers}
+                    sessionUserId={session?.user.id}
+                    roleStyle={roleStyle}
+                  />
+                ) : (
+                  <MembresEmptyZone
+                    Icon={IconShieldCheck}
+                    title="Aucun compte"
+                    description="Aucun compte ne correspond à ce rôle et à ces filtres."
                   />
                 )}
               </section>

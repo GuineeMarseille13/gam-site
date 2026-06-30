@@ -1,38 +1,15 @@
 "use client"
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { ROLES } from "./roles"
-import { MembresFilterScroll } from "./membres-filter-scroll"
 import { IconX } from "@tabler/icons-react"
-
-const STATUTS = [
-  { value: "actif", label: "Actif" },
-  { value: "banni", label: "Banni" },
-]
-
-function FilterButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-        active
-          ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
-          : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {children}
-    </button>
-  )
-}
+import {
+  MEMBRES_ACCOUNT_ROLE_FILTERS,
+  MEMBRES_SECTION_FILTERS,
+  MEMBRES_STATUT_FILTERS,
+  isMembresSectionFilter,
+} from "./membres-filter-config"
+import { MembresFilterGroup } from "./membres-filter-group"
+import { MembresFilterPill } from "./membres-filter-pill"
 
 interface UserFiltersProps {
   canFilterBenevoles?: boolean
@@ -50,24 +27,37 @@ export function UserFilters({
   const activeRole = searchParams.get("role") ?? ""
   const activeStatut = searchParams.get("statut") ?? ""
   const hasFilters = Boolean(activeRole || activeStatut)
-  const showStatutFilters = activeRole !== "benevoles" && activeRole !== "BUREAU"
+  const showStatutFilters = !isMembresSectionFilter(activeRole)
 
-  function set(key: string, value: string) {
+  const visibleSectionFilters = MEMBRES_SECTION_FILTERS.filter((filter) => {
+    if (filter.permission === "benevoles") return canFilterBenevoles
+    if (filter.permission === "equipe") return canFilterEquipe
+    return true
+  })
+
+  function pushParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString())
-    if (value) params.set(key, value)
-    else params.delete(key)
-    router.push(`${pathname}?${params.toString()}`)
+    mutate(params)
+    const query = params.toString()
+    router.push(query ? `${pathname}?${query}` : pathname)
+  }
+
+  function setStatut(value: string) {
+    pushParams((params) => {
+      if (value) params.set("statut", value)
+      else params.delete("statut")
+    })
   }
 
   function setRole(value: string) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value) {
-      params.set("role", value)
-      if (value === "benevoles" || value === "BUREAU") params.delete("statut")
-    } else {
-      params.delete("role")
-    }
-    router.push(`${pathname}?${params.toString()}`)
+    pushParams((params) => {
+      if (value) {
+        params.set("role", value)
+        if (isMembresSectionFilter(value)) params.delete("statut")
+      } else {
+        params.delete("role")
+      }
+    })
   }
 
   function reset() {
@@ -75,53 +65,71 @@ export function UserFilters({
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-      <MembresFilterScroll aria-label="Filtrer par rôle">
-        <FilterButton active={!activeRole} onClick={() => setRole("")}>
-          Tous
-        </FilterButton>
-        {ROLES.filter((r) => {
-          if (r.value === "benevoles") return canFilterBenevoles
-          if (r.value === "BUREAU") return canFilterEquipe
-          return true
-        }).map((r) => (
-          <FilterButton
-            key={r.value}
-            active={activeRole === r.value}
-            onClick={() => setRole(activeRole === r.value ? "" : r.value)}
+    <section
+      className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5"
+      aria-label="Filtres des membres"
+    >
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-foreground">Filtres</p>
+        {hasFilters && (
+          <button
+            type="button"
+            onClick={reset}
+            className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
           >
-            {r.label}
-          </FilterButton>
-        ))}
-      </MembresFilterScroll>
+            <IconX className="size-3.5" />
+            Réinitialiser
+          </button>
+        )}
+      </div>
 
-      {showStatutFilters && (
-        <MembresFilterScroll aria-label="Filtrer par statut du compte">
-          <FilterButton active={!activeStatut} onClick={() => set("statut", "")}>
+      <div className="flex flex-col gap-4">
+        <MembresFilterGroup label="Affichage">
+          <MembresFilterPill active={!activeRole} onClick={() => setRole("")}>
             Tous
-          </FilterButton>
-          {STATUTS.map((s) => (
-            <FilterButton
-              key={s.value}
-              active={activeStatut === s.value}
-              onClick={() => set("statut", activeStatut === s.value ? "" : s.value)}
+          </MembresFilterPill>
+          {visibleSectionFilters.map((filter) => (
+            <MembresFilterPill
+              key={filter.value}
+              active={activeRole === filter.value}
+              onClick={() => setRole(activeRole === filter.value ? "" : filter.value)}
             >
-              {s.label}
-            </FilterButton>
+              {filter.label}
+            </MembresFilterPill>
           ))}
-        </MembresFilterScroll>
-      )}
+        </MembresFilterGroup>
 
-      {hasFilters && (
-        <button
-          type="button"
-          onClick={reset}
-          className="flex shrink-0 cursor-pointer items-center gap-1 self-start rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:self-center"
-        >
-          <IconX className="size-3.5" />
-          Réinitialiser
-        </button>
-      )}
-    </div>
+        <MembresFilterGroup label="Rôle du compte">
+          {MEMBRES_ACCOUNT_ROLE_FILTERS.map((filter) => (
+            <MembresFilterPill
+              key={filter.value}
+              active={activeRole === filter.value}
+              onClick={() => setRole(activeRole === filter.value ? "" : filter.value)}
+            >
+              {filter.label}
+            </MembresFilterPill>
+          ))}
+        </MembresFilterGroup>
+
+        {showStatutFilters && (
+          <div className="border-t pt-4">
+            <MembresFilterGroup label="Statut du compte">
+              <MembresFilterPill active={!activeStatut} onClick={() => setStatut("")}>
+                Tous
+              </MembresFilterPill>
+              {MEMBRES_STATUT_FILTERS.map((filter) => (
+                <MembresFilterPill
+                  key={filter.value}
+                  active={activeStatut === filter.value}
+                  onClick={() => setStatut(activeStatut === filter.value ? "" : filter.value)}
+                >
+                  {filter.label}
+                </MembresFilterPill>
+              ))}
+            </MembresFilterGroup>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
