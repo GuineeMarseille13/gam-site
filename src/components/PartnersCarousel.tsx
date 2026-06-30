@@ -33,7 +33,7 @@ interface PartnersCarouselProps {
 }
 
 const PARTNERS_INTRO =
-  "Nous collaborons avec des partenaires de confiance qui partagent nos valeurs et notre engagement en faveur de la communauté guinéenne à Marseille. Ensemble, nous œuvrons pour l\u2019intégration, le développement et l\u2019épanouissement de tous.";
+  "Institutions, associations, établissements : nos partenaires engagés aux côtés des publics qu’on soutient. Leurs soutiens rendent possibles nos actions sur le terrain.";
 
 /** Largeurs cartes partenaires : plus généreuses que le carousel par défaut (meilleure lecture des descriptions). */
 const PARTNER_CAROUSEL_LAYOUT = {
