@@ -1,4 +1,4 @@
-import { GooeyText } from "./ui/gooey-text-morphing"
+import { GooeyText, GOOEY_TEXT_DEFAULTS } from "./ui/gooey-text-morphing"
 import { SocialIcon } from "./SocialIcon"
 import { SOCIAL_PLATFORM_CONFIG, detectPlatform } from "@/helpers/social-media-config"
 
@@ -13,6 +13,8 @@ interface GAMSloganProps {
   socialMedias?: SocialMediaItem[]
 }
 
+const SLOGAN_WORDS: string[] = ["Ensemble", "Unis", "Forts", "Solidaires"]
+
 const GAMSlogan = ({ socialMedias = [] }: GAMSloganProps) => {
   return (
     <div className="bg-gradient-to-br from-gray-50 via-gray-100/80 to-stone-100 backdrop-blur-sm text-gray-800 py-8 md:py-10 relative overflow-hidden">
@@ -22,16 +24,16 @@ const GAMSlogan = ({ socialMedias = [] }: GAMSloganProps) => {
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="mb-6 md:mb-8">
           <GooeyText
-            texts={["Ensemble", "Unis", "Solidaires", "Forts"]}
-            morphTime={1.5}
-            cooldownTime={1}
-            className="h-[70px] flex items-center justify-center"
-            textClassName="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-lg"
+            texts={SLOGAN_WORDS}
+            morphTime={GOOEY_TEXT_DEFAULTS.morphTime}
+            cooldownTime={GOOEY_TEXT_DEFAULTS.cooldownTime}
+            className="flex min-h-[3rem] items-center justify-center md:min-h-[4.5rem] lg:min-h-[5rem]"
+            textClassName="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-lg md:text-5xl lg:text-6xl"
           />
         </div>
 
-        <p className="text-gray-600/90 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-6 md:mb-8 w-full">
-          Rejoignez notre communauté et participez à la construction d&apos;un avenir meilleur
+        <p className="mx-auto mb-6 w-full max-w-2xl text-lg font-medium leading-relaxed text-gray-600/90 md:mb-8 md:max-w-none md:whitespace-nowrap md:text-xl">
+          Rejoignez notre association et participez à la construction d&apos;un avenir meilleur
         </p>
 
         {socialMedias.length > 0 && (
