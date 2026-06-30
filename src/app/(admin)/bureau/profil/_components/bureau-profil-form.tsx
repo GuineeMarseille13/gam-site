@@ -3,7 +3,7 @@
 import { ProfilForm } from "./profil-form"
 import {
   changeOwnPasswordBureau,
-  updateProfil,
+  updateProfilBureau,
 } from "@/app/(admin)/_shared/profile/_actions/profil-actions"
 
 interface BureauProfilFormProps {
@@ -24,7 +24,7 @@ export function BureauProfilForm({ defaultValues }: BureauProfilFormProps) {
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/bureau"
-      updateAction={updateProfil}
+      updateAction={updateProfilBureau}
       changePasswordAction={changeOwnPasswordBureau}
     />
   )

@@ -56,6 +56,7 @@ export function AuthLoginView({
   const isUnauthorized = searchParams.get("error") === "unauthorized"
   const isSessionExpired = searchParams.get("error") === "session_expired"
   const passwordChanged = searchParams.get("mot-de-passe-modifie") === "1"
+  const emailChanged = searchParams.get("email-modifie") === "1"
 
   const defaultUnauthorizedMessage =
     accessTarget === "bureau"
@@ -150,6 +151,13 @@ export function AuthLoginView({
               <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-300">
                 <IconShieldCheck className="mt-0.5 size-4 shrink-0" />
                 Mot de passe mis à jour. Connectez-vous avec votre nouveau mot de passe.
+              </div>
+            )}
+
+            {emailChanged && !passwordChanged && !error && (
+              <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-300">
+                <IconShieldCheck className="mt-0.5 size-4 shrink-0" />
+                Email mis à jour. Connectez-vous avec votre nouvelle adresse email.
               </div>
             )}
 

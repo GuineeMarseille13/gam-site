@@ -53,6 +53,20 @@ function initials(firstName: string, lastName: string) {
   return `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase()
 }
 
+type ProfilReauthQueryParam = "mot-de-passe-modifie" | "email-modifie"
+
+async function redirectAfterProfilReauth(
+  router: ReturnType<typeof useRouter>,
+  loginPath: string,
+  queryParam: ProfilReauthQueryParam,
+) {
+  await signOut()
+  const loginUrl = new URL(loginPath, window.location.origin)
+  loginUrl.searchParams.set(queryParam, "1")
+  router.push(`${loginUrl.pathname}${loginUrl.search}`)
+  router.refresh()
+}
+
 // ── Composant ──────────────────────────────────────────────────────────────────
 
 export function ProfilForm({
@@ -67,6 +81,7 @@ export function ProfilForm({
   const [isPending, startTransition] = useTransition()
   const [error, setError]   = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [profileRedirecting, setProfileRedirecting] = useState(false)
 
   // ── Image
   const fileRef    = useRef<HTMLInputElement>(null)
@@ -137,11 +152,7 @@ export function ProfilForm({
           setCurrentPwd("")
           setPwdValue("")
           setPwdConfirm("")
-          await signOut()
-          const loginUrl = new URL(result.loginPath, window.location.origin)
-          loginUrl.searchParams.set("mot-de-passe-modifie", "1")
-          router.push(`${loginUrl.pathname}${loginUrl.search}`)
-          router.refresh()
+          await redirectAfterProfilReauth(router, result.loginPath, "mot-de-passe-modifie")
           return
         }
       } catch (err: unknown) {
@@ -171,6 +182,13 @@ export function ProfilForm({
           setError(result.error)
           return
         }
+
+        if ("requiresReauth" in result && result.requiresReauth) {
+          setProfileRedirecting(true)
+          await redirectAfterProfilReauth(router, result.loginPath, "email-modifie")
+          return
+        }
+
         setSuccess(true)
         router.refresh()
       } catch (err: unknown) {
@@ -279,13 +297,19 @@ export function ProfilForm({
         <div className="space-y-5 lg:col-span-3">
 
           {/* Feedback */}
-          {error && (
+          {profileRedirecting ? (
+            <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200/60 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-400">
+              <IconLoader2 className="size-4 shrink-0 animate-spin" />
+              Email mis à jour. Déconnexion en cours… Reconnectez-vous avec votre nouvelle adresse.
+            </div>
+          ) : null}
+          {error && !profileRedirecting && (
             <div className="flex items-center gap-2.5 rounded-xl border border-rose-200/60 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800/40 dark:bg-rose-950/30 dark:text-rose-400">
               <IconAlertCircle className="size-4 shrink-0" />
               {error}
             </div>
           )}
-          {success && (
+          {success && !profileRedirecting && (
             <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200/60 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/30 dark:text-emerald-400">
               <IconShieldCheck className="size-4 shrink-0" />
               Profil mis à jour avec succès.
@@ -326,13 +350,16 @@ export function ProfilForm({
               </Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
-                value={defaultValues.email}
-                readOnly
-                className="h-10 cursor-not-allowed rounded-xl bg-muted/50 text-muted-foreground"
+                required
+                defaultValue={defaultValues.email}
+                placeholder="prenom.nom@gam.fr"
+                autoComplete="email"
+                className="h-10 rounded-xl"
               />
               <p className="text-[11px] text-muted-foreground/70">
-                Non modifiable via cette interface.
+                La modification de l&apos;email vous déconnectera. Reconnectez-vous avec votre nouvelle adresse.
               </p>
             </div>
             <div className="space-y-1.5">
@@ -497,7 +524,7 @@ export function ProfilForm({
           <div className="flex flex-wrap items-center gap-3 border-t pt-5">
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || profileRedirecting}
               className="cursor-pointer gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold shadow-sm shadow-rose-500/20"
             >
               {isPending && <IconLoader2 className="size-4 animate-spin" />}
@@ -507,7 +534,7 @@ export function ProfilForm({
               type="button"
               variant="ghost"
               onClick={() => router.push(cancelHref)}
-              disabled={isPending}
+              disabled={isPending || profileRedirecting}
               className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
             >
               Annuler

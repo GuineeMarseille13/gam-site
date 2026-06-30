@@ -6,6 +6,7 @@ import { uploadImage } from "@/lib/cloudinary"
 import { deleteSupersededCloudinaryUrl } from "@/lib/cloudinary-replacement"
 import { requireAuthenticatedDashboardUser } from "@/lib/auth-guard"
 import { changeOwnPasswordSchema } from "../_schemas/change-password.schema"
+import { updateProfilSchema } from "../_schemas/update-profil.schema"
 import { resolveProfilLoginPath } from "../_helpers/resolve-profil-login-path"
 import type { ProfilDashboardScope } from "../_types/profil-dashboard-scope"
 import type { ProfilActionResult } from "../_types/profil-action-result"
@@ -25,25 +26,65 @@ function revalidateProfilPaths(): void {
   }
 }
 
+/** Termine la session courante et renvoie la page de connexion adaptée. */
+async function finalizeProfilReauth(
+  dashboardScope: ProfilDashboardScope,
+  userId?: string,
+): Promise<ProfilActionResult> {
+  const loginPath = resolveProfilLoginPath(dashboardScope)
+  const requestHeaders = await headers()
+
+  if (userId) {
+    await prisma.session.deleteMany({ where: { userId } })
+  }
+
+  await auth.api.signOut({ headers: requestHeaders })
+
+  return { success: true, requiresReauth: true, loginPath }
+}
+
 /** Met à jour les informations personnelles de l’utilisateur connecté. */
-export async function mutateUpdateProfil(formData: FormData): Promise<ProfilActionResult> {
+export async function mutateUpdateProfil(
+  formData: FormData,
+  dashboardScope: ProfilDashboardScope,
+): Promise<ProfilActionResult> {
   const session = await requireAuthenticatedDashboardUser()
   const userId = session.user.id
 
-  const firstName = (formData.get("firstName") as string)?.trim()
-  const lastName = (formData.get("lastName") as string)?.trim()
-  const phone = (formData.get("phone") as string | null)?.trim() || ""
-  const imageFile = formData.get("imageFile") as File | null
-  const removeImage = formData.get("removeImage") === "true"
+  const parsed = updateProfilSchema.safeParse({
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
+    email: formData.get("email"),
+    phone: formData.get("phone") ?? "",
+    removeImage: formData.get("removeImage") === "true",
+  })
 
-  if (!firstName || !lastName) {
-    return { error: "Le prénom et le nom sont requis." }
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message ?? "Données invalides."
+    return { error: message }
+  }
+
+  const { firstName, lastName, email, phone, removeImage } = parsed.data
+  const imageFile = formData.get("imageFile") as File | null
+  const currentEmail = session.user.email.trim().toLowerCase()
+  const emailChanged = email !== currentEmail
+
+  if (emailChanged) {
+    const emailConflict = await prisma.user.findFirst({
+      where: { email, NOT: { id: userId } },
+    })
+    if (emailConflict) {
+      return { error: "Cet email est déjà utilisé par un autre compte." }
+    }
   }
 
   try {
     await prisma.user.update({
       where: { id: userId },
-      data: { name: `${firstName} ${lastName}` },
+      data: {
+        name: `${firstName} ${lastName}`,
+        ...(emailChanged ? { email } : {}),
+      },
     })
 
     let imageUrl: string | null | undefined = undefined
@@ -63,16 +104,16 @@ export async function mutateUpdateProfil(formData: FormData): Promise<ProfilActi
           firstName,
           lastName,
           phone,
+          ...(emailChanged ? { email } : {}),
           ...(imageUrl !== undefined ? { image: imageUrl } : {}),
         },
       })
     } else {
-      const user = await prisma.user.findUnique({ where: { id: userId } })
       await prisma.person.create({
         data: {
           firstName,
           lastName,
-          email: user?.email ?? "",
+          email,
           phone,
           userId,
           image: imageUrl ?? null,
@@ -88,6 +129,11 @@ export async function mutateUpdateProfil(formData: FormData): Promise<ProfilActi
     }
 
     revalidateProfilPaths()
+
+    if (emailChanged) {
+      return finalizeProfilReauth(dashboardScope, userId)
+    }
+
     return { success: true }
   } catch {
     return { error: "Erreur lors de la mise à jour du profil." }
@@ -111,7 +157,6 @@ export async function mutateChangeOwnPassword(
     return { error: message }
   }
 
-  const loginPath = resolveProfilLoginPath(dashboardScope)
   const requestHeaders = await headers()
 
   try {
@@ -124,11 +169,7 @@ export async function mutateChangeOwnPassword(
       headers: requestHeaders,
     })
 
-    await auth.api.signOut({
-      headers: requestHeaders,
-    })
-
-    return { success: true, requiresReauth: true, loginPath }
+    return finalizeProfilReauth(dashboardScope)
   } catch {
     return { error: "Mot de passe actuel incorrect ou erreur serveur." }
   }

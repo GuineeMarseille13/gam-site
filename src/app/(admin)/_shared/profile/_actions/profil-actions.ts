@@ -5,9 +5,19 @@ import {
   mutateUpdateProfil,
 } from "../_services/profil-mutations"
 
-/** Mise à jour du profil (tous dashboards). */
-export async function updateProfil(formData: FormData) {
-  return mutateUpdateProfil(formData)
+/** Mise à jour du profil — espace Bureau. */
+export async function updateProfilBureau(formData: FormData) {
+  return mutateUpdateProfil(formData, "bureau")
+}
+
+/** Mise à jour du profil — espace Administration. */
+export async function updateProfilAdministration(formData: FormData) {
+  return mutateUpdateProfil(formData, "administration")
+}
+
+/** Mise à jour du profil — espace Hébergement et mise en relation. */
+export async function updateProfilHerbergementRelation(formData: FormData) {
+  return mutateUpdateProfil(formData, "hebergement-relation")
 }
 
 /** Changement de mot de passe — espace Bureau. */

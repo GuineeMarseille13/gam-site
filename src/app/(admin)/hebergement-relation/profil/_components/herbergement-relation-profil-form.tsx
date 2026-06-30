@@ -3,7 +3,7 @@
 import { ProfilForm } from "@/app/(admin)/bureau/profil/_components/profil-form"
 import {
   changeOwnPasswordHerbergementRelation,
-  updateProfil,
+  updateProfilHerbergementRelation,
 } from "@/app/(admin)/_shared/profile/_actions/profil-actions"
 
 interface HerbergementRelationProfilFormProps {
@@ -26,7 +26,7 @@ export function HerbergementRelationProfilForm({
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/hebergement-relation"
-      updateAction={updateProfil}
+      updateAction={updateProfilHerbergementRelation}
       changePasswordAction={changeOwnPasswordHerbergementRelation}
     />
   )
