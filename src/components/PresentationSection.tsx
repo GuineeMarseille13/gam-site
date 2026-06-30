@@ -102,15 +102,19 @@ function PresentationSection() {
 
             <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center sm:space-y-5">
               <p className="text-[15px] leading-7 text-slate-700 sm:text-lg sm:leading-relaxed md:text-xl dark:text-slate-300">
-                L&apos;Association des Guinéens à Marseille (GAM) est une association mixte à
-                but non lucratif qui regroupe, informe et accompagne les Guinéens vivant à
-                Marseille et ses environs.
+                Guinée à Marseille (GAM) est une association reconnue d’utilité publique, à but non lucratif, ouverte et mixte, qui informe,
+                oriente et accompagne les personnes en parcours d&apos;installation à Marseille et dans sa
+                région — pour l&apos;accueil, l&apos;insertion et la participation citoyenne.
               </p>
               <p className="text-[15px] leading-7 text-slate-600 sm:text-lg sm:leading-relaxed md:text-xl dark:text-slate-400">
-                Accueil des nouveaux arrivants, aide administrative, intégration sociale et
-                universitaire, valorisation de la culture guinéenne et actions solidaires :
-                GAM est un réseau de soutien pour étudiants, jeunes professionnels et familles
-                guinéennes de la région.
+                Née de l&apos;initiative de ressortissants guinéens et de leurs proches, GAM mène des
+                actions concrètes : accueil des nouveaux arrivants, accompagnement administratif,
+                soutien scolaire et universitaire, partage culturel et événements ouverts à tous,
+                solidarités locales et internationales. 
+              </p>
+              <p className="text-[15px] leading-7 text-slate-600 sm:text-lg sm:leading-relaxed md:text-xl dark:text-slate-400">
+                Elle agit comme un relais entre les publics qu&apos;elle accompagne, les institutions locales et la vie marseillaise — au service des
+                étudiant·e·s, des jeunes professionnel·le·s et des familles qu&apos;elle soutient.
               </p>
             </div>
           </motion.div>

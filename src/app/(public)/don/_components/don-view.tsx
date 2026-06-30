@@ -201,7 +201,8 @@ export default function DonationView() {
           transition={{ delay: 0.1, duration: 0.4 }}
           className="mt-2 sm:mt-3 text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto px-4"
         >
-          Votre don est essentiel pour notre association. Il nous permet de financer nos projets, d&apos;organiser nos événements et d&apos;amplifier notre impact au service de notre communauté.
+          Guinée à Marseille (GAM) est une association reconnue d’utilité publique, donc vos dons sont <span className="font-bold">deductibles fiscalement dans la limite de 66% du montant du don</span>.<br />
+          Votre don est essentiel pour notre association. Il nous permet de financer nos projets, d&apos;organiser nos événements et d&apos;amplifier notre impact au service de nos bénéficiaires.
         </motion.p>
       </div>
 
@@ -215,7 +216,7 @@ export default function DonationView() {
           },
           {
             title: "Impact durable",
-            desc: "Chaque don contribue à créer un impact positif et durable dans notre communauté.",
+            desc: "Chaque don contribue à créer un impact positif et durable sur nos bénéficiaires.",
             icon: Target,
           },
           {

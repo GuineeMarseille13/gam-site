@@ -66,7 +66,7 @@ function ReviewsSection({ reviews }: ReviewsSectionProps) {
             tone="reviews"
           />
           <p className="mt-3 text-base sm:mt-4 sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Découvrez ce que nos membres, bénévoles et partenaires pensent de notre association
+            Découvrez ce que nos bénéficiaires, nos membres, nos bénévoles et nos partenaires pensent de notre association
           </p>
         </div>
 

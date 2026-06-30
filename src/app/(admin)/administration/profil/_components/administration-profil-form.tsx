@@ -3,7 +3,7 @@
 import { ProfilForm } from "@/app/(admin)/bureau/profil/_components/profil-form"
 import {
   changeOwnPasswordAdministration,
-  updateProfil,
+  updateProfilAdministration,
 } from "@/app/(admin)/_shared/profile/_actions/profil-actions"
 
 interface AdministrationProfilFormProps {
@@ -27,7 +27,7 @@ export function AdministrationProfilForm({ defaultValues }: AdministrationProfil
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/administration"
-      updateAction={updateProfil}
+      updateAction={updateProfilAdministration}
       changePasswordAction={changeOwnPasswordAdministration}
     />
   )

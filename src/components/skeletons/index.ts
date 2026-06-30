@@ -8,4 +8,6 @@ export { VolunteersSectionSkeleton } from './VolunteersSectionSkeleton';
 export { PresentationSectionSkeleton } from './PresentationSectionSkeleton';
 export { PoleSectionSkeleton } from './PoleSectionSkeleton';
 export { GAMSloganSkeleton } from './GAMSloganSkeleton';
+export { BoutiqueSkeleton, BoutiqueProductsGridSkeleton } from './BoutiqueSkeleton';
+export { ProductCardSkeleton } from './product-card-skeleton';
 
