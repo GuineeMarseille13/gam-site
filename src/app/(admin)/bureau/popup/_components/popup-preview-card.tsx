@@ -127,9 +127,14 @@ export function PopupPreviewCard({ id, type, isActive, title, date, imageId, pro
         {!isProspectus && date && (
           <p className="truncate text-[11px] text-muted-foreground">{date}</p>
         )}
-        <div className="flex items-center justify-between gap-1">
-          <TogglePopupButton id={id} isActive={isActive} />
+        <div className="flex items-center gap-1.5 border-t border-border/50 pt-2.5">
+          <TogglePopupButton
+            id={id}
+            isActive={isActive}
+            className="min-h-8 flex-1"
+          />
           <RowActions
+            variant="compact"
             editHref={`/bureau/popup/${id}/modifier`}
             onDelete={deletePopup.bind(null, id)}
           />

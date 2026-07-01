@@ -6,7 +6,12 @@ import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { Button } from "@/components/ui/button"
 import { IconPlus } from "@tabler/icons-react"
-import { getDashboardAccessList } from "./_services/get-dashboard-access-list"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
+import { parseAccessListStatus } from "@/app/(admin)/_shared/dashboard-access/_schemas/access-list-search-params.schema"
+import { getDashboardAccessListPaginated } from "./_services/get-dashboard-access-list"
+import { BureauAccessListToolbarLinks } from "./_components/bureau-access-list-toolbar-links"
 import { DashboardAccessList } from "./_components/dashboard-access-list"
 
 export const metadata: Metadata = {
@@ -14,14 +19,23 @@ export const metadata: Metadata = {
   description: "Gestion des accès au dashboard Bureau et Administration",
 }
 
-export default async function BureauAccesPage() {
-  const [rows, session] = await Promise.all([
-    getDashboardAccessList(),
+export default async function BureauAccesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const rawParams = await searchParams
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
+  const status = parseAccessListStatus(getFirstSearchParam(rawParams.statut))
+
+  const [accessResult, session] = await Promise.all([
+    getDashboardAccessListPaginated({ page, status }),
     auth.api.getSession({ headers: await headers() }),
   ])
 
   const permissions = getDashboardPermissions(session?.user.role)
   const isAdmin = permissions.canManageAccessAccounts
+  const hasAnyAccess = accessResult.counts.all > 0
 
   return (
     <BureauContent
@@ -41,11 +55,30 @@ export default async function BureauAccesPage() {
         ) : null
       }
     >
-      <DashboardAccessList
-        rows={rows}
-        isAdmin={isAdmin}
-        currentUserId={session?.user.id ?? ""}
-      />
+      <div className="space-y-4">
+        {hasAnyAccess && (
+          <BureauAccessListToolbarLinks
+            pathname="/bureau/acces"
+            status={status}
+            counts={accessResult.counts}
+            searchParams={rawParams}
+          />
+        )}
+
+        <DashboardAccessList
+          rows={accessResult.rows}
+          isAdmin={isAdmin}
+          currentUserId={session?.user.id ?? ""}
+          showEmptyState={!hasAnyAccess}
+        />
+
+        <AdminTablePagination
+          pathname="/bureau/acces"
+          total={accessResult.pagination.total}
+          page={accessResult.pagination.page}
+          searchParams={rawParams}
+        />
+      </div>
     </BureauContent>
   )
 }

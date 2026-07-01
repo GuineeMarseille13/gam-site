@@ -14,12 +14,16 @@ interface HerbergementRelationAccessListProps {
   roleLabels: Record<string, string>
   isAdmin: boolean
   currentUserId: string
+  showEmptyState?: boolean
 }
 
 /**
  * Liste des accès hébergement (wrapper du module partagé).
  */
-export function HerbergementRelationAccessList(props: HerbergementRelationAccessListProps) {
+export function HerbergementRelationAccessList({
+  showEmptyState = true,
+  ...props
+}: HerbergementRelationAccessListProps) {
   return (
     <DashboardAccessList
       scope={HERBERGEMENT_RELATION_ACCESS_SCOPE}
@@ -28,6 +32,7 @@ export function HerbergementRelationAccessList(props: HerbergementRelationAccess
         unbanAccess: unbanHerbergementRelationAccess,
         revokeAccess: revokeHerbergementRelationAccess,
       }}
+      showEmptyState={showEmptyState}
       {...props}
     />
   )

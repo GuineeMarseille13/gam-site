@@ -1,6 +1,16 @@
 import { prisma } from "@/lib/prisma"
+import type { Prisma } from "@/lib/generated/prisma/client"
 import { requireBureauAdminAcces } from "@/lib/auth-guard"
 import { SYSTEM_ROLES_SEED, type SystemRoleCode } from "@/config/system-roles"
+import type { PaginatedResult } from "@/services/crud.service"
+import {
+  buildAdminPaginatedResult,
+  getAdminSkipTake,
+  parseAdminPage,
+} from "@/app/(admin)/_shared/_lib/admin-pagination"
+import { ADMIN_TABLE_PAGE_SIZE } from "@/app/(admin)/_shared/_schemas/pagination.schema"
+import type { DashboardAccessListCounts } from "@/app/(admin)/_shared/dashboard-access/_services/get-dashboard-access-list"
+import type { AccessListStatusFilter } from "@/app/(admin)/_shared/dashboard-access/_schemas/access-list-search-params.schema"
 import {
   prismaUserWhereExcludeSessionUser,
   isAccessListSelfUser,
@@ -13,23 +23,72 @@ import { resolvePersonProfileKind } from "./resolve-person-profile-kind"
 
 const ACCESS_ROLE_CODES = SYSTEM_ROLES_SEED.map((r) => r.code)
 
+function buildStatusWhere(status: AccessListStatusFilter): Prisma.UserWhereInput {
+  if (status === "active") return { banned: { not: true } }
+  if (status === "banned") return { banned: true }
+  return {}
+}
+
+async function getAccessListCounts(
+  baseWhere: Prisma.UserWhereInput,
+): Promise<DashboardAccessListCounts> {
+  const [all, active, banned] = await Promise.all([
+    prisma.user.count({ where: baseWhere }),
+    prisma.user.count({ where: { ...baseWhere, banned: { not: true } } }),
+    prisma.user.count({ where: { ...baseWhere, banned: true } }),
+  ])
+
+  return { all, active, banned }
+}
+
+export interface BureauDashboardAccessListResult {
+  rows: DashboardAccessRow[]
+  pagination: PaginatedResult<DashboardAccessRow>
+  counts: DashboardAccessListCounts
+  status: AccessListStatusFilter
+}
+
 /**
- * Liste des comptes dashboard (tous rôles système) avec fiche Person liée si présente.
- * L’utilisateur connecté n’y figure jamais (gestion des autres accès uniquement).
+ * Liste paginée des comptes dashboard bureau avec fiche Person liée si présente.
  */
-export async function getDashboardAccessList(): Promise<DashboardAccessRow[]> {
+export async function getDashboardAccessListPaginated(options: {
+  page?: number
+  status?: AccessListStatusFilter
+} = {}): Promise<BureauDashboardAccessListResult> {
   const session = await requireBureauAdminAcces()
+  const page = parseAdminPage(options.page)
+  const status = options.status ?? "all"
+  const { skip, take } = getAdminSkipTake(page)
 
-  const users = await prisma.user.findMany({
-    where: {
-      role: { in: ACCESS_ROLE_CODES },
-      ...prismaUserWhereExcludeSessionUser(session.user.id),
-    },
-    orderBy: { createdAt: "desc" },
-    take: 300,
-  })
+  const baseWhere: Prisma.UserWhereInput = {
+    role: { in: ACCESS_ROLE_CODES },
+    ...prismaUserWhereExcludeSessionUser(session.user.id),
+  }
 
-  if (users.length === 0) return []
+  const where: Prisma.UserWhereInput = {
+    ...baseWhere,
+    ...buildStatusWhere(status),
+  }
+
+  const [users, total, counts] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take,
+    }),
+    prisma.user.count({ where }),
+    getAccessListCounts(baseWhere),
+  ])
+
+  if (users.length === 0) {
+    return {
+      rows: [],
+      pagination: buildAdminPaginatedResult([], total, page, ADMIN_TABLE_PAGE_SIZE),
+      counts,
+      status,
+    }
+  }
 
   const userIds = users.map((u) => u.id)
   const persons = await prisma.person.findMany({
@@ -77,11 +136,26 @@ export async function getDashboardAccessList(): Promise<DashboardAccessRow[]> {
     }
   })
 
-  return rows.map((r) => dashboardAccessRowSchema.parse(r))
+  const validatedRows = rows.map((r) => dashboardAccessRowSchema.parse(r))
+
+  return {
+    rows: validatedRows,
+    pagination: buildAdminPaginatedResult(validatedRows, total, page, ADMIN_TABLE_PAGE_SIZE),
+    counts,
+    status,
+  }
 }
 
 /**
- * Détail pour édition d’un accès (admin uniquement, via layout).
+ * Liste complète (compatibilité).
+ */
+export async function getDashboardAccessList(): Promise<DashboardAccessRow[]> {
+  const result = await getDashboardAccessListPaginated({ page: 1 })
+  return result.rows
+}
+
+/**
+ * Détail pour édition d'un accès (admin uniquement, via layout).
  */
 export async function getDashboardAccessForEdit(userId: string) {
   const session = await requireBureauAdminAcces()

@@ -9,12 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/helpers/utils"
-import type { AdherentListRow } from "@/lib/schemas/adherent-list.schema"
 import { normalizeSearch, type StatusFilter } from "../_utils/adherent-list-filters"
 import { IconSearch } from "@tabler/icons-react"
 
 interface AdherentsFilterBarProps {
-  adherents: AdherentListRow[]
+  adherentsCount: number
   search: string
   onSearchChange: (value: string) => void
   yearFilter: number | null
@@ -26,7 +25,7 @@ interface AdherentsFilterBarProps {
 }
 
 export function AdherentsFilterBar({
-  adherents,
+  adherentsCount,
   search,
   onSearchChange,
   yearFilter,
@@ -64,7 +63,7 @@ export function AdherentsFilterBar({
               onValueChange={(value) => {
                 onYearFilterChange(value === "all" ? null : Number(value))
               }}
-              disabled={adherents.length === 0}
+              disabled={adherentsCount === 0}
             >
               <SelectTrigger
                 className="h-11 w-full min-w-0 rounded-2xl border-border/50 bg-background/70 shadow-sm transition-[border-color,box-shadow] hover:border-border focus-visible:border-amber-500/40 focus-visible:ring-2 focus-visible:ring-amber-500/20 sm:w-[min(100%,13rem)] dark:bg-background/40"

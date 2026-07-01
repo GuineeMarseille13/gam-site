@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useCallback } from "react"
+import { useCallback, useMemo, useState } from "react"
 import Link from "next/link"
 import { IconKey, IconPlus } from "@tabler/icons-react"
 import { filterAccessListRowsExcludingSessionUser } from "@/app/(admin)/_shared/dashboard-access/_helpers/access-list-session-rules"
@@ -14,10 +14,6 @@ import { Button } from "@/components/ui/button"
 import { DashboardAccessMobileCard } from "./dashboard-access-mobile-card"
 import { DashboardAccessDesktopRow } from "./dashboard-access-desktop-row"
 import {
-  DashboardAccessListToolbar,
-  type AccessListFilter,
-} from "./dashboard-access-list-toolbar"
-import {
   ACCESS_LIST_HEADER_GRID_ADMIN,
   ACCESS_LIST_HEADER_GRID_VIEW,
 } from "./dashboard-access-list-layout"
@@ -26,34 +22,24 @@ interface DashboardAccessListProps {
   rows: DashboardAccessRow[]
   isAdmin: boolean
   currentUserId: string
+  showEmptyState?: boolean
 }
 
 /**
- * Liste des accès dashboard : filtres, cartes mobile, tableau desktop, actions admin.
+ * Liste des accès dashboard : cartes mobile, tableau desktop, actions admin.
  */
-export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardAccessListProps) {
+export function DashboardAccessList({
+  rows,
+  isAdmin,
+  currentUserId,
+  showEmptyState = true,
+}: DashboardAccessListProps) {
   const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<AccessListFilter>("all")
 
   const visibleRows = useMemo(
     () => filterAccessListRowsExcludingSessionUser(rows, currentUserId),
     [rows, currentUserId],
   )
-
-  const counts = useMemo(
-    () => ({
-      all: visibleRows.length,
-      active: visibleRows.filter((r) => !r.banned).length,
-      banned: visibleRows.filter((r) => r.banned).length,
-    }),
-    [visibleRows],
-  )
-
-  const filteredRows = useMemo(() => {
-    if (filter === "active") return visibleRows.filter((r) => !r.banned)
-    if (filter === "banned") return visibleRows.filter((r) => r.banned)
-    return visibleRows
-  }, [visibleRows, filter])
 
   const handleError = useCallback((message: string) => {
     setError(message)
@@ -72,7 +58,7 @@ export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardA
     [],
   )
 
-  if (visibleRows.length === 0) {
+  if (showEmptyState && visibleRows.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-amber-200/40 bg-gradient-to-b from-amber-50/30 to-transparent px-6 py-16 text-center dark:border-amber-900/30 dark:from-amber-950/20">
         <span className="flex size-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 shadow-sm dark:bg-amber-950/50 dark:text-amber-300">
@@ -100,6 +86,14 @@ export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardA
     )
   }
 
+  if (visibleRows.length === 0) {
+    return (
+      <p className="rounded-2xl border border-dashed border-border/60 bg-muted/10 px-4 py-10 text-center text-sm text-muted-foreground">
+        Aucun accès dans cette catégorie.
+      </p>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {error && (
@@ -111,68 +105,58 @@ export function DashboardAccessList({ rows, isAdmin, currentUserId }: DashboardA
         </div>
       )}
 
-      <DashboardAccessListToolbar filter={filter} counts={counts} onFilterChange={setFilter} />
+      <ul className="flex flex-col gap-3 lg:hidden" aria-label="Liste des accès">
+        {visibleRows.map((row) => (
+          <li key={row.userId}>
+            <DashboardAccessMobileCard
+              row={row}
+              isAdmin={isAdmin}
+              isSelf={row.userId === currentUserId}
+              onBan={bindBan(row.userId)}
+              onUnban={bindUnban(row.userId)}
+              onRevoke={bindRevoke(row.userId)}
+              onError={handleError}
+            />
+          </li>
+        ))}
+      </ul>
 
-      {filteredRows.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border/60 bg-muted/10 px-4 py-10 text-center text-sm text-muted-foreground">
-          Aucun accès dans cette catégorie.
-        </p>
-      ) : (
-        <>
-          <ul className="flex flex-col gap-3 lg:hidden" aria-label="Liste des accès">
-            {filteredRows.map((row) => (
-              <li key={row.userId}>
-                <DashboardAccessMobileCard
-                  row={row}
-                  isAdmin={isAdmin}
-                  isSelf={row.userId === currentUserId}
-                  onBan={bindBan(row.userId)}
-                  onUnban={bindUnban(row.userId)}
-                  onRevoke={bindRevoke(row.userId)}
-                  onError={handleError}
-                />
-              </li>
-            ))}
-          </ul>
+      <section
+        className="hidden overflow-hidden rounded-2xl border border-border/60 bg-card/50 shadow-sm ring-1 ring-border/20 lg:block"
+        aria-label="Tableau des accès"
+      >
+        <header className={isAdmin ? ACCESS_LIST_HEADER_GRID_ADMIN : ACCESS_LIST_HEADER_GRID_VIEW}>
+          <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Compte
+          </span>
+          <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Rôle
+          </span>
+          <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Statut
+          </span>
+          {isAdmin && (
+            <span className="min-w-0 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Actions
+            </span>
+          )}
+        </header>
 
-          <section
-            className="hidden overflow-hidden rounded-2xl border border-border/60 bg-card/50 shadow-sm ring-1 ring-border/20 lg:block"
-            aria-label="Tableau des accès"
-          >
-            <header className={isAdmin ? ACCESS_LIST_HEADER_GRID_ADMIN : ACCESS_LIST_HEADER_GRID_VIEW}>
-              <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Compte
-              </span>
-              <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Rôle
-              </span>
-              <span className="min-w-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Statut
-              </span>
-              {isAdmin && (
-                <span className="min-w-0 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Actions
-                </span>
-              )}
-            </header>
-
-            <div>
-              {filteredRows.map((row) => (
-                <DashboardAccessDesktopRow
-                  key={row.userId}
-                  row={row}
-                  isAdmin={isAdmin}
-                  isSelf={row.userId === currentUserId}
-                  onBan={bindBan(row.userId)}
-                  onUnban={bindUnban(row.userId)}
-                  onRevoke={bindRevoke(row.userId)}
-                  onError={handleError}
-                />
-              ))}
-            </div>
-          </section>
-        </>
-      )}
+        <div>
+          {visibleRows.map((row) => (
+            <DashboardAccessDesktopRow
+              key={row.userId}
+              row={row}
+              isAdmin={isAdmin}
+              isSelf={row.userId === currentUserId}
+              onBan={bindBan(row.userId)}
+              onUnban={bindUnban(row.userId)}
+              onRevoke={bindRevoke(row.userId)}
+              onError={handleError}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

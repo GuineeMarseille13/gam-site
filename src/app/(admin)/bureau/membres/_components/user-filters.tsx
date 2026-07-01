@@ -35,9 +35,20 @@ export function UserFilters({
     return true
   })
 
+  const PAGE_PARAMS = [
+    "page",
+    "pageAdmin",
+    "pageBureau",
+    "pageAdministration",
+    "pageBenevoles",
+  ] as const
+
   function pushParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString())
     mutate(params)
+    for (const key of PAGE_PARAMS) {
+      params.delete(key)
+    }
     const query = params.toString()
     router.push(query ? `${pathname}?${query}` : pathname)
   }

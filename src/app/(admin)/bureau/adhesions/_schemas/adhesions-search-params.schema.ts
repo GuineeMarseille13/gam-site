@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { adminPageSchema } from "@/app/(admin)/_shared/_schemas/pagination.schema"
 
 export const adhesionsSearchParamsSchema = z
   .object({
@@ -8,6 +9,7 @@ export const adhesionsSearchParamsSchema = z
       .transform((value) => value.trim())
       .refine((value) => value.length <= 80, "Recherche trop longue")
       .optional(),
+    page: adminPageSchema.optional(),
   })
   .strict()
 
