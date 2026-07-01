@@ -3,13 +3,21 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { BureauContent } from "@/components/bureau/bureau-content"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
 import {
   IconHandStop,
   IconBriefcase,
   IconShieldCheck,
   IconBuildingCommunity,
 } from "@tabler/icons-react"
-import { listComptes, listBenevoles, listTeamMembersForMembresPage } from "./_actions/actions"
+import {
+  getMembresHasAnyData,
+  getMembresStatsCounts,
+  listBenevolesPaginated,
+  listComptesPaginated,
+  listTeamMembersPaginated,
+} from "./_services/membres-list.service"
 import { UserFilters } from "./_components/user-filters"
 import {
   getMembresAccountRoleLabel,
@@ -21,24 +29,36 @@ import { MembresBenevolesTable } from "./_components/membres-benevoles-table"
 import { MembresEmptyZone } from "./_components/membres-empty-zone"
 import { MembresStatsCards } from "./_components/membres-stats-cards"
 import { getMembresRoleStyle } from "./_components/membres-role-styles"
+import { MembresTablePagination } from "./_components/membres-table-pagination"
 
 export const metadata: Metadata = { title: "Membres" }
+
+const ADMIN_ROLES = ["SUPER-ADMIN"] as const
+const ADMINISTRATION_ROLES = [
+  "ADMIN-PERMADMIN",
+  "PERMADMIN",
+  "INVITE-PERMADMIN",
+] as const
 
 export default async function MembresPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string; statut?: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const { role: roleFilter, statut: statutFilter } = await searchParams
+  const rawParams = await searchParams
+  const roleFilter = getFirstSearchParam(rawParams.role)
+  const statutFilter = getFirstSearchParam(rawParams.statut)
+
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
+  const pageAdmin = parseAdminPage(getFirstSearchParam(rawParams.pageAdmin))
+  const pageBureau = parseAdminPage(getFirstSearchParam(rawParams.pageBureau))
+  const pageAdministration = parseAdminPage(
+    getFirstSearchParam(rawParams.pageAdministration),
+  )
+  const pageBenevoles = parseAdminPage(getFirstSearchParam(rawParams.pageBenevoles))
 
   const session = await auth.api.getSession({ headers: await headers() })
   const permissions = getDashboardPermissions(session?.user.role)
-
-  const [allComptes, benevoles, teamMembersRows] = await Promise.all([
-    listComptes(),
-    permissions.canAccessAdminBenevoles ? listBenevoles() : Promise.resolve([]),
-    permissions.canAccessAdminMembres ? listTeamMembersForMembresPage() : Promise.resolve([]),
-  ])
 
   const isAllRoles = !roleFilter
   const isFilterBureauEquipe = roleFilter === "BUREAU"
@@ -48,44 +68,6 @@ export default async function MembresPage({
   const isGenericRoleFilter = isMembresGenericAccountRoleFilter(roleFilter)
   const genericRoleLabel = roleFilter ? getMembresAccountRoleLabel(roleFilter) : null
 
-  const comptesAfterStatut = allComptes.filter((u) => {
-    const banned = (u as { banned?: boolean }).banned === true
-    if (statutFilter === "actif" && banned) return false
-    if (statutFilter === "banni" && !banned) return false
-    return true
-  })
-
-  const adminUsers =
-    isAllRoles || roleFilter === "SUPER-ADMIN"
-      ? comptesAfterStatut.filter((u) => u.role === "SUPER-ADMIN")
-      : []
-
-  const administrationUsers =
-    isAllRoles || roleFilter === "ADMIN-PERMADMIN"
-      ? comptesAfterStatut.filter((u) =>
-          u.role === "ADMIN-PERMADMIN" ||
-          u.role === "PERMADMIN" ||
-          u.role === "INVITE-PERMADMIN",
-        )
-      : []
-
-  const usersAdminDashboard = isFilterAdmin
-    ? comptesAfterStatut.filter((u) => u.role === "SUPER-ADMIN")
-    : []
-
-  const usersAdministrationDashboard = isFilterAdministration
-    ? comptesAfterStatut.filter(
-        (u) =>
-          u.role === "ADMIN-PERMADMIN" ||
-          u.role === "PERMADMIN" ||
-          u.role === "INVITE-PERMADMIN",
-      )
-    : []
-
-  const genericRoleUsers = isGenericRoleFilter
-    ? comptesAfterStatut.filter((u) => u.role === roleFilter)
-    : []
-
   const showComptesEtEquipe =
     permissions.canAccessAdminMembres && !isFilterBenevole
   const showBenevoles =
@@ -93,33 +75,67 @@ export default async function MembresPage({
   const showEquipeSections =
     permissions.canAccessAdminEquipe && (isFilterBureauEquipe || isAllRoles)
 
-  const showFiltersRow =
-    allComptes.length > 0 || benevoles.length > 0 || teamMembersRows.length > 0
+  const [stats, hasAnyData] = await Promise.all([
+    showComptesEtEquipe && isAllRoles ? getMembresStatsCounts() : null,
+    getMembresHasAnyData(),
+  ])
+
+  const comptesQuery = { statut: statutFilter }
+
+  const [
+    adminUsersResult,
+    administrationUsersResult,
+    usersAdminDashboardResult,
+    usersAdministrationDashboardResult,
+    genericRoleUsersResult,
+    teamMembersAllResult,
+    teamMembersFilteredResult,
+    benevolesResult,
+  ] = await Promise.all([
+    showComptesEtEquipe && isAllRoles
+      ? listComptesPaginated({ ...comptesQuery, roles: ADMIN_ROLES, page: pageAdmin })
+      : null,
+    showComptesEtEquipe && isAllRoles
+      ? listComptesPaginated({
+          ...comptesQuery,
+          roles: ADMINISTRATION_ROLES,
+          page: pageAdministration,
+        })
+      : null,
+    showComptesEtEquipe && isFilterAdmin
+      ? listComptesPaginated({ ...comptesQuery, roles: ADMIN_ROLES, page })
+      : null,
+    showComptesEtEquipe && isFilterAdministration
+      ? listComptesPaginated({
+          ...comptesQuery,
+          roles: ADMINISTRATION_ROLES,
+          page,
+        })
+      : null,
+    showComptesEtEquipe && isGenericRoleFilter && roleFilter
+      ? listComptesPaginated({ ...comptesQuery, roles: [roleFilter], page })
+      : null,
+    showComptesEtEquipe && showEquipeSections && isAllRoles
+      ? listTeamMembersPaginated(pageBureau)
+      : null,
+    showComptesEtEquipe && showEquipeSections && isFilterBureauEquipe
+      ? listTeamMembersPaginated(page)
+      : null,
+    showBenevoles
+      ? listBenevolesPaginated(isAllRoles ? pageBenevoles : page)
+      : null,
+  ])
 
   const roleStyle = getMembresRoleStyle
 
   const statsItems =
-    isAllRoles && showComptesEtEquipe && allComptes.length > 0
+    stats && isAllRoles && showComptesEtEquipe
       ? [
-          { label: "Total comptes", count: allComptes.length },
-          {
-            label: "Super administrateurs",
-            count: allComptes.filter((u) => u.role === "SUPER-ADMIN").length,
-          },
-          {
-            label: "Comptes Bureau",
-            count: allComptes.filter((u) => u.role === "BUREAU").length,
-          },
-          {
-            label: "Permanence",
-            count: allComptes.filter(
-              (u) =>
-                u.role === "ADMIN-PERMADMIN" ||
-                u.role === "PERMADMIN" ||
-                u.role === "INVITE-PERMADMIN",
-            ).length,
-          },
-          { label: "Membres équipe", count: teamMembersRows.length },
+          { label: "Total comptes", count: stats.total },
+          { label: "Super administrateurs", count: stats.superAdmin },
+          { label: "Comptes Bureau", count: stats.bureau },
+          { label: "Permanence", count: stats.administration },
+          { label: "Membres équipe", count: stats.teamMembers },
         ]
       : []
 
@@ -129,7 +145,7 @@ export default async function MembresPage({
       description="Vue d'ensemble des comptes et des bénévoles"
     >
       <div className="flex flex-col gap-6">
-        {showFiltersRow && (
+        {hasAnyData && (
           <UserFilters
             canFilterBenevoles={permissions.canAccessAdminBenevoles}
             canFilterEquipe={permissions.canAccessAdminEquipe}
@@ -140,195 +156,225 @@ export default async function MembresPage({
 
         {showComptesEtEquipe && (
           <>
-            {showEquipeSections && isFilterBureauEquipe && (
-              <section className="space-y-3">
-                <SectionHeading
-                  title="Membres du bureau"
-                  description={`Équipe dirigeante enregistrée sur le site (${teamMembersRows.length})`}
+            {showEquipeSections && isFilterBureauEquipe && teamMembersFilteredResult && (
+              <MembresSection
+                title="Membres du bureau"
+                description={`Équipe dirigeante enregistrée sur le site (${teamMembersFilteredResult.total})`}
+                emptyIcon={IconBriefcase}
+                emptyTitle="Aucun membre du bureau"
+                emptyDescription="Aucun membre du bureau enregistré dans l'équipe."
+                isEmpty={teamMembersFilteredResult.data.length === 0}
+              >
+                <MembresTeamTable
+                  rows={teamMembersFilteredResult.data}
+                  sessionUserId={session?.user.id}
+                  roleStyle={roleStyle}
                 />
-                {teamMembersRows.length > 0 ? (
-                  <MembresTeamTable
-                    rows={teamMembersRows}
+                <MembresTablePagination
+                  total={teamMembersFilteredResult.total}
+                  page={teamMembersFilteredResult.page}
+                  searchParams={rawParams}
+                />
+              </MembresSection>
+            )}
+
+            {isAllRoles && adminUsersResult && administrationUsersResult && (
+              <div className="flex flex-col gap-8">
+                <MembresSection
+                  title="Administrateurs"
+                  description={`Comptes avec accès administrateur (${adminUsersResult.total})`}
+                  emptyIcon={IconShieldCheck}
+                  emptyTitle="Aucun administrateur"
+                  emptyDescription="Aucun compte avec le rôle administrateur n'est enregistré."
+                  isEmpty={adminUsersResult.data.length === 0}
+                >
+                  <MembresUsersTable
+                    users={adminUsersResult.data}
                     sessionUserId={session?.user.id}
                     roleStyle={roleStyle}
                   />
-                ) : (
-                  <MembresEmptyZone
-                    Icon={IconBriefcase}
-                    title="Aucun membre du bureau"
-                    description="Aucun membre du bureau enregistré dans l'équipe."
+                  <MembresTablePagination
+                    total={adminUsersResult.total}
+                    page={adminUsersResult.page}
+                    searchParams={rawParams}
+                    pageParam="pageAdmin"
                   />
-                )}
-              </section>
-            )}
+                </MembresSection>
 
-            {isAllRoles && (
-              <div className="flex flex-col gap-8">
-                <section className="space-y-3">
-                  <SectionHeading
-                    title="Administrateurs"
-                    description={`Comptes avec accès administrateur (${adminUsers.length})`}
-                  />
-                  {adminUsers.length > 0 ? (
-                    <MembresUsersTable
-                      users={adminUsers}
+                {showEquipeSections && teamMembersAllResult && (
+                  <MembresSection
+                    title="Membres du bureau"
+                    description={`Membres de l'équipe dirigeante (équipe site) (${teamMembersAllResult.total})`}
+                    emptyIcon={IconBriefcase}
+                    emptyTitle="Aucun membre du bureau"
+                    emptyDescription="Aucun membre du bureau enregistré dans l'équipe."
+                    isEmpty={teamMembersAllResult.data.length === 0}
+                  >
+                    <MembresTeamTable
+                      rows={teamMembersAllResult.data}
                       sessionUserId={session?.user.id}
                       roleStyle={roleStyle}
                     />
-                  ) : (
-                    <MembresEmptyZone
-                      Icon={IconShieldCheck}
-                      title="Aucun administrateur"
-                      description="Aucun compte avec le rôle administrateur n'est enregistré."
+                    <MembresTablePagination
+                      total={teamMembersAllResult.total}
+                      page={teamMembersAllResult.page}
+                      searchParams={rawParams}
+                      pageParam="pageBureau"
                     />
-                  )}
-                </section>
-
-                {showEquipeSections && (
-                  <section className="space-y-3">
-                    <SectionHeading
-                      title="Membres du bureau"
-                      description={`Membres de l'équipe dirigeante (équipe site) (${teamMembersRows.length})`}
-                    />
-                    {teamMembersRows.length > 0 ? (
-                      <MembresTeamTable
-                        rows={teamMembersRows}
-                        sessionUserId={session?.user.id}
-                        roleStyle={roleStyle}
-                      />
-                    ) : (
-                      <MembresEmptyZone
-                        Icon={IconBriefcase}
-                        title="Aucun membre du bureau"
-                        description="Aucun membre du bureau enregistré dans l'équipe."
-                      />
-                    )}
-                  </section>
+                  </MembresSection>
                 )}
 
-                <section className="space-y-3">
-                  <SectionHeading
-                    title="Administration"
-                    description={`Comptes espace administration (${administrationUsers.length})`}
+                <MembresSection
+                  title="Administration"
+                  description={`Comptes espace administration (${administrationUsersResult.total})`}
+                  emptyIcon={IconBuildingCommunity}
+                  emptyTitle="Aucun compte administration"
+                  emptyDescription="Aucun compte avec le rôle administration n'est enregistré."
+                  isEmpty={administrationUsersResult.data.length === 0}
+                >
+                  <MembresUsersTable
+                    users={administrationUsersResult.data}
+                    sessionUserId={session?.user.id}
+                    roleStyle={roleStyle}
                   />
-                  {administrationUsers.length > 0 ? (
-                    <MembresUsersTable
-                      users={administrationUsers}
-                      sessionUserId={session?.user.id}
-                      roleStyle={roleStyle}
-                    />
-                  ) : (
-                    <MembresEmptyZone
-                      Icon={IconBuildingCommunity}
-                      title="Aucun compte administration"
-                      description="Aucun compte avec le rôle administration n'est enregistré."
-                    />
-                  )}
-                </section>
+                  <MembresTablePagination
+                    total={administrationUsersResult.total}
+                    page={administrationUsersResult.page}
+                    searchParams={rawParams}
+                    pageParam="pageAdministration"
+                  />
+                </MembresSection>
               </div>
             )}
 
-            {!isAllRoles && !isFilterBureauEquipe && isFilterAdmin && (
-              <section className="space-y-3">
-                <SectionHeading
-                  title="Administrateurs"
-                  description={`Comptes avec accès administrateur au dashboard bureau (${usersAdminDashboard.length})`}
+            {!isAllRoles && !isFilterBureauEquipe && isFilterAdmin && usersAdminDashboardResult && (
+              <MembresSection
+                title="Administrateurs"
+                description={`Comptes avec accès administrateur au dashboard bureau (${usersAdminDashboardResult.total})`}
+                emptyIcon={IconShieldCheck}
+                emptyTitle="Aucun administrateur"
+                emptyDescription="Aucun compte avec le rôle administrateur ne correspond aux filtres."
+                isEmpty={usersAdminDashboardResult.data.length === 0}
+              >
+                <MembresUsersTable
+                  users={usersAdminDashboardResult.data}
+                  sessionUserId={session?.user.id}
+                  roleStyle={roleStyle}
                 />
-                {usersAdminDashboard.length > 0 ? (
-                  <MembresUsersTable
-                    users={usersAdminDashboard}
-                    sessionUserId={session?.user.id}
-                    roleStyle={roleStyle}
-                  />
-                ) : (
-                  <MembresEmptyZone
-                    Icon={IconShieldCheck}
-                    title="Aucun administrateur"
-                    description="Aucun compte avec le rôle administrateur ne correspond aux filtres."
-                  />
-                )}
-              </section>
+                <MembresTablePagination
+                  total={usersAdminDashboardResult.total}
+                  page={usersAdminDashboardResult.page}
+                  searchParams={rawParams}
+                />
+              </MembresSection>
             )}
 
-            {!isAllRoles && !isFilterBureauEquipe && isFilterAdministration && (
-              <section className="space-y-3">
-                <SectionHeading
+            {!isAllRoles &&
+              !isFilterBureauEquipe &&
+              isFilterAdministration &&
+              usersAdministrationDashboardResult && (
+                <MembresSection
                   title="Administration"
-                  description={`Comptes avec accès au dashboard Administration (${usersAdministrationDashboard.length})`}
-                />
-                {usersAdministrationDashboard.length > 0 ? (
+                  description={`Comptes avec accès au dashboard Administration (${usersAdministrationDashboardResult.total})`}
+                  emptyIcon={IconBuildingCommunity}
+                  emptyTitle="Aucun accès Administration"
+                  emptyDescription="Aucun compte avec le rôle « administration » ne correspond aux filtres."
+                  isEmpty={usersAdministrationDashboardResult.data.length === 0}
+                >
                   <MembresUsersTable
-                    users={usersAdministrationDashboard}
+                    users={usersAdministrationDashboardResult.data}
                     sessionUserId={session?.user.id}
                     roleStyle={roleStyle}
                   />
-                ) : (
-                  <MembresEmptyZone
-                    Icon={IconBuildingCommunity}
-                    title="Aucun accès Administration"
-                    description="Aucun compte avec le rôle « administration » ne correspond aux filtres."
+                  <MembresTablePagination
+                    total={usersAdministrationDashboardResult.total}
+                    page={usersAdministrationDashboardResult.page}
+                    searchParams={rawParams}
                   />
-                )}
-              </section>
-            )}
+                </MembresSection>
+              )}
 
-            {isGenericRoleFilter && genericRoleLabel && (
-              <section className="space-y-3">
-                <SectionHeading
+            {isGenericRoleFilter &&
+              genericRoleLabel &&
+              genericRoleUsersResult && (
+                <MembresSection
                   title={genericRoleLabel}
-                  description={`Comptes avec le rôle « ${genericRoleLabel} » (${genericRoleUsers.length})`}
-                />
-                {genericRoleUsers.length > 0 ? (
+                  description={`Comptes avec le rôle « ${genericRoleLabel} » (${genericRoleUsersResult.total})`}
+                  emptyIcon={IconShieldCheck}
+                  emptyTitle="Aucun compte"
+                  emptyDescription="Aucun compte ne correspond à ce rôle et à ces filtres."
+                  isEmpty={genericRoleUsersResult.data.length === 0}
+                >
                   <MembresUsersTable
-                    users={genericRoleUsers}
+                    users={genericRoleUsersResult.data}
                     sessionUserId={session?.user.id}
                     roleStyle={roleStyle}
                   />
-                ) : (
-                  <MembresEmptyZone
-                    Icon={IconShieldCheck}
-                    title="Aucun compte"
-                    description="Aucun compte ne correspond à ce rôle et à ces filtres."
+                  <MembresTablePagination
+                    total={genericRoleUsersResult.total}
+                    page={genericRoleUsersResult.page}
+                    searchParams={rawParams}
                   />
-                )}
-              </section>
-            )}
+                </MembresSection>
+              )}
           </>
         )}
 
-        {showBenevoles && (
-          <section className="space-y-3">
-            <SectionHeading
-              title="Bénévoles"
-              description={`Contacts bénévoles de l'association (${benevoles.length})`}
+        {showBenevoles && benevolesResult && (
+          <MembresSection
+            title="Bénévoles"
+            description={`Contacts bénévoles de l'association (${benevolesResult.total})`}
+            emptyIcon={IconHandStop}
+            emptyTitle="Aucun bénévole"
+            emptyDescription="Aucun bénévole enregistré."
+            isEmpty={benevolesResult.data.length === 0}
+          >
+            <MembresBenevolesTable rows={benevolesResult.data} />
+            <MembresTablePagination
+              total={benevolesResult.total}
+              page={benevolesResult.page}
+              searchParams={rawParams}
+              pageParam={isAllRoles ? "pageBenevoles" : "page"}
             />
-            {benevoles.length === 0 ? (
-              <MembresEmptyZone
-                Icon={IconHandStop}
-                title="Aucun bénévole"
-                description="Aucun bénévole enregistré."
-              />
-            ) : (
-              <MembresBenevolesTable rows={benevoles} />
-            )}
-          </section>
+          </MembresSection>
         )}
       </div>
     </BureauContent>
   )
 }
 
-function SectionHeading({
+function MembresSection({
   title,
   description,
+  emptyIcon: EmptyIcon,
+  emptyTitle,
+  emptyDescription,
+  isEmpty,
+  children,
 }: {
   title: string
   description: string
+  emptyIcon: typeof IconBriefcase
+  emptyTitle: string
+  emptyDescription: string
+  isEmpty: boolean
+  children: React.ReactNode
 }) {
   return (
-    <div>
-      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </div>
+    <section className="space-y-3">
+      <div>
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+      {isEmpty ? (
+        <MembresEmptyZone
+          Icon={EmptyIcon}
+          title={emptyTitle}
+          description={emptyDescription}
+        />
+      ) : (
+        children
+      )}
+    </section>
   )
 }

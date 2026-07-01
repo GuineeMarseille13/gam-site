@@ -14,12 +14,16 @@ interface AdministrationAccessListProps {
   roleLabels: Record<string, string>
   isAdmin: boolean
   currentUserId: string
+  showEmptyState?: boolean
 }
 
 /**
  * Liste des accès administration (wrapper du module partagé).
  */
-export function AdministrationAccessList(props: AdministrationAccessListProps) {
+export function AdministrationAccessList({
+  showEmptyState = true,
+  ...props
+}: AdministrationAccessListProps) {
   return (
     <DashboardAccessList
       scope={ADMINISTRATION_ACCESS_SCOPE}
@@ -28,6 +32,7 @@ export function AdministrationAccessList(props: AdministrationAccessListProps) {
         unbanAccess: unbanAdministrationAccess,
         revokeAccess: revokeAdministrationAccess,
       }}
+      showEmptyState={showEmptyState}
       {...props}
     />
   )

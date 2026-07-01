@@ -6,7 +6,13 @@ import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { Button } from "@/components/ui/button"
 import { IconPlus } from "@tabler/icons-react"
-import { getHerbergementRelationAccessList } from "./_services/get-herbergement-relation-access-list"
+import { HERBERGEMENT_RELATION_ACCESS_SCOPE } from "@/config/dashboard-access-scope"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
+import { parseAccessListStatus } from "@/app/(admin)/_shared/dashboard-access/_schemas/access-list-search-params.schema"
+import { DashboardAccessListToolbarLinks } from "@/app/(admin)/_shared/dashboard-access/_components/dashboard-access-list-toolbar-links"
+import { getHerbergementRelationAccessListPaginated } from "./_services/get-herbergement-relation-access-list"
 import { getHerbergementRelationRoles } from "./_services/get-herbergement-relation-roles"
 import { buildHerbergementRelationRoleLabels } from "./_components/herbergement-relation-access-role-label"
 import { HerbergementRelationAccessList } from "./_components/herbergement-relation-access-list"
@@ -16,9 +22,17 @@ export const metadata: Metadata = {
   description: "Gestion des accès au dashboard Hébergement",
 }
 
-export default async function HerbergementRelationAccesPage() {
-  const [rows, roles, session] = await Promise.all([
-    getHerbergementRelationAccessList(),
+export default async function HerbergementRelationAccesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const rawParams = await searchParams
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
+  const status = parseAccessListStatus(getFirstSearchParam(rawParams.statut))
+
+  const [accessResult, roles, session] = await Promise.all([
+    getHerbergementRelationAccessListPaginated({ page, status }),
     getHerbergementRelationRoles(),
     auth.api.getSession({ headers: await headers() }),
   ])
@@ -26,6 +40,7 @@ export default async function HerbergementRelationAccesPage() {
   const permissions = getDashboardPermissions(session?.user.role)
   const isAdmin = permissions.canManageHerbergementAcces
   const roleLabels = buildHerbergementRelationRoleLabels(roles)
+  const hasAnyAccess = accessResult.counts.all > 0
 
   return (
     <BureauContent
@@ -45,12 +60,32 @@ export default async function HerbergementRelationAccesPage() {
         ) : null
       }
     >
-      <HerbergementRelationAccessList
-        rows={rows}
-        roleLabels={roleLabels}
-        isAdmin={isAdmin}
-        currentUserId={session?.user.id ?? ""}
-      />
+      <div className="space-y-4">
+        {hasAnyAccess && (
+          <DashboardAccessListToolbarLinks
+            scope={HERBERGEMENT_RELATION_ACCESS_SCOPE}
+            pathname="/hebergement-relation/acces"
+            status={status}
+            counts={accessResult.counts}
+            searchParams={rawParams}
+          />
+        )}
+
+        <HerbergementRelationAccessList
+          rows={accessResult.rows}
+          roleLabels={roleLabels}
+          isAdmin={isAdmin}
+          currentUserId={session?.user.id ?? ""}
+          showEmptyState={!hasAnyAccess}
+        />
+
+        <AdminTablePagination
+          pathname="/hebergement-relation/acces"
+          total={accessResult.pagination.total}
+          page={accessResult.pagination.page}
+          searchParams={rawParams}
+        />
+      </div>
     </BureauContent>
   )
 }

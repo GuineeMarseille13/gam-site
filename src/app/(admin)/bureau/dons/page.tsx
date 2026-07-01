@@ -1,32 +1,42 @@
 import type { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { formatCurrency } from "@/helpers/format-currency"
-import type { DonWithRelations } from "./_types/don-with-relations.type"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
 import { CreateDonDialog } from "./_components/create-don-dialog"
 import { DonsBoard } from "./_components/dons-board"
+import { getDonsPaginated, getDonsTotals } from "./_services/get-dons-paginated"
 
 export const metadata: Metadata = { title: "Dons" }
 
-async function getDons(): Promise<DonWithRelations[]> {
-  return prisma.donation.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { person: true, payment: true },
-  })
-}
+export default async function DonsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const rawParams = await searchParams
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
 
-export default async function DonsPage() {
-  const dons = await getDons()
-
-  const totalDons = dons.reduce((sum, d) => sum + d.amount, 0)
+  const [donsResult, totals] = await Promise.all([
+    getDonsPaginated(page),
+    getDonsTotals(),
+  ])
 
   return (
     <BureauContent
       title="Dons"
-      description={`${dons.length} don${dons.length > 1 ? "s" : ""} — ${formatCurrency(totalDons, { maximumFractionDigits: 0 })} collectés au total`}
+      description={`${totals.count} don${totals.count > 1 ? "s" : ""} — ${formatCurrency(totals.amount, { maximumFractionDigits: 0 })} collectés au total`}
       actions={<CreateDonDialog />}
     >
-      <DonsBoard dons={dons} />
+      <DonsBoard dons={donsResult.data} />
+      <AdminTablePagination
+        pathname="/bureau/dons"
+        total={donsResult.total}
+        page={donsResult.page}
+        searchParams={rawParams}
+        className="mt-4"
+      />
     </BureauContent>
   )
 }

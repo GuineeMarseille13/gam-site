@@ -1,34 +1,43 @@
 import type { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { formatCurrency } from "@/helpers/format-currency"
-import type { OrderWithRelations } from "./_types/order-with-relations.type"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
 import { CommandesBoard } from "./_components/commandes-board"
+import {
+  getCommandesPaginated,
+  getCommandesTotals,
+} from "./_services/get-commandes-paginated"
 
 export const metadata: Metadata = { title: "Commandes" }
 
-async function getCommandes(): Promise<OrderWithRelations[]> {
-  return prisma.order.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      person: true,
-      payment: true,
-      items: { include: { product: true } },
-    },
-  })
-}
+export default async function CommandesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const rawParams = await searchParams
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
 
-export default async function CommandesPage() {
-  const commandes = await getCommandes()
-
-  const totalCA = commandes.reduce((sum, c) => sum + c.totalAmount, 0)
+  const [commandesResult, totals] = await Promise.all([
+    getCommandesPaginated(page),
+    getCommandesTotals(),
+  ])
 
   return (
     <BureauContent
       title="Commandes"
-      description={`${commandes.length} commande${commandes.length > 1 ? "s" : ""} · ${formatCurrency(totalCA, { unit: "cent", maximumFractionDigits: 0 })} de chiffre d'affaires`}
+      description={`${totals.count} commande${totals.count > 1 ? "s" : ""} · ${formatCurrency(totals.amount, { unit: "cent", maximumFractionDigits: 0 })} de chiffre d'affaires`}
     >
-      <CommandesBoard commandes={commandes} />
+      <CommandesBoard commandes={commandesResult.data} />
+      <AdminTablePagination
+        pathname="/bureau/commandes"
+        total={commandesResult.total}
+        page={commandesResult.page}
+        searchParams={rawParams}
+        className="mt-4"
+      />
     </BureauContent>
   )
 }

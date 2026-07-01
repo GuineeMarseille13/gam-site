@@ -6,7 +6,13 @@ import { getDashboardPermissions } from "@/config/dashboard-permissions"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { Button } from "@/components/ui/button"
 import { IconPlus } from "@tabler/icons-react"
-import { getAdministrationAccessList } from "./_services/get-administration-access-list"
+import { ADMINISTRATION_ACCESS_SCOPE } from "@/config/dashboard-access-scope"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
+import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
+import { parseAdminPage } from "@/app/(admin)/_shared/_lib/admin-pagination"
+import { parseAccessListStatus } from "@/app/(admin)/_shared/dashboard-access/_schemas/access-list-search-params.schema"
+import { DashboardAccessListToolbarLinks } from "@/app/(admin)/_shared/dashboard-access/_components/dashboard-access-list-toolbar-links"
+import { getAdministrationAccessListPaginated } from "./_services/get-administration-access-list"
 import { getPermanenceAdminRoles } from "./_services/get-permanence-admin-roles"
 import { buildPermanenceAdminRoleLabels } from "./_components/administration-access-role-label"
 import { AdministrationAccessList } from "./_components/administration-access-list"
@@ -16,9 +22,17 @@ export const metadata: Metadata = {
   description: "Gestion des accès au dashboard Administration",
 }
 
-export default async function AdministrationAccesPage() {
-  const [rows, roles, session] = await Promise.all([
-    getAdministrationAccessList(),
+export default async function AdministrationAccesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const rawParams = await searchParams
+  const page = parseAdminPage(getFirstSearchParam(rawParams.page))
+  const status = parseAccessListStatus(getFirstSearchParam(rawParams.statut))
+
+  const [accessResult, roles, session] = await Promise.all([
+    getAdministrationAccessListPaginated({ page, status }),
     getPermanenceAdminRoles(),
     auth.api.getSession({ headers: await headers() }),
   ])
@@ -26,6 +40,7 @@ export default async function AdministrationAccesPage() {
   const permissions = getDashboardPermissions(session?.user.role)
   const isAdmin = permissions.canManageAdministrationAcces
   const roleLabels = buildPermanenceAdminRoleLabels(roles)
+  const hasAnyAccess = accessResult.counts.all > 0
 
   return (
     <BureauContent
@@ -45,12 +60,32 @@ export default async function AdministrationAccesPage() {
         ) : null
       }
     >
-      <AdministrationAccessList
-        rows={rows}
-        roleLabels={roleLabels}
-        isAdmin={isAdmin}
-        currentUserId={session?.user.id ?? ""}
-      />
+      <div className="space-y-4">
+        {hasAnyAccess && (
+          <DashboardAccessListToolbarLinks
+            scope={ADMINISTRATION_ACCESS_SCOPE}
+            pathname="/administration/acces"
+            status={status}
+            counts={accessResult.counts}
+            searchParams={rawParams}
+          />
+        )}
+
+        <AdministrationAccessList
+          rows={accessResult.rows}
+          roleLabels={roleLabels}
+          isAdmin={isAdmin}
+          currentUserId={session?.user.id ?? ""}
+          showEmptyState={!hasAnyAccess}
+        />
+
+        <AdminTablePagination
+          pathname="/administration/acces"
+          total={accessResult.pagination.total}
+          page={accessResult.pagination.page}
+          searchParams={rawParams}
+        />
+      </div>
     </BureauContent>
   )
 }

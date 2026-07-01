@@ -5,11 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { IconHandStop, IconPhone, IconMail } from "@tabler/icons-react"
 import { BenevoleRowActions } from "@/app/(admin)/bureau/benevoles/_components/benevole-row-actions"
 import type { BenevoleListRow } from "@/helpers/benevoles"
+import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
 
 export type DashboardBasePath = "/bureau" | "/administration"
 
 interface BenevolesListSectionProps {
   benevoles: BenevoleListRow[]
+  total: number
+  page: number
+  searchParams?: Record<string, string | string[] | undefined>
   basePath: DashboardBasePath
   canAdd?: boolean
   canEdit?: boolean
@@ -21,6 +25,9 @@ interface BenevolesListSectionProps {
  */
 export function BenevolesListSection({
   benevoles,
+  total,
+  page,
+  searchParams = {},
   basePath,
   canAdd = true,
   canEdit = true,
@@ -34,7 +41,7 @@ export function BenevolesListSection({
   return (
     <BureauContent
       title="Bénévoles"
-      description={`${benevoles.length} bénévole${benevoles.length > 1 ? "s" : ""} — Nos héros du quotidien`}
+      description={`${total} bénévole${total > 1 ? "s" : ""} — Nos héros du quotidien`}
       addHref={nouveauHref}
       addLabel={canAdd ? "Nouveau bénévole" : undefined}
       dashboard={dashboard}
@@ -189,6 +196,14 @@ export function BenevolesListSection({
           </div>
         </div>
       )}
+
+      <AdminTablePagination
+        pathname={`${basePath}/benevoles`}
+        total={total}
+        page={page}
+        searchParams={searchParams}
+        className="mt-4"
+      />
     </BureauContent>
   )
 }

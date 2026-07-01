@@ -30,6 +30,7 @@ export function EquipeFilters() {
     const params = new URLSearchParams(searchParams.toString())
     if (value) params.set(key, value)
     else params.delete(key)
+    params.delete("page")
     router.push(`${pathname}?${params.toString()}`)
   }
 
@@ -40,8 +41,6 @@ export function EquipeFilters() {
   function reset() {
     router.push(pathname)
   }
-
-  // ── Rendu ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-wrap items-center gap-2">
