@@ -57,7 +57,7 @@ function ReviewsSection({ reviews }: ReviewsSectionProps) {
   const { firstRow, secondRow } = splitReviewsIntoMarqueeRows(list)
 
   return (
-    <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-amber-50/30 to-white">
+    <section className="relative w-full overflow-hidden py-10 md:py-12 bg-gradient-to-b from-white via-sky-50/25 to-white dark:via-sky-950/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-10">
           <SectionSplitHeading
