@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
+import { ExpandableText } from "@/components/expandable-text";
 import MediaGallery from "./MediaGallery";
 import { Event } from "@/types/events";
 import { ANIMATION_CONFIG, STYLE_CONFIG } from "@/app/(public)/evenements/_config/events.config";
@@ -46,9 +47,11 @@ const EventCard = memo(function EventCard({
       </h3>
 
       {/* Description */}
-      <p className={STYLE_CONFIG.eventCard.description}>
-        {event.description}
-      </p>
+      <ExpandableText
+        text={event.description}
+        tone="events"
+        contentClassName={STYLE_CONFIG.eventCard.description}
+      />
 
       {/* Galerie : image actuelle en grand + autres en miniatures */}
       {event.media && event.media.length > 0 && (

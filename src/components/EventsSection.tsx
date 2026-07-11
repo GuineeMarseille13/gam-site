@@ -6,7 +6,11 @@ import Link from "next/link";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import Image from "next/image";
 import EventMediaPreview from "@/components/events/EventMediaPreview";
+import { ExpandableText } from "@/components/expandable-text";
 import { SectionSplitHeading } from "@/components/section-split-heading";
+
+const EVENT_DESCRIPTION_CLASSES =
+  "text-sm leading-relaxed text-gray-600 sm:text-base";
 export interface EventMedia {
   id: number;
   type: "image" | "video";
@@ -377,14 +381,17 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                   >
                     {event.title}
                   </motion.h3>
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                    className="text-sm leading-relaxed text-gray-600 sm:text-base"
                   >
-                    {event.description}
-                  </motion.p>
+                    <ExpandableText
+                      text={event.description}
+                      tone="events"
+                      contentClassName={EVENT_DESCRIPTION_CLASSES}
+                    />
+                  </motion.div>
                 </div>
               ) : (
                 <motion.div
@@ -411,14 +418,17 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
                   >
                     {event.title}
                   </motion.h3>
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-                    className="text-sm leading-relaxed text-gray-600 sm:text-base"
                   >
-                    {event.description}
-                  </motion.p>
+                    <ExpandableText
+                      text={event.description}
+                      tone="events"
+                      contentClassName={EVENT_DESCRIPTION_CLASSES}
+                    />
+                  </motion.div>
                 </div>
               ) : (
                 <motion.div
@@ -469,14 +479,17 @@ function TimelineItem({ event, index, isMobile }: TimelineItemProps) {
               {event.title}
             </motion.h3>
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, x: 0 }}
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
-              className="text-sm leading-relaxed text-gray-600 sm:text-base"
             >
-              {event.description}
-            </motion.p>
+              <ExpandableText
+                text={event.description}
+                tone="events"
+                contentClassName={EVENT_DESCRIPTION_CLASSES}
+              />
+            </motion.div>
           </div>
 
           {/* Media */}
