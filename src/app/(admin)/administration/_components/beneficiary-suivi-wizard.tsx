@@ -22,6 +22,9 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { BeneficiaryDemandTypeMultiSelect } from "./beneficiary-demand-type-multi-select"
+import { BeneficiaryIdentitySearch } from "./beneficiary-identity-search"
+import { BeneficiaryPasswordInput } from "./beneficiary-password-input"
+import { BeneficiaryResponsibleSearch } from "./beneficiary-responsible-search"
 import {
   BeneficiaryRequiredMark,
   beneficiarySuiviDateTriggerClassName,
@@ -50,10 +53,16 @@ import {
   REQUEST_STATUS_LABELS,
   REQUEST_STATUS_VALUES,
 } from "../_schemas/beneficiary-suivi-config"
+import type { BeneficiaryAutofill } from "../_schemas/beneficiary-identity-search.schema"
 
 const STEPS = 5
 
 const STEP_LABELS = ["Date", "Demande", "Dossier", "Fiche", "Validation"]
+
+function ymdToLocalDate(ymd: string): Date {
+  const [year, month, day] = ymd.split("-").map(Number)
+  return new Date(year!, month! - 1, day!)
+}
 
 export type BeneficiaryDemandTypeOption = DemandTypeOptionForValidation & {
   readonly label: string
@@ -231,6 +240,23 @@ export function BeneficiarySuiviWizard({
       })
       .join(" · ")
   }, [documentKeys, documentTypes, documentOtherDetail])
+
+  const handleBeneficiaryAutofill = useCallback((data: BeneficiaryAutofill) => {
+    setFirstName(data.firstName)
+    setLastName(data.lastName)
+    setBirthDate(data.birthDate ? ymdToLocalDate(data.birthDate) : undefined)
+    setBirthCountry(data.birthCountry ?? "")
+    setBirthMunicipality(data.birthMunicipality ?? "")
+    setFatherName(data.fatherName ?? "")
+    setMotherName(data.motherName ?? "")
+    setPhone(data.phone ?? "")
+    setEmail(data.email ?? "")
+    setGmailAccount(data.gmailAccount ?? "")
+    setGmailPassword(data.gmailPassword ?? "")
+    setEkadiLogin(data.ekadiLogin ?? "")
+    setEkadiPassword(data.ekadiPassword ?? "")
+    setFieldErrors({})
+  }, [])
 
   const resetForm = useCallback(() => {
     setPermanenceDate(undefined)
@@ -746,16 +772,17 @@ export function BeneficiarySuiviWizard({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="ben-suivi-responsible" className="text-foreground">
+            <Label id="ben-suivi-responsible-label" className="text-foreground">
               Responsable en charge de la demande
               <BeneficiaryRequiredMark />
             </Label>
-            <Input
+            <BeneficiaryResponsibleSearch
               id="ben-suivi-responsible"
+              labelledBy="ben-suivi-responsible-label"
               value={assignedResponsibleName}
-              onChange={(e) => setAssignedResponsibleName(e.target.value)}
-              placeholder="Nom du bénévole ou référent"
-              className={cn(beneficiarySuiviInputClassName, "w-full min-w-0 sm:max-w-xl")}
+              onChange={setAssignedResponsibleName}
+              error={fieldErrors.assignedResponsibleName}
+              disabled={pending}
             />
             {fieldErrors.assignedResponsibleName && (
               <p className="text-sm text-destructive">{fieldErrors.assignedResponsibleName}</p>
@@ -790,16 +817,18 @@ export function BeneficiarySuiviWizard({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="ben-suivi-fn" className="text-foreground">
+              <Label id="ben-suivi-fn-label" className="text-foreground">
                 Prénom
                 <BeneficiaryRequiredMark />
               </Label>
-              <Input
+              <BeneficiaryIdentitySearch
                 id="ben-suivi-fn"
+                labelledBy="ben-suivi-fn-label"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                autoComplete="given-name"
-                className={cn(beneficiarySuiviInputClassName, "w-full min-w-0")}
+                onChange={setFirstName}
+                onAutofill={handleBeneficiaryAutofill}
+                error={fieldErrors.firstName}
+                disabled={pending}
               />
               {fieldErrors.firstName && (
                 <p className="text-sm text-destructive">{fieldErrors.firstName}</p>
@@ -983,13 +1012,12 @@ export function BeneficiarySuiviWizard({
               <Label htmlFor="ben-suivi-gmail-pwd" className="text-muted-foreground">
                 Mot de passe Gmail
               </Label>
-              <Input
+              <BeneficiaryPasswordInput
                 id="ben-suivi-gmail-pwd"
-                type="password"
-                autoComplete="new-password"
                 value={gmailPassword}
-                onChange={(e) => setGmailPassword(e.target.value)}
-                className={cn(beneficiarySuiviInputClassName, "w-full min-w-0")}
+                onChange={setGmailPassword}
+                disabled={pending}
+                error={Boolean(fieldErrors.gmailPassword)}
               />
               {fieldErrors.gmailPassword && (
                 <p className="text-sm text-destructive">{fieldErrors.gmailPassword}</p>
@@ -1017,13 +1045,12 @@ export function BeneficiarySuiviWizard({
               <Label htmlFor="ben-suivi-ekadi-pwd" className="text-muted-foreground">
                 Mot de passe E-Kadi
               </Label>
-              <Input
+              <BeneficiaryPasswordInput
                 id="ben-suivi-ekadi-pwd"
-                type="password"
-                autoComplete="new-password"
                 value={ekadiPassword}
-                onChange={(e) => setEkadiPassword(e.target.value)}
-                className={cn(beneficiarySuiviInputClassName, "w-full min-w-0")}
+                onChange={setEkadiPassword}
+                disabled={pending}
+                error={Boolean(fieldErrors.ekadiPassword)}
               />
               {fieldErrors.ekadiPassword && (
                 <p className="text-sm text-destructive">{fieldErrors.ekadiPassword}</p>

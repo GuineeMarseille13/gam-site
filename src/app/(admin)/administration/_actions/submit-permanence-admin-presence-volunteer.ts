@@ -47,7 +47,7 @@ export async function submitPermanenceAdminPresenceVolunteer(
       },
     })
     revalidatePath("/administration")
-    revalidatePath("/administration/permanence-administrative")
+    revalidatePath("/administration/presence-benevoles")
     return { success: true }
   } catch (err) {
     console.error("[submitPermanenceAdminPresenceVolunteer]", err)

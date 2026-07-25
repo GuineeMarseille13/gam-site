@@ -124,7 +124,7 @@ export function AdministrationSidebar({ currentUser, role, ...props }: Administr
     },
     {
       title: "Présence Bénévoles",
-      url: `${BASE}/permanence-administrative`,
+      url: `${BASE}/presence-benevoles`,
       icon: IconCalendarCheck,
       visible: permissions.canAccessAdminPresence,
     },
