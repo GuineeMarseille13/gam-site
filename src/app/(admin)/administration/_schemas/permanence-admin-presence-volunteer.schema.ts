@@ -1,34 +1,13 @@
 import { z } from "zod"
 
 /**
- * Membres proposés dans l’ancien Google Form « Permanence Admin_Bénévole ».
- * Toute évolution de liste se fait ici (et éventuellement migration des anciennes lignes).
+ * Nom du membre (bénévole) sélectionné via recherche — stocké en texte libre.
  */
-export const ADMIN_PERMANENCE_MEMBERS = [
-  "Mody Hady BARRY",
-  "Moussa CAMARA",
-  "Aboubacar sidig Diallo",
-  "Mamadou Alpha Diallo",
-  "Jafar BARRY",
-  "Aicha Kourouma",
-  "Michelle Dao",
-  "Julie Delaby",
-  "Ibrahim BAH",
-  "Aminata FOFANA",
-  "Anna LUDMANN",
-  "Sékou II SAMOURA",
-  "mouctar Kaba",
-] as const
-
-export type AdminPermanenceMember = (typeof ADMIN_PERMANENCE_MEMBERS)[number]
-
-const MEMBER_SET = new Set<string>(ADMIN_PERMANENCE_MEMBERS)
-
 export const adminPermanenceMemberSchema = z
   .string()
-  .refine((v): v is AdminPermanenceMember => MEMBER_SET.has(v), {
-    message: "Choisissez un membre dans la liste.",
-  })
+  .min(2, "Sélectionnez un bénévole dans les suggestions.")
+  .max(160)
+  .transform((s) => s.trim())
 
 export const submitPermanenceAdminPresenceVolunteerSchema = z
   .object({

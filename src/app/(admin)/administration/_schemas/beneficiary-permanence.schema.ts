@@ -89,7 +89,7 @@ export function buildBeneficiaryPermanenceStep3Schema(
         }),
       assignedResponsibleName: z
         .string()
-        .min(2, "Indiquez le responsable en charge.")
+        .min(2, "Sélectionnez un bénévole dans les suggestions.")
         .max(120)
         .transform((s) => s.trim()),
       paymentResponsible: paymentEnum,

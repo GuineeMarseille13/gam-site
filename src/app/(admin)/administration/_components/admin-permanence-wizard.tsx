@@ -11,23 +11,17 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { BeneficiaryResponsibleSearch } from "./beneficiary-responsible-search"
 import { submitPermanenceAdminPresenceVolunteer } from "../_actions/submit-permanence-admin-presence-volunteer"
 import {
-  ADMIN_PERMANENCE_MEMBERS,
   permanenceAdminPresenceVolunteerStep1Schema,
   permanenceAdminPresenceVolunteerStep2Schema,
   permanenceAdminPresenceVolunteerStep3Schema,
   submitPermanenceAdminPresenceVolunteerSchema,
 } from "../_schemas/permanence-admin-presence-volunteer.schema"
+import { VOLUNTEER_SEARCH_MIN_LENGTH } from "../_schemas/volunteer-search.schema"
 
 const STEPS = 4
 
@@ -226,22 +220,19 @@ export function AdminPermanenceWizard({ className }: AdminPermanenceWizardProps)
 
       {step === 2 && (
         <div className="space-y-3">
-          <Label htmlFor="adm-perm-member">Membre</Label>
-          <Select value={memberFullName} onValueChange={setMemberFullName}>
-            <SelectTrigger
-              id="adm-perm-member"
-              className="h-11 w-full max-w-full border-sky-200/80 transition-colors hover:border-sky-400 hover:bg-sky-50/90 hover:text-sky-900 dark:border-sky-800/60 dark:hover:border-sky-500 dark:hover:bg-sky-950/45 dark:hover:text-sky-100 sm:max-w-md"
-            >
-              <SelectValue placeholder="Choisir dans la liste" />
-            </SelectTrigger>
-            <SelectContent className="max-h-[min(60vh,22rem)]">
-              {ADMIN_PERMANENCE_MEMBERS.map((name) => (
-                <SelectItem key={name} value={name}>
-                  {name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label id="adm-perm-member-label">Membre</Label>
+          <BeneficiaryResponsibleSearch
+            id="adm-perm-member"
+            labelledBy="adm-perm-member-label"
+            value={memberFullName}
+            onChange={setMemberFullName}
+            error={fieldErrors.memberFullName}
+            disabled={pending}
+            mobileTriggerPlaceholder="Rechercher un membre"
+            desktopPlaceholder="Rechercher un bénévole (min. 3 lettres)"
+            drawerTitle="Membre présent"
+            drawerDescription={`Recherchez un bénévole (min. ${VOLUNTEER_SEARCH_MIN_LENGTH} lettres). Prénom et email aident à distinguer les homonymes.`}
+          />
           {fieldErrors.memberFullName && (
             <p className="text-sm text-destructive">{fieldErrors.memberFullName}</p>
           )}

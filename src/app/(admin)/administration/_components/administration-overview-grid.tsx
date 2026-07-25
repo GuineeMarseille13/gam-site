@@ -100,9 +100,9 @@ export function AdministrationOverviewGrid({ firstName }: AdministrationOverview
               >
                 <IconCalendarCheck className="size-5" aria-hidden />
               </div>
-              <CardTitle className="text-lg">Permanence administrative</CardTitle>
+              <CardTitle className="text-lg">Présence Bénévoles</CardTitle>
               <CardDescription>
-                Liste de présence à la permanence ADM : date, membre, heures, commentaire.
+                Liste de présence à la permanence des Bénévoles : date, membre, heures, commentaire.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -111,7 +111,7 @@ export function AdministrationOverviewGrid({ firstName }: AdministrationOverview
                 variant="secondary"
                 className={cn("w-full gap-2", administrationPrimaryButtonClassName)}
               >
-                <Link href="/administration/permanence-administrative">
+                <Link href="/administration/presence-benevoles">
                   Enregistrer une présence
                   <IconArrowRight className="size-4" aria-hidden />
                 </Link>
