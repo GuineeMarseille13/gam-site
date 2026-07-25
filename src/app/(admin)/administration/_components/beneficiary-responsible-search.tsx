@@ -172,7 +172,6 @@ export function BeneficiaryResponsibleSearch({
           id={id}
           aria-labelledby={labelledBy}
           disabled={disabled}
-          aria-invalid={error ? true : undefined}
           aria-haspopup="dialog"
           aria-expanded={drawerOpen}
           onClick={() => setDrawerOpen(true)}

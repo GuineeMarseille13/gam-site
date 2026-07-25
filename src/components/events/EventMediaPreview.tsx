@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- URLs dynamiques (Cloudinary, embeds), tailles variables */
 import { memo, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ZoomIn } from "lucide-react";
 import { EventMedia } from "@/types/events";
 import { useEventMediaPreview } from "@/contexts/event-media-preview-context";

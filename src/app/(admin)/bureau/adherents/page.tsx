@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { AdminTablePagination } from "@/app/(admin)/_shared/_components/admin-table-pagination"
 import { getFirstSearchParam } from "@/app/(admin)/_shared/_lib/search-params"
 import {
   getAdherentAvailableYears,

@@ -157,7 +157,6 @@ export function BeneficiaryIdentitySearch({
           id={id}
           aria-labelledby={labelledBy}
           disabled={disabled || isAutofilling}
-          aria-invalid={error ? true : undefined}
           aria-haspopup="dialog"
           aria-expanded={drawerOpen}
           onClick={() => setDrawerOpen(true)}
