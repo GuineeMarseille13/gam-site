@@ -4,6 +4,8 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { BureauContent } from "@/components/bureau/bureau-content"
 import { Card, CardContent } from "@/components/ui/card"
+import { administrationCardClassName } from "@/config/administration-dashboard-theme"
+import { cn } from "@/helpers/utils"
 import { AdministrationProfilForm } from "./_components/administration-profil-form"
 import { getProfilPageData } from "@/app/(admin)/_shared/profile/_helpers/get-profil-page-data"
 
@@ -26,7 +28,7 @@ export default async function AdministrationProfilPage() {
       title="Mon profil"
       description="Gérez vos informations personnelles et la sécurité de votre compte"
     >
-      <Card>
+      <Card className={cn(administrationCardClassName)}>
         <CardContent className="pt-6">
           <AdministrationProfilForm defaultValues={defaultValues} />
         </CardContent>

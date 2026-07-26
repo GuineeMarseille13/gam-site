@@ -5,10 +5,12 @@ import { IconArrowLeft } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
 import { BeneficiaryTrackingDetailView } from "../../_components/beneficiary-tracking-detail-view"
+import { BeneficiaryTrackingRelatedFiches } from "../../_components/beneficiary-tracking-related-fiches"
 import { beneficiaryTrackingGhostNavClassName } from "../../_components/beneficiary-suivi-form-classes"
 import { cn } from "@/helpers/utils"
 import { beneficiaryTrackingParamsSchema } from "../../_schemas/beneficiary-tracking.schema"
 import { getBeneficiaryDetailForTracking } from "../../_services/get-beneficiary-detail-for-tracking"
+import { getRelatedBeneficiaryFichesForTracking } from "../../_services/get-related-beneficiary-fiches-for-tracking"
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -37,10 +39,19 @@ export default async function SuiviDemandeDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const detail = await getBeneficiaryDetailForTracking(parsed.data.id)
+  const [detail, relatedFiches] = await Promise.all([
+    getBeneficiaryDetailForTracking(parsed.data.id),
+    getRelatedBeneficiaryFichesForTracking(parsed.data.id),
+  ])
+
   if (!detail) {
     notFound()
   }
+
+  const ficheCountLabel =
+    relatedFiches.length > 1
+      ? `${relatedFiches.length} dossiers pour ce bénéficiaire.`
+      : "Détail du dossier — mise à jour du statut ci-dessous."
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -60,11 +71,14 @@ export default async function SuiviDemandeDetailPage({ params }: PageProps) {
           <h1 className="text-2xl font-bold tracking-tight text-sky-950 dark:text-sky-50 md:text-3xl">
             {detail.firstName} {detail.lastName}
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Détail du dossier — mise à jour du statut ci-dessous.
-          </p>
+          <p className="text-sm text-muted-foreground">{ficheCountLabel}</p>
         </div>
       </div>
+
+      <BeneficiaryTrackingRelatedFiches
+        currentFicheId={detail.id}
+        fiches={relatedFiches}
+      />
 
       <BeneficiaryTrackingDetailView detail={detail} />
     </div>

@@ -11,6 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  administrationSelectContentClassName,
+  administrationSelectItemClassName,
+} from "@/config/administration-select-theme"
+import { cn } from "@/helpers/utils"
 
 const MIN_YEAR = 2020
 
@@ -52,9 +57,11 @@ export function AdministrationPermanenceStatsYearSelect({
         <SelectTrigger id="adm-perm-stats-year" className="w-full sm:w-[160px]">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent className="max-h-[min(50vh,20rem)]">
+        <SelectContent
+          className={cn(administrationSelectContentClassName, "max-h-[min(50vh,20rem)]")}
+        >
           {years.map((y) => (
-            <SelectItem key={y} value={String(y)}>
+            <SelectItem key={y} value={String(y)} className={administrationSelectItemClassName}>
               {y}
             </SelectItem>
           ))}

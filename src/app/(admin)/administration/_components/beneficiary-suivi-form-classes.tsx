@@ -1,3 +1,7 @@
+import {
+  administrationSelectContentClassName,
+  administrationSelectItemClassName,
+} from "@/config/administration-select-theme"
 import { cn } from "@/helpers/utils"
 
 /**
@@ -10,6 +14,14 @@ export function BeneficiaryRequiredMark() {
     </span>
   )
 }
+
+/**
+ * Liste déroulante Select — sky explicite (portail Radix hors `data-dashboard`).
+ * Évite le vert global `--accent` au survol / sélection des options.
+ */
+export const beneficiarySuiviSelectContentClassName = administrationSelectContentClassName
+
+export const beneficiarySuiviSelectItemClassName = administrationSelectItemClassName
 
 /** Champs : bordure discrète, survol adouci (évite le saut sky-400 trop fort). */
 const beneficiarySuiviControlBase = cn(

@@ -78,6 +78,45 @@ export const beneficiaryTrackingListRowSchema = z
 export type BeneficiaryTrackingListRow = z.infer<typeof beneficiaryTrackingListRowSchema>
 
 /**
+ * Groupe liste « Suivi demande » — une ligne par bénéficiaire (plusieurs fiches possibles).
+ */
+export const beneficiaryTrackingListGroupSchema = z
+  .object({
+    identityKey: z.string().min(1),
+    latestFicheId: z.string().min(1),
+    firstName: z.string(),
+    lastName: z.string(),
+    ficheCount: z.number().int().positive(),
+    latestPermanenceDate: z.string(),
+    demandTypeLabels: z.array(z.string()),
+    latestRequestStatus: z.string().nullable(),
+    latestRequestStatusLabel: z.string().nullable(),
+    latestAssignedResponsibleName: z.string().nullable(),
+  })
+  .strict()
+
+export type BeneficiaryTrackingListGroup = z.infer<typeof beneficiaryTrackingListGroupSchema>
+
+/**
+ * Fiche liée (même identité soft) sur la page détail.
+ */
+export const beneficiaryTrackingRelatedFicheSchema = z
+  .object({
+    id: z.string().min(1),
+    permanenceDate: z.string(),
+    demandTypeLabels: z.array(z.string()),
+    requestStatus: z.string().nullable(),
+    requestStatusLabel: z.string().nullable(),
+    assignedResponsibleName: z.string().nullable(),
+    createdAt: z.string(),
+  })
+  .strict()
+
+export type BeneficiaryTrackingRelatedFiche = z.infer<
+  typeof beneficiaryTrackingRelatedFicheSchema
+>
+
+/**
  * Détail complet pour la page de suivi (données internes administration).
  */
 export const beneficiaryTrackingDetailSchema = z

@@ -4,6 +4,8 @@ import { useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { signOut } from "@/lib/auth-client"
 import type { ProfilActionResult } from "@/app/(admin)/_shared/profile/_types/profil-action-result"
+import type { ProfilDashboardScope } from "@/app/(admin)/_shared/profile/_types/profil-dashboard-scope"
+import { PROFIL_FORM_THEMES } from "@/app/(admin)/_shared/profile/_config/profil-form-theme"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -22,6 +24,7 @@ import {
   IconBriefcase,
 } from "@tabler/icons-react"
 import { getProfilRoleLabel } from "@/app/(admin)/_shared/profile/_helpers/profil-role-label"
+import { cn } from "@/helpers/utils"
 
 const ROLE_BADGE_STYLE =
   "inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-2.5 py-1 text-xs font-medium text-foreground ring-1 ring-inset ring-border/60"
@@ -45,6 +48,8 @@ interface ProfilFormProps {
   ) => Promise<ProfilActionResult>
   /** Lien « Annuler » (défaut : tableau de bord Bureau). */
   cancelHref?: string
+  /** Palette UI alignée sur le dashboard courant. */
+  scope?: ProfilDashboardScope
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -74,8 +79,10 @@ export function ProfilForm({
   updateAction,
   changePasswordAction,
   cancelHref = "/bureau",
+  scope = "bureau",
 }: ProfilFormProps) {
   const router = useRouter()
+  const theme = PROFIL_FORM_THEMES[scope]
 
   // ── Soumission principale
   const [isPending, startTransition] = useTransition()
@@ -236,7 +243,9 @@ export function ProfilForm({
             <div className="relative mx-auto w-fit">
               <Avatar className="size-36 ring-4 ring-border/30 shadow-lg">
                 <AvatarImage src={displaySrc ?? ""} alt="Photo de profil" className="object-cover" />
-                <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-amber-100 to-amber-200 text-amber-800 dark:from-amber-900/40 dark:to-amber-800/40 dark:text-amber-300">
+                <AvatarFallback
+                  className={cn("text-3xl font-bold", theme.avatarFallbackClassName)}
+                >
                   {initials(defaultValues.firstName, defaultValues.lastName)}
                 </AvatarFallback>
               </Avatar>
@@ -279,7 +288,12 @@ export function ProfilForm({
                 )}
                 {posteLabel && (
                   <div>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:ring-rose-800/40">
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset",
+                        theme.posteBadgeClassName,
+                      )}
+                    >
                       <IconBriefcase className="size-3 shrink-0" />
                       {posteLabel}
                     </span>
@@ -320,7 +334,7 @@ export function ProfilForm({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="firstName" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Prénom <span className="text-destructive">*</span>
+                Prénom <span className={theme.requiredMarkClassName}>*</span>
               </Label>
               <Input
                 id="firstName" name="firstName" required autoFocus
@@ -331,7 +345,7 @@ export function ProfilForm({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lastName" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Nom <span className="text-destructive">*</span>
+                Nom <span className={theme.requiredMarkClassName}>*</span>
               </Label>
               <Input
                 id="lastName" name="lastName" required
@@ -385,7 +399,12 @@ export function ProfilForm({
               className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-muted/30"
             >
               <div className="flex items-center gap-2.5">
-                <div className="flex size-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400">
+                <div
+                  className={cn(
+                    "flex size-7 items-center justify-center rounded-lg",
+                    theme.passwordIconBadgeClassName,
+                  )}
+                >
                   <IconKey className="size-3.5" />
                 </div>
                 <div>
@@ -506,7 +525,7 @@ export function ProfilForm({
                         type="button"
                         onClick={handlePasswordSubmit}
                         disabled={isPwdPending || !currentPwd || !pwdValue || !pwdConfirm}
-                        className="cursor-pointer gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm shadow-amber-500/20"
+                        className={cn("cursor-pointer gap-2", theme.passwordButtonClassName)}
                       >
                         {isPwdPending
                           ? <><IconLoader2 className="size-4 animate-spin" />Modification…</>
@@ -525,7 +544,7 @@ export function ProfilForm({
             <Button
               type="submit"
               disabled={isPending || profileRedirecting}
-              className="cursor-pointer gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold shadow-sm shadow-rose-500/20"
+              className={cn("cursor-pointer gap-2", theme.primaryButtonClassName)}
             >
               {isPending && <IconLoader2 className="size-4 animate-spin" />}
               Enregistrer
@@ -535,7 +554,7 @@ export function ProfilForm({
               variant="ghost"
               onClick={() => router.push(cancelHref)}
               disabled={isPending || profileRedirecting}
-              className="cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
+              className={cn("cursor-pointer", theme.ghostButtonClassName)}
             >
               Annuler
             </Button>

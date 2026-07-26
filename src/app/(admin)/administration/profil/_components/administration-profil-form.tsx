@@ -27,6 +27,7 @@ export function AdministrationProfilForm({ defaultValues }: AdministrationProfil
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/administration"
+      scope="administration"
       updateAction={updateProfilAdministration}
       changePasswordAction={changeOwnPasswordAdministration}
     />

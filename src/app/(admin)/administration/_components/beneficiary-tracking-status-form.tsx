@@ -17,6 +17,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { updateBeneficiaryRequestStatus } from "../_actions/update-beneficiary-request-status"
 import {
   BeneficiaryRequiredMark,
+  beneficiarySuiviSelectContentClassName,
+  beneficiarySuiviSelectItemClassName,
   beneficiarySuiviSelectTriggerClassName,
   beneficiarySuiviTextareaClassName,
   beneficiaryTrackingPrimaryButtonClassName,
@@ -94,9 +96,13 @@ export function BeneficiaryTrackingStatusForm({ detail }: BeneficiaryTrackingSta
             <SelectTrigger id="track-status" className={beneficiarySuiviSelectTriggerClassName}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={beneficiarySuiviSelectContentClassName}>
               {REQUEST_STATUS_VALUES.map((v) => (
-                <SelectItem key={v} value={v}>
+                <SelectItem
+                  key={v}
+                  value={v}
+                  className={beneficiarySuiviSelectItemClassName}
+                >
                   {REQUEST_STATUS_LABELS[v]}
                 </SelectItem>
               ))}

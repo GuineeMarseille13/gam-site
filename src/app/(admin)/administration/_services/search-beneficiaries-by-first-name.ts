@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { buildBeneficiaryIdentityKey } from "../_lib/beneficiary-identity-key"
 import {
   BENEFICIARY_IDENTITY_SEARCH_MAX_RESULTS,
   beneficiaryIdentitySearchHitSchema,
@@ -6,26 +7,8 @@ import {
   type BeneficiaryIdentitySearchHit,
 } from "../_schemas/beneficiary-identity-search.schema"
 
-function normalizePart(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, " ")
-}
-
 function toYmd(value: Date): string {
   return value.toISOString().slice(0, 10)
-}
-
-function identityKey(hit: {
-  firstName: string
-  lastName: string
-  birthDate: string | null
-  phone: string | null
-}): string {
-  return [
-    normalizePart(hit.firstName),
-    normalizePart(hit.lastName),
-    hit.birthDate ?? "",
-    hit.phone ? normalizePart(hit.phone) : "",
-  ].join("|")
 }
 
 /**
@@ -65,7 +48,7 @@ export async function searchBeneficiariesByFirstName(
     const email = row.email?.trim() || null
     const firstName = row.firstName.trim()
     const lastName = row.lastName.trim()
-    const key = identityKey({ firstName, lastName, birthDate, phone })
+    const key = buildBeneficiaryIdentityKey({ firstName, lastName, birthDate, phone })
 
     if (seen.has(key)) continue
     seen.add(key)
