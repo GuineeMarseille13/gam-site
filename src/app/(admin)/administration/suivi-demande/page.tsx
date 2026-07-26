@@ -28,9 +28,11 @@ export default async function SuiviDemandePage({
 
   const demandTypeOptions = await getBeneficiaryDemandTypeFilterOptions()
   const demandTypeId =
-    typeCandidate && demandTypeOptions.some((o) => o.id === typeCandidate) ? typeCandidate : undefined
+    typeCandidate && demandTypeOptions.some((o) => o.id === typeCandidate)
+      ? typeCandidate
+      : undefined
 
-  const rows = await getBeneficiariesForTracking({ demandTypeId })
+  const { groups, ficheCount } = await getBeneficiariesForTracking({ demandTypeId })
 
   const filterLabel = demandTypeId
     ? demandTypeOptions.find((o) => o.id === demandTypeId)?.label
@@ -44,21 +46,25 @@ export default async function SuiviDemandePage({
             Suivi demande
           </h1>
           <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-            Consultez chaque fiche, le détail du dossier et le statut.
+            Consultez chaque bénéficiaire et l’ensemble de ses dossiers.
             {filterLabel ? (
               <>
                 {" "}
                 Liste filtrée&nbsp;: dossiers comportant au moins « {filterLabel} ».
               </>
             ) : null}{" "}
-            Jusqu’à {rows.length} enregistrement(s) affiché(s) (les plus récents en premier).
+            {groups.length} bénéficiaire(s), {ficheCount} dossier(s) (les plus récents en
+            premier).
           </p>
         </div>
         <Button
           asChild
           variant="outline"
           size="sm"
-          className={cn(beneficiaryTrackingOutlineButtonClassName, "h-10 w-full shrink-0 lg:w-auto")}
+          className={cn(
+            beneficiaryTrackingOutlineButtonClassName,
+            "h-10 w-full shrink-0 lg:w-auto",
+          )}
         >
           <Link href="/administration/demande-beneficiaire">
             <IconArrowLeft className="size-4" aria-hidden />
@@ -80,7 +86,7 @@ export default async function SuiviDemandePage({
         >
           Dossiers
         </h2>
-        <BeneficiaryTrackingList rows={rows} />
+        <BeneficiaryTrackingList groups={groups} />
       </section>
     </div>
   )

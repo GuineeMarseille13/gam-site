@@ -13,6 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  administrationSelectContentClassName,
+  administrationSelectItemClassName,
+} from "@/config/administration-select-theme"
+import { cn } from "@/helpers/utils"
 
 import {
   collectSortedMonthKeys,
@@ -152,10 +157,18 @@ export function BeneficiaryDemographicStatsTables({
               <SelectTrigger id="bene-filter-month-from" className="h-11 w-full sm:h-9 md:max-w-none">
                 <SelectValue placeholder="Toute l’année" />
               </SelectTrigger>
-              <SelectContent className="max-h-[min(50vh,20rem)]">
-                <SelectItem value={FILTER_NONE}>Toute l’année (début)</SelectItem>
+              <SelectContent
+                className={cn(administrationSelectContentClassName, "max-h-[min(50vh,20rem)]")}
+              >
+                <SelectItem value={FILTER_NONE} className={administrationSelectItemClassName}>
+                  Toute l’année (début)
+                </SelectItem>
                 {monthSelectOptions.map((o) => (
-                  <SelectItem key={o.value} value={o.value}>
+                  <SelectItem
+                    key={o.value}
+                    value={o.value}
+                    className={administrationSelectItemClassName}
+                  >
                     <span className="capitalize">{o.label}</span>
                   </SelectItem>
                 ))}
@@ -173,10 +186,18 @@ export function BeneficiaryDemographicStatsTables({
               <SelectTrigger id="bene-filter-month-to" className="h-11 w-full sm:h-9 md:max-w-none">
                 <SelectValue placeholder="Toute l’année" />
               </SelectTrigger>
-              <SelectContent className="max-h-[min(50vh,20rem)]">
-                <SelectItem value={FILTER_NONE}>Toute l’année (fin)</SelectItem>
+              <SelectContent
+                className={cn(administrationSelectContentClassName, "max-h-[min(50vh,20rem)]")}
+              >
+                <SelectItem value={FILTER_NONE} className={administrationSelectItemClassName}>
+                  Toute l’année (fin)
+                </SelectItem>
                 {monthSelectOptions.map((o) => (
-                  <SelectItem key={`to-${o.value}`} value={o.value}>
+                  <SelectItem
+                    key={`to-${o.value}`}
+                    value={o.value}
+                    className={administrationSelectItemClassName}
+                  >
                     <span className="capitalize">{o.label}</span>
                   </SelectItem>
                 ))}

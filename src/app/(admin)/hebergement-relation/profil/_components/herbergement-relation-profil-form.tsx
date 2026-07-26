@@ -26,6 +26,7 @@ export function HerbergementRelationProfilForm({
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/hebergement-relation"
+      scope="hebergement-relation"
       updateAction={updateProfilHerbergementRelation}
       changePasswordAction={changeOwnPasswordHerbergementRelation}
     />

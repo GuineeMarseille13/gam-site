@@ -24,6 +24,7 @@ export function BureauProfilForm({ defaultValues }: BureauProfilFormProps) {
     <ProfilForm
       defaultValues={defaultValues}
       cancelHref="/bureau"
+      scope="bureau"
       updateAction={updateProfilBureau}
       changePasswordAction={changeOwnPasswordBureau}
     />

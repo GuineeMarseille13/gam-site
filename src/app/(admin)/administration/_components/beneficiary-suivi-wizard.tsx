@@ -31,6 +31,8 @@ import {
   beneficiarySuiviTriggerPlaceholderClassName,
   beneficiarySuiviInputClassName,
   beneficiarySuiviPrimaryButtonClassName,
+  beneficiarySuiviSelectContentClassName,
+  beneficiarySuiviSelectItemClassName,
   beneficiarySuiviSelectTriggerClassName,
   beneficiarySuiviTextareaClassName,
   beneficiaryTrackingGhostNavClassName,
@@ -711,9 +713,13 @@ export function BeneficiarySuiviWizard({
                 <SelectTrigger id="ben-suivi-status" className={beneficiarySuiviSelectTriggerClassName}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={beneficiarySuiviSelectContentClassName}>
                   {REQUEST_STATUS_VALUES.map((v) => (
-                    <SelectItem key={v} value={v}>
+                    <SelectItem
+                      key={v}
+                      value={v}
+                      className={beneficiarySuiviSelectItemClassName}
+                    >
                       {REQUEST_STATUS_LABELS[v]}
                     </SelectItem>
                   ))}
@@ -738,9 +744,13 @@ export function BeneficiarySuiviWizard({
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={beneficiarySuiviSelectContentClassName}>
                   {PAYMENT_RESPONSIBLE_VALUES.map((v) => (
-                    <SelectItem key={v} value={v}>
+                    <SelectItem
+                      key={v}
+                      value={v}
+                      className={beneficiarySuiviSelectItemClassName}
+                    >
                       {PAYMENT_RESPONSIBLE_LABELS[v]}
                     </SelectItem>
                   ))}
