@@ -99,6 +99,7 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
 
   const firstName   = formData.get("firstName") as string
   const lastName    = formData.get("lastName")  as string
+  const email       = (formData.get("email") as string)?.trim() || null
   const phone       = formData.get("phone")     as string
   const posteCode = (formData.get("posteCode") as string | null)?.trim() || null
   const description = (formData.get("description") as string | null)?.trim() || null
@@ -125,9 +126,16 @@ export async function updateMembreEquipe(id: string, formData: FormData) {
       await syncUserDisplayNameFromPerson(prisma, person.userId, firstName, lastName)
     }
 
+    // Email Person libre ici ; si un User est lié, l'email compte se gère via /bureau/acces
     await prisma.person.update({
       where: { id: member.personId },
-      data: { firstName, lastName, phone, posteId },
+      data: {
+        firstName,
+        lastName,
+        phone,
+        posteId,
+        ...(!person.userId ? { email } : {}),
+      },
     })
 
     await prisma.teamMember.update({
