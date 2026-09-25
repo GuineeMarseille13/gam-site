@@ -77,7 +77,7 @@ function BannerContent({ event }: { event: BannerData }) {
       <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-lime-500 to-transparent z-10 pointer-events-none" />
 
       <Marquee
-        className="py-5 [--duration:35s] [--gap:0rem] p-0"
+        className="py-5 [--duration:150s] [--gap:0rem] p-0"
         pauseOnHover
         repeat={6}
         ariaLabel={`Événement à venir : ${event.title}`}
