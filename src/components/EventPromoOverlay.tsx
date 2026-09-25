@@ -5,7 +5,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { cn } from "@/helpers/utils";
 import { cloudinaryImageUrl } from "@/lib/cloudinary-delivery";
+
+import { ProspectusCarousel } from "./event-promo/prospectus-carousel";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -28,6 +31,14 @@ export type PopupData = {
 function imgUrl(id: string, w = 900) {
   return cloudinaryImageUrl(id, `w_${w},q_auto,f_auto`);
 }
+
+// ── Styles de carte ───────────────────────────────────────────────────────────
+
+// Prospectus : largeur bornée par la hauteur d'écran (cadre 5/7 + pied ≈ 10rem) pour rester entièrement visible.
+const CARD_CLASSES: Record<PopupData["type"], string> = {
+  IMAGE_TEXT: "w-full max-w-sm bg-gray-950 ring-white/20",
+  PROSPECTUS: "w-[min(100%,34rem,calc((100dvh-10rem)*5/7))] bg-white ring-white/50",
+};
 
 // ── Variants d'animation ──────────────────────────────────────────────────────
 
@@ -114,17 +125,16 @@ export default function EventPromoOverlay({ popup }: { popup: PopupData | null }
             <motion.article
               variants={cardVariants} initial="hidden" animate="visible" exit="exit"
               role="dialog" aria-modal="true"
-              className={`relative w-full overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/20 ${
-                popup.type === "IMAGE_TEXT"
-                  ? "max-w-sm rounded-3xl bg-gray-950"
-                  : "max-w-xl rounded-3xl bg-white/95 backdrop-blur-xl ring-white/50"
-              }`}
+              className={cn(
+                "relative overflow-hidden rounded-3xl shadow-2xl shadow-black/40 ring-1",
+                CARD_CLASSES[popup.type],
+              )}
             >
 
               {popup.type === "IMAGE_TEXT" ? (
                 <ImageTextContent popup={popup} close={close} />
               ) : (
-                <ProspectusContent popup={popup} close={close} />
+                <ProspectusCarousel imageIds={popup.prospectusIds} onClose={close} />
               )}
             </motion.article>
           </div>
@@ -263,173 +273,6 @@ function ImageTextContent({ popup, close }: { popup: PopupData; close: () => voi
           </motion.button>
         </motion.div>
 
-      </div>
-    </div>
-  );
-}
-
-// ── PROSPECTUS ─────────────────────────────────────────────────────────────────
-
-const SLIDE_DELAY = 6500; // ms entre chaque slide
-
-const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
-  center: { x: 0, opacity: 1, transition: { duration: 0.45, ease: [0.25, 1, 0.5, 1] as const } },
-  exit:  (dir: number) => ({ x: dir > 0 ? "-100%" : "100%", opacity: 0, transition: { duration: 0.3, ease: "easeIn" as const } }),
-};
-
-function NavArrow({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-900 text-white shadow-md transition-all hover:bg-amber-500 hover:scale-105 active:scale-95"
-    >
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-        {dir === "prev"
-          ? <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          : <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        }
-      </svg>
-    </button>
-  );
-}
-
-function ProspectusContent({ popup, close }: { popup: PopupData; close: () => void }) {
-  const ids = popup.prospectusIds;
-  const total = ids.length;
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [paused, setPaused] = useState(false);
-  // Incrémenté à chaque reprise pour forcer le restart des barres de progression
-  const [resumeKey, setResumeKey] = useState(0);
-
-  function goTo(next: number, dir: number) { setDirection(dir); setIndex(next); }
-  function goNext() { goTo((index + 1) % total, 1); }
-  function goPrev() { goTo((index - 1 + total) % total, -1); }
-
-  function handleMouseEnter() { setPaused(true); }
-  function handleMouseLeave() { setPaused(false); setResumeKey((k) => k + 1); }
-
-  // Auto-avance — suspendu au hover, reprend sur mouse leave
-  useEffect(() => {
-    if (total <= 1 || paused) return;
-    const t = setTimeout(goNext, SLIDE_DELAY);
-    return () => clearTimeout(t);
-  }, [index, total, paused, resumeKey]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (total === 0) return (
-    <div className="flex h-64 items-center justify-center text-sm text-gray-400">Aucune image</div>
-  );
-
-  // Clé des barres : change à chaque slide ET à chaque reprise pour reset l'animation
-  const barKey = `${index}-${resumeKey}`;
-
-  return (
-    <div
-      className="flex flex-col overflow-hidden rounded-3xl"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-
-      {/* ── Image avec transition ── */}
-      <div className="relative overflow-hidden bg-gray-950" style={{ maxHeight: "80dvh" }}>
-
-        {/* Barres de progression */}
-        {total > 1 && (
-          <div key={barKey} className="absolute top-0 left-0 right-0 z-10 flex gap-1 px-3 pt-3">
-            {ids.map((_, i) => (
-              <div key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/25">
-                {i < index ? (
-                  <div className="h-full w-full bg-white/80" />
-                ) : i === index ? (
-                  <motion.div
-                    className="h-full origin-left bg-amber-400"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: paused ? undefined : 1 }}
-                    transition={{ duration: SLIDE_DELAY / 1000, ease: "linear" }}
-                  />
-                ) : null}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Indicateur pause */}
-        <AnimatePresence>
-          {paused && total > 1 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm"
-            >
-              <span className="flex gap-0.5">
-                <span className="block h-3 w-[3px] rounded-full bg-white" />
-                <span className="block h-3 w-[3px] rounded-full bg-white" />
-              </span>
-              En pause
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence custom={direction} mode="wait">
-          <motion.div
-            key={index}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="w-full"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imgUrl(ids[index], 900)}
-              alt={`Prospectus ${index + 1} / ${total}`}
-              className="w-full object-contain"
-              style={{ maxHeight: "80dvh" }}
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* ── Footer ── */}
-      <div className="flex items-center justify-between gap-3 border-t border-gray-100 bg-white px-4 py-3">
-
-        {/* Navigation */}
-        {total > 1 ? (
-          <div className="flex items-center gap-3">
-            <NavArrow dir="prev" onClick={goPrev} />
-
-            <div className="flex items-center gap-1.5">
-              {ids.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goTo(i, i > index ? 1 : -1)}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === index ? "w-6 h-2 bg-amber-500" : "size-2 bg-gray-300 hover:bg-amber-300"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <NavArrow dir="next" onClick={goNext} />
-          </div>
-        ) : (
-          <div />
-        )}
-
-        {/* Fermer */}
-        <button
-          onClick={close}
-          className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-          Fermer
-        </button>
       </div>
     </div>
   );
